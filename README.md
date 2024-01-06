@@ -8,7 +8,7 @@ Este proyecto es un scraper de informes anuales de la Comisión para el Mercado 
 - Automatización de la recopilación de datos financieros de múltiples años.
 - Extracción de información de tablas de la página web de la CMF.
 - Generación de archivos Excel con datos estructurados para análisis.
-- 
+
 
 ## Requisitos
 Antes de ejecutar este scraper, asegúrate de tener instaladas las siguientes bibliotecas en tu entorno Python:
