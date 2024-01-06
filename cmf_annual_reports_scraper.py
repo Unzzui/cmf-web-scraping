@@ -10,8 +10,9 @@ from selenium.common.exceptions import TimeoutException
 
 # Configura el WebDriver (en este caso, Chrome)
 driver = webdriver.Chrome()
+# Cambia el RUT según la empresa que quieras recopilar "sin el guión" y "sin el digito verificador" (Ejemplo: 96505760)
+rut = "96505760"  # Los datos de los RUT se encuentran en la ruta RUT_Chilean_Companies/RUT_Chilean_Companies.xlsx
 
-rut = "96505760"  # Cambia el RUT según la empresa que quieras recopilar "sin el guión"
 # Abre la URL
 driver.get(
     f"https://www.cmfchile.cl/institucional/mercados/entidad.php?mercado=V&rut={rut}&grupo=&tipoentidad=RVEMI&row=AAAwy2ACTAAABy2AAC&vig=VI&control=svs&pestania=3"
