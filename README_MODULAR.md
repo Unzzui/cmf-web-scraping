@@ -11,6 +11,9 @@ cmf-web-scraping/
 ├── cmf_gui_modular.py          # Lanzador principal de la aplicación
 ├── cmf_gui.py                  # GUI original (mantenida por compatibilidad)
 ├── cmf_annual_reports_scraper.py  # Motor de scraping
+├── rut_chilean_companies.py    # Extractor mejorado de empresas CMF
+├── test_extractor.py           # Script de prueba para extractor
+├── setup_selenium.py           # Configurador de Selenium/ChromeDriver
 ├── gui/                        # Módulo GUI modularizado
 │   ├── __init__.py
 │   ├── main_window.py          # Ventana principal
@@ -35,6 +38,45 @@ cmf-web-scraping/
 
 ### Activar entorno virtual (si aplica)
 
+## Instalación
+
+### Prerrequisitos
+
+- Python 3.7+
+- Google Chrome instalado
+
+### Configuración Automática
+
+```bash
+# Clonar el repositorio
+git clone <url_repositorio>
+cd cmf-web-scraping
+
+# Instalar dependencias
+pip install -r requirements.txt
+
+# Configurar ChromeDriver automáticamente (Linux)
+python setup_selenium.py
+
+# Probar el extractor de empresas
+python test_extractor.py
+```
+
+### Configuración Manual
+
+Si la configuración automática falla:
+
+```bash
+# Para Linux
+sudo apt-get install chromium-chromedriver
+# O descargar desde: https://chromedriver.chromium.org/
+
+# Para Windows/Mac
+# Descargar ChromeDriver y agregar al PATH
+```
+
+## Uso
+
 ```bash
 # Si usas un entorno virtual, actívalo primero
 source .venv/bin/activate  # En Linux/Mac
@@ -54,7 +96,58 @@ python cmf_gui_modular.py
 python cmf_gui.py
 ```
 
-## Características de la Versión Modular
+### Extractor de Empresas Independiente
+
+```bash
+# Ejecutar extractor con logging detallado
+python rut_chilean_companies.py
+
+# Probar el extractor
+python test_extractor.py
+```
+
+## Herramientas Adicionales
+
+### Extractor de Empresas CMF (`rut_chilean_companies.py`)
+
+Extractor mejorado con características avanzadas:
+
+- **Logging completo**: Seguimiento detallado del proceso de extracción
+- **Manejo robusto de errores**: Recuperación automática de fallos temporales
+- **Navegación headless**: Operación en background sin interfaz gráfica
+- **Validación de datos**: Verificación de integridad de la información extraída
+- **Múltiples formatos**: Exportación a CSV y Excel
+
+```bash
+# Ejecutar extractor independiente
+python rut_chilean_companies.py
+```
+
+### Configurador de Selenium (`setup_selenium.py`)
+
+Automatiza la configuración de ChromeDriver:
+
+- **Detección automática**: Identifica la versión de Chrome instalada
+- **Instalación automática**: Para sistemas Linux compatibles
+- **Guías paso a paso**: Para configuración manual en otros sistemas
+
+```bash
+# Configurar automáticamente
+python setup_selenium.py
+```
+
+### Script de Pruebas (`test_extractor.py`)
+
+Valida el funcionamiento del extractor:
+
+- **Pruebas de conectividad**: Verifica acceso a CMF
+- **Validación de datos**: Comprueba calidad de la información extraída
+- **Diagnóstico completo**: Identifica problemas de configuración
+
+```bash
+# Ejecutar pruebas
+python test_extractor.py
+```
 
 ### Ventajas
 
