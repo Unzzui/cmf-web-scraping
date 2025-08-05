@@ -1,0 +1,270 @@
+2025-08-05 16:06:15,292 - __main__ - INFO - Accediendo a: https://www.cmfchile.cl/institucional/mercados/entidad.php?mercado=V&rut=96505760&grupo=&tipoentidad=RVEMI&row=AAAwy2ACTAAABy2AAC&vig=VI&control=svs&pestania=3
+2025-08-05 16:06:15,701 - __main__ - INFO - Procesando: COLBUN S.A.
+2025-08-05 16:06:15,703 - __main__ - INFO - Procesando año 2022
+2025-08-05 16:06:16,912 - __main__ - ERROR - Error procesando año 2022: Message: element click intercepted: Element is not clickable at point (83, 1348)
+  (Session info: chrome=139.0.7258.66); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#elementclickinterceptedexception
+Stacktrace:
+#0 0x5606f825205a <unknown>
+#1 0x5606f7cf1a70 <unknown>
+#2 0x5606f7d4a78c <unknown>
+#3 0x5606f7d485eb <unknown>
+#4 0x5606f7d45c92 <unknown>
+#5 0x5606f7d453a7 <unknown>
+#6 0x5606f7d37b1b <unknown>
+#7 0x5606f7d693e2 <unknown>
+#8 0x5606f7d3749a <unknown>
+#9 0x5606f7d695ae <unknown>
+#10 0x5606f7d8f14f <unknown>
+#11 0x5606f7d691b3 <unknown>
+#12 0x5606f7d3559b <unknown>
+#13 0x5606f7d36971 <unknown>
+#14 0x5606f821722b <unknown>
+#15 0x5606f821af79 <unknown>
+#16 0x5606f81fe309 <unknown>
+#17 0x5606f821bb28 <unknown>
+#18 0x5606f81e2bef <unknown>
+#19 0x5606f823f0e8 <unknown>
+#20 0x5606f823f2c6 <unknown>
+#21 0x5606f8251036 <unknown>
+#22 0x7f9b474969cb <unknown>
+#23 0x7f9b4751aa4c <unknown>
+
+2025-08-05 16:06:16,912 - __main__ - INFO - Procesando año 2020
+2025-08-05 16:06:18,053 - __main__ - ERROR - Error procesando año 2020: Message: element click intercepted: Element is not clickable at point (83, 1287)
+  (Session info: chrome=139.0.7258.66); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#elementclickinterceptedexception
+Stacktrace:
+#0 0x5606f825205a <unknown>
+#1 0x5606f7cf1a70 <unknown>
+#2 0x5606f7d4a78c <unknown>
+#3 0x5606f7d485eb <unknown>
+#4 0x5606f7d45c92 <unknown>
+#5 0x5606f7d453a7 <unknown>
+#6 0x5606f7d37b1b <unknown>
+#7 0x5606f7d693e2 <unknown>
+#8 0x5606f7d3749a <unknown>
+#9 0x5606f7d695ae <unknown>
+#10 0x5606f7d8f14f <unknown>
+#11 0x5606f7d691b3 <unknown>
+#12 0x5606f7d3559b <unknown>
+#13 0x5606f7d36971 <unknown>
+#14 0x5606f821722b <unknown>
+#15 0x5606f821af79 <unknown>
+#16 0x5606f81fe309 <unknown>
+#17 0x5606f821bb28 <unknown>
+#18 0x5606f81e2bef <unknown>
+#19 0x5606f823f0e8 <unknown>
+#20 0x5606f823f2c6 <unknown>
+#21 0x5606f8251036 <unknown>
+#22 0x7f9b474969cb <unknown>
+#23 0x7f9b4751aa4c <unknown>
+
+2025-08-05 16:06:18,053 - __main__ - INFO - Procesando año 2018
+2025-08-05 16:06:19,192 - __main__ - ERROR - Error procesando año 2018: Message: element click intercepted: Element is not clickable at point (83, 1230)
+  (Session info: chrome=139.0.7258.66); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#elementclickinterceptedexception
+Stacktrace:
+#0 0x5606f825205a <unknown>
+#1 0x5606f7cf1a70 <unknown>
+#2 0x5606f7d4a78c <unknown>
+#3 0x5606f7d485eb <unknown>
+#4 0x5606f7d45c92 <unknown>
+#5 0x5606f7d453a7 <unknown>
+#6 0x5606f7d37b1b <unknown>
+#7 0x5606f7d693e2 <unknown>
+#8 0x5606f7d3749a <unknown>
+#9 0x5606f7d695ae <unknown>
+#10 0x5606f7d8f14f <unknown>
+#11 0x5606f7d691b3 <unknown>
+#12 0x5606f7d3559b <unknown>
+#13 0x5606f7d36971 <unknown>
+#14 0x5606f821722b <unknown>
+#15 0x5606f821af79 <unknown>
+#16 0x5606f81fe309 <unknown>
+#17 0x5606f821bb28 <unknown>
+#18 0x5606f81e2bef <unknown>
+#19 0x5606f823f0e8 <unknown>
+#20 0x5606f823f2c6 <unknown>
+#21 0x5606f8251036 <unknown>
+#22 0x7f9b474969cb <unknown>
+#23 0x7f9b4751aa4c <unknown>
+
+2025-08-05 16:06:19,193 - __main__ - INFO - Procesando año 2016
+2025-08-05 16:06:20,329 - __main__ - ERROR - Error procesando año 2016: Message: element click intercepted: Element is not clickable at point (83, 1228)
+  (Session info: chrome=139.0.7258.66); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#elementclickinterceptedexception
+Stacktrace:
+#0 0x5606f825205a <unknown>
+#1 0x5606f7cf1a70 <unknown>
+#2 0x5606f7d4a78c <unknown>
+#3 0x5606f7d485eb <unknown>
+#4 0x5606f7d45c92 <unknown>
+#5 0x5606f7d453a7 <unknown>
+#6 0x5606f7d37b1b <unknown>
+#7 0x5606f7d693e2 <unknown>
+#8 0x5606f7d3749a <unknown>
+#9 0x5606f7d695ae <unknown>
+#10 0x5606f7d8f14f <unknown>
+#11 0x5606f7d691b3 <unknown>
+#12 0x5606f7d3559b <unknown>
+#13 0x5606f7d36971 <unknown>
+#14 0x5606f821722b <unknown>
+#15 0x5606f821af79 <unknown>
+#16 0x5606f81fe309 <unknown>
+#17 0x5606f821bb28 <unknown>
+#18 0x5606f81e2bef <unknown>
+#19 0x5606f823f0e8 <unknown>
+#20 0x5606f823f2c6 <unknown>
+#21 0x5606f8251036 <unknown>
+#22 0x7f9b474969cb <unknown>
+#23 0x7f9b4751aa4c <unknown>
+
+2025-08-05 16:06:20,329 - __main__ - INFO - Procesando año 2014
+2025-08-05 16:06:21,466 - __main__ - ERROR - Error procesando año 2014: Message: element click intercepted: Element is not clickable at point (83, 1226)
+  (Session info: chrome=139.0.7258.66); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#elementclickinterceptedexception
+Stacktrace:
+#0 0x5606f825205a <unknown>
+#1 0x5606f7cf1a70 <unknown>
+#2 0x5606f7d4a78c <unknown>
+#3 0x5606f7d485eb <unknown>
+#4 0x5606f7d45c92 <unknown>
+#5 0x5606f7d453a7 <unknown>
+#6 0x5606f7d37b1b <unknown>
+#7 0x5606f7d693e2 <unknown>
+#8 0x5606f7d3749a <unknown>
+#9 0x5606f7d695ae <unknown>
+#10 0x5606f7d8f14f <unknown>
+#11 0x5606f7d691b3 <unknown>
+#12 0x5606f7d3559b <unknown>
+#13 0x5606f7d36971 <unknown>
+#14 0x5606f821722b <unknown>
+#15 0x5606f821af79 <unknown>
+#16 0x5606f81fe309 <unknown>
+#17 0x5606f821bb28 <unknown>
+#18 0x5606f81e2bef <unknown>
+#19 0x5606f823f0e8 <unknown>
+#20 0x5606f823f2c6 <unknown>
+#21 0x5606f8251036 <unknown>
+#22 0x7f9b474969cb <unknown>
+#23 0x7f9b4751aa4c <unknown>
+
+2025-08-05 16:06:21,479 - __main__ - INFO - Datos guardados en: data/Reports/COLBUN S.A._Financials_1754424381.xlsx
+2025-08-05 16:06:21,539 - __main__ - INFO - Driver cerrado correctamente
+2025-08-05 16:08:56,566 - __main__ - INFO - Accediendo a: https://www.cmfchile.cl/institucional/mercados/entidad.php?mercado=V&rut=76536353&grupo=&tipoentidad=RVEMI&row=AAAwy2ACTAAABy2AAC&vig=VI&control=svs&pestania=3
+2025-08-05 16:08:57,250 - __main__ - INFO - Procesando: ENEL CHILE S.A.
+2025-08-05 16:08:57,250 - __main__ - INFO - Procesando año 2022
+2025-08-05 16:08:58,454 - __main__ - ERROR - Error procesando año 2022: Message: element click intercepted: Element is not clickable at point (98, 948)
+  (Session info: chrome=139.0.7258.66); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#elementclickinterceptedexception
+Stacktrace:
+#0 0x56534f47505a <unknown>
+#1 0x56534ef14a70 <unknown>
+#2 0x56534ef6d78c <unknown>
+#3 0x56534ef6b5eb <unknown>
+#4 0x56534ef68c92 <unknown>
+#5 0x56534ef683a7 <unknown>
+#6 0x56534ef5ab1b <unknown>
+#7 0x56534ef8c3e2 <unknown>
+#8 0x56534ef5a49a <unknown>
+#9 0x56534ef8c5ae <unknown>
+#10 0x56534efb214f <unknown>
+#11 0x56534ef8c1b3 <unknown>
+#12 0x56534ef5859b <unknown>
+#13 0x56534ef59971 <unknown>
+#14 0x56534f43a22b <unknown>
+#15 0x56534f43df79 <unknown>
+#16 0x56534f421309 <unknown>
+#17 0x56534f43eb28 <unknown>
+#18 0x56534f405bef <unknown>
+#19 0x56534f4620e8 <unknown>
+#20 0x56534f4622c6 <unknown>
+#21 0x56534f474036 <unknown>
+#22 0x7f72658969cb <unknown>
+#23 0x7f726591aa4c <unknown>
+
+2025-08-05 16:08:58,455 - __main__ - INFO - Procesando año 2020
+2025-08-05 16:08:59,594 - __main__ - ERROR - Error procesando año 2020: Message: element click intercepted: Element is not clickable at point (98, 936)
+  (Session info: chrome=139.0.7258.66); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#elementclickinterceptedexception
+Stacktrace:
+#0 0x56534f47505a <unknown>
+#1 0x56534ef14a70 <unknown>
+#2 0x56534ef6d78c <unknown>
+#3 0x56534ef6b5eb <unknown>
+#4 0x56534ef68c92 <unknown>
+#5 0x56534ef683a7 <unknown>
+#6 0x56534ef5ab1b <unknown>
+#7 0x56534ef8c3e2 <unknown>
+#8 0x56534ef5a49a <unknown>
+#9 0x56534ef8c5ae <unknown>
+#10 0x56534efb214f <unknown>
+#11 0x56534ef8c1b3 <unknown>
+#12 0x56534ef5859b <unknown>
+#13 0x56534ef59971 <unknown>
+#14 0x56534f43a22b <unknown>
+#15 0x56534f43df79 <unknown>
+#16 0x56534f421309 <unknown>
+#17 0x56534f43eb28 <unknown>
+#18 0x56534f405bef <unknown>
+#19 0x56534f4620e8 <unknown>
+#20 0x56534f4622c6 <unknown>
+#21 0x56534f474036 <unknown>
+#22 0x7f72658969cb <unknown>
+#23 0x7f726591aa4c <unknown>
+
+2025-08-05 16:08:59,595 - __main__ - INFO - Procesando año 2018
+2025-08-05 16:09:00,731 - __main__ - ERROR - Error procesando año 2018: Message: element click intercepted: Element is not clickable at point (98, 915)
+  (Session info: chrome=139.0.7258.66); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#elementclickinterceptedexception
+Stacktrace:
+#0 0x56534f47505a <unknown>
+#1 0x56534ef14a70 <unknown>
+#2 0x56534ef6d78c <unknown>
+#3 0x56534ef6b5eb <unknown>
+#4 0x56534ef68c92 <unknown>
+#5 0x56534ef683a7 <unknown>
+#6 0x56534ef5ab1b <unknown>
+#7 0x56534ef8c3e2 <unknown>
+#8 0x56534ef5a49a <unknown>
+#9 0x56534ef8c5ae <unknown>
+#10 0x56534efb214f <unknown>
+#11 0x56534ef8c1b3 <unknown>
+#12 0x56534ef5859b <unknown>
+#13 0x56534ef59971 <unknown>
+#14 0x56534f43a22b <unknown>
+#15 0x56534f43df79 <unknown>
+#16 0x56534f421309 <unknown>
+#17 0x56534f43eb28 <unknown>
+#18 0x56534f405bef <unknown>
+#19 0x56534f4620e8 <unknown>
+#20 0x56534f4622c6 <unknown>
+#21 0x56534f474036 <unknown>
+#22 0x7f72658969cb <unknown>
+#23 0x7f726591aa4c <unknown>
+
+2025-08-05 16:09:00,732 - __main__ - INFO - Procesando año 2016
+2025-08-05 16:09:01,870 - __main__ - ERROR - Error procesando año 2016: Message: element click intercepted: Element is not clickable at point (98, 891)
+  (Session info: chrome=139.0.7258.66); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#elementclickinterceptedexception
+Stacktrace:
+#0 0x56534f47505a <unknown>
+#1 0x56534ef14a70 <unknown>
+#2 0x56534ef6d78c <unknown>
+#3 0x56534ef6b5eb <unknown>
+#4 0x56534ef68c92 <unknown>
+#5 0x56534ef683a7 <unknown>
+#6 0x56534ef5ab1b <unknown>
+#7 0x56534ef8c3e2 <unknown>
+#8 0x56534ef5a49a <unknown>
+#9 0x56534ef8c5ae <unknown>
+#10 0x56534efb214f <unknown>
+#11 0x56534ef8c1b3 <unknown>
+#12 0x56534ef5859b <unknown>
+#13 0x56534ef59971 <unknown>
+#14 0x56534f43a22b <unknown>
+#15 0x56534f43df79 <unknown>
+#16 0x56534f421309 <unknown>
+#17 0x56534f43eb28 <unknown>
+#18 0x56534f405bef <unknown>
+#19 0x56534f4620e8 <unknown>
+#20 0x56534f4622c6 <unknown>
+#21 0x56534f474036 <unknown>
+#22 0x7f72658969cb <unknown>
+#23 0x7f726591aa4c <unknown>
+
+2025-08-05 16:09:01,870 - __main__ - INFO - Procesando año 2014
+2025-08-05 16:09:04,124 - __main__ - INFO - Datos guardados en: data/Reports/ENEL CHILE S.A._Financials_1754424544.xlsx
+2025-08-05 16:09:04,179 - __main__ - INFO - Driver cerrado correctamente
