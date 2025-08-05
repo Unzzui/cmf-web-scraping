@@ -24,6 +24,7 @@ def scrape_cmf_data(rut, start_year=2024, end_year=2014, step=-2):
     Función principal para scraping de datos CMF
     Extrae solo [210000], [320000] y [510000]
     Mantiene el orden original de las filas como aparecen en la CMF
+    INCLUYE categorías [sinopsis] para estructura jerárquica
     
     Args:
         rut: RUT de la empresa sin guión ni dígito verificador
@@ -32,20 +33,50 @@ def scrape_cmf_data(rut, start_year=2024, end_year=2014, step=-2):
         step: Incremento entre años (por defecto -2)
     """
     
-    # SOLO las taxonomías que necesitamos
+    # TAXONOMÍAS PRINCIPALES Y ALTERNATIVAS
     TAXONOMY_MAPPING = {
+        # Balance General
         "[210000]": {
             "name": "Balance General",
-            "description": "Estado de situación financiera, corriente/no corriente"
+            "description": "Estado de situación financiera, corriente/no corriente",
+            "alternative": "[220000]"  # Orden de liquidez como alternativa
         },
+        "[220000]": {
+            "name": "Balance General (Liquidez)",
+            "description": "Estado de situación financiera, orden de liquidez",
+            "alternative": None
+        },
+        
+        # Estado de Resultados
         "[320000]": {
             "name": "Estado Resultados",
-            "description": "Estado del resultado, por naturaleza de gasto"
+            "description": "Estado del resultado, por naturaleza de gasto",
+            "alternative": "[310000]"  # Por función de gasto como alternativa
         },
+        "[310000]": {
+            "name": "Estado Resultados (Función)",
+            "description": "Estado del resultado, por función de gasto",
+            "alternative": None
+        },
+        
+        # Flujo de Efectivo
         "[510000]": {
             "name": "Flujo Efectivo",
-            "description": "Estado de flujos de efectivo, método directo"
+            "description": "Estado de flujos de efectivo, método directo",
+            "alternative": "[520000]"  # Método indirecto como alternativa
+        },
+        "[520000]": {
+            "name": "Flujo Efectivo (Indirecto)",
+            "description": "Estado de flujos de efectivo, método indirecto",
+            "alternative": None
         }
+    }
+    
+    # Mapeo de taxonomías principales (las que preferimos)
+    PRIMARY_TAXONOMIES = {
+        "balance": "[210000]",
+        "resultados": "[320000]", 
+        "flujo": "[510000]"
     }
     
     # Mapeo de nombres de conceptos
@@ -93,6 +124,53 @@ def scrape_cmf_data(rut, start_year=2024, end_year=2014, step=-2):
         
         # Set para trackear años ya procesados
         years_collected = {code: set() for code in TAXONOMY_MAPPING.keys()}
+        
+        # Set para trackear taxonomías encontradas
+        found_taxonomies = set()
+        
+        # Función para detectar taxonomías disponibles
+        def detect_available_taxonomies(soup):
+            """Detectar qué taxonomías están disponibles en la página"""
+            available = set()
+            tables = soup.find_all("table")
+            for table in tables:
+                first_th = table.find("th")
+                if first_th:
+                    header_text = first_th.get_text()
+                    match = re.search(r'\[(\d{6})\]', header_text)
+                    if match:
+                        taxonomy_code = f"[{match.group(1)}]"
+                        if taxonomy_code in TAXONOMY_MAPPING:
+                            available.add(taxonomy_code)
+            return available
+        
+        # Función para seleccionar la mejor taxonomía disponible para cada tipo
+        def select_best_taxonomies(available_taxonomies):
+            """Seleccionar las mejores taxonomías disponibles"""
+            selected = {}
+            
+            # Para Balance General
+            if PRIMARY_TAXONOMIES["balance"] in available_taxonomies:
+                selected["balance"] = PRIMARY_TAXONOMIES["balance"]
+            elif TAXONOMY_MAPPING[PRIMARY_TAXONOMIES["balance"]]["alternative"] in available_taxonomies:
+                selected["balance"] = TAXONOMY_MAPPING[PRIMARY_TAXONOMIES["balance"]]["alternative"]
+            
+            # Para Estado de Resultados
+            if PRIMARY_TAXONOMIES["resultados"] in available_taxonomies:
+                selected["resultados"] = PRIMARY_TAXONOMIES["resultados"]
+            elif TAXONOMY_MAPPING[PRIMARY_TAXONOMIES["resultados"]]["alternative"] in available_taxonomies:
+                selected["resultados"] = TAXONOMY_MAPPING[PRIMARY_TAXONOMIES["resultados"]]["alternative"]
+            
+            # Para Flujo de Efectivo
+            if PRIMARY_TAXONOMIES["flujo"] in available_taxonomies:
+                selected["flujo"] = PRIMARY_TAXONOMIES["flujo"]
+            elif TAXONOMY_MAPPING[PRIMARY_TAXONOMIES["flujo"]]["alternative"] in available_taxonomies:
+                selected["flujo"] = TAXONOMY_MAPPING[PRIMARY_TAXONOMIES["flujo"]]["alternative"]
+            
+            return selected
+        
+        # Variable para almacenar las taxonomías seleccionadas
+        selected_taxonomies = None
         
         # Procesar cada año
         for year in range(start_year, end_year - 1, step):
@@ -146,6 +224,20 @@ def scrape_cmf_data(rut, start_year=2024, end_year=2014, step=-2):
                 # Parsear HTML
                 soup = BeautifulSoup(driver.page_source, "html.parser")
                 
+                # En el primer año, detectar taxonomías disponibles y seleccionar las mejores
+                if selected_taxonomies is None:
+                    available_taxonomies = detect_available_taxonomies(soup)
+                    selected_taxonomies = select_best_taxonomies(available_taxonomies)
+                    
+                    logger.info(f"📊 Taxonomías disponibles: {sorted(available_taxonomies)}")
+                    logger.info(f"🎯 Taxonomías seleccionadas: {selected_taxonomies}")
+                    
+                    # Actualizar los diccionarios para usar solo las taxonomías seleccionadas
+                    selected_codes = list(selected_taxonomies.values())
+                    data_by_taxonomy = {code: {} for code in selected_codes}
+                    concept_order = {code: [] for code in selected_codes}
+                    years_collected = {code: set() for code in selected_codes}
+                
                 # Buscar todas las tablas
                 all_tables = soup.find_all("table")
                 logger.info(f"Se encontraron {len(all_tables)} tablas")
@@ -163,9 +255,9 @@ def scrape_cmf_data(rut, start_year=2024, end_year=2014, step=-2):
                             if match:
                                 taxonomy_code = f"[{match.group(1)}]"
                         
-                        # Solo procesar si es una de las taxonomías que necesitamos
-                        if taxonomy_code and taxonomy_code in TAXONOMY_MAPPING:
-                            logger.info(f"Procesando tabla {taxonomy_code}")
+                        # Solo procesar si es una de las taxonomías seleccionadas
+                        if taxonomy_code and taxonomy_code in data_by_taxonomy:
+                            logger.info(f"Procesando tabla {taxonomy_code} - {TAXONOMY_MAPPING[taxonomy_code]['description']}")
                             
                             # Extraer fechas de las columnas del header
                             column_dates = []
@@ -185,52 +277,83 @@ def scrape_cmf_data(rut, start_year=2024, end_year=2014, step=-2):
                             for row in rows[1:]:  # Skip header row
                                 cells = row.find_all(["td", "th"])
                                 
-                                if len(cells) > 1:
-                                    # Obtener el concepto (primera celda)
-                                    concept_text = cells[0].get_text().strip()
+                                if len(cells) > 0:
+                                    # Debug: Mostrar información de la primera celda
+                                    first_cell = cells[0]
+                                    colspan_value = first_cell.get('colspan')
+                                    cell_classes = first_cell.get('class', [])
+                                    cell_text = first_cell.get_text().strip()
                                     
-                                    # Limpiar el concepto
-                                    concept_text = concept_text.replace("\n", " ").strip()
+                                    # Log de debug para todas las celdas interesantes
+                                    if "activos" in cell_text.lower() or "patrimonio" in cell_text.lower() or "sinopsis" in cell_text.lower():
+                                        logger.info(f"    🔍 DEBUG - Celda: '{cell_text}' | colspan='{colspan_value}' | classes={cell_classes}")
                                     
-                                    # Skip filas con "sinopsis"
-                                    if "sinopsis" in concept_text.lower():
-                                        continue
+                                    # Verificar si es una fila de categoría (con colspan="3" y nowrap)
+                                    is_category_row = (
+                                        colspan_value == '3' and 
+                                        'nowrap' in cell_classes
+                                    )
                                     
-                                    # Aplicar mapeo de conceptos si existe
-                                    if concept_text in concept_name_mapping:
-                                        concept_text = concept_name_mapping[concept_text]
-                                    
-                                    # Si es la primera vez que vemos este concepto, agregarlo al orden
-                                    if concept_text and concept_text not in data_by_taxonomy[taxonomy_code]:
-                                        data_by_taxonomy[taxonomy_code][concept_text] = {}
-                                        concept_order[taxonomy_code].append(concept_text)
-                                    
-                                    # Procesar valores de las celdas
-                                    for i, cell in enumerate(cells[1:]):
-                                        if i < len(column_dates):
-                                            year_col = column_dates[i]
-                                            
-                                            # Solo agregar si no hemos procesado este año antes
+                                    if is_category_row:
+                                        # Es una categoría [sinopsis]
+                                        concept_text = cell_text.replace("\n", " ").strip()
+                                        
+                                        logger.info(f"    📁 CATEGORÍA encontrada: '{concept_text}'")
+                                        
+                                        # Si es la primera vez que vemos este concepto, agregarlo al orden
+                                        if concept_text and concept_text not in data_by_taxonomy[taxonomy_code]:
+                                            data_by_taxonomy[taxonomy_code][concept_text] = {}
+                                            concept_order[taxonomy_code].append(concept_text)
+                                        
+                                        # Para categorías, agregar valores vacíos para todos los años
+                                        for year_col in column_dates:
                                             if year_col not in years_collected[taxonomy_code]:
-                                                value_text = cell.get_text().strip()
-                                                
-                                                # Limpiar valor
-                                                value_text = value_text.replace(".", "")  # Quitar separador de miles
-                                                value_text = value_text.replace(",", ".")  # Cambiar coma decimal por punto
-                                                
-                                                # Convertir guiones a 0
-                                                if value_text in ["-", "−", ""]:
-                                                    value_text = "0"
-                                                
-                                                # Intentar convertir a número
-                                                try:
-                                                    value = float(value_text)
-                                                except:
-                                                    value = 0
-                                                
-                                                # Guardar valor
                                                 if concept_text:
-                                                    data_by_taxonomy[taxonomy_code][concept_text][year_col] = value
+                                                    data_by_taxonomy[taxonomy_code][concept_text][year_col] = None
+                                    
+                                    elif len(cells) > 1:
+                                        # Es una fila normal de datos
+                                        # Obtener el concepto (primera celda)
+                                        concept_text = cells[0].get_text().strip()
+                                        
+                                        # Limpiar el concepto
+                                        concept_text = concept_text.replace("\n", " ").strip()
+                                        
+                                        # Aplicar mapeo de conceptos si existe
+                                        if concept_text in concept_name_mapping:
+                                            concept_text = concept_name_mapping[concept_text]
+                                        
+                                        # Si es la primera vez que vemos este concepto, agregarlo al orden
+                                        if concept_text and concept_text not in data_by_taxonomy[taxonomy_code]:
+                                            data_by_taxonomy[taxonomy_code][concept_text] = {}
+                                            concept_order[taxonomy_code].append(concept_text)
+                                        
+                                        # Procesar valores de las celdas
+                                        for i, cell in enumerate(cells[1:]):
+                                            if i < len(column_dates):
+                                                year_col = column_dates[i]
+                                                
+                                                # Solo agregar si no hemos procesado este año antes
+                                                if year_col not in years_collected[taxonomy_code]:
+                                                    value_text = cell.get_text().strip()
+                                                    
+                                                    # Limpiar valor
+                                                    value_text = value_text.replace(".", "")  # Quitar separador de miles
+                                                    value_text = value_text.replace(",", ".")  # Cambiar coma decimal por punto
+                                                    
+                                                    # Convertir guiones a 0
+                                                    if value_text in ["-", "−", ""]:
+                                                        value_text = "0"
+                                                    
+                                                    # Intentar convertir a número
+                                                    try:
+                                                        value = float(value_text)
+                                                    except:
+                                                        value = 0
+                                                    
+                                                    # Guardar valor
+                                                    if concept_text:
+                                                        data_by_taxonomy[taxonomy_code][concept_text][year_col] = value
                             
                             # Marcar años como procesados
                             for year_col in column_dates:
@@ -257,7 +380,12 @@ def scrape_cmf_data(rut, start_year=2024, end_year=2014, step=-2):
         # Convertir datos a DataFrames manteniendo el orden
         dataframes = {}
         
-        for taxonomy_code in TAXONOMY_MAPPING.keys():
+        # Verificar que tenemos taxonomías seleccionadas
+        if selected_taxonomies is None:
+            logger.warning("No se detectaron taxonomías válidas")
+            return None
+        
+        for taxonomy_code in data_by_taxonomy.keys():
             if data_by_taxonomy[taxonomy_code]:
                 # Obtener lista de todos los años
                 all_years = sorted(years_collected[taxonomy_code], reverse=True)
@@ -268,7 +396,12 @@ def scrape_cmf_data(rut, start_year=2024, end_year=2014, step=-2):
                     for concept in concept_order[taxonomy_code]:
                         row = {"Concepto": concept}
                         for year in all_years:
-                            row[year] = data_by_taxonomy[taxonomy_code][concept].get(year, 0)
+                            value = data_by_taxonomy[taxonomy_code][concept].get(year, 0)
+                            # Para categorías (sinopsis), mostrar como texto vacío en lugar de 0
+                            if value is None:
+                                row[year] = ""
+                            else:
+                                row[year] = value
                         rows.append(row)
                     
                     # Crear DataFrame
@@ -285,9 +418,9 @@ def scrape_cmf_data(rut, start_year=2024, end_year=2014, step=-2):
         os.makedirs("./data/Reports", exist_ok=True)
         
         with pd.ExcelWriter(output_file, engine="xlsxwriter") as writer:
-            for taxonomy_code, info in TAXONOMY_MAPPING.items():
+            for taxonomy_code in data_by_taxonomy.keys():
                 if taxonomy_code in dataframes and not dataframes[taxonomy_code].empty:
-                    sheet_name = info["name"][:31]
+                    sheet_name = TAXONOMY_MAPPING[taxonomy_code]["name"][:31]
                     dataframes[taxonomy_code].to_excel(
                         writer,
                         sheet_name=sheet_name,
@@ -319,6 +452,23 @@ def scrape_cmf_data(rut, start_year=2024, end_year=2014, step=-2):
                         'valign': 'vcenter'
                     })
                     
+                    # Formato especial para categorías (sinopsis)
+                    category_format = workbook.add_format({
+                        'bold': True,
+                        'bg_color': '#E8F4FD',
+                        'border': 1,
+                        'align': 'left',
+                        'valign': 'vcenter'
+                    })
+                    
+                    # Formato para subcategorías (indentación visual)
+                    subcategory_format = workbook.add_format({
+                        'border': 1,
+                        'align': 'left',
+                        'valign': 'vcenter',
+                        'indent': 1
+                    })
+                    
                     # Aplicar formatos
                     for i, col in enumerate(dataframes[taxonomy_code].columns):
                         if i == 0:  # Columna de conceptos
@@ -331,6 +481,33 @@ def scrape_cmf_data(rut, start_year=2024, end_year=2014, step=-2):
                     for col_num, value in enumerate(dataframes[taxonomy_code].columns.values):
                         worksheet.write(0, col_num, value, header_format)
                     
+                    # Aplicar formato específico a cada fila según su tipo
+                    for row_num, (index, row) in enumerate(dataframes[taxonomy_code].iterrows(), start=1):
+                        concept = row['Concepto']
+                        # Identificar categorías por la presencia de [sinopsis]
+                        is_category = "[sinopsis]" in concept.lower()
+                        
+                        # Aplicar formato a la columna de conceptos
+                        if is_category:
+                            worksheet.write(row_num, 0, concept, category_format)
+                        else:
+                            worksheet.write(row_num, 0, concept, subcategory_format)
+                        
+                        # Escribir valores numéricos con formato apropiado
+                        for col_num in range(1, len(dataframes[taxonomy_code].columns)):
+                            value = row.iloc[col_num]
+                            if is_category:
+                                # Para categorías, dejar celdas vacías con formato de categoría
+                                cell_format = workbook.add_format({
+                                    'bg_color': '#E8F4FD',
+                                    'border': 1,
+                                    'align': 'center'
+                                })
+                                worksheet.write(row_num, col_num, "", cell_format)
+                            else:
+                                # Para subcategorías, usar formato numérico normal
+                                worksheet.write(row_num, col_num, value, number_format)
+                    
                     logger.info(f"Guardada hoja '{sheet_name}' con {len(dataframes[taxonomy_code])} filas")
         
         logger.info(f"\n{'='*50}")
@@ -339,7 +516,7 @@ def scrape_cmf_data(rut, start_year=2024, end_year=2014, step=-2):
         logger.info(f"{'='*50}")
         
         # Resumen final
-        for taxonomy_code, info in TAXONOMY_MAPPING.items():
+        for taxonomy_code in data_by_taxonomy.keys():
             if taxonomy_code in dataframes:
                 años = [col for col in dataframes[taxonomy_code].columns if col != "Concepto"]
                 logger.info(f"{taxonomy_code}: {len(años)} años extraídos: {años}")
@@ -348,6 +525,13 @@ def scrape_cmf_data(rut, start_year=2024, end_year=2014, step=-2):
                 if not dataframes[taxonomy_code].empty:
                     primeros_conceptos = dataframes[taxonomy_code]["Concepto"].head(10).tolist()
                     logger.info(f"  Primeros conceptos: {primeros_conceptos[:3]}...")
+        
+        # Mostrar resumen de taxonomías utilizadas
+        if selected_taxonomies:
+            logger.info(f"\n🎯 TAXONOMÍAS UTILIZADAS:")
+            for tipo, codigo in selected_taxonomies.items():
+                descripcion = TAXONOMY_MAPPING[codigo]["description"]
+                logger.info(f"  {tipo.upper()}: {codigo} - {descripcion}")
         
         return output_file
         
@@ -364,6 +548,7 @@ def scrape_cmf_data(rut, start_year=2024, end_year=2014, step=-2):
 def verify_data_order(file_path):
     """
     Verificar el orden de los conceptos en el archivo Excel generado
+    Incluye análisis de categorías y subcategorías
     """
     try:
         # Leer el archivo Excel
@@ -378,9 +563,24 @@ def verify_data_order(file_path):
             print(f"   Dimensiones: {df.shape[0]} filas x {df.shape[1]} columnas")
             
             if not df.empty and "Concepto" in df.columns:
-                print(f"   Primeros 10 conceptos:")
-                for i, concepto in enumerate(df["Concepto"].head(10), 1):
-                    print(f"      {i}. {concepto}")
+                print(f"   Primeros 15 conceptos:")
+                for i, concepto in enumerate(df["Concepto"].head(15), 1):
+                    is_category = "[sinopsis]" in concepto.lower()
+                    prefix = "📁" if is_category else "  →"
+                    print(f"      {i:2d}. {prefix} {concepto}")
+                
+                # Contar categorías y subcategorías
+                categorias = df[df["Concepto"].str.contains(r"\[sinopsis\]", case=False, na=False)]
+                subcategorias = df[~df["Concepto"].str.contains(r"\[sinopsis\]", case=False, na=False)]
+                print(f"   📊 Estadísticas: {len(categorias)} categorías, {len(subcategorias)} subcategorías")
+                
+                # Mostrar todas las categorías encontradas
+                if len(categorias) > 0:
+                    print(f"   📁 Categorías encontradas:")
+                    for i, (idx, row) in enumerate(categorias.iterrows(), 1):
+                        print(f"      {i}. {row['Concepto']}")
+                else:
+                    print(f"   ⚠ No se encontraron categorías con [sinopsis]")
                 
                 # Verificar específicamente para Balance General
                 if "Balance" in sheet_name:
@@ -390,6 +590,16 @@ def verify_data_order(file_path):
                         print(f"   ✓ 'Efectivo y equivalentes al efectivo' encontrado en posición: {efectivo_pos[0] + 1}")
                     else:
                         print(f"   ⚠ 'Efectivo y equivalentes al efectivo' NO encontrado")
+                    
+                    # Buscar categorías importantes
+                    activos_corrientes = df[df["Concepto"].str.contains(r"Activos corrientes.*\[sinopsis\]", case=False, na=False)]
+                    if len(activos_corrientes) > 0:
+                        print(f"   ✓ 'Activos corrientes [sinopsis]' encontrado en posición: {activos_corrientes.index[0] + 1}")
+                    
+                    # Buscar también "Activos [sinopsis]"
+                    activos = df[df["Concepto"].str.contains(r"^Activos \[sinopsis\]", case=False, na=False)]
+                    if len(activos) > 0:
+                        print(f"   ✓ 'Activos [sinopsis]' encontrado en posición: {activos.index[0] + 1}")
                 
                 # Verificar para Estado de Resultados
                 elif "Resultado" in sheet_name:
@@ -450,35 +660,46 @@ def process_multiple_companies(ruts, start_year=2024, end_year=2014):
     return results
 
 
-if __name__ == "__main__":
+def main():
+    """
+    Función principal para ejecutar el scraper de manera independiente
+    """
     # Configuración
-    rut = "96505760"  # ENEL CHILE
+    rut = "91041000"  # VIÑA SAN PEDRO TARAPACA S.A.
     
     # Procesar una empresa
     try:
         logger.info("INICIANDO EXTRACCIÓN DE DATOS CMF")
         logger.info(f"RUT: {rut}")
         logger.info(f"Período: 2024-2014")
-        logger.info(f"Estados financieros: [210000], [320000], [510000]")
+        logger.info(f"Estados financieros: Detección automática de taxonomías disponibles")
         
         output_file = scrape_cmf_data(
             rut=rut,
             start_year=2024,
-            end_year=2014,
+            end_year=2020,
             step=-2
         )
         
-        print(f"\n✅ Proceso completado exitosamente")
-        print(f"📁 Archivo generado: {output_file}")
-        
-        # Verificar el orden de los datos
-        print("\nVerificando orden de los datos...")
-        verify_data_order(output_file)
+        if output_file:
+            print(f"\n✅ Proceso completado exitosamente")
+            print(f"📁 Archivo generado: {output_file}")
+            
+            # Verificar el orden de los datos
+            print("\nVerificando orden de los datos...")
+            verify_data_order(output_file)
+        else:
+            print(f"\n⚠️ No se pudieron extraer datos para esta empresa")
         
     except Exception as e:
         print(f"\n❌ Error en el procesamiento: {e}")
+
+
+if __name__ == "__main__":
+    # Solo ejecutar cuando se llame directamente al script
+    main()
     
-    # Para múltiples empresas:
+    # Para múltiples empresas (ejemplo comentado):
     """
     ruts = ["76536353", "96505760", "96509660"]
     results = process_multiple_companies(ruts, start_year=2024, end_year=2014)
