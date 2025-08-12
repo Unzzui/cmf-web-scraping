@@ -62,25 +62,37 @@ def check_dependencies():
 
 
 def check_scraper_module():
-    """Verificar que el módulo scraper esté disponible"""
+    """Verificar que los módulos scraper estén disponibles"""
+    missing_modules = []
+    
     try:
         import cmf_annual_reports_scraper
-        return True
     except ImportError:
+        missing_modules.append("cmf_annual_reports_scraper.py")
+    
+    try:
+        import cmf_xbrl_downloader
+    except ImportError:
+        missing_modules.append("cmf_xbrl_downloader.py")
+    
+    if missing_modules:
         error_msg = (
-            "No se encontró el módulo 'cmf_annual_reports_scraper.py'\n\n"
-            "Asegúrese de que el archivo esté en el mismo directorio que esta aplicación."
+            f"No se encontraron los siguientes módulos:\n\n" +
+            "\n".join(f"• {module}" for module in missing_modules) +
+            "\n\nAsegúrese de que estos archivos estén en el mismo directorio que esta aplicación."
         )
         
         try:
             root = tk.Tk()
             root.withdraw()
-            messagebox.showerror("Módulo scraper faltante", error_msg)
+            messagebox.showerror("Módulos scraper faltantes", error_msg)
             root.destroy()
         except:
             print("ERROR: " + error_msg)
         
         return False
+    
+    return True
 
 
 def main():

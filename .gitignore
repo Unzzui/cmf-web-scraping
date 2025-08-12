@@ -1,2 +1,8 @@
 .venv
 .env
+
+XBRL/
+
+data/
+
+__pycache__/

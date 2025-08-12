@@ -4,6 +4,7 @@ Interfaz profesional modular para extracción de datos financieros
 """
 
 from .main_window import CMFScraperGUI
+from .components.xbrl_status_panel import XBRLStatusPanel
 
 __version__ = "1.0.0"
 __author__ = "CMF Scraper Team"

@@ -115,9 +115,12 @@ class CMFCompanyExtractor:
             )
             submit_button.click()
             
-            # Esperar a que se cargue la tabla
+            # Esperar a que se cargue la tabla con filas
             WebDriverWait(self.driver, 30).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "table-responsive"))
+                EC.presence_of_element_located((
+                    By.XPATH,
+                    "//div[contains(@class,'table-responsive')]//table//tr"
+                ))
             )
             
             self.logger.info("Formulario enviado y tabla cargada")
@@ -138,31 +141,65 @@ class CMFCompanyExtractor:
         try:
             self.logger.info("Extrayendo datos de la tabla")
             
-            # Obtener el HTML de la página
-            soup = BeautifulSoup(self.driver.page_source, "html.parser")
-            
-            # Encontrar la tabla
-            tabla = soup.find(class_="table-responsive")
-            if not tabla:
+            # Esperar contenedor/tabla visible
+            try:
+                container = WebDriverWait(self.driver, 15).until(
+                    EC.presence_of_element_located((By.XPATH, "//div[contains(@class,'table-responsive')]"))
+                )
+            except TimeoutException:
+                container = None
+
+            html_fragment = None
+            if container:
+                try:
+                    # Preferir la tabla dentro del contenedor
+                    table = container.find_element(By.XPATH, ".//table")
+                    html_fragment = table.get_attribute("outerHTML")
+                except Exception:
+                    html_fragment = container.get_attribute("outerHTML")
+            else:
+                # Fallback: buscar cualquier tabla con cabeceras relevantes
+                try:
+                    table = self.driver.find_element(
+                        By.XPATH,
+                        "//table[.//th[contains(normalize-space(.), 'RUT')] and .//th[contains(., 'Razón')]]"
+                    )
+                    html_fragment = table.get_attribute("outerHTML")
+                except Exception:
+                    # último recurso: usar todo el page_source
+                    html_fragment = self.driver.page_source
+
+            if not html_fragment:
                 self.logger.error("No se encontró la tabla de datos")
                 return None
-            
-            # Procesar la tabla
-            tabla_str = str(tabla).replace(",", ".")
-            
-            # Leer la tabla con pandas
-            df_list = pd.read_html(StringIO(tabla_str))
+
+            # Procesar la tabla con pandas
+            df_list = pd.read_html(StringIO(html_fragment))
             if not df_list:
                 self.logger.error("No se pudieron extraer datos de la tabla")
                 return None
-            
-            df = df_list[0]
-            
+
+            # Seleccionar la tabla correcta por columnas esperadas
+            df = None
+            for d in df_list:
+                cols = [str(c) for c in d.columns]
+                if ('RUT' in cols) and any('Razón' in str(c) for c in cols):
+                    df = d
+                    break
+            if df is None:
+                # tomar la primera como fallback
+                df = df_list[0]
+
             # Validar que la tabla tiene las columnas esperadas
-            if 'RUT' not in df.columns or 'Razón Social' not in df.columns:
+            if 'RUT' not in df.columns or not any('Razón' in str(c) for c in df.columns):
                 self.logger.error("La tabla no contiene las columnas esperadas")
                 return None
-            
+
+            # Normalizar nombre exacto de columna 'Razón Social' si difiere
+            razon_col = next((c for c in df.columns if 'Razón' in str(c)), 'Razón Social')
+            if razon_col != 'Razón Social':
+                df = df.rename(columns={razon_col: 'Razón Social'})
+
             self.logger.info(f"Datos extraídos exitosamente: {len(df)} empresas")
             return df
             
@@ -175,14 +212,20 @@ class CMFCompanyExtractor:
         try:
             self.logger.info("Procesando y limpiando datos")
             
-            # Crear columna RUT sin guión
-            df["RUT_Sin_Guión"] = df["RUT"].str.replace("-", "").str[:-1]
-            
-            # Limpiar datos
+            # Limpiar datos base
             df = df.dropna(subset=['RUT', 'Razón Social'])
-            
-            # Validar RUTs
-            df = df[df['RUT_Sin_Guión'].str.isdigit()]
+            df['RUT'] = df['RUT'].astype(str).str.strip()
+
+            # Extraer número de RUT y dígito verificador con regex robusta
+            # Soporta formatos "91297000 - 0", "91.297.000-0", etc.
+            rut_parts = df['RUT'].str.extract(r'^\s*([0-9\.]*)\s*-\s*([0-9Kk])\s*$', expand=True)
+            df['RUT_Numero'] = rut_parts[0].str.replace(r'\.', '', regex=True)
+            df['DV'] = rut_parts[1].str.upper()
+            # Crear columna RUT sin guión (sólo números, sin DV)
+            df['RUT_Sin_Guión'] = df['RUT_Numero']
+
+            # Validar RUTs: sólo dígitos en RUT_Sin_Guión
+            df = df[df['RUT_Sin_Guión'].fillna('').str.fullmatch(r'\d+')]
             
             # Eliminar duplicados por RUT
             df = df.drop_duplicates(subset=['RUT'], keep='first')
@@ -287,7 +330,7 @@ def main():
     """Función principal"""
     try:
         # Permitir especificar año como argumento
-        year = None
+        year = 2025
         if len(sys.argv) > 1:
             try:
                 year = int(sys.argv[1])

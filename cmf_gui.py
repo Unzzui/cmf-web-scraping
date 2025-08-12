@@ -1,6 +1,21 @@
 #!/usr/bin/env python3
-"""
-CMF Financial Data Scraper - Professional GUI
+"""    def __init__(self, root):
+        self.root = root
+        self.root.title("CMF Annual Reports Scraper - Professional Edition")
+        self.root.geometry("1400x900")
+        self.root.configure(bg='#f8f9fa')
+        
+        # Variables
+        self.companies_df = None
+        self.selected_companies = []
+        self.is_running = False
+        self.output_queue = queue.Queue()
+        
+        # Configurar captura de logs del scraper
+        self.setup_scraper_logging()
+        
+        # Configurar el estilo
+        self.setup_styles() Data Scraper - Professional GUI
 Interfaz profesional para extraer datos financieros de la CMF
 """
 
@@ -47,6 +62,33 @@ class CMFScraperGUI:
         
         # Configurar el monitoreo de la cola de output
         self.root.after(100, self.check_output_queue)
+    
+    def setup_scraper_logging(self):
+        """Configurar captura de logs del scraper para mostrar en la GUI"""
+        
+        class GUILogHandler(logging.Handler):
+            """Handler personalizado para capturar logs del scraper"""
+            def __init__(self, output_queue):
+                super().__init__()
+                self.output_queue = output_queue
+            
+            def emit(self, record):
+                log_entry = self.format(record)
+                # Enviar a la cola con tipo 'scraper_log'
+                self.output_queue.put(('scraper_log', log_entry))
+        
+        # Crear y configurar el handler
+        self.gui_log_handler = GUILogHandler(self.output_queue)
+        self.gui_log_handler.setLevel(logging.INFO)
+        
+        # Formato sin timestamp ya que el log viewer lo agregará
+        formatter = logging.Formatter('%(message)s')
+        self.gui_log_handler.setFormatter(formatter)
+        
+        # Agregar nuestro handler al logger raíz para capturar todos los logs
+        import logging
+        root_logger = logging.getLogger()
+        root_logger.addHandler(self.gui_log_handler)
     
     def setup_styles(self):
         """Configurar estilos profesionales"""
@@ -734,12 +776,13 @@ class CMFScraperGUI:
                     self.output_queue.put(('log', f"RUT: {company['rut']} (Sin guión: {rut_sin_guion})"))
                     self.output_queue.put(('log', f"{'#'*50}"))
                     
-                    # Ejecutar scraping
+                    # Ejecutar scraping en modo headless
                     output_file = scrape_cmf_data(
                         rut=rut_sin_guion,
                         start_year=start_year,
                         end_year=end_year,
-                        step=step
+                        step=step,
+                        headless=True  # Modo headless para no interferir con la GUI
                     )
                     
                     results.append((company['razon_social'], rut_sin_guion, output_file, "SUCCESS"))
@@ -802,6 +845,9 @@ class CMFScraperGUI:
                 
                 if msg_type == 'log':
                     self.log(message)
+                elif msg_type == 'scraper_log':
+                    # Logs del scraper en tiempo real
+                    self.log(f"[SCRAPER] {message}")
                 elif msg_type == 'progress':
                     self.progress_var.set(message)
                 elif msg_type == 'finished':
