@@ -1,0 +1,7 @@
+RESUMEN DE VERIFICACION XBRL CMF
+==================================================
+Fecha: 2025-08-18 22:11:26
+Total empresas: 34
+Empresas con XBRL nuevo: 0
+Total períodos nuevos: 0
+

@@ -1,27 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-IMPORTS TEMPORALMENTE COMENTADOS PARA REORGANIZACIÓN
-==================================================
-Este archivo será corregido automáticamente después de la reorganización.
-Los imports comentados se restaurarán con las rutas correctas.
-
-Cambios realizados:
-# - Comentado: from cmf_annual_reports_scraper import
-# - Comentado: from cmf_xbrl_downloader import
-"""
-
-# -*- coding: utf-8 -*-
-"""
-IMPORTS TEMPORALMENTE COMENTADOS PARA REORGANIZACIÓN
-==================================================
-Este archivo será corregido automáticamente después de la reorganización.
-Los imports comentados se restaurarán con las rutas correctas.
-
-Cambios realizados:
-# - Comentado: # from cmf_annual_reports_scraper import  # FIXED: Mover a src/scrapers/
-# - Comentado: # from cmf_xbrl_downloader import  # FIXED: Mover a src/xbrl/
-"""
-
 #!/usr/bin/env python3
 """
 Ventana principal del CMF Financial Data Scraper - Versión Modular
@@ -44,31 +20,26 @@ from .components.control_panel import ControlPanel
 from .components.log_viewer import LogViewer
 from .components.progress_dialog import ProgressDialog
 from .components.xbrl_status_panel import XBRLStatusPanel
-
 from .components.xbrl_confirmation_dialog import XBRLConfirmationDialog
 from .utils.csv_manager import CSVManager
 from .utils.system_utils import open_folder
 from .utils.console_dashboard import ConsoleXBRLDashboard
 
-# Importar scraper
+# Importar módulos del proyecto
 try:
-    # # from cmf_annual_reports_scraper import  # FIXED: Mover a src/scrapers/  # FIXED: Mover a src/scrapers/ scrape_cmf_data, verify_data_order
-    SCRAPER_AVAILABLE = True
-except ImportError as e:
-    print(f"Error importando el scraper principal: {e}")
-    SCRAPER_AVAILABLE = False
-    scrape_cmf_data = None
-    verify_data_order = None
-
-# Importar descargador XBRL (opcional)
-try:
-    # # from cmf_xbrl_downloader import  # FIXED: Mover a src/xbrl/  # FIXED: Mover a src/xbrl/ download_cmf_xbrl
+    from ..xbrl.cmf_xbrl_downloader import download_cmf_xbrl
     XBRL_AVAILABLE = True
+    print("✅ Módulo XBRL disponible")
 except ImportError as e:
-    print(f"Error importando el descargador XBRL: {e}")
+    print(f"⚠️ Error importando el descargador XBRL: {e}")
     print("La funcionalidad XBRL no estará disponible")
     XBRL_AVAILABLE = False
     download_cmf_xbrl = None
+
+# Nota: cmf_annual_reports_scraper.py no existe en el proyecto actual
+SCRAPER_AVAILABLE = False
+scrape_cmf_data = None
+verify_data_order = None
 
 
 class CMFScraperGUI:

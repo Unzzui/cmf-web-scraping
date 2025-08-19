@@ -1,0 +1,17 @@
+RESUMEN DE VERIFICACION XBRL CMF
+==================================================
+Fecha: 2025-08-18 23:47:49
+Total empresas: 34
+Empresas con XBRL nuevo: 2
+Total períodos nuevos: 2
+
+PERIODOS NUEVOS DISPONIBLES:
+------------------------------
+
+90222000-3_EMPRESAS_CMPC_SA (RUT: 90222000-3)
+  Último local: 202503
+  Nuevos: 202506
+
+91041000-8_VIÑA_SAN_PEDRO_TARAPACA_SA (RUT: 91041000-8)
+  Último local: 202503
+  Nuevos: 202506
