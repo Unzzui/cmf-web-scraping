@@ -39,6 +39,8 @@ class UnifiedPipelineGUI:
         self._run_started_at: float | None = None
         self._total_companies = 0
         self._done_companies = 0
+        # Última línea de progreso loggeada por (rut, stage) para evitar duplicados.
+        self._last_progress_log: dict[tuple[str, str], str] = {}
 
         self._setup_window()
         self.colors = get_color_config()
@@ -288,6 +290,7 @@ class UnifiedPipelineGUI:
         self.stop_btn.config(state="normal")
         self._total_companies = len(companies)
         self._done_companies = 0
+        self._last_progress_log.clear()
         from time import time as _t
         self._run_started_at = _t()
 
@@ -338,7 +341,9 @@ class UnifiedPipelineGUI:
             return
         if evt.kind == "progress":
             if evt.rut and evt.rut in self.orchestrator.states:
-                self.pipeline_view.update_company(self.orchestrator.states[evt.rut])
+                st = self.orchestrator.states[evt.rut]
+                self.pipeline_view.update_company(st)
+                self._log_progress(st, evt)
             return
         if evt.kind == "stage":
             if evt.rut and evt.rut in self.orchestrator.states:
@@ -358,6 +363,21 @@ class UnifiedPipelineGUI:
         if evt.kind == "finished":
             self._finish(evt)
             return
+
+    def _log_progress(self, st, evt: PipelineEvent) -> None:
+        """Emite una línea de progreso en el registro, deduplicando mensajes repetidos."""
+        msg = (evt.message or "").strip()
+        if not msg:
+            return
+        stage_label = evt.stage.label if evt.stage else ""
+        key = (st.rut, stage_label)
+        if self._last_progress_log.get(key) == msg:
+            return
+        self._last_progress_log[key] = msg
+        name = st.name or st.rut_completo
+        counter = f"[{evt.current}/{evt.total}] " if evt.total else ""
+        prefix = f"{name}: {stage_label} " if stage_label else f"{name}: "
+        self.log_viewer.log(f"{prefix}{counter}{msg}", "DETAIL")
 
     def _log_stage(self, st, evt: PipelineEvent) -> None:
         """Narrar transiciones de etapa por empresa en el registro, sin emojis."""

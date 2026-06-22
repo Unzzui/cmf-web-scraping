@@ -290,7 +290,9 @@ class PipelineOrchestrator:
                                 mode=config.get("frequency"),
                                 progress_hook=hook,
                                 skip_existing=self.settings.skip_existing,
-                                max_workers=max(6, self.settings.download_workers),
+                                # Workers por empresa; el cap real cross-empresa
+                                # lo aplica el semáforo global del downloader.
+                                max_workers=max(1, self.settings.download_workers),
                                 companies_csv=self.settings.companies_csv,
                             )
                         else:

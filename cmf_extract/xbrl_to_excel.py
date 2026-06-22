@@ -45,7 +45,11 @@ from analisis_excel.utils.facts_processing import apply_excel_processing_like_pr
 
 
 
-pd.set_option('future.no_silent_downcasting', True)
+# Opción introducida en pandas 2.2; en versiones anteriores no existe.
+try:
+    pd.set_option('future.no_silent_downcasting', True)
+except Exception:
+    pass
 # Importar Facts Enhancer para mejorar matching de datos
 try:
     from facts_enhancer import apply_facts_enhancements

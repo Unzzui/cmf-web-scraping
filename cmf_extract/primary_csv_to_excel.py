@@ -1624,19 +1624,10 @@ def generate_excel_from_primary_csv(company_dir: Path, lang: str = 'es',
     # para que el análisis lo encuentre automáticamente
     if output_xlsx.parent == company_dir:  # Se generó en directorio de empresa (modo automático)
         try:
-            # Buscar directorio Products/Total
-            # Si estamos en data/XBRL/Total/empresa, subir 3 niveles
-            # Si el path es relativo, usar Path.cwd()
-            if company_dir.is_absolute():
-                # Buscar hacia arriba hasta encontrar el directorio con 'CMF_extract'
-                repo_root = company_dir
-                while repo_root.name != 'CMF_extract' and repo_root.parent != repo_root:
-                    repo_root = repo_root.parent
-                if repo_root.name != 'CMF_extract':
-                    repo_root = Path.cwd()  # Fallback al directorio actual
-            else:
-                repo_root = Path.cwd()  # Working directory actual
-            
+            # Products/Total siempre vive junto a este script (cmf_extract/Products/Total),
+            # no donde corra el usuario ni en el nombre histórico 'CMF_extract'.
+            cmf_extract_dir = Path(__file__).resolve().parent
+            repo_root = cmf_extract_dir
             products_total = repo_root / "Products" / "Total"
             products_total.mkdir(parents=True, exist_ok=True)
             

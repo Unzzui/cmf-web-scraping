@@ -166,7 +166,19 @@ def find_xbrl_file(dataset_dir: Path, stem: str) -> Path | None:
 
 
 def run_cmd(cmd: Sequence[str], cwd: Path | None = None) -> None:
-    subprocess.run(cmd, cwd=str(cwd) if cwd else None, check=True)
+    # Timeout duro por subprocess (Arelle puede colgarse bajando taxonomías de
+    # la CMF si la red falla). Configurable vía CMF_ARELLE_TIMEOUT (segundos);
+    # default 180 (3 min). 0 o negativo desactiva el timeout.
+    try:
+        timeout = int(os.getenv("CMF_ARELLE_TIMEOUT", "180"))
+    except ValueError:
+        timeout = 180
+    subprocess.run(
+        cmd,
+        cwd=str(cwd) if cwd else None,
+        check=True,
+        timeout=timeout if timeout > 0 else None,
+    )
 
 
 def run_arelle_exports(arelle_dir: Path, xbrl_file: Path, out_dir: Path, stem: str, langs: Sequence[str], facts_strategy: str = "es_only", force: bool = False) -> None:
@@ -249,10 +261,14 @@ def run_arelle_exports_progress(
     facts_strategy: str = "es_only",
     force: bool = False,
     progress_cb: Optional[Callable[[str], None]] = None,
+    offline: bool = False,
 ) -> None:
     """Igual a run_arelle_exports pero reporta progreso por etapa vía callback.
 
     Etapas reportadas: facts_<lang>, pre_<lang>
+
+    Si ``offline=True`` se agrega ``--internetConnectivity=offline`` a Arelle,
+    evitando llamadas a la red (taxonomía CMF debe estar ya en el HTTP cache).
     """
     out_dir.mkdir(parents=True, exist_ok=True)
 
@@ -267,6 +283,7 @@ def run_arelle_exports_progress(
 
     xbrl_abs = xbrl_file.resolve()
     out_abs = out_dir.resolve()
+    offline_flags = ['--internetConnectivity=offline'] if offline else []
 
     def _up_to_date(inputs: list[Path], outputs: list[Path]) -> bool:
         try:
@@ -300,6 +317,7 @@ def run_arelle_exports_progress(
                     '--factTable', str(facts_csv.resolve()),
                     '--factTableCols', fact_cols,
                     '--logFile', str(facts_log.resolve()),
+                    *offline_flags,
                 ], cwd=arelle_dir)
         else:
             # Create symlink for EN facts pointing to ES (saves ~22MB per dataset)
@@ -324,6 +342,7 @@ def run_arelle_exports_progress(
                 f'--labelLang={label_lang}',
                 '--pre', str(pres_csv.resolve()),
                 '--logFile', str(pre_log.resolve()),
+                *offline_flags,
             ], cwd=arelle_dir)
 
 def generate_excels(cmf_dir: Path, out_dir: Path, stem: str, langs: Sequence[str]) -> None:

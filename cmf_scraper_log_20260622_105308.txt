@@ -1,0 +1,13 @@
+10:51:17  INFO  CSV cargado: 521 empresas
+10:51:33  INFO  ============================================================
+10:51:33  INFO  PIPELINE: 1 empresa(s) | etapas: Descargar, Consolidar
+10:51:33  INFO  No hay periodos previos en disco; se descargara todo lo disponible.
+10:51:33  INFO  Descarga: modo HTTP rápido.
+10:51:33        SOCIEDAD QUIMICA Y MINERA DE CHILE S.A.: Descargar en curso - Descargando XBRL…
+10:51:59  OK    SOCIEDAD QUIMICA Y MINERA DE CHILE S.A.: Descargar completado (0 archivo(s) descargado(s))
+10:51:59        SOCIEDAD QUIMICA Y MINERA DE CHILE S.A.: Consolidar en curso - Consolidando (Arelle)…
+10:52:00  ERROR SOCIEDAD QUIMICA Y MINERA DE CHILE S.A.: Consolidar con error - Etapa 'consolidate': Sin datasets XBRL en este directorio
+10:52:00  INFO  ============================================================
+10:52:00  WARN  Pipeline completado — OK: 0 | Errores: 1 | Subidas: 0
+10:52:00  INFO  Tiempo total: 26s
+
