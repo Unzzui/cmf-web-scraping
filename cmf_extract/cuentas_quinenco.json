@@ -1,0 +1,211 @@
+{
+  "sections": [
+    {
+      "label": "Flujos de efectivo procedentes de (utilizados en) actividades de operación [sinopsis]",
+      "kind": "category",
+      "children": [
+        {
+          "label": "Negocios no bancarios [sinopsis]",
+          "kind": "category",
+          "children": [
+            {
+              "label": "Clases de cobros por actividades de operación [sinopsis]",
+              "kind": "category",
+              "children": [
+                { "label": "Cobros procedentes de las ventas de bienes y prestación de servicios", "kind": "account", "value": "1.525.301.578" },
+                { "label": "Cobros procedentes de regalías, cuotas, comisiones y otros ingresos de actividades ordinarias", "kind": "account", "value": "1.040.225" },
+                { "label": "Cobros derivados de contratos mantenidos para intermediación o para negociar con ellos", "kind": "account", "value": "-" },
+                { "label": "Cobros derivados de arrendamiento y posterior venta de esos activos", "kind": "account", "value": "-" },
+                { "label": "Recuperaciones activadas préstamos anteriormente anulados desactivados", "kind": "account", "value": "-" },
+                { "label": "Otros cobros por actividades de operación", "kind": "account", "value": "8.189.017" }
+              ]
+            },
+            {
+              "label": "Clases de pagos [sinopsis]",
+              "kind": "category",
+              "children": [
+                { "label": "Pagos a proveedores por el suministro de bienes y servicios", "kind": "account", "value": "1.385.396.048" },
+                { "label": "Pagos relacionados con regalías tasas y comisiones", "kind": "account", "value": "-" },
+                { "label": "Pagos procedentes de contratos mantenidos para intermediación o para negociar", "kind": "account", "value": "-" },
+                { "label": "Pagos a y por cuenta de los empleados", "kind": "account", "value": "79.308.372" },
+                { "label": "Pagos por fabricar o adquirir activos mantenidos para arrendar a otros y posteriormente para vender", "kind": "account", "value": "-" },
+                { "label": "Otros pagos por actividades de operación", "kind": "account", "value": "24.560.732" }
+              ]
+            },
+            { "label": "Flujos de efectivo netos procedentes de (utilizados en) operaciones", "kind": "account", "value": "45.265.668" },
+            { "label": "Dividendos pagados", "kind": "account", "value": "-" },
+            { "label": "Dividendos recibidos", "kind": "account", "value": "-" },
+            { "label": "Intereses pagados", "kind": "account", "value": "-" },
+            { "label": "Interés pagado en depósito pasivos clasificado como actividades operativas", "kind": "account", "value": "-" },
+            { "label": "Intereses recibidos", "kind": "account", "value": "-" },
+            { "label": "Intereses recibidos de préstamos y anticipos clasificados como actividades operativas", "kind": "account", "value": "-" },
+            { "label": "Interés recibido de deuda instrumentos retenidos clasificado como actividades operativas", "kind": "account", "value": "-" },
+            { "label": "Impuestos a las ganancias pagados (reembolsados)", "kind": "account", "value": "4.476.310" },
+            { "label": "Otras entradas (salidas) de efectivo", "kind": "account", "value": "-2.480.921" },
+            { "label": "Subtotal flujos de efectivo netos procedentes de (utilizados en) actividades de operación de negocios no bancarios", "kind": "account", "value": "38.308.437" }
+          ]
+        },
+        {
+          "label": "Servicios bancarios [sinopsis]",
+          "kind": "category",
+          "children": [
+            { "label": "Utilidad (pérdida) consolidada del período", "kind": "account", "value": "330.618.111" },
+            {
+              "label": "Cargos (abonos) a resultados que no significan movimientos de efectivo [sinopsis]",
+              "kind": "category",
+              "children": [
+                { "label": "Depreciaciones y amortizaciones", "kind": "account", "value": "23.656.574" },
+                { "label": "Provisiones por riesgo de crédito", "kind": "account", "value": "106.923.732" },
+                { "label": "Ajuste a valor de mercado de instrumentos para negociación", "kind": "account", "value": "-2.016.462" },
+                { "label": "Utilidad neta por inversiones en sociedades con influencia significativa", "kind": "account", "value": "1.733.563" },
+                { "label": "Utilidad neta en venta de activos recibidos en pago", "kind": "account", "value": "303.301" },
+                { "label": "Utilidad neta en venta de activos fijos", "kind": "account", "value": "2.110.898" },
+                { "label": "Castigos de activos recibidos en pago", "kind": "account", "value": "5.459.857" },
+                { "label": "Otros cargos (abonos) que no significan movimiento de efectivo", "kind": "account", "value": "4.940.681" },
+                { "label": "Variación neta de intereses, reajustes y comisiones devengadas sobre activos y pasivos", "kind": "account", "value": "53.937.497" }
+              ]
+            },
+            {
+              "label": "Cambios en activos y pasivos que afectan al flujo operacional [sinopsis]",
+              "kind": "category",
+              "children": [
+                { "label": "(Aumento) disminución neta en adeudado por bancos", "kind": "account", "value": "1.029.784.232" },
+                { "label": "(Aumento) disminución en créditos y cuentas por cobrar a clientes", "kind": "account", "value": "441.777.109" },
+                { "label": "(Aumento) disminución neta de instrumentos para negociación", "kind": "account", "value": "-108.393.605" },
+                { "label": "Aumento (disminución) de depósitos y otras obligaciones a la vista", "kind": "account", "value": "230.385.051" },
+                { "label": "Aumento (disminución) de contratos de retrocompra y préstamos de valores", "kind": "account", "value": "41.663.367" },
+                { "label": "Aumento (disminución) de depósitos y otras captaciones a plazo", "kind": "account", "value": "1.332.842.146" },
+                { "label": "Aumento (disminución) de obligaciones con bancos", "kind": "account", "value": "1.746.161" },
+                { "label": "Aumento (disminución) de otras obligaciones financieras", "kind": "account", "value": "36.229.975" },
+                { "label": "Préstamos obtenidos del Banco Central de Chile (largo plazo)", "kind": "account", "value": "-" },
+                { "label": "Pago préstamos obtenidos del Banco Central de Chile (largo plazo)", "kind": "account", "value": "-" },
+                { "label": "Préstamos obtenidos del exterior a largo plazo", "kind": "account", "value": "-198.804.357" },
+                { "label": "Pago de préstamos del exterior a largo plazo", "kind": "account", "value": "-399.441.143" },
+                { "label": "Otros préstamos obtenidos a largo plazo", "kind": "account", "value": "-" },
+                { "label": "Pago de otros préstamos obtenidos a largo plazo", "kind": "account", "value": "-" },
+                { "label": "Provisión para pago de Obligación Subordinada al Banco Central", "kind": "account", "value": "-" },
+                { "label": "Otros", "kind": "account", "value": "4.861.519" }
+              ]
+            },
+            { "label": "Subtotal flujos de efectivo netos procedentes de (utilizados en) actividades de la operación servicios bancarios", "kind": "account", "value": "1.004.569.497" }
+          ]
+        },
+        { "label": "Flujos de efectivo netos procedentes de (utilizados en) actividades de operación", "kind": "account", "value": "1.042.877.934" }
+      ]
+    },
+    {
+      "label": "Flujos de efectivo procedentes de (utilizados en) actividades de inversión [sinopsis]",
+      "kind": "category",
+      "children": [
+        {
+          "label": "Negocios no Bancarios [sinopsis]",
+          "kind": "category",
+          "children": [
+            { "label": "Flujos de efectivo procedentes de la pérdida de control de subsidiarias u otros negocios", "kind": "account", "value": "-" },
+            { "label": "Flujos de efectivo utilizados para obtener el control de subsidiarias u otros negocios", "kind": "account", "value": "-" },
+            { "label": "Flujos de efectivo utilizados en la compra de participaciones no controladoras", "kind": "account", "value": "-" },
+            { "label": "Otros cobros por la venta de patrimonio o instrumentos de deuda de otras entidades", "kind": "account", "value": "-" },
+            { "label": "Otros pagos para adquirir patrimonio o instrumentos de deuda de otras entidades", "kind": "account", "value": "-" },
+            { "label": "Otros cobros por la venta de participaciones en negocios conjuntos", "kind": "account", "value": "-" },
+            { "label": "Otros pagos para adquirir participaciones en negocios conjuntos", "kind": "account", "value": "-" },
+            { "label": "Préstamos a entidades relacionadas", "kind": "account", "value": "-" },
+            { "label": "Importes procedentes de la venta de propiedades, planta y equipo", "kind": "account", "value": "100.745" },
+            { "label": "Compras de propiedades, planta y equipo", "kind": "account", "value": "28.883.524" },
+            { "label": "Importes procedentes de ventas de activos intangibles", "kind": "account", "value": "-" },
+            { "label": "Compras de activos intangibles", "kind": "account", "value": "265.777" },
+            { "label": "Importes procedentes de otros activos a largo plazo", "kind": "account", "value": "-" },
+            { "label": "Compras de otros activos a largo plazo", "kind": "account", "value": "-" },
+            { "label": "Importes procedentes de subvenciones del gobierno", "kind": "account", "value": "-" },
+            { "label": "Anticipos de efectivo y préstamos concedidos a terceros", "kind": "account", "value": "-" },
+            { "label": "Cobros procedentes del reembolso de anticipos y préstamos concedidos a terceros", "kind": "account", "value": "-" },
+            { "label": "Pagos derivados de contratos de futuro, a término, de opciones y de permuta financiera", "kind": "account", "value": "-" },
+            { "label": "Cobros procedentes de contratos de futuro, a término, de opciones y de permuta financiera", "kind": "account", "value": "-" },
+            { "label": "Cobros a entidades relacionadas", "kind": "account", "value": "-" },
+            { "label": "Dividendos recibidos", "kind": "account", "value": "345.135" },
+            { "label": "Intereses pagados", "kind": "account", "value": "-" },
+            { "label": "Intereses recibidos", "kind": "account", "value": "25.612.670" },
+            { "label": "Impuestos a las ganancias pagados (reembolsados)", "kind": "account", "value": "-" },
+            { "label": "Flujos de efectivo procedentes de la venta de participaciones no controladoras", "kind": "account", "value": "-" },
+            { "label": "Otras entradas (salidas) de efectivo", "kind": "account", "value": "-333.444.823" },
+            { "label": "Subtotal flujos de efectivo netos procedentes de (utilizados en) actividades de inversión de negocios no bancarios", "kind": "account", "value": "-336.535.574" }
+          ]
+        },
+        {
+          "label": "Servicios Bancarios [sinopsis]",
+          "kind": "category",
+          "children": [
+            { "label": "(Aumento) disminución neta de instrumentos de inversión disponibles para la venta", "kind": "account", "value": "142.190.135" },
+            { "label": "Compras de activos fijos", "kind": "account", "value": "4.482.867" },
+            { "label": "Ventas de activos fijos", "kind": "account", "value": "2.778.939" },
+            { "label": "Inversiones en sociedades", "kind": "account", "value": "-" },
+            { "label": "Dividendos recibidos de inversiones en sociedades", "kind": "account", "value": "-" },
+            { "label": "Venta de bienes recibidos en pago o adjudicados", "kind": "account", "value": "4.756.325" },
+            { "label": "(Aumento) disminución neta de otros activos y pasivos", "kind": "account", "value": "83.740.891" },
+            { "label": "Otros", "kind": "account", "value": "-3.022.183" },
+            { "label": "Subtotal flujos de efectivo netos procedentes de (utilizados en) actividades de inversión servicios bancarios", "kind": "account", "value": "225.961.240" }
+          ]
+        },
+        { "label": "Flujos de efectivo netos procedentes de (utilizados en) actividades de inversión", "kind": "account", "value": "-110.574.334" }
+      ]
+    },
+    {
+      "label": "Flujos de efectivo procedentes de (utilizados en) actividades de financiación [sinopsis]",
+      "kind": "category",
+      "children": [
+        {
+          "label": "Negocios no bancarios [sinopsis]",
+          "kind": "category",
+          "children": [
+            { "label": "Cobros por cambios en las participaciones en la propiedad de subsidiarias que no resulta en una pérdida de control", "kind": "account", "value": "-" },
+            { "label": "Pagos por cambios en las participaciones en la propiedad en subsidiarias que no dan lugar a la pérdida de control", "kind": "account", "value": "-" },
+            { "label": "Importes procedentes de la emisión de acciones", "kind": "account", "value": "-" },
+            { "label": "Importes procedentes de la emisión de otros instrumentos de patrimonio", "kind": "account", "value": "-" },
+            { "label": "Pagos por adquirir o rescatar las acciones de la entidad", "kind": "account", "value": "-" },
+            { "label": "Pagos por otras participaciones en el patrimonio", "kind": "account", "value": "-" },
+            { "label": "Importes procedentes de préstamos", "kind": "account", "value": "36.517.951" },
+            { "label": "Importes procedentes de préstamos de largo plazo", "kind": "account", "value": "28.500.303" },
+            { "label": "Importes procedentes de préstamos de corto plazo", "kind": "account", "value": "8.017.648" },
+            { "label": "Préstamos de entidades relacionadas", "kind": "account", "value": "-" },
+            { "label": "Reembolsos de préstamos", "kind": "account", "value": "-" },
+            { "label": "Pagos de pasivos por arrendamientos", "kind": "account", "value": "11.581.597" },
+            { "label": "Pagos de préstamos de entidades relacionadas", "kind": "account", "value": "-" },
+            { "label": "Importes procedentes de subvenciones del gobierno", "kind": "account", "value": "-" },
+            { "label": "Dividendos pagados", "kind": "account", "value": "-" },
+            { "label": "Intereses pagados", "kind": "account", "value": "10.956.192" },
+            { "label": "Impuestos a las ganancias pagados (reembolsados)", "kind": "account", "value": "-" },
+            { "label": "Otras entradas (salidas) de efectivo", "kind": "account", "value": "-20.090.261" },
+            { "label": "Subtotal flujos de efectivo netos procedentes de (utilizados en) actividades de financiación de negocios no bancarios", "kind": "account", "value": "-6.110.099" }
+          ]
+        },
+        {
+          "label": "Servicios Bancarios [sinopsis]",
+          "kind": "category",
+          "children": [
+            { "label": "Emisión de letras de crédito", "kind": "account", "value": "-" },
+            { "label": "Rescate de letras de crédito", "kind": "account", "value": "141.486" },
+            { "label": "Emisión de bonos", "kind": "account", "value": "373.284.159" },
+            { "label": "Pago de bonos", "kind": "account", "value": "175.746.027" },
+            { "label": "Otros préstamos obtenidos a largo plazo", "kind": "account", "value": "-" },
+            { "label": "Pago obligacion subordinada con el Banco Central de Chile", "kind": "account", "value": "-" },
+            { "label": "Emisión de acciones de pago", "kind": "account", "value": "-" },
+            { "label": "Dividendos pagados", "kind": "account", "value": "485.150.243" },
+            { "label": "Otros", "kind": "account", "value": "-" },
+            { "label": "Subtotal flujos de efectivo netos procedentes de (utilizados en) actividades de financiación servicios bancarios", "kind": "account", "value": "-287.753.597" }
+          ]
+        },
+        { "label": "Flujos de efectivo netos procedentes de (utilizados en) actividades de financiación", "kind": "account", "value": "-293.863.696" }
+      ]
+    },
+    {
+      "label": "Efectos de la variación en la tasa de cambio sobre el efectivo y equivalentes al efectivo [sinopsis]",
+      "kind": "category",
+      "children": [
+        { "label": "Efectos de la variación en la tasa de cambio sobre el efectivo y equivalentes al efectivo", "kind": "account", "value": "-78.004.986" }
+      ]
+    },
+    { "label": "Incremento (disminución) neto de efectivo y equivalentes al efectivo, antes del efecto de los cambios en la tasa de cambio", "kind": "account", "value": "638.439.904" },
+    { "label": "Incremento (disminución) neto de efectivo y equivalentes al efectivo", "kind": "account", "value": "560.434.918" },
+    { "label": "Efectivo y equivalentes al efectivo al principio del periodo", "kind": "account", "value": "5.819.131.737" },
+    { "label": "Efectivo y equivalentes al efectivo al final del periodo", "kind": "account", "value": "" }
+  ]
+}

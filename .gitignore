@@ -1,8 +1,25 @@
+# Entornos virtuales (cualquier .venv en el árbol: raíz, cmf_extract, Arelle)
 .venv
 .env
+venv/
 
+# Datos descargados / pesados
 XBRL/
-
 data/
 
+# Herramientas externas grandes (Arelle se clona con setup.sh)
+tools/Arelle/
+
+# Salidas generadas por la consolidación (se regeneran)
+cmf_extract/Products/
+cmf_extract/Product_v1/
+Products/
+Product_v1/
+
+# Config con rutas/credenciales locales de la máquina
+config/pipeline_settings.json
+
+# Cachés Python
 __pycache__/
+*.pyc
+*.pyo

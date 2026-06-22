@@ -1,0 +1,48 @@
+.venv
+*.log
+*.log.*
+*.log.*.*
+*.log.*.*.*
+*.log.*.*.*.*
+*.log.*.*.*.*.*
+*.log.*.*.*.*.*.*
+*.log.*.*.*.*.*.*.*
+*.log.*.*.*.*.*.*.*.*
+*.log.*.*.*.*.*.*.*.*.*
+
+
+.claude/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pywz
+*.pyzw
+*.pyzwz
+
+.DS_Store
+.vscode
+.env
+
+# Ignorar carpetas con muchos datos
+data/backup/
+data/XBRL/Total/
+data/XBRL/backup_sync/
+data/debug/
+
+# Ignorar carpetas de productos generados
+Products/
+Product_v1/
+
+# Ignorar archivos de datos grandes
+*.csv
+*.xlsx
+*.xls
+*.zip
+*.tar.gz
+*.7z
+
+# Mantener solo total_test en XBRL (excepción)
+!data/XBRL/total_test/

@@ -3,10 +3,32 @@
 Componente de log para el CMF Scraper
 """
 
+import re
 import tkinter as tk
 from tkinter import ttk, scrolledtext
 from datetime import datetime
 from typing import Optional
+
+# Secuencias de escape ANSI (colores/cursor) que emiten librerías como Rich.
+_ANSI_RE = re.compile(r"\x1b\[[0-9;?]*[ -/]*[@-~]")
+# Caracteres de control restantes (salvo tab) y avances de línea sueltos.
+_CTRL_RE = re.compile(r"[\x00-\x08\x0b-\x1f\x7f]")
+
+# Color por nivel para la consola de la GUI.
+_LEVEL_COLOR = {
+    "INFO": "#2c3e50",
+    "SUCCESS": "#1e8449",
+    "WARNING": "#b9770e",
+    "ERROR": "#c0392b",
+    "DETAIL": "#7f8c8d",
+}
+_LEVEL_TAG = {
+    "INFO": "INFO",
+    "SUCCESS": "OK",
+    "WARNING": "WARN",
+    "ERROR": "ERROR",
+    "DETAIL": "",
+}
 
 
 class LogViewer:
@@ -48,7 +70,15 @@ class LogViewer:
             bd=0
         )
         self.log_text.pack(fill=tk.BOTH, expand=True, padx=5, pady=5)
-        
+
+        # Tags de color por nivel (consola legible, sin emojis)
+        self.log_text.tag_configure("meta", foreground="#95a5a6", font=("Consolas", 9))
+        for level, color in _LEVEL_COLOR.items():
+            weight = "bold" if level in ("ERROR", "WARNING") else "normal"
+            self.log_text.tag_configure(level, foreground=color,
+                                        font=("Consolas", 9, weight))
+        self.log_text.configure(state=tk.DISABLED)
+
         # Barra de herramientas del log
         toolbar = tk.Frame(self.frame, bg='#f8f9fa', height=30)
         toolbar.pack(fill=tk.X, pady=(10, 0))
@@ -63,32 +93,31 @@ class LogViewer:
                   command=self.save_log,
                   style='Primary.TButton').pack(side=tk.RIGHT)
     
+    @staticmethod
+    def _clean(message: str) -> str:
+        """Quitar secuencias ANSI y caracteres de control (ruido de Rich, etc.)."""
+        text = _ANSI_RE.sub("", str(message))
+        text = _CTRL_RE.sub("", text)
+        return text.rstrip()
+
     def log(self, message: str, level: str = "INFO"):
-        """Agregar mensaje al log con timestamp"""
+        """Agregar mensaje al log con timestamp, color por nivel y sin emojis."""
+        message = self._clean(message)
+        if not message:
+            return
+        level = level if level in _LEVEL_COLOR else "INFO"
         timestamp = datetime.now().strftime("%H:%M:%S")
-        
-        # Formatear mensaje según nivel
-        if level == "ERROR":
-            prefix = "ERROR"
-        elif level == "WARNING":
-            prefix = "WARN"
-        elif level == "SUCCESS":
-            prefix = "OK"
-        else:
-            prefix = "INFO"
-        
-        formatted_message = f"[{timestamp}] [{prefix}] {message}"
-        
-        # Insertar al final del log
-        self.log_text.insert(tk.END, formatted_message + "\n")
-        
-        # Auto-scroll al final
+        tag = _LEVEL_TAG.get(level, "")
+
+        self.log_text.configure(state=tk.NORMAL)
+        # Columna de metadatos alineada: hora + nivel
+        meta = f"{timestamp}  {tag:<5} " if tag else f"{timestamp}        "
+        self.log_text.insert(tk.END, meta, "meta")
+        self.log_text.insert(tk.END, message + "\n", level)
+
         self.log_text.see(tk.END)
-        
-        # Limitar número de líneas para rendimiento
         self._limit_log_lines()
-        
-        # Forzar actualización de la GUI
+        self.log_text.configure(state=tk.DISABLED)
         self.parent.update_idletasks()
     
     def _limit_log_lines(self, max_lines: int = 1000):
@@ -104,8 +133,10 @@ class LogViewer:
     
     def clear_log(self):
         """Limpiar el log"""
+        self.log_text.configure(state=tk.NORMAL)
         self.log_text.delete(1.0, tk.END)
-        self.log("Log limpiado")
+        self.log_text.configure(state=tk.DISABLED)
+        self.log("Registro limpiado")
     
     def save_log(self):
         """Guardar log a archivo"""
@@ -119,7 +150,7 @@ class LogViewer:
                 title="Guardar log",
                 defaultextension=".txt",
                 filetypes=[("Archivos de texto", "*.txt"), ("Todos los archivos", "*.*")],
-                initialname=default_filename
+                initialfile=default_filename
             )
             
             if file_path:

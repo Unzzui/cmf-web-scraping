@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Editor de Estructura EEFF</title>
+  <link rel="stylesheet" href="static/css/editor.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>Editor de Estructura de EEFF</h1>
+    <div class="toolbar">
+      <button id="btnBind" class="btn">Vincular archivo (auto-guardar)</button>
+      <span id="autosave" class="status">Auto-guardado: inactivo</span>
+      <button id="btnLoad" class="btn shortcut-hint" data-shortcut="Ctrl+L">Cargar desde servidor</button>
+      <button id="btnImport" class="btn">Importar JSON</button>
+      <input id="fileInput" type="file" accept="application/json" hidden />
+      <button id="btnExport" class="btn primary shortcut-hint" data-shortcut="Ctrl+S">Guardar (descargar)</button>
+      <button id="btnCopy" class="btn">Copiar JSON</button>
+      <span id="status" class="status"></span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="search-box">
+          <input id="search" type="text" placeholder="Buscar empresa por RUT o nombre… (Ctrl+F)" />
+        </div>
+        <button id="btnAddEmpresa" class="btn full shortcut-hint" data-shortcut="Ctrl+N">+ Agregar empresa</button>
+      </div>
+      <ul id="empresaList" class="empresa-list"></ul>
+    </aside>
+
+    <section class="content" id="content">
+      <div class="placeholder">
+        <h2>Selecciona o crea una empresa</h2>
+        <p>Usa el panel izquierdo para seleccionar una empresa o crear una nueva. Puedes cargar el archivo existente con “Cargar desde servidor”.</p>
+        <p>Consejo: ejecuta <code>python -m http.server</code> en esta carpeta para habilitar la carga desde servidor.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <small>
+      Archivo objetivo: <code>analisis_excel/estructura_eeff_empresas.json</code> — Esta UI descarga el JSON editado; reemplázalo manualmente o monta un backend si necesitas guardar directo.
+    </small>
+    <div class="shortcuts-help">
+      <details>
+        <summary>⌨️ Atajos de teclado</summary>
+        <div class="shortcuts-grid">
+          <div class="shortcuts-section">
+            <h4>Global</h4>
+            <span><kbd>Ctrl+N</kbd> Nueva empresa</span>
+            <span><kbd>Ctrl+S</kbd> Guardar archivo</span>
+            <span><kbd>Ctrl+L</kbd> Cargar desde servidor</span>
+            <span><kbd>Ctrl+F</kbd> Buscar empresa</span>
+            <span><kbd>↑/↓</kbd> Navegar empresas</span>
+            <span><kbd>Del</kbd> Eliminar empresa</span>
+            <span><kbd>1/2/3</kbd> Cambiar rol/pestaña</span>
+          </div>
+          <div class="shortcuts-section">
+            <h4>En líneas de cuentas</h4>
+            <span><kbd>Tab</kbd> Siguiente línea</span>
+            <span><kbd>Shift+Tab</kbd> Línea anterior</span>
+            <span><kbd>Ctrl+↑/↓</kbd> Mover línea</span>
+            <span><kbd>Ctrl+Enter</kbd> Nueva línea debajo</span>
+            <span><kbd>Ctrl+D</kbd> Duplicar línea</span>
+            <span><kbd>Ctrl+Del</kbd> Eliminar línea</span>
+            <span><kbd>Enter</kbd> Nueva línea al final</span>
+          </div>
+        </div>
+      </details>
+    </div>
+  </footer>
+
+  <!-- Modal para agregar empresa -->
+  <div id="modalAgregarEmpresa" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Agregar nueva empresa</h3>
+        <button class="modal-close" id="modalAgregarClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="xbrlSuggestions" class="xbrl-suggestions" style="display: none;">
+          <h4>Empresas XBRL disponibles</h4>
+          <div class="suggestions-list" id="suggestionsList"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="modalRut">RUT de la empresa:</label>
+          <input type="text" id="modalRut" placeholder="Ej: 96790240-3" required>
+        </div>
+        <div class="form-group">
+          <label for="modalNombre">Nombre de la empresa:</label>
+          <input type="text" id="modalNombre" placeholder="Nombre completo de la empresa">
+        </div>
+        <div class="form-group">
+          <label for="modalIdioma">Idioma:</label>
+          <select id="modalIdioma">
+            <option value="es">Español</option>
+            <option value="en">Inglés</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="modalPlantilla" checked>
+            Copiar estructura de cuentas más usada (plantilla base)
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="modalAgregarCancel">Cancelar</button>
+        <button class="btn primary" id="modalAgregarConfirm">Agregar empresa</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para confirmar eliminación -->
+  <div id="modalEliminar" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Confirmar eliminación</h3>
+        <button class="modal-close" id="modalEliminarClose">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="modalEliminarTexto">¿Está seguro de que desea eliminar esta empresa?</p>
+        <p><strong>Esta acción no se puede deshacer.</strong></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="modalEliminarCancel">Cancelar</button>
+        <button class="btn danger" id="modalEliminarConfirm">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="static/js/editor.js"></script>
+  <script>
+    window.EditorApp && window.EditorApp.initWhenReady();
+  </script>
+</body>
+      
+</html>
