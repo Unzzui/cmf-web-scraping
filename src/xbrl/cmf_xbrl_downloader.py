@@ -113,7 +113,7 @@ def download_cmf_xbrl(
     def get_company_info(rut_numero):
         """Obtener el DV y nombre de la empresa desde el archivo CSV"""
         try:
-            csv_path = "data/companies/RUT_Chilean_Companies.csv"
+            csv_path = "data/RUT_Chilean_Companies/RUT_Chilean_Companies.csv"
             if os.path.exists(csv_path):
                 df = pd.read_csv(csv_path)
                 match = df[df['RUT_Numero'].astype(str) == str(rut_numero)]

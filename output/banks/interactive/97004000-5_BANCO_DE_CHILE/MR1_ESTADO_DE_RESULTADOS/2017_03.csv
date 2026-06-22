@@ -1,0 +1,198 @@
+
+Código Contable;Descripción;Moneda chilena no reajustable;Moneda chilena reajustable por factores de IPC;Moneda chilena reajustables por tipo de cambio;Moneda Extranjera;Total (suma de todas las monedas)
+ 
+4100000;INGRESOS POR INTERESES Y REAJUSTES;259.186;176.893;1.042;19.646;456.767
+4100100;Contratos de retrocompra;442;0;0;0;442
+4100101;Intereses;442;0;0;0;442
+4100151;Reajustes;0;0;0;0;0
+4100200;Créditos otorgados a bancos;4.992;0;0;1.159;6.151
+4100201;Intereses;4.992;0;0;1.159;6.151
+4100251;Reajustes;0;0;0;0;0
+4100300;Colocaciones comerciales;111.707;72.175;1.042;16.693;201.617
+4100301;Intereses de préstamos comerciales;83.878;38.780;10;9.598;132.266
+4100309;Intereses de créditos de comercio exterior;1.908;18;67;6.608;8.601
+4100310;Intereses de créditos en cuentas corrientes;8.742;0;0;16;8.758
+4100320;Intereses de operaciones de factoraje;6.388;23;0;471;6.882
+4100325;Intereses de préstamos estudiantiles;0;500;0;0;500
+4100330;Intereses por leasing comercial;9.085;8.561;965;0;18.611
+4100340;Intereses de otros créditos y cuentas por cobrar;1.271;6;0;0;1.277
+4100351;Reajustes de préstamos comerciales;0;20.023;0;0;20.023
+4100359;Reajustes de créditos de comercio exterior;0;47;0;0;47
+4100360;Reajustes de créditos en cuentas corrientes;0;0;0;0;0
+4100370;Reajustes de operaciones de factoraje;0;46;0;0;46
+4100375;Reajustes de préstamos estudiantiles;0;202;0;0;202
+4100380;Reajustes por leasing comercial;0;3.504;0;0;3.504
+4100390;Reajustes de otros créditos y cuentas por cobrar;0;2;0;0;2
+4100399;Comisiones por prepago de créditos comerciales;435;463;0;0;898
+4100400;Colocaciones para vivienda;1.004;100.628;0;0;101.632
+4100401;Intereses de préstamos con letras de crédito;0;507;0;0;507
+4100402;Comisiones de préstamos con letras de crédito;246;0;0;0;246
+4100403;Intereses de prestamos con mutuos financiados con bonos hipotecarios;0;0;0;0;0
+4100405;Intereses de préstamos con MHE;1;817;0;0;818
+4100407;Intereses de otros mutuos para vivienda;69;66.584;0;0;66.653
+4100408;Intereses de créditos ANAP;0;0;0;0;0
+4100420;Intereses por leasing para vivienda;0;0;0;0;0
+4100430;Intereses de otros créditos para vivienda;0;65;0;0;65
+4100451;Reajustes de préstamos con letras de crédito;0;185;0;0;185
+4100452;Reajustes de prestamos con mutuos financiados con bonos hipotecarios;0;0;0;0;0
+4100455;Reajustes de préstamos con MHE;0;310;0;0;310
+4100457;Reajustes de otros mutuos para vivienda;0;32.126;0;0;32.126
+4100458;Reajustes de créditos ANAP;0;0;0;0;0
+4100480;Reajustes por leasing para vivienda;0;0;0;0;0
+4100490;Reajustes de otros créditos para vivienda;0;34;0;0;34
+4100499;Comisiones por prepago de créditos para vivienda;688;0;0;0;688
+4100500;Colocaciones de consumo;153.718;1.328;0;0;155.046
+4100501;Intereses de créditos de consumo en cuotas;89.580;1.000;0;0;90.580
+4100510;Intereses de créditos en cuentas corrientes;22.705;0;0;0;22.705
+4100520;Intereses de créditos por tarjetas de crédito;39.101;0;0;0;39.101
+4100530;Intereses por leasing de consumo;0;0;0;0;0
+4100540;Intereses de otros créditos de consumo;1;0;0;0;1
+4100590;Reajustes colocaciones de consumo;0;328;0;0;328
+4100599;Comisiones por prepago de créditos de consumo;2.331;0;0;0;2.331
+4100600;Instrumentos de inversión;1.189;2.193;0;1.679;5.061
+4100601;Intereses de inversiones disponibles para la venta;1.189;1.415;0;1.679;4.283
+4100621;Intereses de inversiones hasta el vencimiento;0;0;0;0;0
+4100651;Reajustes de inversiones disponibles para la venta;0;778;0;0;778
+4100671;Reajustes de inversiones hasta el vencimiento;0;0;0;0;0
+4100800;Otros ingresos por intereses o reajustes;0;569;0;708;1.277
+4100801;Intereses por saldos en cuentas corrientes;0;0;0;0;0
+4100804;Intereses operaciones overnight;0;0;0;0;0
+4100810;Otros intereses ganados;0;0;0;708;708
+4100850;Otros reajustes ganados;0;569;0;0;569
+4100900;Resultado de coberturas contables;-13.866;0;0;-593;-14.459
+4150000;GASTOS POR INTERESES Y REAJUSTES;-63.608;-77.008;-8;-12.603;-153.227
+4150100;Depósitos a la vista;-48;-1.441;0;0;-1.489
+4150101;Intereses por cuentas corrientes;-48;0;0;0;-48
+4150102;Intereses por otros depósitos y cuentas a la vista;0;0;0;0;0
+4150103;Intereses por otras obligaciones a la vista;0;0;0;0;0
+4150151;Reajustes por obligaciones a la vista;0;-1.441;0;0;-1.441
+4150200;Contratos de retrocompra;-1.577;0;0;-1;-1.578
+4150201;Intereses;-1.577;0;0;-1;-1.578
+4150251;Reajustes;0;0;0;0;0
+4150300;Depósitos y captaciones a plazo;-66.434;-14.378;0;-2.734;-83.546
+4150301;Intereses por depósitos a plazo;-66.434;-6.149;0;-2.636;-75.219
+4150302;Intereses por cuentas de ahorro a plazo;0;-176;0;0;-176
+4150309;Intereses de otros saldos acreedores a plazo;0;0;0;-98;-98
+4150351;Reajustes por depósitos a plazo;0;-7.218;0;0;-7.218
+4150352;Reajustes por cuentas de ahorro a plazo;0;-825;0;0;-825
+4150359;Reajustes de otros saldos acreedores a plazo;0;-10;0;0;-10
+4150400;Obligaciones con bancos;-289;0;0;-3.380;-3.669
+4150401;Intereses;-289;0;0;-3.380;-3.669
+4150451;Reajustes;0;0;0;0;0
+4150500;Instrumentos de deuda emitidos;-508;-61.011;0;-6.798;-68.317
+4150501;Intereses por letras de crédito;0;-413;0;0;-413
+4150511;Intereses por bonos corrientes;-508;-29.998;0;-6.798;-37.304
+4150521;Intereses por bonos subordinados;0;-7.519;0;0;-7.519
+4150522;Intereses por bonos hipotecarios;0;0;0;0;0
+4150551;Reajustes por letras de crédito;0;-140;0;0;-140
+4150561;Reajustes por bonos corrientes;0;-19.603;0;0;-19.603
+4150571;Reajustes por bonos subordinados;0;-3.338;0;0;-3.338
+4150572;Reajustes por bonos hipotecarios;0;0;0;0;0
+4150600;Otras obligaciones financieras;-343;-69;-8;0;-420
+4150601;Intereses;-343;-31;-8;0;-382
+4150651;Reajustes;0;-38;0;0;-38
+4150800;Otros gastos por intereses o reajustes;0;-109;0;-1;-110
+4150801;Intereses;0;0;0;-1;-1
+4150851;Reajustes;0;-109;0;0;-109
+4150900;Resultado de coberturas contables;5.591;0;0;311;5.902
+4200000;INGRESOS POR COMISIONES;109.212;2.449;0;2.151;113.812
+4200100;Comisiones por líneas de crédito y sobregiros;1.287;0;0;0;1.287
+4200200;Comisiones por avales y cartas de crédito;2.690;2.449;0;840;5.979
+4200300;Comisiones por servicios de tarjetas;38.990;0;0;0;38.990
+4200303;Tarjetas de cajeros automáticos;10.339;0;0;0;10.339
+4200304;Tarjetas de crédito-comisiones a titulares;9.573;0;0;0;9.573
+4200305;Tarjetas de crédito-comisiones de establecimientos;11.264;0;0;0;11.264
+4200306;Tarjetas de débito-comisiones de titulares;2.053;0;0;0;2.053
+4200307;Tarjetas de débito-comisiones de establecimientos;5.761;0;0;0;5.761
+4200309;Otras tarjetas;0;0;0;0;0
+4200400;Comisiones por administración de cuentas;10.454;0;0;0;10.454
+4200500;Comisiones por cobranzas, recaudaciones y pagos;11.993;0;0;2;11.995
+4200600;Comisiones por intermediación y manejo de valores;3.402;0;0;103;3.505
+4200700;Comisiones por inversiones en fondos mutuos u otros;18.642;0;0;1.206;19.848
+4200800;Remuneraciones por comercialización de seguros;7.282;0;0;0;7.282
+4200900;Otras comisiones ganadas;14.472;0;0;0;14.472
+4250000;GASTOS POR COMISIONES;-26.435;0;0;-156;-26.591
+4250100;Remuneraciones por operación de tarjetas;-21.046;0;0;0;-21.046
+4250101;Comisiones por operación de tarjetas de crédito;-10.068;0;0;0;-10.068
+4250102;Comisiones por operación de tarjetas de débito y cajeros;-9.752;0;0;0;-9.752
+4250190;Otras;-1.226;0;0;0;-1.226
+4250200;Comisiones por operación con valores;-805;0;0;-54;-859
+4250300;Otras comisiones;-4.584;0;0;-102;-4.686
+4300000;UTILIDAD NETA DE OPERACIONES FINANCIERAS;23.430;-1.495;0;-10.201;11.734
+4300100;Instrumentos financieros para negociación;19.756;953;0;6;20.715
+4300101;Intereses y reajustes;12.347;1.619;0;0;13.966
+4300102;Ajuste a valor razonable;3.311;-553;0;0;2.758
+4300103;Utilidad por venta;4.122;0;0;6;4.128
+4300104;Pérdida por venta;-445;-113;0;0;-558
+4300190;Resultado inversiones en Fondos Mutuos;421;0;0;0;421
+4300200;Derivados de negociación;2.164;-2.413;0;-10.207;-10.456
+4300300;Venta de instrumentos disponibles para la venta;823;-35;0;0;788
+4300400;Venta de cartera de créditos;556;0;0;0;556
+4300500;Resultado neto de otras operaciones;131;0;0;0;131
+4350000;UTILIDAD (PÉRDIDA) DE CAMBIO NETA;14.688;0;-800;0;13.888
+4350100;Resultado neto de cambio monedas extranjeras;20.785;0;0;0;20.785
+4350200;Resultados neto por reajustes por tipo de cambio;0;0;-800;0;-800
+4350900;Resultado de coberturas contables;-6.097;0;0;0;-6.097
+4400000;OTROS INGRESOS OPERACIONALES;5.652;0;0;684;6.336
+4400100;Ingresos por bienes recibidos en pago;499;0;0;0;499
+4400200;Liberación de provisiones por contingencias;48;0;0;0;48
+4400290;Otras provisiones por contingencias;48;0;0;0;48
+4400300;Otros ingresos;5.105;0;0;684;5.789
+4500000;PROVISIONES POR RIESGO DE CREDITO;-64.608;1.491;1;1;-63.115
+4500100;Provisiones para créditos y cuentas por cobrar;-70.948;0;0;0;-70.948
+4500101;Provisiones colocaciones comerciales;-4.619;0;0;0;-4.619
+4500111;Provisiones colocaciones para vivienda;-1.486;0;0;0;-1.486
+4500112;Provisiones colocaciones de consumo;-64.815;0;0;0;-64.815
+4500190;Provisiones para créditos otorgados a bancos;-28;0;0;0;-28
+4500200;Provisiones para créditos contingentes;-2.803;0;0;0;-2.803
+4500700;Provisiones adicionales;0;0;0;0;0
+4500701;Provisiones adicionales colocaciones comerciales;0;0;0;0;0
+4500702;Provisiones adicionales colocaciones para vivienda;0;0;0;0;0
+4500703;Provisiones adicionales colocaciones de consumo;0;0;0;0;0
+4500800;Ajuste a provisión mínima cartera normal;0;0;0;0;0
+4500801;Ajuste a provisión mínima adeudado por bancos;0;0;0;0;0
+4500802;Ajuste a provisión mínima colocaciones comerciales;0;0;0;0;0
+4500803;Ajuste a provisión mínima créditos contingentes;0;0;0;0;0
+4500900;Recuperación de créditos castigados;9.143;1.491;1;1;10.636
+4500901;Recuperación de créditos comerciales castigados;1.923;896;1;1;2.821
+4500911;Recuperación de créditos para vivienda castigados;545;0;0;0;545
+4500921;Recuperación de créditos de consumo castigados;6.675;595;0;0;7.270
+4500931;Recuperación de otros créditos castigados;0;0;0;0;0
+4600000;REMUNERACIONES Y GASTOS DEL PERSONAL;-100.918;0;0;0;-100.918
+4610000;GASTOS DE ADMINISTRACIÓN;-79.206;0;0;0;-79.206
+4610100;Gastos generales de administración;-54.602;0;0;0;-54.602
+4610200;Servicios subcontratados;-12.913;0;0;0;-12.913
+4610300;Gastos del Directorio;-765;0;0;0;-765
+4610400;Publicidad y propaganda;-7.343;0;0;0;-7.343
+4610500;Impuestos, contribuciones y aportes;-3.583;0;0;0;-3.583
+4620000;DEPRECIACIONES Y AMORTIZACIONES;-8.559;0;0;0;-8.559
+4630000;DETERIOROS;-1;0;0;0;-1
+4650000;OTROS GASTOS OPERACIONALES;-3.075;-228;-3;-203;-3.509
+4650100;Provisiones y gastos por bienes recibidos en pago;-1.075;0;0;0;-1.075
+4650200;Provisiones por contingencias;-335;0;0;0;-335
+4650201;Provisiones por riesgo país;-335;0;0;0;-335
+4650211;Provisiones especiales para créditos al exterior;0;0;0;0;0
+4650290;Otras provisiones por contingencias;0;0;0;0;0
+4650900;Otros gastos;-1.665;-228;-3;-203;-2.099
+4700000;RESULTADO POR INVERSIONES EN SOCIEDADES;991;0;0;0;991
+4700100;Utilidades por inversiones en sociedades;991;0;0;0;991
+4700101;Sucursales en el exterior;0;0;0;0;0
+4700103;Sociedades con influencia significativa;977;0;0;0;977
+4700110;Percibido por acciones y derechos en otras sociedades;14;0;0;0;14
+4700200;Pérdidas por inversiones en sociedades;0;0;0;0;0
+4700201;Sucursales en el exterior;0;0;0;0;0
+4700203;Sociedades con influencia significativa;0;0;0;0;0
+4700210;Ajustes por deterioro de inversiones en sociedades;0;0;0;0;0
+4800000;IMPUESTO A LA RENTA;-28.409;0;0;0;-28.409
+4800001;Provisión impuesto a la renta;-14.945;0;0;0;-14.945
+4850000;RESULTADO DE OPERACIONES DESCONTINUADAS;0;0;0;0;0
+4900000;INTERES NO CONTROLADOR;0;0;0;0;0
+5003000;INGRESO NETO POR INTERESES Y REAJUSTES;195.578;99.885;1.034;7.043;303.540
+5004000;INGRESO NETO POR COMISIONES;82.777;2.449;0;1.995;87.221
+5005000;TOTAL INGRESOS OPERACIONALES;322.125;100.839;234;-479;422.719
+5006000;INGRESO OPERACIONAL NETO;257.517;102.330;235;-478;359.604
+5007000;RESULTADO OPERACIONAL;65.758;102.102;232;-681;167.411
+5008000;RESULTADO ANTES DE IMPUESTO A LA RENTA;66.749;102.102;232;-681;168.402
+5009000;RESULTADO DE OPERACIONES CONTINUAS;38.340;102.102;232;-681;139.993
+5010000;UTILIDAD (PERDIDA) CONSOLIDADA DEL EJERCICIO;38.340;102.102;232;-681;139.993
+5020000;RESULTADO DE LOS PROPIETARIOS;38.340;102.102;232;-681;139.993

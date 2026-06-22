@@ -10,7 +10,7 @@ import subprocess
 
 def main():
     """Lanzar la GUI del CMF Scraper"""
-    print("🚀 Lanzando CMF GUI Modular...")
+    print("Lanzando CMF GUI Modular...")
     
     # Ruta al archivo principal
     gui_path = "src/gui/cmf_gui_modular.py"

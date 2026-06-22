@@ -1,0 +1,711 @@
+Código Contable;Descripción;Moneda chilena no reajustable;Moneda chilena reajustable por factores de IPC;Moneda chilena reajustables por tipo de cambio;Moneda Extranjera;Total (suma de todas las monedas)
+
+100000000;TOTAL ACTIVOS;31.811.857.779.144;26.264.184.315.775;3.638.565.575;7.810.573.655.966;65.890.254.316.460
+105000000;EFECTIVO Y DEPÓSITOS EN BANCOS;1.310.981.816.791;0;0;583.354.297.230;1.894.336.114.021
+105000100;Efectivo;1.200.604.011.641;0;0;159.775.104.024;1.360.379.115.665
+105000101;Efectivo en oficinas;759.387.235.448;0;0;121.839.162.555;881.226.398.003
+105000102;Efectivo en empresas transportadoras de valores;441.216.776.193;0;0;37.935.941.469;479.152.717.662
+105000103;Efectivo en custodia en otras entidades financieras;0;0;0;0;0
+105000200;Depósitos en el Banco Central de Chile;106.710.104.545;0;0;4.487.250.000;111.197.354.545
+105000201;Depósitos en cuenta corriente;106.710.104.545;0;0;4.487.250.000;111.197.354.545
+105000202;Depósitos overnight;0;0;0;0;0
+105000209;Otros depósitos disponibles;0;0;0;0;0
+105000300;Depósitos en Bancos Centrales del exterior;0;0;0;0;0
+105000301;Depósitos en cuenta corriente;0;0;0;0;0
+105000302;Depósitos overnight;0;0;0;0;0
+105000309;Otros depósitos disponibles;0;0;0;0;0
+105000400;Depósitos en bancos del país;2.720.221.205;0;0;0;2.720.221.205
+105000500;Depósitos en bancos del exterior;947.479.400;0;0;419.091.943.206;420.039.422.606
+107000000;OPERACIONES CON LIQUIDACION EN CURSO;327.591.168.424;0;0;546.762.180.952;874.353.349.376
+107000100;Documentos a cargo de otros bancos (canje);87.433.366.346;0;0;13.946.871.353;101.380.237.699
+107000101;Canje no deducible;784.552.162;0;0;2.386.748.548;3.171.300.710
+107000102;Canje de la plaza;86.648.814.184;0;0;11.560.122.805;98.208.936.989
+107000103;Canje de otras plazas;0;0;0;0;0
+107000200;Transferencias de fondos en curso con una contraparte central;0;0;0;0;0
+107000201;Fondos pendientes de transferencia por operaciones en la cámara de swaps;0;0;0;0;0
+107000202;Fondos pendientes de transferencia por operaciones en la cámara de forwards;0;0;0;0;0
+107000300;Transferencias de fondos en curso a través de una cámara de compensación de alto valor;0;0;0;0;0
+107000400;Otras transferencias de fondos en curso con Bancos u Otros;240.157.802.078;0;0;532.815.309.599;772.973.111.677
+107000401;Pagos de contrapartes por liquidar - Bancos;184.589.617.757;0;0;0;184.589.617.757
+107000409;Divisas pendientes de transferencia - Bancos;4.668.228.551;0;0;527.936.665.500;532.604.894.051
+107000411;Pagos de contrapartes por liquidar - Otros;50.510.823.266;0;0;0;50.510.823.266
+107000419;Divisas pendientes de transferencia - Otros;389.132.504;0;0;4.878.644.099;5.267.776.603
+110000000;ACTIVOS FINANCIEROS PARA NEGOCIAR A VALOR RAZONABLE CON CAMBIOS EN RESULTADOS;11.382.689.201.827;69.253.410.948;0;0;11.451.942.612.775
+111000100;Contratos de derivados financieros;10.984.098.173.875;0;0;0;10.984.098.173.875
+111000101;Forwards;1.096.304.613.118;0;0;0;1.096.304.613.118
+111000102;Swaps;9.881.635.069.098;0;0;0;9.881.635.069.098
+111000103;Opciones Call;2.701.610.749;0;0;0;2.701.610.749
+111000104;Opciones Put;3.456.880.910;0;0;0;3.456.880.910
+111000105;Futuros;0;0;0;0;0
+111000109;Otros;0;0;0;0;0
+112000000;Instrumentos financieros de deuda;398.591.027.952;69.253.410.948;0;0;467.844.438.900
+112000100;Del Estado y Banco Central de Chile;398.591.027.952;63.418.019.515;0;0;462.009.047.467
+112000101;Instrumentos financieros de deuda del Banco Central de Chile;0;0;0;0;0
+112000102;Bonos y pagarés de la Tesorería General de la República;398.591.027.952;63.418.019.515;0;0;462.009.047.467
+112000109;Otros instrumentos financieros de deuda fiscales;0;0;0;0;0
+112000200;Otros instrumentos financieros de deuda emitidos en el país;0;5.835.391.433;0;0;5.835.391.433
+112000201;Instrumentos financieros de deuda de otros bancos del país;0;0;0;0;0
+112000202;Bonos y efectos de comercio de empresas del país;0;5.835.391.433;0;0;5.835.391.433
+112000209;Otros instrumentos financieros de deuda emitidos en el país;0;0;0;0;0
+112000300;Instrumentos financieros de deuda emitidos en el exterior;0;0;0;0;0
+112000301;Instrumentos financieros de deuda de Bancos Centrales en el exterior;0;0;0;0;0
+112000302;Instrumentos financieros de deuda de Gobiernos extranjeros y entidades fiscales en el exterior;0;0;0;0;0
+112000303;Instrumentos financieros de deuda de otros bancos en el exterior;0;0;0;0;0
+112000304;Bonos y efectos de comercio de empresas en el exterior;0;0;0;0;0
+112000309;Otros instrumentos financieros de deuda emitidos en el exterior;0;0;0;0;0
+113000000;Otros instrumentos financieros;0;0;0;0;0
+113000100;Inversiones en Fondos Mutuos;0;0;0;0;0
+113000101;Fondos mutuos administrados por sociedades relacionadas;0;0;0;0;0
+113000102;Fondos mutuos administrados por terceros;0;0;0;0;0
+113000200;Instrumentos de patrimonio;0;0;0;0;0
+113000201;Instrumentos de patrimonio en el país;0;0;0;0;0
+113000202;Instrumentos de patrimonio en el exterior;0;0;0;0;0
+113000300;Créditos originados y adquiridos por la entidad;0;0;0;0;0
+113000301;Adeudado por bancos;0;0;0;0;0
+113000302;Colocaciones comerciales;0;0;0;0;0
+113000303;Colocaciones para vivienda;0;0;0;0;0
+113000304;Colocaciones de consumo;0;0;0;0;0
+113000400;Otros;0;0;0;0;0
+115000000;ACTIVOS FINANCIEROS NO DESTINADOS A NEGOCIACIÓN VALORADOS OBLIGATORIAMENTE A VALOR RAZONABLE CON CAMBIOS EN RESULTADOS;0;0;0;0;0
+115250000;Instrumentos financieros de deuda;0;0;0;0;0
+115250100;Del Estado y Banco Central de Chile;0;0;0;0;0
+115250101;Instrumentos financieros de deuda del Banco Central de Chile;0;0;0;0;0
+115250102;Bonos y pagarés de la Tesorería General de la República;0;0;0;0;0
+115250109;Otros instrumentos financieros de deuda fiscales;0;0;0;0;0
+115250200;Otros instrumentos financieros de deuda emitidos en el país;0;0;0;0;0
+115250201;Instrumentos financieros de deuda de otros bancos del país;0;0;0;0;0
+115250202;Bonos y efectos de comercio de empresas del país;0;0;0;0;0
+115250209;Otros instrumentos financieros de deuda emitidos en el país;0;0;0;0;0
+115250300;Instrumentos financieros de deuda emitidos en el exterior;0;0;0;0;0
+115250301;Instrumentos financieros de deuda de Bancos Centrales en el exterior;0;0;0;0;0
+115250302;Instrumentos financieros de deuda de Gobiernos extranjeros y entidades fiscales en el exterior;0;0;0;0;0
+115250303;Instrumentos financieros de deuda de otros bancos en el exterior;0;0;0;0;0
+115250304;Bonos y efectos de comercio de empresas en el exterior;0;0;0;0;0
+115250309;Otros instrumentos financieros de deuda emitidos en el exterior;0;0;0;0;0
+115500000;Otros instrumentos financieros;0;0;0;0;0
+115500100;Inversiones en Fondos Mutuos;0;0;0;0;0
+115500101;Fondos mutuos administrados por sociedades relacionadas;0;0;0;0;0
+115500102;Fondos mutuos administrados por terceros;0;0;0;0;0
+115500300;Créditos originados y adquiridos por la entidad;0;0;0;0;0
+115500301;Adeudado por bancos;0;0;0;0;0
+115500302;Colocaciones comerciales;0;0;0;0;0
+115500303;Colocaciones para vivienda;0;0;0;0;0
+115500304;Colocaciones de consumo;0;0;0;0;0
+115500400;Otros;0;0;0;0;0
+118000000;ACTIVOS FINANCIEROS DESIGNADOS A VALOR RAZONABLE CON CAMBIOS EN RESULTADOS;0;0;0;0;0
+118250000;Instrumentos financieros de deuda;0;0;0;0;0
+118250100;Del Estado y Banco Central de Chile;0;0;0;0;0
+118250101;Instrumentos financieros de deuda del Banco Central de Chile;0;0;0;0;0
+118250102;Bonos y pagarés de la Tesorería General de la República;0;0;0;0;0
+118250109;Otros instrumentos financieros de deuda fiscales;0;0;0;0;0
+118250200;Otros instrumentos financieros de deuda emitidos en el país;0;0;0;0;0
+118250201;Instrumentos financieros de deuda de otros bancos del país;0;0;0;0;0
+118250202;Bonos y efectos de comercio de empresas del país;0;0;0;0;0
+118250209;Otros instrumentos financieros de deuda emitidos en el país;0;0;0;0;0
+118250300;Instrumentos financieros de deuda emitidos en el exterior;0;0;0;0;0
+118250301;Instrumentos financieros de deuda de Bancos Centrales en el exterior;0;0;0;0;0
+118250302;Instrumentos financieros de deuda de Gobiernos extranjeros y entidades fiscales en el exterior;0;0;0;0;0
+118250303;Instrumentos financieros de deuda de otros bancos en el exterior;0;0;0;0;0
+118250304;Bonos y efectos de comercio de empresas en el exterior;0;0;0;0;0
+118250309;Otros instrumentos financieros de deuda emitidos en el exterior;0;0;0;0;0
+118500000;Otros instrumentos financieros;0;0;0;0;0
+118500300;Créditos originados y adquiridos por la entidad;0;0;0;0;0
+118500301;Adeudado por bancos;0;0;0;0;0
+118500302;Colocaciones comerciales;0;0;0;0;0
+118500303;Colocaciones para vivienda;0;0;0;0;0
+118500304;Colocaciones de consumo;0;0;0;0;0
+118500400;Otros;0;0;0;0;0
+120000000;ACTIVOS FINANCIEROS A VALOR RAZONABLE CON CAMBIOS EN OTRO RESULTADO INTEGRAL;1.637.415.809.745;341.787.313.142;0;1.418.167.811.802;3.397.370.934.689
+122000000;Instrumentos financieros de deuda;1.626.612.411.387;332.940.351.022;0;1.399.677.717.071;3.359.230.479.480
+122000100;Del Estado y Banco Central de Chile;1.626.612.411.387;327.422.065.782;0;0;1.954.034.477.169
+122000101;Instrumentos financieros de deuda del Banco Central de Chile;0;0;0;0;0
+122000102;Bonos y pagarés de la Tesorería General de la República;1.626.612.411.387;327.101.429.793;0;0;1.953.713.841.180
+122000109;Otros instrumentos financieros de deuda fiscales;0;320.635.989;0;0;320.635.989
+122000200;Otros instrumentos financieros de deuda emitidos en el país;0;5.518.285.240;0;0;5.518.285.240
+122000201;Instrumentos financieros de deuda de otros bancos del país;0;5.518.285.240;0;0;5.518.285.240
+122000202;Bonos y efectos de comercio de empresas del país;0;0;0;0;0
+122000209;Otros instrumentos financieros de deuda emitidos en el país;0;0;0;0;0
+122000300;Instrumentos financieros de deuda emitidos en el exterior;0;0;0;1.399.677.717.071;1.399.677.717.071
+122000301;Instrumentos financieros de deuda de Bancos Centrales en el exterior;0;0;0;0;0
+122000302;Instrumentos financieros de deuda de Gobiernos extranjeros y entidades fiscales en el exterior;0;0;0;1.085.371.880.059;1.085.371.880.059
+122000303;Instrumentos financieros de deuda de otros bancos en el exterior;0;0;0;0;0
+122000304;Bonos y efectos de comercio de empresas en el exterior;0;0;0;0;0
+122000309;Otros instrumentos financieros de deuda emitidos en el exterior;0;0;0;314.305.837.012;314.305.837.012
+123000000;Otros instrumentos financieros;10.803.398.358;8.846.962.120;0;18.490.094.731;38.140.455.209
+123000300;Créditos originados y adquiridos por la entidad;10.803.398.358;8.846.962.120;0;18.490.094.731;38.140.455.209
+123000301;Adeudado por bancos;0;0;0;0;0
+123000302;Colocaciones comerciales;10.803.398.358;8.846.962.120;0;18.490.094.731;38.140.455.209
+123000303;Colocaciones para vivienda;0;0;0;0;0
+123000304;Colocaciones de consumo;0;0;0;0;0
+123000400;Otros;0;0;0;0;0
+130000000;CONTRATOS DE DERIVADOS FINANCIEROS PARA COBERTURA CONTABLE;469.228.394.853;0;0;0;469.228.394.853
+130000100;Contratos de derivados financieros para cobertura contable;469.228.394.853;0;0;0;469.228.394.853
+130000101;Forwards;211.148.706;0;0;0;211.148.706
+130000102;Swaps;469.017.246.147;0;0;0;469.017.246.147
+130000103;Opciones Call;0;0;0;0;0
+130000104;Opciones Put;0;0;0;0;0
+130000105;Futuros;0;0;0;0;0
+130000190;Otros;0;0;0;0;0
+140000000;ACTIVOS FINANCIEROS A COSTO AMORTIZADO;14.864.401.856.423;25.708.130.519.241;165.483.349;3.500.611.397.493;44.073.309.256.506
+141000000;Derechos por pactos de retroventa y prestamos de valores;128.904.876.493;0;0;35.554.047.800;164.458.924.293
+141000100;Operaciones con bancos del país;0;0;0;0;0
+141000101;Contratos de retroventa con otros bancos;0;0;0;0;0
+141000102;Contratos de retroventa con Banco Central de Chile;0;0;0;0;0
+141000103;Derechos por préstamos de valores;0;0;0;0;0
+141000200;Operaciones con bancos del exterior;0;0;0;0;0
+141000201;Contratos de retroventa con otros bancos;0;0;0;0;0
+141000202;Contratos de retroventa con Bancos Centrales del exterior;0;0;0;0;0
+141000203;Derechos por préstamos de valores;0;0;0;0;0
+141000300;Operaciones con otras entidades en el país;128.949.579.877;0;0;35.554.047.800;164.503.627.677
+141000301;Contratos de retroventa;128.949.579.877;0;0;35.554.047.800;164.503.627.677
+141000302;Derechos por préstamos de valores;0;0;0;0;0
+141000400;Operaciones con otras entidades en el exterior;0;0;0;0;0
+141000401;Contratos de retroventa;0;0;0;0;0
+141000402;Derechos por préstamos de valores;0;0;0;0;0
+141000900;Deterioro de valor acumulado de activos financieros a costo amortizado - Derechos por pactos de retroventa y prestamos de valores;-44.703.384;0;0;0;-44.703.384
+141000901;Activos financieros sin un aumento significativo del riesgo de crédito desde el reconocimiento inicial (fase 1);-44.703.384;0;0;0;-44.703.384
+141000902;Activos financieros con un aumento significativo del riesgo de crédito desde el reconocimiento inicial, pero sin deterioro crediticio (fase 2);0;0;0;0;0
+141000903;Activos financieros con deterioro crediticio (fase 3);0;0;0;0;0
+141500000;Instrumentos financieros de deuda;3.019.147.454.545;1.764.474.018.505;0;0;4.783.621.473.050
+141500100;Del Estado y Banco Central de Chile;3.019.773.910.621;1.764.840.136.916;0;0;4.784.614.047.537
+141500101;Instrumentos financieros de deuda del Banco Central de Chile;0;0;0;0;0
+141500102;Bonos y pagarés de la Tesorería General de la República;3.019.773.910.621;1.764.840.136.916;0;0;4.784.614.047.537
+141500109;Otros instrumentos financieros de deuda fiscales;0;0;0;0;0
+141500200;Otros instrumentos financieros de deuda emitidos en el país;0;0;0;0;0
+141500201;Instrumentos financieros de deuda de otros bancos del país;0;0;0;0;0
+141500202;Bonos y efectos de comercio de empresas del país;0;0;0;0;0
+141500209;Otros instrumentos financieros de deuda emitidos en el país;0;0;0;0;0
+141500300;Instrumentos financieros de deuda emitidos en el exterior;0;0;0;0;0
+141500301;Instrumentos financieros de deuda de Bancos Centrales en el exterior;0;0;0;0;0
+141500302;Instrumentos financieros de deuda de Gobiernos extranjeros y entidades fiscales en el exterior;0;0;0;0;0
+141500303;Instrumentos financieros de deuda de otros bancos en el exterior;0;0;0;0;0
+141500304;Bonos y efectos de comercio de empresas en el exterior;0;0;0;0;0
+141500309;Otros instrumentos financieros de deuda emitidos en el exterior;0;0;0;0;0
+141500900;Deterioro de valor acumulado de activos financieros a costo amortizado - Instrumentos financieros de deuda;-626.456.076;-366.118.411;0;0;-992.574.487
+141500901;Activos financieros sin un aumento significativo del riesgo de crédito desde el reconocimiento inicial (fase 1);-626.456.076;-366.118.411;0;0;-992.574.487
+141500902;Activos financieros con un aumento significativo del riesgo de crédito desde el reconocimiento inicial, pero sin deterioro crediticio (fase 2);0;0;0;0;0
+141500903;Activos financieros con deterioro crediticio (fase 3);0;0;0;0;0
+143000000;Adeudado por bancos;1;0;0;2.126.176.736;2.126.176.737
+143100100;Banco del país;1;0;0;0;1
+143100101;Préstamos interbancarios de liquidez;0;0;0;0;0
+143100102;Préstamos interbancarios comerciales;0;0;0;0;0
+143100103;Sobregiros en cuentas corrientes;0;0;0;0;0
+143100104;Créditos comercio exterior exportaciones chilenas;0;0;0;0;0
+143100105;Créditos comercio exterior importaciones chilenas;0;0;0;0;0
+143100106;Créditos comercio exterior entre terceros países;0;0;0;0;0
+143100107;Depósitos no transferibles en bancos del país;0;0;0;0;0
+143100190;Otras acreencias con bancos del país;1;0;0;0;1
+143150100;Provisiones para créditos con bancos del país;0;0;0;0;0
+143150101;Provisiones evaluación individual - cartera normal;0;0;0;0;0
+143150102;Provisiones evaluación individual - cartera subestándar;0;0;0;0;0
+143150103;Provisiones evaluación individual - cartera en incumplimiento;0;0;0;0;0
+143200100;Bancos del exterior;0;0;0;2.129.355.195;2.129.355.195
+143200101;Préstamos interbancarios de liquidez;0;0;0;0;0
+143200102;Préstamos interbancarios comerciales;0;0;0;0;0
+143200103;Sobregiros en cuentas corrientes;0;0;0;0;0
+143200104;Créditos comercio exterior exportaciones chilenas;0;0;0;2.129.355.195;2.129.355.195
+143200105;Créditos comercio exterior importaciones chilenas;0;0;0;0;0
+143200106;Créditos comercio exterior entre terceros países;0;0;0;0;0
+143200107;Depósitos en cuenta corriente en bancos del exterior por operaciones de derivados;0;0;0;0;0
+143200108;Otros depósitos no transferibles en bancos del exterior;0;0;0;0;0
+143200190;Otras acreencias con bancos del exterior;0;0;0;0;0
+143250100;Provisiones para créditos con bancos del exterior;0;0;0;-3.178.459;-3.178.459
+143250101;Provisiones evaluación individual - cartera normal;0;0;0;-3.178.459;-3.178.459
+143250102;Provisiones evaluación individual - cartera subestándar;0;0;0;0;0
+143250103;Provisiones evaluación individual - cartera en incumplimiento;0;0;0;0;0
+143300100;Banco Central de Chile;0;0;0;0;0
+143300101;Depósitos en cuenta corriente del Banco Central de Chile por operaciones de derivados con una contraparte central;0;0;0;0;0
+143300102;Otros depósitos en el Banco Central de Chile no disponibles;0;0;0;0;0
+143300103;Otras acreencias con el Banco Central de Chile;0;0;0;0;0
+143400100;Bancos Centrales del exterior;0;0;0;0;0
+143400101;Depósitos en cuenta corriente de Bancos Centrales del exterior por operaciones de derivados;0;0;0;0;0
+143400102;Otros depósitos en Bancos Centrales del exterior no disponibles;0;0;0;0;0
+143400103;Otras acreencias con Bancos Centrales del exterior;0;0;0;0;0
+144000000;Créditos y cuentas por cobrar a clientes;11.716.349.525.384;23.943.656.500.736;165.483.349;3.462.931.172.957;39.123.102.682.426
+145000000;Colocaciones comerciales;7.117.372.647.162;6.367.466.521.312;165.483.349;3.524.395.598.529;17.009.400.250.352
+145400100;Préstamos comerciales;5.707.207.394.645;5.666.926.898.059;0;1.545.323.775.600;12.919.458.068.304
+145400101;Préstamos en el país;5.707.207.394.645;5.666.901.432.976;0;1.545.323.775.600;12.919.432.603.221
+145400102;Préstamos en el exterior;0;0;0;0;0
+145400103;Créditos para infraestructura escolar Ley N° 20.845;0;0;0;0;0
+145400104;Préstamos con letras de crédito para fines generales;0;13.096.757;0;0;13.096.757
+145400105;Préstamos con mutuos hipotecarios endosables para fines generales;0;12.368.326;0;0;12.368.326
+145400106;Préstamos con mutuos hipotecarios no endosables para fines generales;0;0;0;0;0
+145400200;Créditos de comercio exterior;136.416.506.546;2.693.514;78.289.192;1.598.638.060.331;1.735.135.549.583
+145400201;Acreditivos negociados a plazo de exportaciones chilenas;0;0;0;0;0
+145400202;Otros créditos para exportaciones chilenas;50.216.594.943;0;0;878.279.647.653;928.496.242.596
+145400203;Acreditivos negociados a plazo de importaciones chilenas;0;0;78.286.814;274.637.704.807;274.715.991.621
+145400204;Otros créditos para importaciones chilenas;86.199.911.603;2.693.514;0;444.613.924.667;530.816.529.784
+145400205;Acreditivos negociados a plazo de operaciones entre terceros países;0;0;2.378;1.106.783.204;1.106.785.582
+145400290;Otros créditos para operaciones entre terceros países;0;0;0;0;0
+145400300;Deudores en cuentas corrientes;128.545.371.232;0;0;2.361.507.374;130.906.878.606
+145400400;Deudores por tarjetas de crédito;129.758.642.631;0;0;10.780.536.022;140.539.178.653
+145400401;Créditos por tarjetas de crédito;122.021.311.460;0;0;10.780.536.022;132.801.847.482
+145400402;Utilizaciones de tarjetas de crédito por cobrar;7.737.331.171;0;0;0;7.737.331.171
+145400500;Operaciones de factoraje;564.684.548.318;3.022.834.731;22.464.473;271.440.570.334;839.170.417.856
+145400501;Factoring con responsabilidad;208.753.960.246;2.498.721.527;0;43.024.224.844;254.276.906.617
+145400502;Factoring sin responsabilidad;355.930.588.072;524.113.204;22.464.473;228.416.345.490;584.893.511.239
+145400600;Operaciones de leasing financiero comerciales;372.508.096.147;650.161.497.627;0;92.276.940.820;1.114.946.534.594
+145400601;Leasing por bienes inmobiliarios;75.097.752.726;551.436.281.079;0;22.337.873.813;648.871.907.618
+145400602;Leasing por bienes no inmobiliarios;297.410.343.421;98.725.216.548;0;69.939.067.007;466.074.626.976
+145400700;Préstamos estudiantiles;0;40.528.856.887;0;0;40.528.856.887
+145400701;Créditos para estudios superiores Ley N° 20.027 (CAE);0;25.762.479.121;0;0;25.762.479.121
+145400702;Créditos con garantía CORFO;0;0;0;0;0
+145400703;Otros créditos para estudios superiores;0;14.766.377.766;0;0;14.766.377.766
+145400900;Otros créditos y cuentas por cobrar;78.252.087.643;6.823.740.494;64.729.684;3.574.208.048;88.714.765.869
+145400901;Deudores por pago de obligaciones avaladas;0;0;0;0;0
+145400902;Deudores por boletas de garantía pagadas;1.560.460.007;167.472.187;0;0;1.727.932.194
+145400990;Otras cuentas por cobrar;76.691.627.636;6.656.268.307;64.729.684;3.574.208.048;86.986.833.675
+146000000;Colocaciones para vivienda;3.735.767.661;17.572.848.582.703;0;0;17.576.584.350.364
+146000100;Préstamos con letras de crédito para vivienda;0;129.835.051;0;0;129.835.051
+146000200;Préstamos con mutuos hipotecarios endosable;0;553.731.207;0;0;553.731.207
+146000300;Préstamos con mutuos financiados con bonos hipotecarios;2.788.159.422;84.082.899.854;0;0;86.871.059.276
+146000400;Otros créditos con mutuos para vivienda;902.761.488;17.410.221.040.667;0;0;17.411.123.802.155
+146000401;Otros créditos con mutuos no endosables para vivienda;902.761.488;17.195.185.485.523;0;0;17.196.088.247.011
+146000402;Otros créditos con mutuos para vivienda;0;215.035.555.144;0;0;215.035.555.144
+146000500;Operaciones de leasing financiero para vivienda;0;0;0;0;0
+146000900;Otros créditos y cuentas por cobrar;44.846.751;77.861.075.924;0;0;77.905.922.675
+146000901;Créditos complementarios a los mutuos;6.328.000;417.958.885;0;0;424.286.885
+146000902;Créditos de enlace;0;0;0;0;0
+146000903;Créditos provenientes de la ANAP;0;0;0;0;0
+146000909;Cuentas por cobrar a deudores para vivienda;38.518.751;77.443.117.039;0;0;77.481.635.790
+148000000;Colocaciones de consumo;5.643.709.679.936;3.341.396.721;0;89.435.354.710;5.736.486.431.367
+148000100;Créditos de consumo en cuotas;3.795.582.155.712;3.181.610.928;0;0;3.798.763.766.640
+148000200;Deudores en cuentas corrientes;145.572.786.642;0;0;2.050.166;145.574.836.808
+148000300;Deudores por tarjetas de crédito;1.700.585.987.318;0;0;89.433.304.544;1.790.019.291.862
+148000301;Créditos por tarjetas de crédito;1.550.342.043.246;0;0;89.433.304.544;1.639.775.347.790
+148000302;Utilizaciones de tarjetas de crédito por cobrar;150.243.944.072;0;0;0;150.243.944.072
+148000400;Operaciones de leasing financiero de consumo;1.447.474.873;159.785.793;0;0;1.607.260.666
+148000900;Otros créditos y cuentas por cobrar;521.275.391;0;0;0;521.275.391
+148000901;Créditos de consumo rotativos;0;0;0;0;0
+148000902;Cuentas por cobrar a deudores de consumo;521.275.391;0;0;0;521.275.391
+149000000;Provisiones constituidas por riesgo de crédito;-1.048.468.569.375;0;0;-150.899.780.282;-1.199.368.349.657
+149500100;Provisiones de colocaciones comerciales;-541.449.978.060;0;0;-150.134.011.326;-691.583.989.386
+149500101;Provisiones evaluación individual - cartera normal;-64.018.743.213;0;0;-44.551.571.021;-108.570.314.234
+149500102;Provisiones evaluación individual - cartera subestándar;-23.829.968.062;0;0;-11.002.900.927;-34.832.868.989
+149500103;Provisiones evaluación individual - cartera en incumplimiento;-187.482.219.585;0;0;-88.954.181.060;-276.436.400.645
+149500104;Provisiones evaluación grupal - cartera normal;-70.705.897.209;0;0;-2.389.236.660;-73.095.133.869
+149500105;Provisiones evaluación grupal - cartera en incumplimiento;-190.149.489.173;0;0;-3.236.121.658;-193.385.610.831
+149500109;Provisiones por deducible de garantías de FOGAPE Covid-19;-5.263.660.818;0;0;0;-5.263.660.818
+149600100;Provisiones de colocaciones para vivienda;-155.944.487.253;0;0;0;-155.944.487.253
+149600101;Provisiones evaluación grupal - cartera normal;-34.022.824.046;0;0;0;-34.022.824.046
+149600102;Provisiones evaluación grupal - cartera en incumplimiento;-121.921.663.207;0;0;0;-121.921.663.207
+149700100;Provisiones de colocaciones de consumo;-351.074.104.062;0;0;-765.768.956;-351.839.873.018
+149700101;Provisiones evaluación grupal - cartera normal;-166.605.128.156;0;0;-746.461.217;-167.351.589.373
+149700102;Provisiones evaluación grupal - cartera en incumplimiento;-184.468.975.906;0;0;-19.307.739;-184.488.283.645
+150000000;INVERSIONES EN SOCIEDADES;57.467.510.948;0;0;0;57.467.510.948
+150000100;Sociedades controladas en el país;0;0;0;0;0
+150000200;Sociedades controladas en el exterior;0;0;0;0;0
+150000201;Sucursales controladas en el exterior;0;0;0;0;0
+150000202;Otras sociedades controladas en el exterior;0;0;0;0;0
+150000300;Sociedades con influencia significativa en el país;54.332.408.031;0;0;0;54.332.408.031
+150000400;Sociedades con influencia significativa en el exterior;0;0;0;0;0
+150000500;Inversiones en sociedades como un negocio conjunto en el país;0;0;0;0;0
+150000600;Inversiones en sociedades como un negocio conjunto en el exterior;0;0;0;0;0
+150000700;Inversiones minoritarias en otras sociedades en el país;3.135.102.917;0;0;0;3.135.102.917
+150000800;Inversiones minoritarias en otras sociedades en el exterior;0;0;0;0;0
+160000000;ACTIVOS INTANGIBLES;89.376.799.409;0;0;0;89.376.799.409
+160000100;Goodwill por combinaciones de negocio;0;0;0;0;0
+160000200;Otros intangibles originados en combinaciones de negocios;0;0;0;0;0
+160000201;Relación con clientes;0;0;0;0;0
+160000202;Contrato de exclusividad;0;0;0;0;0
+160000203;Depósitos estables (¿core deposit¿);0;0;0;0;0
+160000204;Derecho a usar marcas;0;0;0;0;0
+160000205;Derecho a usar canales;0;0;0;0;0
+160000206;Contrato para recaudación de servicios;0;0;0;0;0
+160000207;Software o programas computacionales;0;0;0;0;0
+160000208;Derechos de servicios de créditos hipotecarios (¿mortgage servicing rights¿);0;0;0;0;0
+160000209;Otros intangibles;0;0;0;0;0
+160000219;Amortizaciones acumuladas;0;0;0;0;0
+160000300;Otros activos intangibles originados en forma independiente;89.376.799.409;0;0;0;89.376.799.409
+160000301;Software o programas computacionales adquiridos en forma independiente;0;0;0;0;0
+160000302;Software o programas computacionales generados internamente;410.386.959.882;0;0;0;410.386.959.882
+160000303;Derechos de servicios de créditos hipotecarios (¿mortgage servicing rights¿);0;0;0;0;0
+160000309;Otros intangibles;0;0;0;0;0
+160000319;Amortizaciones acumuladas;-321.010.160.473;0;0;0;-321.010.160.473
+170000000;ACTIVOS FIJOS;193.183.629.032;0;0;0;193.183.629.032
+170000100;Edificios y terrenos;99.644.142.747;0;0;0;99.644.142.747
+170000101;Edificios;181.284.183.752;0;0;0;181.284.183.752
+170000102;Terrenos;14.141.871.588;0;0;0;14.141.871.588
+170000119;Depreciaciones acumuladas;-95.781.912.593;0;0;0;-95.781.912.593
+170000200;Otros activos fijos;93.539.486.285;0;0;0;93.539.486.285
+170000201;Equipos;368.713.814.677;0;0;0;368.713.814.677
+170000209;Otros activos fijos;98.100.104.869;0;0;0;98.100.104.869
+170000219;Depreciaciones acumuladas;-373.274.433.261;0;0;0;-373.274.433.261
+175000000;ACTIVOS POR DERECHO A USAR BIENES EN ARRENDAMIENTO;0;130.360.233.310;0;0;130.360.233.310
+175000100;Edificios y terrenos;0;77.334.310.306;0;0;77.334.310.306
+175000101;Edificios;0;191.545.156.632;0;0;191.545.156.632
+175000102;Terrenos;0;0;0;0;0
+175000119;Depreciaciones acumuladas;0;-114.210.846.326;0;0;-114.210.846.326
+175000200;Mejoras en inmuebles arrendados;0;53.025.923.004;0;0;53.025.923.004
+175000201;Mejoras en inmuebles arrendados;0;139.980.408.659;0;0;139.980.408.659
+175000219;Depreciaciones acumuladas;0;-86.954.485.655;0;0;-86.954.485.655
+175000300;Otros activos fijos;0;0;0;0;0
+175000301;Equipos;0;0;0;0;0
+175000309;Otros activos fijos;0;0;0;0;0
+175000319;Depreciaciones acumuladas;0;0;0;0;0
+175000400;Otros activos intangibles;0;0;0;0;0
+175000401;Programas computacionales;0;0;0;0;0
+175000409;Otros intangibles;0;0;0;0;0
+175000419;Amortizaciones acumuladas;0;0;0;0;0
+180000000;IMPUESTOS CORRIENTES;135.369.620;0;0;0;135.369.620
+185000000;IMPUESTOS DIFERIDOS;437.546.707.541;0;0;0;437.546.707.541
+190000000;OTROS ACTIVOS;994.816.029.342;14.652.839.134;3.473.082.226;1.761.677.968.489;2.774.619.919.191
+190000100;Activos para ceder en leasing financiero como arrendador;12.271.432.264;11.369.245.372;3.461.685.110;14.872.437.377;41.974.800.123
+190000101;Cartera comercial;12.165.332.363;0;0;14.872.437.377;27.037.769.740
+190000102;Cartera vivienda;0;0;0;0;0
+190000103;Cartera consumo;106.099.901;11.369.245.372;3.461.685.110;0;14.937.030.383
+190000200;Garantías en efectivo entregadas por operaciones financieras de derivados;85.941.040.935;0;0;1.727.512.255.633;1.813.453.296.568
+190000201;Garantías en efectivo entregadas por operaciones financieras de derivados con una entidad de contraparte central en el país;0;0;0;0;0
+190000202;Garantías en efectivo entregadas por operaciones financieras de derivados con una entidad de contraparte central en el exterior;0;0;0;115.376.971.408;115.376.971.408
+190000203;Garantías en efectivo entregadas por operaciones financieras de derivados con otras contrapartes en el país;85.941.040.935;0;0;0;85.941.040.935
+190000204;Garantías en efectivo entregadas por operaciones financieras de derivados con otras contrapartes en el exterior;0;0;0;1.612.135.284.225;1.612.135.284.225
+190000300;Deudores por intermediación de instrumentos financieros;62.343.045.321;0;0;0;62.343.045.321
+190000301;Deudores por intermediación de operaciones a término;61.460.802.268;0;0;0;61.460.802.268
+190000302;Deudores por intermediación de operaciones a plazo (simultaneas);882.243.053;0;0;0;882.243.053
+190000303;Otras cuentas por cobrar por intermediación de instrumentos financieros;0;0;0;0;0
+190000400;Cuentas por cobrar por uso de tarjetas de pago con provisión de fondos;0;0;0;0;0
+190000401;Comisiones por cobrar a titulares o portadores de tarjetas de pago con provisión de fondos de tarjetas nominativas;0;0;0;0;0
+190000402;Comisiones por cobrar a titulares o portadores de tarjetas de pago con provisión de fondos de tarjetas innominadas;0;0;0;0;0
+190000500;Cuentas por cobrar a terceros;179.473.772.104;2.352.861.789;0;0;181.826.633.893
+190000501;Cuentas por cobrar a sociedades con influencia significativa o negocio conjunto por servicios prestados;0;0;0;0;0
+190000502;Cuentas por cobrar a otras sociedades con participación minoritaria por servicios prestados;0;0;0;0;0
+190000503;Cuentas por cobrar a la Tesorería General de la República y otros organismos fiscales;129.978.558.793;2.352.861.789;0;0;132.331.420.582
+190000504;Cuentas por cobrar relacionado con préstamos estudiantiles;0;0;0;0;0
+190000505;Cuentas por cobrar relacionado con operaciones de leasing financiero;0;0;0;0;0
+190000509;Otras cuentas y documentos por cobrar a terceros;49.495.213.311;0;0;0;49.495.213.311
+190000600;Cuentas por cobrar a filiales del banco por servicios prestados (aplica solo a nivel individual del banco);0;0;0;0;0
+190000700;Propiedades de inversión;0;0;0;0;0
+190000701;Propiedades de inversión;0;0;0;0;0
+190000702;Depreciaciones acumuladas;0;0;0;0;0
+190000800;IVA crédito fiscal por cobrar;12.904.582.869;0;0;0;12.904.582.869
+190000900;Gastos pagados por anticipado;120.486.798.013;0;0;0;120.486.798.013
+190001000;Ajustes de valorización por macro coberturas;280.204.738.476;0;0;0;280.204.738.476
+190001100;Activos para respaldar obligaciones por planes post-empleo de beneficios definidos;369.257.722;0;0;0;369.257.722
+190001200;Activo por ingresos de actividades habituales procedentes de contratos con clientes;0;0;0;0;0
+190001300;Inversiones en oro;1.049.080.083;0;0;0;1.049.080.083
+190001400;Otras garantías en efectivo entregadas;74.564.242.616;0;0;0;74.564.242.616
+190001500;Operaciones pendientes;6.629.350.604;0;0;7.068.308.102;13.697.658.706
+190002900;Otros activos;161.864.407.138;930.731.973;11.397.116;12.224.967.377;175.031.503.604
+192500100;Deterioro de valor acumulado respecto de otros activos por cobrar;-3.285.718.803;0;0;0;-3.285.718.803
+192500101;Otros activos sin un aumento significativo del riesgo de crédito desde el reconocimiento inicial (fase 1);-3.285.718.803;0;0;0;-3.285.718.803
+192500102;Otros activos con un aumento significativo del riesgo de crédito desde el reconocimiento inicial, pero sin deterioro crediticio (fase 2);0;0;0;0;0
+192500103;Otros activos con deterioro crediticio (fase 3);0;0;0;0;0
+195000000;ACTIVOS NO CORRIENTES Y GRUPOS ENAJENABLES PARA LA VENTA;47.023.485.189;0;0;0;47.023.485.189
+195000100;Bienes recibidos en pago o adjudicados en remate judicial;45.437.364.195;0;0;0;45.437.364.195
+195000101;Bienes recibidos en pago;16.780.523.809;0;0;0;16.780.523.809
+195000102;Bienes adjudicados en remate judicial;31.320.695.608;0;0;0;31.320.695.608
+195000103;Provisiones por bienes recibidos en pago o adjudicados en remate judicial;-2.663.855.222;0;0;0;-2.663.855.222
+195000200;Activos no corrientes para la venta;1.586.120.994;0;0;0;1.586.120.994
+195000201;Inversiones en sociedades;0;0;0;0;0
+195000202;Activos intangibles;0;0;0;0;0
+195000203;Activos fijos;0;0;0;0;0
+195000204;Activos por recuperación de bienes cedidos en operaciones de leasing financiero;1.586.120.994;0;0;0;1.586.120.994
+195000219;Otros activos;0;0;0;0;0
+195000300;Grupos enajenables para la venta;0;0;0;0;0
+200000000;TOTAL PASIVOS;39.800.560.730.869;7.062.890.343.964;101.841.348;14.702.551.362.880;61.566.104.279.061
+207000000;OPERACIONES CON LIQUIDACION EN CURSO;346.491.962.596;0;0;474.368.573.100;820.860.535.696
+207000100;Transferencias de fondos en curso con una contraparte central;0;0;0;0;0
+207000101;Fondos pendientes de transferencia por operaciones en la cámara de swaps;0;0;0;0;0
+207000102;Fondos pendientes de transferencia por operaciones en la cámara de forwards;0;0;0;0;0
+207000200;Transferencias de fondos en curso a través de una cámara de compensación de alto valor;0;0;0;0;0
+207000300;Otras transferencias de fondos en curso con Bancos u Otros;346.491.962.596;0;0;474.368.573.100;820.860.535.696
+207000301;Pagos de contrapartes por liquidar - Bancos;282.058.117.239;0;0;0;282.058.117.239
+207000309;Divisas pendientes de transferencia - Bancos;0;0;0;448.908.379.848;448.908.379.848
+207000311;Pagos de contrapartes por liquidar - Otros;62.261.296.977;0;0;0;62.261.296.977
+207000319;Divisas pendientes de transferencia - Otros;2.172.548.380;0;0;25.460.193.252;27.632.741.632
+210000000;PASIVOS FINANCIEROS PARA NEGOCIAR A VALOR RAZONABLE CON CAMBIOS EN RESULTADOS;10.864.364.594.237;0;0;0;10.864.364.594.237
+211000100;Contratos de derivados financieros;10.864.364.594.237;0;0;0;10.864.364.594.237
+211000101;Forwards;1.153.256.402.347;0;0;0;1.153.256.402.347
+211000102;Swaps;9.705.551.161.982;0;0;0;9.705.551.161.982
+211000103;Opciones Call;606.181.432;0;0;0;606.181.432
+211000104;Opciones Put;4.950.848.476;0;0;0;4.950.848.476
+211000105;Futuros;0;0;0;0;0
+211000190;Otros;0;0;0;0;0
+213000100;Otros instrumentos financieros;0;0;0;0;0
+213000101;Depósitos y otras obligaciones a la vista;0;0;0;0;0
+213000102;Depósitos y otras captaciones a plazo;0;0;0;0;0
+213000103;Instrumentos de deuda emitidos;0;0;0;0;0
+213000109;Otros;0;0;0;0;0
+218000000;PASIVOS FINANCIEROS DESIGNADOS A VALOR RAZONABLE CON CAMBIOS EN RESULTADOS;0;0;0;0;0
+218000001;Depósitos y otras obligaciones a la vista;0;0;0;0;0
+218000002;Depósitos y otras captaciones a plazo;0;0;0;0;0
+218000003;Instrumentos de deuda emitidos;0;0;0;0;0
+218000009;Otros;0;0;0;0;0
+230000000;CONTRATOS DE DERIVADOS FINANCIEROS PARA COBERTURA CONTABLE;1.099.087.827.519;0;0;0;1.099.087.827.519
+230000100;Contratos de derivados financieros para cobertura contable;1.099.087.827.519;0;0;0;1.099.087.827.519
+230000101;Forwards;43.987.951.404;0;0;0;43.987.951.404
+230000102;Swaps;1.055.099.876.115;0;0;0;1.055.099.876.115
+230000103;Opciones Call;0;0;0;0;0
+230000104;Opciones Put;0;0;0;0;0
+230000105;Futuros;0;0;0;0;0
+230000190;Otros;0;0;0;0;0
+240000000;PASIVOS FINANCIEROS A COSTO AMORTIZADO;26.087.182.726.726;5.267.547.204.599;9.295.277;11.702.888.405.825;43.057.627.632.427
+241000000;Depósitos y otras obligaciones a la vista;10.835.885.077.811;310.842.502.954;9.295.277;1.976.106.919.022;13.122.843.795.064
+241000100;Cuentas corrientes;9.191.294.153.393;0;0;1.828.173.385.432;11.019.467.538.825
+241000101;Cuentas corrientes de bancos del país;2.664.366.338;0;0;1.178.135.166;3.842.501.504
+241000102;Cuentas corrientes de bancos del exterior;1.984.823.871;0;0;0;1.984.823.871
+241000103;Cuentas corrientes de otras personas jurídicas;6.016.396.018.588;0;0;1.525.456.031.304;7.541.852.049.892
+241000104;Cuentas corrientes de personas naturales;3.170.248.944.596;0;0;301.539.218.962;3.471.788.163.558
+241000200;Cuentas de depósito a la vista;480.084.671.218;0;0;0;480.084.671.218
+241000201;Cuentas de ahorro a la vista;23.729.050.670;0;0;0;23.729.050.670
+241000202;Cuentas a la vista;456.355.620.548;0;0;0;456.355.620.548
+241000300;Otros depósitos a la vista;390.627.369.050;0;0;0;390.627.369.050
+241000301;Vales a la vista;390.627.369.050;0;0;0;390.627.369.050
+241000400;Obligaciones por cuentas de provisión de fondos para tarjetas de pago;1.249.999;0;0;0;1.249.999
+241000401;Cuentas de pago con provisión de fondos asociadas a tarjetas nominativas;1.249.999;0;0;0;1.249.999
+241000402;Cuentas de pago con provisión de fondos asociadas a tarjetas innominadas;0;0;0;0;0
+241000500;Otras obligaciones a la vista;773.877.634.151;310.842.502.954;9.295.277;147.933.533.590;1.232.662.965.972
+241000501;Préstamos otorgados para financiamiento de estudios superiores por enterar a los establecimientos educacionales.;0;0;0;0;0
+241000502;Obligaciones por créditos hipotecarios otorgados por enterar a otros bancos y/o inmobiliarias;0;0;0;0;0
+241000503;Obligaciones por otros créditos otorgados por enterar a otros bancos y/o al beneficiario del préstamo.;0;0;0;0;0
+241000504;Depósitos por consignaciones judiciales;0;0;0;0;0
+241000505;Boletas de garantías pagaderas a la vista;63.606.319.495;91.294.748.993;9.295.277;15.610.666.547;170.521.030.312
+241000506;Recaudaciones y cobranzas efectuadas por enterar;145.765.472.944;0;0;20.116.254;145.785.589.198
+241000507;Órdenes de pago pendientes;0;0;0;14.785.821.900;14.785.821.900
+241000508;Retenciones judiciales sobre obligaciones a la vista;0;0;0;0;0
+241000509;Pagos recibidos a cuenta de créditos por liquidar;12.176.288.255;0;0;0;12.176.288.255
+241000510;Saldos inmovilizados artículo 156 LGB;37.718.107.062;0;0;2.093.408.054;39.811.515.116
+241000511;Depósitos a plazo vencidos;41.625.036.071;0;0;12.008.549.333;53.633.585.404
+241000512;Acreencias vencidas por cuentas de provisión de fondos para tarjetas de pago innominadas;0;0;0;0;0
+241000513;Acreencias sin movimiento por cuentas de provisión de fondos para tarjetas de pago nominativas;0;0;0;0;0
+241000590;Otras obligaciones a la vista;472.986.410.324;219.547.753.961;0;103.414.971.502;795.949.135.787
+242000000;Depósitos y otras captaciones a plazo;12.630.870.199.371;862.596.585.014;0;3.000.774.448.457;16.494.241.232.842
+242000100;Depósitos a plazo;12.583.008.742.085;689.172.781.162;0;3.000.611.681.736;16.272.793.204.983
+242000200;Cuentas de ahorro a plazo;45.092.415.825;168.104.775.176;0;0;213.197.191.001
+242000201;Cuentas de ahorro a plazo con giro diferido;0;47.220.038.562;0;0;47.220.038.562
+242000202;Cuentas de ahorro a plazo con giro incondicional;45.092.415.825;120.884.736.614;0;0;165.977.152.439
+242000300;Otros saldos acreedores a plazo;2.769.041.461;5.319.028.676;0;162.766.721;8.250.836.858
+242000301;Boletas de garantías pagaderas con 30 días de aviso;2.769.041.461;5.319.028.676;0;162.766.721;8.250.836.858
+242000302;Depósitos en cuentas ¿overnight¿;0;0;0;0;0
+242000390;Otros;0;0;0;0;0
+243000000;Obligaciones por pactos de retrocompra y préstamos de valores;1.571.086.096.300;0;0;34.392.340.372;1.605.478.436.672
+243000100;Operaciones con bancos del país;1.179.640.671.722;0;0;0;1.179.640.671.722
+243000101;Contratos de retrocompra con otros bancos;349.508.102.277;0;0;0;349.508.102.277
+243000102;Contratos de retrocompra con Banco Central de Chile;830.132.569.445;0;0;0;830.132.569.445
+243000103;Obligaciones por préstamos de valores;0;0;0;0;0
+243000200;Operaciones con bancos del exterior;0;0;0;0;0
+243000201;Contratos de retrocompra con otros bancos;0;0;0;0;0
+243000202;Contratos de retrocompra con Bancos Centrales del exterior;0;0;0;0;0
+243000203;Obligaciones por préstamos de valores;0;0;0;0;0
+243000300;Operaciones con otras entidades en el país;391.445.424.578;0;0;34.392.340.372;425.837.764.950
+243000301;Contratos de retrocompra;391.445.424.578;0;0;34.392.340.372;425.837.764.950
+243000302;Obligaciones por préstamos de valores;0;0;0;0;0
+243000400;Operaciones con otras entidades en el exterior;0;0;0;0;0
+243000401;Contratos de retrocompra;0;0;0;0;0
+243000402;Obligaciones por préstamos de valores;0;0;0;0;0
+244000000;Obligaciones con bancos;44.210.163.333;0;0;3.492.538.540.427;3.536.748.703.760
+244250000;Bancos del país;44.210.163.333;0;0;0;44.210.163.333
+244250100;Financiamientos de comercio exterior;0;0;0;0;0
+244250101;Financiamientos para exportaciones chilenas;0;0;0;0;0
+244250102;Financiamientos para importaciones chilenas;0;0;0;0;0
+244250103;Obligaciones por operaciones entre terceros países;0;0;0;0;0
+244250200;Préstamos y otras obligaciones;44.210.163.333;0;0;0;44.210.163.333
+244250201;Préstamos interbancarios de liquidez;0;0;0;0;0
+244250202;Préstamos interbancarios comerciales;44.210.163.333;0;0;0;44.210.163.333
+244250203;Sobregiros en cuentas corrientes;0;0;0;0;0
+244250204;Depósitos a plazo no transferibles;0;0;0;0;0
+244250209;Otras obligaciones;0;0;0;0;0
+244500000;Bancos del exterior;0;0;0;3.492.538.540.427;3.492.538.540.427
+244500100;Financiamientos de comercio exterior;0;0;0;2.439.514.127.892;2.439.514.127.892
+244500101;Financiamientos para exportaciones chilenas;0;0;0;2.351.073.041.010;2.351.073.041.010
+244500102;Financiamientos para importaciones chilenas;0;0;0;88.375.467.295;88.375.467.295
+244500103;Obligaciones por operaciones entre terceros países;0;0;0;65.619.587;65.619.587
+244500200;Préstamos y otras obligaciones;0;0;0;1.053.024.412.535;1.053.024.412.535
+244500201;Préstamos interbancarios de liquidez;0;0;0;1.028.031.984.203;1.028.031.984.203
+244500202;Préstamos interbancarios comerciales;0;0;0;0;0
+244500203;Sobregiros en cuentas corrientes;0;0;0;24.992.428.332;24.992.428.332
+244500204;Depósitos a plazo no transferibles;0;0;0;0;0
+244500209;Otras obligaciones;0;0;0;0;0
+244700000;Banco Central de Chile;0;0;0;0;0
+244700100;Préstamos y otras obligaciones;0;0;0;0;0
+244700200;Líneas de crédito por reprogramación de deudas;0;0;0;0;0
+244900000;Bancos Centrales del exterior;0;0;0;0;0
+244900100;Préstamos y otras obligaciones;0;0;0;0;0
+244900200;Líneas de crédito por reprogramación de deudas;0;0;0;0;0
+245000000;Instrumentos financieros de deuda emitidos;835.094.294.813;4.094.108.116.631;0;3.197.917.485.440;8.127.119.896.884
+245000100;Letras de Créditos;0;350.809.483;0;0;350.809.483
+245000101;Letras de crédito para vivienda;0;130.033.546;0;0;130.033.546
+245000102;Letras de crédito para fines generales;0;220.775.937;0;0;220.775.937
+245000200;Bonos;835.094.294.813;4.093.757.307.148;0;3.197.917.485.440;8.126.769.087.401
+245000201;Bonos corrientes;835.094.294.813;4.027.224.681.275;0;3.197.917.485.440;8.060.236.461.528
+245000203;Bonos hipotecarios;0;66.532.625.873;0;0;66.532.625.873
+246000000;Otras obligaciones financieras;170.036.895.098;0;0;1.158.672.107;171.195.567.205
+246000100;Otras obligaciones financieras con el sector público;0;0;0;0;0
+246000101;Financiamientos de CORFO;0;0;0;0;0
+246000102;Obligaciones con otros organismos gubernamentales;0;0;0;0;0
+246000200;Otras obligaciones financieras en el país;170.036.895.098;0;0;0;170.036.895.098
+246000201;Adeudado a establecimientos afiliados por el uso de tarjetas de crédito;0;0;0;0;0
+246000202;Adeudado a establecimientos afiliados por el uso de tarjetas de pago con provisión de fondos de tarjetas nominativas;0;0;0;0;0
+246000203;Adeudado a establecimientos afiliados por el uso de tarjetas de pago con provisión de fondos de tarjetas innominadas;0;0;0;0;0
+246000204;Adeudado a operadoras por servicios de operación de tarjetas de débito y crédito;168.303.801.829;0;0;0;168.303.801.829
+246000205;Adeudado a operadoras por servicios de operación de tarjetas de pago con provisión de fondos nominativas;0;0;0;0;0
+246000206;Adeudado a operadoras por servicios de operación de tarjetas de pago con provisión de fondos innominadas;0;0;0;0;0
+246000207;Adeudado al licenciante de marcas de tarjetas (débito, crédito, pago con provisión de fondos);0;0;0;0;0
+246000208;Obligaciones a favor de exportadores chilenos;0;0;0;0;0
+246000290;Otros créditos obtenidos en el país;1.733.093.269;0;0;0;1.733.093.269
+246000300;Otras obligaciones financieras con el exterior;0;0;0;1.158.672.107;1.158.672.107
+246000301;Adeudado a establecimientos afiliados por el uso de tarjetas;0;0;0;0;0
+246000302;Adeudado a operadores por servicios de operación de tarjetas (débito, crédito, pago con provisión de fondos);0;0;0;7.860;7.860
+246000303;Adeudado al licenciante de marcas de tarjetas (débito, crédito, pago con provisión de fondos);0;0;0;0;0
+246000304;Obligaciones a favor de exportadores extranjeros;0;0;0;1.158.664.247;1.158.664.247
+246000305;Adeudado a organismos internacionales;0;0;0;0;0
+246000390;Otros créditos obtenidos en el exterior;0;0;0;0;0
+250000000;OBLIGACIONES POR CONTRATOS DE ARRENDAMIENTO;0;82.405.294.733;0;0;82.405.294.733
+255000000;INSTRUMENTOS FINANCIEROS DE CAPITAL REGULATORIO EMITIDOS;0;1.683.591.480.586;0;804.111.732.254;2.487.703.212.840
+255000100;Bonos subordinados;0;1.683.591.480.586;0;178.453.636.111;1.862.045.116.697
+255000101;Bonos subordinados con reconocimiento transitorio;0;0;0;0;0
+255000102;Bonos subordinados;0;1.683.591.480.586;0;178.453.636.111;1.862.045.116.697
+255000200;Bonos sin plazo fijo de vencimiento;0;0;0;625.658.096.143;625.658.096.143
+255000300;Acciones preferentes;0;0;0;0;0
+260000000;PROVISIONES POR CONTINGENCIAS;110.222.923.782;0;0;0;110.222.923.782
+260000100;Provisiones por obligaciones de beneficios a empleados;60.539.359.621;0;0;0;60.539.359.621
+260000101;Provisión beneficios a empleados de corto plazo;60.405.759.276;0;0;0;60.405.759.276
+260000102;Provisión beneficios a empleados post-empleo;0;0;0;0;0
+260000103;Provisión beneficios a empleados de largo plazo;33.083.333;0;0;0;33.083.333
+260000104;Provisión beneficios a empleados por término de contrato laboral;5.636.714;0;0;0;5.636.714
+260000105;Provisión pagos a empleados basados en acciones o instrumentos de patrimonio;0;0;0;0;0
+260000106;Provisión obligaciones por planes post-empleo de contribución definida;0;0;0;0;0
+260000107;Provisión obligaciones por planes post-empleo de beneficios definidos;0;0;0;0;0
+260000109;Provisión de otras obligaciones del personal;94.880.298;0;0;0;94.880.298
+260000200;Provisiones de una sucursal bancaria extranjera para remesas de 	utilidades a su casa matriz;0;0;0;0;0
+260000300;Provisiones por planes de reestructuración;4.025.238.293;0;0;0;4.025.238.293
+260000400;Provisiones por juicios y litigios;5.128.585.170;0;0;0;5.128.585.170
+260000500;Provisiones por obligaciones de programas de fidelización y méritos para clientes;38.280.585;0;0;0;38.280.585
+260000600;Provisiones por riesgo operacional;3.602.773.989;0;0;0;3.602.773.989
+260000900;Otras provisiones por otras contingencias;36.888.686.124;0;0;0;36.888.686.124
+265000000;PROVISIONES PARA DIVIDENDOS, PAGO DE INTERESES Y REAPRECIACIÓN DE INSTRUMENTOS FINANCIEROS DE CAPITAL REGULATORIO EMITIDOS;406.776.170.855;0;0;12.429.059.275;419.205.230.130
+265000100;Provisiones para dividendos;406.776.170.855;0;0;0;406.776.170.855
+265000101;Provisión para pago de dividendos de acciones comunes;406.776.170.855;0;0;0;406.776.170.855
+265000102;Provisión para pago de dividendos de acciones preferentes;0;0;0;0;0
+265000200;Provisión para pago de intereses de bonos sin plazo fijo de vencimiento;0;0;0;12.429.059.275;12.429.059.275
+265000300;Provisión para reapreciación de bonos sin plazo fijo de vencimiento;0;0;0;0;0
+270000000;PROVISIONES ESPECIALES POR RIESGO DE CRÉDITO;325.242.826.155;0;0;14.146.186.941;339.389.013.096
+271000000;Provisiones por riesgo de crédito para créditos contingentes;26.157.581.534;0;0;14.146.186.941;40.303.768.475
+271000100;Avales y fianzas;164.199.506;0;0;5.293.251.220;5.457.450.726
+271000200;Cartas de crédito de operaciones de circulación de mercancías;0;0;0;420.560.420;420.560.420
+271000400;Transacciones relacionadas con eventos contingentes;14.613.557.850;0;0;3.254.904.541;17.868.462.391
+271000500;Líneas de crédito de libre disposición;0;0;0;0;0
+271000501;Saldo disponible de línea de crédito y de sobregiro pactado en cuenta corriente ¿ cartera comercial;0;0;0;0;0
+271000502;Saldo disponible de línea de crédito en tarjeta de crédito ¿ cartera comercial;0;0;0;0;0
+271000503;Saldo disponible de línea de crédito y de sobregiro pactado en cuenta corriente ¿ cartera consumo;0;0;0;0;0
+271000504;Saldo disponible de línea de crédito en tarjeta de crédito ¿ cartera consumo;0;0;0;0;0
+271000505;Saldo disponible de línea de crédito y de sobregiro pactado en cuenta corriente ¿ cartera adeudado por bancos;0;0;0;0;0
+271000600;Otros compromisos de crédito;983.491.873;0;0;0;983.491.873
+271000601;Créditos para estudios superiores ley N° 20.027 (CAE);1.550.553;0;0;0;1.550.553
+271000602;Otros compromisos de crédito irrevocables;981.941.320;0;0;0;981.941.320
+271000700;Líneas de crédito de libre disposición de cancelación inmediata;10.396.332.305;0;0;5.177.470.760;15.573.803.065
+271000701;Saldo disponible de línea de crédito y de sobregiro pactado en cuenta corriente ¿ cartera comercial;1.824.771.679;0;0;47.594.448;1.872.366.127
+271000702;Saldo disponible de línea de crédito en tarjeta de crédito ¿ cartera comercial;1.481.212.147;0;0;1.095.334.195;2.576.546.342
+271000703;Saldo disponible de línea de crédito y de sobregiro pactado en cuenta corriente ¿ cartera consumo;704.473.429;0;0;4.016;704.477.445
+271000704;Saldo disponible de línea de crédito en tarjeta de crédito ¿ cartera consumo;6.385.875.050;0;0;4.034.538.101;10.420.413.151
+271000705;Saldo disponible de línea de crédito y de sobregiro pactado en cuenta corriente ¿ cartera adeudado por bancos;0;0;0;0;0
+271000800;Compromisos de compra de deuda en moneda local en el exterior;0;0;0;0;0
+271000900;Otros créditos contingentes;0;0;0;0;0
+272000000;Provisiones por riesgo país para operaciones con deudores domiciliados en el exterior;85.244.621;0;0;0;85.244.621
+273000000;Provisiones especiales para créditos al exterior;0;0;0;0;0
+274000000;Provisiones adicionales para colocaciones;293.000.000.000;0;0;0;293.000.000.000
+274000100;Provisiones adicionales colocaciones comerciales;122.000.000.000;0;0;0;122.000.000.000
+274000200;Provisiones adicionales colocaciones para vivienda;17.000.000.000;0;0;0;17.000.000.000
+274000300;Provisiones adicionales colocaciones de consumo;154.000.000.000;0;0;0;154.000.000.000
+275000000;Provisiones por ajustes a provisión mínima exigida para cartera normal con evaluación individual;0;0;0;0;0
+275000100;Ajuste a provisión mínima adeudado por bancos en el país;0;0;0;0;0
+275000200;Ajuste a provisión mínima colocaciones comerciales en el país;0;0;0;0;0
+275000300;Ajuste a provisión mínima créditos contingentes en el país;0;0;0;0;0
+275000400;Ajuste a provisión mínima adeudado por bancos en el exterior;0;0;0;0;0
+275000500;Ajuste a provisión mínima colocaciones comerciales en el exterior;0;0;0;0;0
+275000600;Ajuste a provisión mínima créditos contingentes en el exterior;0;0;0;0;0
+279000000;Provisiones constituidas por riesgo de crédito a raíz de exigencias prudenciales complementarias;6.000.000.000;0;0;0;6.000.000.000
+279000100;Provisiones colocaciones comerciales;6.000.000.000;0;0;0;6.000.000.000
+279000200;Provisiones colocaciones para vivienda;0;0;0;0;0
+279000300;Provisiones colocaciones de consumo;0;0;0;0;0
+280000000;IMPUESTOS CORRIENTES;34.108.660.725;0;0;0;34.108.660.725
+285000000;IMPUESTOS DIFERIDOS;0;0;0;0;0
+290000000;OTROS PASIVOS;527.083.038.274;29.346.364.046;92.546.071;1.694.607.405.485;2.251.129.353.876
+290000100;Garantías en efectivo recibidas por operaciones financieras de derivados;13.435.001.060;0;0;1.619.427.263.160;1.632.862.264.220
+290000101;Garantías en efectivo recibidas por operaciones financieras de derivados con una entidad de contraparte central en el país;0;0;0;0;0
+290000102;Garantías en efectivo recibidas por operaciones financieras de derivados con una entidad de contraparte central en el exterior;0;0;0;213.685.338.625;213.685.338.625
+290000103;Garantías en efectivo recibidas por operaciones financieras de derivados con otras contrapartes en el país;13.435.001.060;0;0;0;13.435.001.060
+290000104;Garantías en efectivo recibidas por operaciones financieras de derivados con otras contrapartes en el exterior;0;0;0;1.405.741.924.535;1.405.741.924.535
+290000200;Acreedores por intermediación de instrumentos financieros;59.915.459.216;0;0;0;59.915.459.216
+290000201;Acreedores por intermediación de operaciones a término;54.527.911.692;0;0;0;54.527.911.692
+290000202;Acreedores por intermediación de operaciones a plazo (simultaneas);880.812.806;0;0;0;880.812.806
+290000203;Otras cuentas por pagar por intermediación de instrumentos financieros;4.506.734.718;0;0;0;4.506.734.718
+290000300;Cuentas por pagar a terceros;302.239.481.094;29.346.364.046;92.546.071;54.692.870.517;386.371.261.728
+290000301;Cuentas por pagar por obligaciones de beneficios a empleados;2.066.789.876;0;0;0;2.066.789.876
+290000302;Cuentas por pagar por cotizaciones previsionales e impuestos de los empleados.;6.291.864.598;0;0;0;6.291.864.598
+290000303;Cuentas por pagar a sociedades con influencia significativa o negocio conjunto por servicios recibidos;0;0;0;0;0
+290000304;Cuentas por pagar a otras sociedades con participación minoritaria por servicios recibidos;0;0;0;0;0
+290000305;Cuentas por pagar a Tesorería General de la República y otros organismos fiscales;19.678.378.772;0;0;0;19.678.378.772
+290000306;Cuentas por pagar relacionado con préstamos estudiantiles;4.950.510;0;0;0;4.950.510
+290000307;Cuentas por pagar relacionado con préstamos de leasing financiero;61.878.493;0;0;0;61.878.493
+290000308;Provisiones para gastos pendientes de pago;148.727.193.747;13.281.555.424;0;11.276.084.621;173.284.833.792
+290000309;Saldo de precio y otras obligaciones por pagar respecto de adquisición de bienes para ceder en leasing financiero como arrendador;0;0;92.546.071;0;92.546.071
+290000390;Otras cuentas y documentos por pagar a terceros;125.408.425.098;16.064.808.622;0;43.416.785.896;184.890.019.616
+290000400;Cuentas por pagar por parte de filiales bancarias (aplica solo a nivel individual de la filial bancaria);0;0;0;0;0
+290000500;Dividendos acordados por pagar;0;0;0;0;0
+290000501;Dividendos acordados por pagar de acciones comunes;0;0;0;0;0
+290000502;Dividendos acordados por pagar de acciones preferentes;0;0;0;0;0
+290000700;Ajustes de valorización por macrocoberturas;46.050.298.177;0;0;0;46.050.298.177
+290000800;Pasivo por ingresos de actividades habituales procedentes de contratos con clientes;2.094.728.344;0;0;0;2.094.728.344
+290000801;Ingresos diferidos por programas de fidelización y méritos para clientes;0;0;0;0;0
+290000802;Ingresos diferidos por comisiones de intermediación de seguros no devengadas;1.678.759.052;0;0;0;1.678.759.052
+290000803;Ingresos diferidos por comisiones de recaudación de primas de seguros no devengadas;0;0;0;0;0
+290000809;Otros ingresos diferidos por percibidos de adelantado;415.969.292;0;0;0;415.969.292
+290000900;IVA débito fiscal por pagar;20.200.854.018;0;0;0;20.200.854.018
+290001000;Otras garantías en efectivo recibidas;0;0;0;0;0
+290001100;Operaciones pendientes;8.687.088.950;0;0;9.415.104.359;18.102.193.309
+290001200;Otros Pasivos;74.460.127.415;0;0;11.072.167.449;85.532.294.864
+295000000;PASIVOS INCLUIDOS EN GRUPOS ENAJENABLES PARA LA VENTA;0;0;0;0;0
+300000000;PATRIMONIO;4.336.579.096.674;0;0;-12.429.059.275;4.324.150.037.399
+310000000;CAPITAL;891.302.881.691;0;0;0;891.302.881.691
+311000000;Capital pagado;891.302.881.691;0;0;0;891.302.881.691
+311000100;Acciones comunes suscritas y pagadas;891.302.881.691;0;0;0;891.302.881.691
+311000200;Acciones comunes emitidas con liberación de pago por capitalización;0;0;0;0;0
+311000300;Acciones comunes por conversión de bonos subordinados;0;0;0;0;0
+311000400;Acciones comunes por conversión de bonos sin plazo fijo de vencimiento;0;0;0;0;0
+311000500;Acciones comunes por conversión de acciones preferentes;0;0;0;0;0
+311000600;Adiciones del capital pagado por capitalización sin emisión de acciones comunes liberadas de pago;0;0;0;0;0
+312000000;Sobreprecio pagado por acciones;0;0;0;0;0
+313000000;Adquisición de acciones de propia emisión;0;0;0;0;0
+320000000;RESERVAS;3.232.505.410.858;0;0;0;3.232.505.410.858
+320000100;Reservas no provenientes de utilidades;21.783.090.764;0;0;0;21.783.090.764
+320000200;Reservas provenientes de utilidades;3.210.722.320.094;0;0;0;3.210.722.320.094
+320000300;Reservas por depreciación de bonos sin plazo fijo de vencimiento;0;0;0;0;0
+320000400;Reservas por caducidad de bonos sin plazo fijo de vencimiento;0;0;0;0;0
+330000000;OTRO RESULTADO INTEGRAL ACUMULADO;-106.508.221.679;0;0;0;-106.508.221.679
+331000000;Elementos que no se reclasificarán en resultados;1.270.709.271;0;0;0;1.270.709.271
+331000100;Nuevas mediciones del pasivo (activo) por beneficios definidos neto y resultados actuariales por otros planes de beneficios al personal;0;0;0;0;0
+331000200;Cambios netos del valor razonable de instrumentos de patrimonio designados a valor razonable con cambios en otro resultado integral;1.270.709.271;0;0;0;1.270.709.271
+331000201;Cambios acumulados del valor razonable de instrumentos de patrimonio designados a valor razonable con cambios en otro resultado integral;1.270.709.271;0;0;0;1.270.709.271
+331000202;Resultado por venta de participaciones en instrumentos de patrimonio (acciones) por inversiones minoritarias en sociedades en el país.;0;0;0;0;0
+331000203;Resultado por venta de participaciones en instrumentos de patrimonio (acciones) por inversiones minoritarias en sociedades en el exterior.;0;0;0;0;0
+331000209;Otros;0;0;0;0;0
+331000300;Cambios del valor razonable de pasivos financieros designados a valor razonable con cambios en resultados atribuibles a cambios en el riesgo de crédito del pasivo financiero;0;0;0;0;0
+331000400;Participación en otro resultado integral de entidades registradas según el método de participación;0;0;0;0;0
+331000500;Activos no corrientes y grupos enajenables para la venta;0;0;0;0;0
+331000900;Otros;0;0;0;0;0
+332000000;Elementos que pueden reclasificarse en resultados;-107.778.930.950;0;0;0;-107.778.930.950
+332000100;Cambios del valor razonable de activos financieros a valor razonable con cambios en otro resultado integral;-54.648.940.033;0;0;0;-54.648.940.033
+332000200;Diferencias de conversión por entidades en el exterior;0;0;0;0;0
+332000300;Cobertura contable de inversiones netas en entidades en el exterior;0;0;0;0;0
+332000400;Cobertura contable de flujo de efectivo;-52.180.871.701;0;0;0;-52.180.871.701
+332000500;Elementos no designados de instrumentos de cobertura contable;0;0;0;0;0
+332000600;Participación en otro resultado integral de entidades registradas según el método de participación;-949.119.216;0;0;0;-949.119.216
+332000700;Activos no corrientes y grupos enajenables para la venta;0;0;0;0;0
+332000900;Otros;0;0;0;0;0
+340000000;UTILIDADES (PÉRDIDAS) ACUMULADAS DE EJERCICIOS ANTERIORES;39.678.961.389;0;0;0;39.678.961.389
+340000100;Utilidades (pérdidas) acumuladas de ejercicios anteriores;39.678.961.389;0;0;0;39.678.961.389
+340000200;Utilidad del ejercicio anterior por asignar;0;0;0;0;0
+350000000;UTILIDAD (PÉRDIDA) DEL EJERCICIO;581.108.813.282;0;0;0;581.108.813.282
+360000000;PROVISIONES PARA DIVIDENDOS, PAGO DE INTERESES Y REAPRECIACIÓN DE INSTRUMENTOS FINANCIEROS DE CAPITAL REGULATORIO EMITIDOS;-406.776.170.855;0;0;-12.429.059.275;-419.205.230.130
+360000100;Provisiones para dividendos;-406.776.170.855;0;0;0;-406.776.170.855
+360000101;Provisión para pago de dividendos de acciones comunes;-406.776.170.855;0;0;0;-406.776.170.855
+360000102;Provisión para pago de dividendos de acciones preferentes;0;0;0;0;0
+360000200;Provisión para pago de intereses de bonos sin plazo fijo de vencimiento;0;0;0;-12.429.059.275;-12.429.059.275
+360000300;Provisión para reapreciación de bonos sin plazo fijo de vencimiento;0;0;0;0;0
+365000000;PROVISIONES DE UNA SUCURSAL BANCARIA EXTRANJERA PARA REMESAS DE UTILIDADES A SU CASA MATRIZ;0;0;0;0;0
+380000000;PATRIMONIO DE LOS PROPIETARIOS;4.231.311.674.686;0;0;-12.429.059.275;4.218.882.615.411
+390000000;DEL INTERES NO CONTROLADOR;105.267.421.988;0;0;0;105.267.421.988
+500000000;TOTAL COLOCACIONES;12.775.621.493.118;23.952.503.462.856;165.483.349;3.634.450.403.165;40.362.740.842.488
+505000000;TOTAL COLOCACIONES A COSTO AMORTIZADO;12.764.818.094.760;23.943.656.500.736;165.483.349;3.615.960.308.434;40.324.600.387.279
+510000000;TOTAL PASIVOS Y PATRIMONIO;44.137.139.827.543;7.062.890.343.964;101.841.348;14.690.122.303.605;65.890.254.316.460
