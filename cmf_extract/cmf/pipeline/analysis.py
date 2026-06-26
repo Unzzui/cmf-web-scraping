@@ -114,6 +114,8 @@ def run(
         )
 
         try:
+            # config.product_v1_dir ya apunta a Product_v1/Total (ver
+            # settings.py y cmf/config.py default), así que NO añadimos /Total.
             out_path, err = process_one(
                 latest_file,
                 config.product_v1_dir,

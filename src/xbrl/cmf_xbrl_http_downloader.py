@@ -19,9 +19,7 @@ from __future__ import annotations
 
 import logging
 import os
-import random
 import re
-import threading
 import time
 import zipfile
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -29,153 +27,20 @@ from pathlib import Path
 from typing import Callable, Optional
 from urllib.parse import urljoin
 
-import requests
 from bs4 import BeautifulSoup
-from requests.adapters import HTTPAdapter
 
-try:
-    from urllib3.util.retry import Retry
-except Exception:  # pragma: no cover
-    Retry = None  # type: ignore
+from xbrl.http_throttle import (
+    UA_POOL,
+    build_polite_session,
+    polite_request as _polite_request,
+)
 
 logger = logging.getLogger(__name__)
 
-# Rotación leve de User-Agents para no enviar siempre exactamente la misma firma.
-_UA_POOL = [
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
-    "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
-]
-_UA = _UA_POOL[0]  # compat con código legacy
+# Compat con código legacy que importaba _UA del módulo.
+_UA = UA_POOL[0]
 _DEF_CSV = "data/RUT_Chilean_Companies/RUT_Chilean_Companies.csv"
 _RUT_DV_RE = re.compile(r"(\d{7,8})\s*-\s*([\dkK])")
-
-# -------------------- Throttle + cooldown global (cross-empresa) ---------- #
-# Cap total de requests en vuelo a CMF independiente de cuántas empresas se
-# descarguen en paralelo. Override por env CMF_HTTP_MAX_INFLIGHT.
-_GLOBAL_INFLIGHT = threading.BoundedSemaphore(
-    max(1, int(os.environ.get("CMF_HTTP_MAX_INFLIGHT", "6")))
-)
-_COOLDOWN_LOCK = threading.Lock()
-_COOLDOWN_UNTIL: float = 0.0  # epoch seconds; antes de esto, nadie envía
-
-# Estado de "salud" del backoff: si seguimos viendo bloqueos, el siguiente
-# cooldown se alarga (exp backoff cross-empresa). Se resetea tras éxitos.
-_BACKOFF_LOCK = threading.Lock()
-_CONSEC_BLOCKS: int = 0
-
-
-def _trigger_cooldown(seconds: float, reason: str) -> None:
-    """Programa un cooldown global. Sólo lo extiende, nunca lo acorta."""
-    global _COOLDOWN_UNTIL
-    until = time.time() + max(0.0, float(seconds))
-    with _COOLDOWN_LOCK:
-        if until > _COOLDOWN_UNTIL:
-            _COOLDOWN_UNTIL = until
-            logger.warning("[http] cooldown global %.1fs (%s)", seconds, reason)
-
-
-def _wait_cooldown() -> None:
-    """Bloquea al hilo actual hasta que termine el cooldown global, si lo hay."""
-    while True:
-        with _COOLDOWN_LOCK:
-            wait = _COOLDOWN_UNTIL - time.time()
-        if wait <= 0:
-            return
-        time.sleep(min(wait, 2.0))
-
-
-def _note_block() -> float:
-    """Anota un bloqueo y devuelve el cooldown sugerido (segundos)."""
-    global _CONSEC_BLOCKS
-    with _BACKOFF_LOCK:
-        _CONSEC_BLOCKS += 1
-        n = _CONSEC_BLOCKS
-    # 30s, 60s, 120s, 240s, 480s (cap 600s)
-    return min(600.0, 30.0 * (2 ** (n - 1))) + random.uniform(0, 10)
-
-
-def _note_success() -> None:
-    """Anota una respuesta sana; relaja el contador de bloqueos consecutivos."""
-    global _CONSEC_BLOCKS
-    with _BACKOFF_LOCK:
-        if _CONSEC_BLOCKS:
-            _CONSEC_BLOCKS = max(0, _CONSEC_BLOCKS - 1)
-
-
-_BLOCK_KEYWORDS = (
-    "captcha", "blocked", "forbidden", "intrusion",
-    "temporarily unavailable", "acceso denegado", "rate limit",
-)
-
-
-def _looks_blocked(resp: requests.Response) -> bool:
-    """Detecta páginas-trampa: 403/429 o HTML con palabras-clave sospechosas."""
-    if resp.status_code in (403, 429):
-        return True
-    ctype = resp.headers.get("Content-Type", "").lower()
-    if "text/html" in ctype:
-        sample = (resp.text or "")[:3000].lower()
-        if any(w in sample for w in _BLOCK_KEYWORDS):
-            return True
-    return False
-
-
-def _retry_after_seconds(resp: requests.Response, default: float) -> float:
-    """Lee el header Retry-After (segundos o HTTP date). Cae a default."""
-    ra = resp.headers.get("Retry-After")
-    if not ra:
-        return default
-    try:
-        return max(float(ra), default)
-    except (TypeError, ValueError):
-        try:
-            from email.utils import parsedate_to_datetime
-            dt = parsedate_to_datetime(ra)
-            return max((dt.timestamp() - time.time()), default)
-        except Exception:
-            return default
-
-
-def _polite_request(session: requests.Session, method: str, url: str,
-                    *, max_attempts: int = 6, **kwargs) -> requests.Response:
-    """Envía con throttle global, cooldown automático y reintento ante bloqueos.
-
-    Lanza requests.RequestException si tras *max_attempts* sigue bloqueado.
-    """
-    last_exc: Optional[BaseException] = None
-    for attempt in range(1, max_attempts + 1):
-        _wait_cooldown()
-        with _GLOBAL_INFLIGHT:
-            # jitter dentro del slot para evitar ráfagas perfectamente alineadas
-            time.sleep(random.uniform(0.05, 0.30))
-            try:
-                resp = session.request(method, url, **kwargs)
-            except requests.RequestException as e:
-                last_exc = e
-                wait = min(30.0, 1.5 ** attempt) + random.uniform(0, 1.5)
-                logger.debug("[http] %s %s error red: %s (attempt %d) sleep %.1fs",
-                             method, url, e, attempt, wait)
-                time.sleep(wait)
-                continue
-
-        if _looks_blocked(resp):
-            cd = _retry_after_seconds(resp, _note_block())
-            _trigger_cooldown(cd, f"HTTP {resp.status_code} en {url[:60]}")
-            # consume el body para liberar conexión y reintenta
-            try:
-                resp.content  # noqa: B018
-            except Exception:
-                pass
-            continue
-
-        _note_success()
-        return resp
-
-    if last_exc is not None:
-        raise last_exc
-    raise requests.RequestException("Bloqueo persistente tras reintentos")
 
 
 def _entidad_url(rut: str) -> str:
@@ -184,25 +49,9 @@ def _entidad_url(rut: str) -> str:
             f"&row=AAAwy2ACTAAABy2AAC&vig=VI&control=svs&pestania=3")
 
 
-def _build_session(max_workers: int, retries: int = 3) -> requests.Session:
-    s = requests.Session()
-    s.headers.update({
-        "User-Agent": random.choice(_UA_POOL),
-        "Accept-Language": "es-CL,es;q=0.9,en;q=0.7",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-    })
-    if Retry is not None:
-        # status_forcelist sin 403/429: esos los maneja _polite_request con
-        # cooldown global; aquí sólo retry para errores transitorios de red.
-        retry = Retry(total=retries, connect=retries, read=retries, status=retries,
-                      backoff_factor=0.8, status_forcelist=[500, 502, 503, 504],
-                      allowed_methods=["GET", "POST"],
-                      respect_retry_after_header=True)
-        adapter = HTTPAdapter(pool_connections=max(8, max_workers * 2),
-                              pool_maxsize=max(8, max_workers * 2), max_retries=retry)
-        s.mount("https://", adapter)
-        s.mount("http://", adapter)
-    return s
+def _build_session(max_workers: int, retries: int = 3):
+    """Wrapper retrocompatible — la lógica vive en xbrl.http_throttle."""
+    return build_polite_session(max_workers, retries)
 
 
 def _company_info_from_csv(rut: str, csv_path: str) -> tuple[Optional[str], Optional[str]]:
@@ -351,13 +200,60 @@ def download_cmf_xbrl_http(
         pdv, pname = _company_info_from_page(r0.text)
         dv = dv or pdv
         name = name or pname
-    if not name:
-        name = f"Empresa_RUT_{rut}"
     rut_completo = f"{rut}-{dv}" if dv else rut
-    safe_name = _safe_name(name)
 
-    target_dir = Path("./data/XBRL") / _period_dir_name(mode) / f"{rut_completo}_{safe_name}"
+    # Si no obtuvimos el nombre real, ANTES de caer al placeholder
+    # `Empresa_RUT_<rut>` revisamos si ya existe una carpeta con datos para
+    # este RUT (con o sin dígito verificador). Reutilizarla evita crear
+    # directorios huérfanos que rompen la consolidación con
+    # "Sin datasets XBRL en este directorio".
+    base_dir = Path("./data/XBRL") / _period_dir_name(mode)
+    target_dir: Optional[Path] = None
+    if base_dir.is_dir():
+        # Glob amplio: matchea con o sin DV (e.g. `93007000-9_...` y `93007000_...`).
+        candidates = list(base_dir.glob(f"{rut}-*"))
+        candidates += list(base_dir.glob(f"{rut}_*"))
+        # Preferir carpetas con datasets reales; placeholders al final.
+        candidates.sort(
+            key=lambda p: (0 if any(p.glob("Estados_financieros_*_extracted")) else 1,
+                           1 if "Empresa_RUT_" in p.name else 0)
+        )
+        for cand in candidates:
+            if not cand.is_dir():
+                continue
+            has_data = any(cand.glob("Estados_financieros_*_extracted"))
+            placeholder = "Empresa_RUT_" in cand.name
+            if has_data or (target_dir is None and not placeholder):
+                target_dir = cand
+                # Recuperar nombre + DV del nombre del dir cuando faltan.
+                # Formato: "<rut>-<dv>_<NOMBRE_SAFE>" o "<rut>_<NOMBRE_SAFE>".
+                cand_name = cand.name
+                if "_" in cand_name:
+                    prefix, _, suffix = cand_name.partition("_")
+                    if "-" in prefix and not dv:
+                        try:
+                            _r, _d = prefix.split("-", 1)
+                            if _r == rut:
+                                dv = _d
+                        except ValueError:
+                            pass
+                    if not name:
+                        name = suffix.replace("_", " ").strip()
+                if has_data:
+                    break
+
+    # Recalcular rut_completo después de posiblemente recuperar DV del dir.
+    rut_completo = f"{rut}-{dv}" if dv else rut
+
+    if target_dir is None:
+        if not name:
+            name = f"Empresa_RUT_{rut}"
+        safe_name = _safe_name(name)
+        target_dir = base_dir / f"{rut_completo}_{safe_name}"
     target_dir.mkdir(parents=True, exist_ok=True)
+    if not name:
+        name = "Empresa"
+    safe_name = _safe_name(name)
 
     # 2) Lista de períodos
     iteration_step = -1 if mode == "total" else (step if step else -1)
@@ -474,4 +370,17 @@ def download_cmf_xbrl_http(
 
     logger.info("[http] Completado %s | %d/%d períodos | %.1fs",
                 rut_completo, len(downloaded), total, time.time() - start_ts)
+
+    # Cleanup: si el target era un placeholder `Empresa_RUT_*` y quedó vacío,
+    # lo eliminamos. Así no contamina la próxima corrida (donde reutilizaríamos
+    # erróneamente esta carpeta huérfana).
+    try:
+        is_placeholder = "Empresa_RUT_" in target_dir.name
+        has_data = any(target_dir.glob("Estados_financieros_*_extracted"))
+        if is_placeholder and not has_data:
+            target_dir.rmdir()
+            logger.info("[http] Placeholder vacío eliminado: %s", target_dir)
+    except Exception:
+        pass
+
     return str(target_dir.resolve()), downloaded

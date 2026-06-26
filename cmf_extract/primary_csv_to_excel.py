@@ -410,7 +410,41 @@ def sort_by_hierarchical_keys(df: pd.DataFrame, company_rut: str = None) -> pd.D
     final_df = base_df.sort_values('_estructura_position', kind='stable')
     final_df = final_df.drop(['_estructura_position', '_filled'], axis=1)
     final_df = final_df.reset_index(drop=True)
-    
+
+    # ─── Anexar items EXTRA que NO están en el template pero SÍ tienen data ───
+    # Esto rescata filas inyectadas por fallbacks (D&A, Acciones emitidas, etc.)
+    # que el template legacy no incluye. Se ponen al final, preservando los
+    # valores reales para que data_extractor pueda encontrarlas.
+    template_labels = set(base_df['Label'].astype(str))
+    date_columns = [c for c in df.columns
+                    if c not in ('LabelKeyId', 'LabelKeyIdExt', 'SectionKey',
+                                 'Label', 'RoleCode')]
+    extra_rows = []
+    seen_extra_labels = set()
+    for _, row in df.iterrows():
+        label = str(row.get('Label', '')).strip()
+        if not label or label in template_labels or label in seen_extra_labels:
+            continue
+        if '[sinopsis]' in label.lower():
+            continue
+        # Solo agregar si la fila tiene al menos una celda con valor numérico
+        has_data = any(
+            not (row.get(d) is None
+                 or (isinstance(row.get(d), float) and pd.isna(row.get(d)))
+                 or (isinstance(row.get(d), str) and not row.get(d).strip()))
+            for d in date_columns if d in row.index
+        )
+        if has_data:
+            extra_rows.append(row)
+            seen_extra_labels.add(label)
+
+    if extra_rows:
+        extra_df = pd.DataFrame(extra_rows)
+        # Conservar solo columnas que tiene final_df
+        keep_cols = [c for c in final_df.columns if c in extra_df.columns]
+        extra_df = extra_df[keep_cols].reset_index(drop=True)
+        final_df = pd.concat([final_df, extra_df], ignore_index=True)
+
     # Flujo de procesamiento completado
     return final_df
 
@@ -697,24 +731,41 @@ def add_cash_beginning_period(df: pd.DataFrame) -> pd.DataFrame:
         # Crear nueva fila de "Efectivo al principio del periodo"
         efectivo_principio_row = efectivo_final_row.copy()
         efectivo_principio_row['Cuenta'] = 'Efectivo y equivalentes al efectivo al principio del periodo'
-        # Agregando nueva fila 'Efectivo al principio'
+        # Preservar valores manuales preexistentes (overrides) que ya hubieran
+        # llegado a la fila final por algún path raro; sobreescribir solo lo
+        # que vayamos a derivar abajo.
     else:
         # Usar la fila existente pero copiar la estructura de la final
         efectivo_principio_index = efectivo_principio_mask.idxmax()
         efectivo_principio_row = df.loc[efectivo_principio_index].copy()
         # Actualizando fila existente 'Efectivo al principio'
-    
+    # Snapshot de los valores que YA traía la fila 'al principio' (típicamente
+    # vienen de manual_overrides.json). Los respetaremos abajo cuando el
+    # cálculo derivado quedaría vacío.
+    preexisting_principio = {}
+    if efectivo_principio_index is not None:
+        for col in df.columns:
+            if col == 'Cuenta':
+                continue
+            v = df.at[efectivo_principio_index, col]
+            if v is not None and not (isinstance(v, float) and pd.isna(v)) and str(v).strip() not in ('', 'nan'):
+                preexisting_principio[col] = v
+
     # Obtener columnas de fechas (excluyendo 'Cuenta')
     date_columns = [col for col in df.columns if col != 'Cuenta']
-    
+
     # Desplazar valores: inicio de período actual = final de período anterior
     if len(date_columns) > 1:
         # Procesar desde el primer período hasta el penúltimo
         for i in range(len(date_columns)):
             current_col = date_columns[i]
             if i == len(date_columns) - 1:
-                # La última columna (período más antiguo) queda vacía
-                efectivo_principio_row[current_col] = pd.NA
+                # La última columna (período más antiguo) queda vacía,
+                # SALVO que el usuario haya provisto un override.
+                if current_col in preexisting_principio:
+                    efectivo_principio_row[current_col] = preexisting_principio[current_col]
+                else:
+                    efectivo_principio_row[current_col] = pd.NA
             else:
                 # Valor del principio del período actual = Valor del final del período siguiente
                 prev_col = date_columns[i + 1]
@@ -751,9 +802,18 @@ def add_cash_beginning_period(df: pd.DataFrame) -> pd.DataFrame:
                             # Ya es numérico, usar directamente
                             efectivo_principio_row[current_col] = raw_value
                     except (ValueError, TypeError):
-                        efectivo_principio_row[current_col] = pd.NA
+                        # Cálculo falló pero hay override del usuario: lo respetamos.
+                        if current_col in preexisting_principio:
+                            efectivo_principio_row[current_col] = preexisting_principio[current_col]
+                        else:
+                            efectivo_principio_row[current_col] = pd.NA
                 else:
-                    efectivo_principio_row[current_col] = pd.NA
+                    # No hay 'final' del período anterior. Si el usuario tiene
+                    # override manual para este período, usarlo.
+                    if current_col in preexisting_principio:
+                        efectivo_principio_row[current_col] = preexisting_principio[current_col]
+                    else:
+                        efectivo_principio_row[current_col] = pd.NA
     
     # Reordenar para el flujo correcto:
     # 1. [Todos los flujos de operación, inversión, financiación]

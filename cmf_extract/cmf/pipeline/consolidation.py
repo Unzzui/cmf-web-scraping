@@ -18,17 +18,16 @@ The *progress_callback* signature is::
 from __future__ import annotations
 
 import os
-import re
 import sys
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Callable
-from urllib.parse import urljoin, urlparse
 
 from cmf.config import CMFConfig
 from cmf.pipeline import PipelineResult
+from cmf.pipeline.arelle_cache import populate_arelle_cache
 
 ProgressCallback = Callable[[str, int, int], None]
 _NOOP: ProgressCallback = lambda msg, cur=0, tot=0: None  # noqa: E731
@@ -100,151 +99,6 @@ def run(
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
-
-_SCHEMA_LOC_RE = re.compile(r'schemaLocation="([^"]+)"')
-_HREF_RE = re.compile(r'\bxlink:href="([^"#]+)')
-_URL_RE = re.compile(r'^https?://', re.IGNORECASE)
-
-
-def _arelle_cache_path(url: str) -> Path:
-    """Devuelve la ruta donde Arelle guarda este URL en su HTTP cache."""
-    p = urlparse(url)
-    scheme_dir = "https" if p.scheme == "https" else "http"
-    base = Path(os.path.expanduser("~/.config/arelle/cache")) / scheme_dir / p.netloc
-    return base / p.path.lstrip("/")
-
-
-def _collect_xsd_imports(xsd_path: Path, seen: set[str]) -> set[str]:
-    """Lee un .xsd y devuelve los URLs (http/https) que importa.
-
-    Sigue recursivamente las importaciones que ya están en el cache local,
-    para descubrir TODAS las dependencias transitivas.
-    """
-    urls: set[str] = set()
-    try:
-        text = xsd_path.read_text(encoding="utf-8", errors="ignore")
-    except Exception:
-        return urls
-    base_url = None
-    # Si el archivo está dentro del cache, tomamos su URL base para resolver
-    # imports relativos (que aparecen como "../foo.xsd").
-    cache_root = Path(os.path.expanduser("~/.config/arelle/cache"))
-    try:
-        rel = xsd_path.relative_to(cache_root)
-        parts = rel.parts
-        if parts and parts[0] in ("http", "https"):
-            scheme = parts[0]
-            netloc = parts[1]
-            path = "/" + "/".join(parts[2:])
-            base_url = f"{scheme}://{netloc}{path}"
-    except ValueError:
-        pass
-
-    for m in _SCHEMA_LOC_RE.finditer(text):
-        loc = m.group(1)
-        if _URL_RE.match(loc):
-            urls.add(loc)
-        elif base_url and not loc.startswith("#"):
-            urls.add(urljoin(base_url, loc))
-    for m in _HREF_RE.finditer(text):
-        loc = m.group(1)
-        if _URL_RE.match(loc):
-            urls.add(loc)
-        elif base_url and not loc.startswith("#"):
-            urls.add(urljoin(base_url, loc))
-    return urls
-
-
-def _populate_arelle_cache(company_dir: Path, cb: ProgressCallback) -> int:
-    """Pre-puebla el HTTP cache de Arelle con las taxonomías que referencian
-    los .xsd locales (y sus dependencias transitivas).
-
-    Arelle se cuelga/recibe 'Forbidden' al pedir `http://www.cmfchile.cl/...`
-    porque CMF responde 301→https y throttea. Aquí lo hacemos con requests,
-    que sigue redirects y baja todo en una sesión, sin contención de locks.
-
-    Devuelve la cantidad de URLs descargadas. Idempotente.
-    """
-    try:
-        import requests  # local import
-    except Exception:
-        return 0
-
-    cache_root = Path(os.path.expanduser("~/.config/arelle/cache"))
-
-    # BFS: recolectar URLs referenciados por todos los .xsd del directorio
-    pending: set[str] = set()
-    seen_files: set[str] = set()
-    for xsd in company_dir.rglob("*.xsd"):
-        if str(xsd) in seen_files:
-            continue
-        seen_files.add(str(xsd))
-        pending |= _collect_xsd_imports(xsd, seen_files)
-
-    # Filtrar los ya cacheados
-    to_download: list[str] = []
-    for url in sorted(pending):
-        cache_path = _arelle_cache_path(url)
-        # Arelle puede cachear http→https; aceptamos cualquiera de los dos
-        alt = str(cache_path).replace("/cache/http/", "/cache/https/") \
-            if "/cache/http/" in str(cache_path) \
-            else str(cache_path).replace("/cache/https/", "/cache/http/")
-        if cache_path.exists() or Path(alt).exists():
-            continue
-        to_download.append(url)
-
-    if not to_download:
-        return 0
-
-    cb(f"{company_dir.name} - Cache Arelle: descargando {len(to_download)} taxonomías faltantes",
-       0, len(to_download))
-
-    sess = requests.Session()
-    sess.headers.update({
-        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                      "Chrome/120.0 Safari/537.36",
-        "Accept": "text/xml,application/xml,*/*",
-    })
-
-    downloaded = 0
-    failed = 0
-    # BFS: lo que descarguemos puede traer nuevas dependencias; iteramos hasta
-    # que no queden URLs nuevas. Cap de iteraciones para no loopear.
-    iteration = 0
-    while to_download and iteration < 8:
-        iteration += 1
-        new_pending: set[str] = set()
-        for i, url in enumerate(to_download, 1):
-            cache_path = _arelle_cache_path(url)
-            try:
-                r = sess.get(url, timeout=20, allow_redirects=True)
-                if r.status_code == 200 and r.content:
-                    cache_path.parent.mkdir(parents=True, exist_ok=True)
-                    cache_path.write_bytes(r.content)
-                    downloaded += 1
-                    # explorar dependencias transitivas del archivo recién bajado
-                    if url.lower().endswith(".xsd"):
-                        new_urls = _collect_xsd_imports(cache_path, set())
-                        for u in new_urls:
-                            cp = _arelle_cache_path(u)
-                            alt = str(cp).replace("/cache/http/", "/cache/https/") \
-                                if "/cache/http/" in str(cp) \
-                                else str(cp).replace("/cache/https/", "/cache/http/")
-                            if not cp.exists() and not Path(alt).exists():
-                                new_pending.add(u)
-                else:
-                    failed += 1
-            except Exception:
-                failed += 1
-            if i % 10 == 0:
-                cb(f"{company_dir.name} - Cache: {downloaded} descargados, {failed} fallos",
-                   downloaded, downloaded + failed + len(to_download) - i)
-        to_download = sorted(new_pending)
-
-    cb(f"{company_dir.name} - Cache poblado: {downloaded} taxonomías OK, {failed} con error",
-       downloaded, downloaded)
-    return downloaded
-
 
 def _run_single(
     config: CMFConfig,
@@ -337,9 +191,8 @@ def _run_single(
     # http://www.cmfchile.cl/... (CMF redirige a https y throttea).
     # requests sí sigue el redirect y baja todo de una.
     try:
-        added = _populate_arelle_cache(company_dir, cb)
+        populate_arelle_cache(company_dir, cb)
     except Exception as exc:
-        added = 0
         cb(f"{company_name} - WARN cache pre-population: {exc}", done, total_ds)
 
     # ---- 0b) Invalidar out_ dirs con facts sospechosamente vacíos ----

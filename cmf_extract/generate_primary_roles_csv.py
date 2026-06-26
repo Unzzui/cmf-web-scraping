@@ -487,8 +487,10 @@ def _build_primary_roles_csv(company_dir: Path, lang: str = 'es') -> Path | None
     enable_log = os.getenv('CMF_PRIMARY_LOG', '0') == '1'
 
     # 🆕 CARGAR ESTRUCTURA JERÁRQUICA DESDE new_eeff_estructura.json
-    # Extraer RUT del nombre de la empresa (parent directory), no del out_consolidated
-    company_name = company_dir.parent.name  # e.g., "91705000-7_QUIÑENCO_SA"
+    # Extraer RUT del nombre de la carpeta de la empresa. La empresa es
+    # `company_dir` mismo (ej. "93007000-9_SOCIEDAD_QUIMICA..."), no su parent
+    # (que sería "Total"/"Anual"/etc).
+    company_name = company_dir.name  # e.g., "91705000-7_QUIÑENCO_SA"
     rut_with_dv = company_name.split('_', 1)[0]  # Extraer RUT: "91705000-7"
     hierarchical_structure = _load_hierarchical_structure(rut_with_dv)
     if enable_log:
@@ -565,12 +567,62 @@ def _build_primary_roles_csv(company_dir: Path, lang: str = 'es') -> Path | None
     # Detectar automáticamente el rol de estado de resultados (310000 o 320000)
     income_role = detect_income_statement_role_from_facts(df_facts, rut_with_dv)
     primary_roles = ['210000', income_role, '510000']
-    
+
     if enable_log and income_role == '320000':
         print(f"[primary-csv] 🎯 Detectado rol 320000 (naturaleza) para estado de resultados")
-    
+
     df = df_facts[df_facts['RoleCode'].astype(str).isin(primary_roles)].copy()
-    
+
+    # ─────────────────────────────────────────────────────────────────────
+    # Fallback Balance desde Notes [800100]/[610000].
+    # Algunas empresas/períodos no publican [210000] en el XBRL; el módulo
+    # `balance_fallback` rescata items de notes y deriva subtotales por
+    # identidades IFRS.
+    # ─────────────────────────────────────────────────────────────────────
+    try:
+        from cmf.pipeline.balance_fallback import apply_balance_fallback
+        df = apply_balance_fallback(
+            df, df_facts, rut_with_dv,
+            estructura_dir=Path(__file__).parent,
+            enable_log=enable_log,
+        )
+    except Exception as _exc:
+        if enable_log:
+            print(f"[primary-csv] ⚠ Fallback Balance falló: {_exc}")
+
+    # Cash Flow: rellenar "Efectivo al final del periodo" desde Balance cuando falte.
+    try:
+        from cmf.pipeline.cash_flow_fallback import apply_cash_flow_fallback
+        df = apply_cash_flow_fallback(df, enable_log=enable_log)
+    except Exception as _exc:
+        if enable_log:
+            print(f"[primary-csv] ⚠ Fallback Cash Flow falló: {_exc}")
+
+    # Estado de Resultados: inyectar D&A y acciones emitidas desde notas
+    # ([800200]/[822100]/[823180] para D&A, [861200] para acciones).
+    try:
+        from cmf.pipeline.income_statement_fallback import apply_income_statement_fallback
+        df = apply_income_statement_fallback(df, df_facts, income_role,
+                                             enable_log=enable_log)
+    except Exception as _exc:
+        if enable_log:
+            print(f"[primary-csv] ⚠ Fallback Estado de Resultados falló: {_exc}")
+
+    # Manual overrides: valores llenados a mano por el usuario en
+    # cmf_extract/manual_overrides.json (o ruta por env CMF_MANUAL_OVERRIDES).
+    # Solo rellena celdas que aún están vacías después de los fallbacks.
+    try:
+        from cmf.pipeline.manual_overrides import apply_manual_overrides
+        overrides_path = Path(os.environ.get(
+            "CMF_MANUAL_OVERRIDES",
+            str(Path(__file__).parent / "manual_overrides.json"),
+        ))
+        df = apply_manual_overrides(df, rut_with_dv, overrides_path,
+                                    enable_log=enable_log)
+    except Exception as _exc:
+        if enable_log:
+            print(f"[primary-csv] ⚠ Manual overrides fallaron: {_exc}")
+
     # 🧹 LIMPIEZA: Eliminar columnas de fechas con datos insuficientes
     cleanup_threshold = float(os.getenv('CMF_DATE_CLEANUP_THRESHOLD', '0.1'))  # Default: 10%
     if enable_log:

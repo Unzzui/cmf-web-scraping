@@ -105,6 +105,10 @@ class UnifiedPipelineGUI:
         self.stop_btn.pack(side=tk.LEFT, padx=(0, 6))
         ttk.Button(right, text="Resultados", style="Secondary.TButton",
                    command=self._open_results).pack(side=tk.LEFT, padx=(0, 6))
+        ttk.Button(right, text="Auditar Excels", style="Secondary.TButton",
+                   command=self._on_audit_excels).pack(side=tk.LEFT, padx=(0, 6))
+        ttk.Button(right, text="Editar overrides.json", style="Secondary.TButton",
+                   command=self._on_edit_overrides).pack(side=tk.LEFT, padx=(0, 6))
         ttk.Button(right, text="Configuración", style="Primary.TButton",
                    command=self._open_settings).pack(side=tk.LEFT)
 
@@ -170,8 +174,34 @@ class UnifiedPipelineGUI:
         ttk.Button(top, text="Examinar", style="Primary.TButton",
                    command=self._browse_csv).pack(side=tk.LEFT)
 
-        self.company_table = CompanyTable(data, on_selection_change=self._on_selection_change)
+        self.company_table = CompanyTable(
+            data,
+            on_selection_change=self._on_selection_change,
+            data_paths_provider=self._data_paths_for_table,
+        )
         self.company_table.pack(fill=tk.BOTH, expand=True)
+
+    def _data_paths_for_table(self) -> dict:
+        """Rutas reales (XBRL y Excel) para detección de datos ya descargados.
+
+        Se inspecciona xbrl_base_dir y sus hermanos (Total/Anual/Trimestral) para
+        cubrir cualquier configuración. product_v1_dir es el directorio final de
+        Excels consolidados.
+        """
+        from pathlib import Path
+        xbrl_base = Path(self.settings.xbrl_base_dir)
+        xbrl_dirs: list[str] = []
+        if xbrl_base.is_dir():
+            xbrl_dirs.append(str(xbrl_base))
+        # Hermanos comunes: Total/Anual/Trimestral
+        parent = xbrl_base.parent if xbrl_base.parent.is_dir() else None
+        if parent:
+            for sub in ("Total", "Anual", "Trimestral"):
+                p = parent / sub
+                if p.is_dir() and str(p) not in xbrl_dirs:
+                    xbrl_dirs.append(str(p))
+        excel_dir = self.settings.product_v1_dir or ""
+        return {"xbrl_dirs": xbrl_dirs, "excel_dir": excel_dir}
 
     # ------------------------------------------------------------------ #
     def _load_default_csv(self) -> None:
@@ -407,6 +437,13 @@ class UnifiedPipelineGUI:
         self.log_viewer.log("=" * 60)
         self.log_viewer.log(summary, "SUCCESS" if not p.get("errors") else "WARNING")
         self.log_viewer.log(f"Tiempo total: {int(p.get('elapsed', 0))}s")
+        # Auditoría automática: detecta huecos críticos y actualiza el
+        # JSON de overrides (preservando valores ya llenados).
+        if not p.get("cancelled") and p.get("ok", 0) > 0:
+            try:
+                self._run_audit(auto=True)
+            except Exception as exc:
+                self.log_viewer.log(f"Auditoría automática falló: {exc}", "WARNING")
         if not p.get("cancelled"):
             messagebox.showinfo("Pipeline finalizado", summary)
 
@@ -434,6 +471,141 @@ class UnifiedPipelineGUI:
             self.log_viewer.log(f"Abriendo {path}")
         else:
             messagebox.showinfo("Info", f"Carpeta no disponible aún:\n{path}")
+
+    # ------------------------------------------------------------------ #
+    # Auditoría de Excels + manejo de overrides manuales
+    # ------------------------------------------------------------------ #
+
+    def _overrides_json_path(self):
+        """Ruta del JSON de overrides manuales (junto a cmf_extract/)."""
+        from pathlib import Path
+        return Path(self.settings.cmf_extract_repo) / "manual_overrides.json"
+
+    def _run_audit(self, auto: bool = False) -> None:
+        """Ejecuta el verificador de completitud + actualiza overrides.json.
+
+        Llamado automáticamente al finalizar el pipeline (auto=True) o
+        manualmente desde el botón "Auditar Excels" (auto=False).
+        """
+        import sys
+        from pathlib import Path
+
+        cmf_extract_repo = Path(self.settings.cmf_extract_repo)
+        test_script = cmf_extract_repo / "tests" / "test_excel_completeness.py"
+        product_v1 = Path(self.settings.product_v1_dir)
+        overrides_path = self._overrides_json_path()
+
+        if not test_script.is_file():
+            self.log_viewer.log(
+                f"Auditoría no disponible: {test_script} no existe", "WARNING")
+            return
+        if not product_v1.is_dir() or not any(product_v1.glob("*.xlsx")):
+            self.log_viewer.log(
+                f"Sin Excels en {product_v1}; saltando auditoría", "INFO")
+            return
+
+        self.log_viewer.log("=" * 60)
+        self.log_viewer.log(
+            "Auditando Excels finales y actualizando overrides.json...", "INFO")
+
+        # Ejecutamos el test como módulo Python en proceso (para que aparezcan
+        # los logs en el panel y el JSON se actualice en el mismo cwd).
+        import io
+        import contextlib
+
+        # Asegurar PATH para importar el test
+        repo_root = str(cmf_extract_repo)
+        if repo_root not in sys.path:
+            sys.path.insert(0, repo_root)
+
+        argv_backup = sys.argv[:]
+        sys.argv = [
+            "test_excel_completeness.py",
+            "--product-v1-dir", str(product_v1),
+            "--export-missing", str(overrides_path),
+        ]
+        buf = io.StringIO()
+        rc = 0
+        try:
+            from tests import test_excel_completeness as _t  # type: ignore
+            with contextlib.redirect_stdout(buf):
+                try:
+                    _t.main()
+                except SystemExit as se:
+                    rc = se.code or 0
+        except Exception as exc:
+            self.log_viewer.log(f"Auditoría falló: {exc}", "ERROR")
+            return
+        finally:
+            sys.argv = argv_backup
+
+        # Volcar output al log
+        for line in buf.getvalue().splitlines():
+            if not line.strip():
+                continue
+            level = "WARNING" if line.startswith("❌") or "⚠" in line else (
+                "SUCCESS" if line.startswith("✅") else "INFO")
+            self.log_viewer.log(line, level)
+
+        # Resumen accionable
+        n_gaps = self._count_overrides_gaps(overrides_path)
+        if n_gaps > 0:
+            self.log_viewer.log(
+                f"📋 Hay {n_gaps} huecos pendientes en {overrides_path.name}. "
+                f"Usa 'Editar overrides.json' para llenarlos y re-corre el pipeline.",
+                "WARNING")
+        else:
+            self.log_viewer.log(
+                "✅ Sin huecos críticos pendientes en overrides.json", "SUCCESS")
+
+    def _count_overrides_gaps(self, path) -> int:
+        """Cuenta cuántas celdas en el JSON están en null (= huecos sin llenar)."""
+        try:
+            import json
+            if not path.is_file():
+                return 0
+            data = json.loads(path.read_text(encoding="utf-8"))
+            n = 0
+            for rut in data.values():
+                for sheet in rut.values():
+                    for label, periods in sheet.items():
+                        if not isinstance(periods, dict):
+                            continue
+                        for k, v in periods.items():
+                            if k == "_force":
+                                continue
+                            if v is None:
+                                n += 1
+            return n
+        except Exception:
+            return 0
+
+    def _on_audit_excels(self) -> None:
+        """Botón: corre la auditoría manualmente."""
+        self._run_audit(auto=False)
+
+    def _on_edit_overrides(self) -> None:
+        """Botón: abre el JSON de overrides en el editor por defecto del SO."""
+        path = self._overrides_json_path()
+        if not path.is_file():
+            # Crearlo vacío para que pueda abrirse
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("{}\n", encoding="utf-8")
+            self.log_viewer.log(f"Creado {path}", "INFO")
+        try:
+            import os as _os
+            import subprocess as _sp
+            import sys as _sys
+            if _sys.platform == "win32":
+                _os.startfile(str(path))  # type: ignore[attr-defined]
+            elif _sys.platform == "darwin":
+                _sp.Popen(["open", str(path)])
+            else:
+                _sp.Popen(["xdg-open", str(path)])
+            self.log_viewer.log(f"Abriendo {path}", "INFO")
+        except Exception as exc:
+            messagebox.showinfo(
+                "Editar overrides", f"Edita manualmente:\n{path}\n\n{exc}")
 
     def _on_close(self) -> None:
         if self.is_running:
