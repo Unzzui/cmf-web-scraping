@@ -201,8 +201,12 @@ class BulkProcessor(FormulaProcessorMixin, ValueProcessorMixin, MethodologySheet
             Tipo de ratio para formateo
         """
         ratio_name_lower = ratio_name.lower()
-        
-        if any(word in ratio_name_lower for word in ["margen", "roe", "roa", "autonomía", "ac / at", "pc / pt"]):
+
+        if any(word in ratio_name_lower for word in ["multiplicador", "multiplier", "altman"]):
+            return "ratio"
+        if "piotroski" in ratio_name_lower:
+            return "number"
+        if any(word in ratio_name_lower for word in ["margen", "roe", "roa", "roic", "variación", "cagr", "growth", "accruals", "autonomía", "ac / at", "pc / pt"]):
             return "pct"
         elif any(word in ratio_name_lower for word in ["días", "período", "ciclo"]):
             return "days"

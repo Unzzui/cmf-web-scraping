@@ -48,19 +48,24 @@ def arelle_cache_path(url: str) -> Path:
     return _CACHE_ROOT / scheme_dir / p.netloc / p.path.lstrip("/")
 
 
-def _cached_either_scheme(url: str) -> bool:
-    """True si la URL está cacheada en http:// o https:// (cualquiera vale)."""
+def _cached_path_either_scheme(url: str) -> Optional[Path]:
+    """Ruta del archivo cacheado (http:// o https://, cualquiera vale) o None."""
     primary = arelle_cache_path(url)
     if primary.exists():
-        return True
+        return primary
     alt_str = str(primary)
     if "/cache/http/" in alt_str:
         alt = Path(alt_str.replace("/cache/http/", "/cache/https/"))
     elif "/cache/https/" in alt_str:
         alt = Path(alt_str.replace("/cache/https/", "/cache/http/"))
     else:
-        return False
-    return alt.exists()
+        return None
+    return alt if alt.exists() else None
+
+
+def _cached_either_scheme(url: str) -> bool:
+    """True si la URL está cacheada en http:// o https:// (cualquiera vale)."""
+    return _cached_path_either_scheme(url) is not None
 
 
 # ---------------------------------------------------------------------------
@@ -173,6 +178,12 @@ def populate_arelle_cache(company_dir: Path,
     """Pre-puebla el HTTP cache de Arelle con todas las taxonomías que
     referencian los .xsd locales (transitivamente).
 
+    BFS sobre la clausura completa: también re-escanea archivos YA cacheados
+    en busca de dependencias faltantes (si una corrida anterior quedó a
+    medias, los huecos profundos no se veían), y escanea linkbases ``.xml``
+    además de ``.xsd``. Sin esto, Arelle offline termina "ok" (exit 0) pero
+    con IOerror por archivos faltantes → facts/labels incompletos.
+
     Retorna la cantidad de URLs descargadas.
 
     Parameters
@@ -182,38 +193,59 @@ def populate_arelle_cache(company_dir: Path,
     progress_cb:
         Callback opcional ``(message, current, total)`` para reportar avance.
     max_iterations:
-        Cap de iteraciones del BFS (para evitar loops infinitos en casos
-        patológicos).
+        Conservado por compatibilidad (el BFS con conjunto `seen` ya no puede
+        ciclar).
     """
+    from collections import deque
+
     company_name = company_dir.name
-    pending = _scan_company_xsds(company_dir)
-    to_download = sorted(u for u in pending if not _cached_either_scheme(u))
+    pending = deque(sorted(_scan_company_xsds(company_dir)))
+    seen: Set[str] = set()
+    downloaded = 0
+    failed = 0
+    sess = None
 
-    if not to_download:
-        return 0
+    while pending:
+        url = pending.popleft()
+        if url in seen:
+            continue
+        seen.add(url)
 
-    if progress_cb:
+        path = _cached_path_either_scheme(url)
+        if path is None:
+            if sess is None:
+                try:
+                    sess = _build_session()
+                except Exception:
+                    break  # sin requests no podemos descargar nada
+            cache_path = arelle_cache_path(url)
+            try:
+                r = sess.get(url, timeout=20, allow_redirects=True)
+                if r.status_code == 200 and r.content:
+                    cache_path.parent.mkdir(parents=True, exist_ok=True)
+                    cache_path.write_bytes(r.content)
+                    downloaded += 1
+                    path = cache_path
+                else:
+                    failed += 1
+                    continue
+            except Exception:
+                failed += 1
+                continue
+            if progress_cb and downloaded % 10 == 0:
+                progress_cb(f"{company_name} - Cache: {downloaded} OK, {failed} fail",
+                            downloaded, downloaded + len(pending))
+
+        # Escanear también linkbases .xml: referencian esquemas vía href.
+        if path.suffix.lower() in (".xsd", ".xml"):
+            for u in collect_xsd_imports(path):
+                if u not in seen:
+                    pending.append(u)
+
+    if (downloaded or failed) and progress_cb:
         progress_cb(
-            f"{company_name} - Cache Arelle: descargando "
-            f"{len(to_download)} taxonomías faltantes",
-            0, len(to_download),
+            f"{company_name} - Cache poblado: {downloaded} OK, "
+            f"{failed} con error",
+            downloaded, downloaded,
         )
-
-    total_downloaded = 0
-    total_failed = 0
-    for _ in range(max_iterations):
-        if not to_download:
-            break
-        ok, fail, new_deps = _download_missing(to_download, progress_cb,
-                                                company_name)
-        total_downloaded += ok
-        total_failed += fail
-        to_download = sorted(new_deps)
-
-    if progress_cb:
-        progress_cb(
-            f"{company_name} - Cache poblado: {total_downloaded} OK, "
-            f"{total_failed} con error",
-            total_downloaded, total_downloaded,
-        )
-    return total_downloaded
+    return downloaded

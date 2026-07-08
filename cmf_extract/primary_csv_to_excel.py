@@ -124,6 +124,10 @@ def load_and_combine_primary_roles(primary_files: List[Path]) -> pd.DataFrame:
         # Cargando archivo primary_roles
         try:
             df = pd.read_csv(file_path)
+            # RoleCode debe ser str en todo el pipeline; read_csv lo infiere
+            # int y pandas >= 3 rechaza asignar int en columnas str.
+            if 'RoleCode' in df.columns:
+                df['RoleCode'] = df['RoleCode'].astype(str)
             all_dfs.append(df)
         except Exception as e:
             # Error cargando archivo

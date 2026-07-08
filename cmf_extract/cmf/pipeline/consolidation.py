@@ -122,9 +122,11 @@ def _run_single(
         return PipelineResult(success=success, errors=errors)
 
     try:
+        # Escanear solo el directorio de la empresa (no todo xbrl_base_dir):
+        # con cientos de empresas el walk completo por cada una es O(N²).
         all_datasets = [
             ds
-            for ds in find_datasets(config.xbrl_base_dir)
+            for ds in find_datasets(company_dir)
             if ds.company_dir == company_dir
         ]
     except Exception as exc:
@@ -195,11 +197,13 @@ def _run_single(
     except Exception as exc:
         cb(f"{company_name} - WARN cache pre-population: {exc}", done, total_ds)
 
-    # ---- 0b) Invalidar out_ dirs con facts sospechosamente vacíos ----
+    # ---- 0b) Invalidar out_ dirs con extracción incompleta ----
     # Si una corrida previa generó facts con poca data (taxonomía incompleta
     # en cache de Arelle al momento), borramos el out_ para forzar re-extracción
-    # con el cache ya poblado. Heurística: menos de 1000 líneas en facts CSV
-    # cuando la mayoría tienen 2000-3500 → ese out_ está roto.
+    # con el cache ya poblado. El conteo bajo solo es sospechoso si el log de
+    # Arelle registró errores de carga (IOerror por taxonomías faltantes):
+    # una empresa chica con pocos facts y log limpio es legítima y no debe
+    # re-extraerse en cada corrida.
     rescued = 0
     for ds in sorted_datasets:
         out_dir = ds.dataset_dir / f"out_{ds.stem}"
@@ -213,13 +217,23 @@ def _run_single(
                 line_count = sum(1 for _ in fp)
         except Exception:
             continue
-        if line_count < 1000:
-            import shutil as _shutil
-            _shutil.rmtree(out_dir, ignore_errors=True)
-            rescued += 1
+        if line_count >= 1000:
+            continue
+        log_file = out_dir / "arelle_facts_es.log"
+        try:
+            log_text = log_file.read_text(encoding="utf-8", errors="ignore")
+            dirty = "IOerror" in log_text or "FileNotLoadable" in log_text
+        except OSError:
+            dirty = True  # sin log no hay evidencia de extracción sana
+        if not dirty:
+            continue
+        import shutil as _shutil
+        _shutil.rmtree(out_dir, ignore_errors=True)
+        rescued += 1
     if rescued:
         cb(f"{company_name} - Invalidados {rescued} out_ con facts < 1000 líneas "
-           f"(se re-extraerán con cache completo)", done, total_ds)
+           f"y errores de carga en log (se re-extraerán con cache completo)",
+           done, total_ds)
 
     # ---- 1) TODO OFFLINE paralelo ----
     max_workers = max(1, min(arelle_parallel_cap, config.workers or 1, total_ds))

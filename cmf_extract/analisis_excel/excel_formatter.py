@@ -36,6 +36,9 @@ class ExcelFormatter:
             "RENTABILIDAD": PatternFill("solid", fgColor="F8D7DA"),
             "EFICIENCIA OPERATIVA": PatternFill("solid", fgColor="D6EAF8"),
             "FLUJOS Y ADICIONALES": PatternFill("solid", fgColor="E8DAEF"),
+            "CRECIMIENTO": PatternFill("solid", fgColor="FDEBD0"),
+            "DUPONT": PatternFill("solid", fgColor="D4EFDF"),
+            "CALIDAD Y SCORES": PatternFill("solid", fgColor="FCF3CF"),
         }
         # Estilo tabla notas
         self.notes_header_fill = PatternFill("solid", fgColor="EFEFEF")
@@ -149,6 +152,9 @@ class ExcelFormatter:
                 "CASH FLOWS & OTHER": "FLUJOS Y ADICIONALES",
                 "VALUE CREATION": "CREACIÓN DE VALOR",
                 "COVERAGE & RISK": "COBERTURA Y RIESGO",
+                "GROWTH": "CRECIMIENTO",
+                "DUPONT": "DUPONT",
+                "QUALITY & SCORES": "CALIDAD Y SCORES",
             }
             fill = self.section_fills.get(en_to_es.get(section_name, ""), PatternFill("solid", fgColor="EFEFEF"))
         section_cell.fill = fill

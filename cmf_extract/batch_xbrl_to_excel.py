@@ -165,25 +165,57 @@ def find_xbrl_file(dataset_dir: Path, stem: str) -> Path | None:
     return None
 
 
-def run_cmd(cmd: Sequence[str], cwd: Path | None = None) -> None:
-    # Timeout duro por subprocess (Arelle puede colgarse bajando taxonomías de
+def _arelle_timeout() -> int | None:
+    # Timeout duro por export (Arelle puede colgarse bajando taxonomías de
     # la CMF si la red falla). Configurable vía CMF_ARELLE_TIMEOUT (segundos);
     # default 180 (3 min). 0 o negativo desactiva el timeout.
     try:
         timeout = int(os.getenv("CMF_ARELLE_TIMEOUT", "180"))
     except ValueError:
         timeout = 180
+    return timeout if timeout > 0 else None
+
+
+def run_cmd(cmd: Sequence[str], cwd: Path | None = None) -> None:
     subprocess.run(
         cmd,
         cwd=str(cwd) if cwd else None,
         check=True,
-        timeout=timeout if timeout > 0 else None,
+        timeout=_arelle_timeout(),
     )
+
+
+_worker_pool_broken = False
+
+
+def run_arelle(arelle_python: Path, arelle_dir: Path, args: list[str]) -> None:
+    """Ejecuta un export de Arelle.
+
+    Con CMF_ARELLE_WORKER=1 usa el pool de workers persistentes (paga el
+    arranque de intérprete + import de Arelle una vez por worker en lugar de
+    una vez por dataset). Ante cualquier falla del pool cae al modo subprocess
+    clásico y no vuelve a intentar el pool en esta corrida.
+    """
+    global _worker_pool_broken
+    if os.getenv("CMF_ARELLE_WORKER", "0") == "1" and not _worker_pool_broken:
+        try:
+            from arelle_pool import ArelleWorkerPool
+            pool = ArelleWorkerPool.get(arelle_python, arelle_dir)
+            pool.run(args, timeout=float(_arelle_timeout() or 3600))
+            return
+        except Exception as exc:
+            _worker_pool_broken = True
+            print(f"[arelle] pool de workers falló ({exc}); "
+                  f"usando subprocess clásico", file=sys.stderr)
+    run_cmd([str(arelle_python), 'arelleCmdLine.py', *args], cwd=arelle_dir)
 
 
 def run_arelle_exports(arelle_dir: Path, xbrl_file: Path, out_dir: Path, stem: str, langs: Sequence[str], facts_strategy: str = "es_only", force: bool = False) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    # Absoluto: el subprocess corre con cwd=arelle_dir, donde una ruta
+    # relativa al intérprete no resuelve.
+    arelle_dir = Path(arelle_dir).resolve()
     # Elegir intérprete de Arelle (
     arelle_python = arelle_dir / '.venv' / 'bin' / 'python'
     if not arelle_python.exists():
@@ -217,17 +249,8 @@ def run_arelle_exports(arelle_dir: Path, xbrl_file: Path, out_dir: Path, stem: s
         # factTable (estrategia opcional para acelerar):
         #  - es_only: exportar facts solo para ES y reutilizar para EN
         #  - both: exportar facts para ambos idiomas
-        if facts_strategy == "both" or lang.startswith('es'):
-            if force or not _up_to_date([xbrl_abs], [facts_csv, facts_log]):
-                run_cmd([
-                    str(arelle_python), 'arelleCmdLine.py',
-                    '-f', str(xbrl_abs),
-                    f'--labelLang={label_lang}',
-                    '--factTable', str(facts_csv.resolve()),
-                    '--factTableCols', fact_cols,
-                    '--logFile', str(facts_log.resolve()),
-                ], cwd=arelle_dir)
-        else:
+        want_facts = facts_strategy == "both" or lang.startswith('es')
+        if not want_facts:
             # Create symlink for EN facts pointing to ES (saves ~22MB per dataset)
             try:
                 es_facts = (out_abs / f"facts_{stem}_es.csv")
@@ -241,15 +264,37 @@ def run_arelle_exports(arelle_dir: Path, xbrl_file: Path, out_dir: Path, stem: s
                 except Exception:
                     pass
 
-        # presentation (cache)
-        if force or not _up_to_date([xbrl_abs], [pres_csv, pre_log]):
-            run_cmd([
-                str(arelle_python), 'arelleCmdLine.py',
+        need_facts = want_facts and (force or not _up_to_date([xbrl_abs], [facts_csv, facts_log]))
+        need_pre = force or not _up_to_date([xbrl_abs], [pres_csv, pre_log])
+
+        if need_facts and need_pre:
+            # Una sola corrida de Arelle exporta ambos: la carga del DTS (lo
+            # caro) se paga una vez en lugar de dos.
+            run_arelle(arelle_python, arelle_dir, [
+                '-f', str(xbrl_abs),
+                f'--labelLang={label_lang}',
+                '--factTable', str(facts_csv.resolve()),
+                '--factTableCols', fact_cols,
+                '--pre', str(pres_csv.resolve()),
+                '--logFile', str(facts_log.resolve()),
+            ])
+            pre_log.write_text("(exportado junto a facts; ver arelle_facts log)\n",
+                               encoding="utf-8")
+        elif need_facts:
+            run_arelle(arelle_python, arelle_dir, [
+                '-f', str(xbrl_abs),
+                f'--labelLang={label_lang}',
+                '--factTable', str(facts_csv.resolve()),
+                '--factTableCols', fact_cols,
+                '--logFile', str(facts_log.resolve()),
+            ])
+        elif need_pre:
+            run_arelle(arelle_python, arelle_dir, [
                 '-f', str(xbrl_abs),
                 f'--labelLang={label_lang}',
                 '--pre', str(pres_csv.resolve()),
                 '--logFile', str(pre_log.resolve()),
-            ], cwd=arelle_dir)
+            ])
 
 
 def run_arelle_exports_progress(
@@ -272,6 +317,9 @@ def run_arelle_exports_progress(
     """
     out_dir.mkdir(parents=True, exist_ok=True)
 
+    # Absoluto: el subprocess corre con cwd=arelle_dir, donde una ruta
+    # relativa al intérprete no resuelve.
+    arelle_dir = Path(arelle_dir).resolve()
     arelle_python = arelle_dir / '.venv' / 'bin' / 'python'
     if not arelle_python.exists():
         arelle_python = Path(sys.executable)
@@ -307,19 +355,8 @@ def run_arelle_exports_progress(
         facts_log = (out_abs / f"arelle_facts_{lang}.log")
         pre_log = (out_abs / f"arelle_pre_{lang}.log")
 
-        if facts_strategy == "both" or lang.startswith('es'):
-            if force or not _up_to_date([xbrl_abs], [facts_csv, facts_log]):
-                _emit(f"facts_{lang}")
-                run_cmd([
-                    str(arelle_python), 'arelleCmdLine.py',
-                    '-f', str(xbrl_abs),
-                    f'--labelLang={label_lang}',
-                    '--factTable', str(facts_csv.resolve()),
-                    '--factTableCols', fact_cols,
-                    '--logFile', str(facts_log.resolve()),
-                    *offline_flags,
-                ], cwd=arelle_dir)
-        else:
+        want_facts = facts_strategy == "both" or lang.startswith('es')
+        if not want_facts:
             # Create symlink for EN facts pointing to ES (saves ~22MB per dataset)
             try:
                 es_facts = (out_abs / f"facts_{stem}_es.csv")
@@ -334,16 +371,43 @@ def run_arelle_exports_progress(
                     pass
             _emit(f"facts_{lang}")
 
-        if force or not _up_to_date([xbrl_abs], [pres_csv, pre_log]):
+        need_facts = want_facts and (force or not _up_to_date([xbrl_abs], [facts_csv, facts_log]))
+        need_pre = force or not _up_to_date([xbrl_abs], [pres_csv, pre_log])
+
+        if need_facts and need_pre:
+            # Una sola corrida de Arelle exporta ambos: la carga del DTS (lo
+            # caro) se paga una vez en lugar de dos.
+            _emit(f"facts+pre_{lang}")
+            run_arelle(arelle_python, arelle_dir, [
+                '-f', str(xbrl_abs),
+                f'--labelLang={label_lang}',
+                '--factTable', str(facts_csv.resolve()),
+                '--factTableCols', fact_cols,
+                '--pre', str(pres_csv.resolve()),
+                '--logFile', str(facts_log.resolve()),
+                *offline_flags,
+            ])
+            pre_log.write_text("(exportado junto a facts; ver arelle_facts log)\n",
+                               encoding="utf-8")
+        elif need_facts:
+            _emit(f"facts_{lang}")
+            run_arelle(arelle_python, arelle_dir, [
+                '-f', str(xbrl_abs),
+                f'--labelLang={label_lang}',
+                '--factTable', str(facts_csv.resolve()),
+                '--factTableCols', fact_cols,
+                '--logFile', str(facts_log.resolve()),
+                *offline_flags,
+            ])
+        elif need_pre:
             _emit(f"pre_{lang}")
-            run_cmd([
-                str(arelle_python), 'arelleCmdLine.py',
+            run_arelle(arelle_python, arelle_dir, [
                 '-f', str(xbrl_abs),
                 f'--labelLang={label_lang}',
                 '--pre', str(pres_csv.resolve()),
                 '--logFile', str(pre_log.resolve()),
                 *offline_flags,
-            ], cwd=arelle_dir)
+            ])
 
 def generate_excels(cmf_dir: Path, out_dir: Path, stem: str, langs: Sequence[str]) -> None:
     script = cmf_dir / 'xbrl_to_excel.py'

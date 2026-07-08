@@ -1,0 +1,22 @@
+[Unit]
+Description=FindataChile: pipeline CMF (descarga XBRL + consolidación + análisis)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Ajustar usuario y ruta a la instalación real del servidor
+User=findata
+WorkingDirectory=/opt/cmf-web-scraping
+Environment=PYTHONUNBUFFERED=1
+# Worker persistente de Arelle (validar antes con cmf_extract/bench_arelle.py)
+# Environment=CMF_ARELLE_WORKER=1
+# Environment=CMF_ARELLE_PARALLEL=6
+ExecStart=/opt/cmf-web-scraping/.venv/bin/python run_pipeline_cli.py --json --backup
+TimeoutStartSec=8h
+Nice=5
+# Notificación ante fallo total (requiere findata-alert@.service; opcional)
+# OnFailure=findata-alert@%n.service
+
+[Install]
+WantedBy=multi-user.target

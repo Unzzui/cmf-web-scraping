@@ -5,11 +5,14 @@
 # Nota: la consolidación (CMF_EXTRACT) corre en SU propio intérprete; sus
 # dependencias (Arelle, etc.) NO van en este venv.
 
-selenium==4.16.0
-pandas==2.1.4
-beautifulsoup4==4.12.2
-XlsxWriter==3.1.9
-openpyxl==3.1.2
+# Pins mínimos (los == exactos antiguos no compilan en Python >= 3.13; la
+# consolidación corre aislada en su propio venv, así que no hace falta fijar
+# pandas antiguo aquí).
+selenium>=4.16
+pandas>=2.1
+beautifulsoup4>=4.12
+XlsxWriter>=3.1
+openpyxl>=3.1
 
 # Descarga directa HTTP / reintentos y subida (uploader FinDataChile, diferido)
 requests>=2.31

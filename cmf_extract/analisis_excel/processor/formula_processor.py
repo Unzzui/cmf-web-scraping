@@ -472,6 +472,9 @@ class FormulaProcessorMixin:
             "FLUJOS Y ADICIONALES": "CASH FLOWS & OTHER",
             "CREACIÓN DE VALOR": "VALUE CREATION",
             "COBERTURA Y RIESGO": "COVERAGE & RISK",
+            "CRECIMIENTO": "GROWTH",
+            "DUPONT": "DUPONT",
+            "CALIDAD Y SCORES": "QUALITY & SCORES",
         }
 
         ratio_map = {
@@ -516,6 +519,19 @@ class FormulaProcessorMixin:
             "Altman Z-Score": "Altman Z-Score",
             "Cobertura Servicio Deuda": "Debt Service Coverage",
             "Cobertura Gastos Fijos": "Fixed-Charge Coverage",
+            # Crecimiento / DuPont / Calidad (secciones de valores estáticos)
+            "Variación Ingresos (YoY)": "Revenue Growth (YoY)",
+            "Variación EBITDA (YoY)": "EBITDA Growth (YoY)",
+            "Variación Utilidad Neta (YoY)": "Net Income Growth (YoY)",
+            "CAGR Ingresos 3 Años": "Revenue CAGR 3Y",
+            "CAGR Ingresos 5 Años": "Revenue CAGR 5Y",
+            "Margen Neto (DuPont)": "Net Margin (DuPont)",
+            "Rotación de Activos (DuPont)": "Asset Turnover (DuPont)",
+            "Multiplicador de Capital": "Equity Multiplier",
+            "ROE (DuPont)": "ROE (DuPont)",
+            "Deuda Financiera Neta / EBITDA": "Net Financial Debt / EBITDA",
+            "Accruals (UN - CFO) / Activos": "Accruals (NI - CFO) / Assets",
+            "Piotroski F-Score": "Piotroski F-Score",
         }
 
         desc_map = {
@@ -1814,6 +1830,79 @@ class FormulaProcessorMixin:
                         ws.cell(row=deuda_row, column=j).value = f"=IFERROR(({net_debt})/{ebitda_cell},\"\")"
         except Exception:
             pass
+
+        # 3) Secciones de VALORES estáticos: CRECIMIENTO, DUPONT y CALIDAD Y SCORES
+        # (scores como Piotroski no son representables como fórmula Excel legible).
+        # ROIC y Altman Z-Score ya existen como fórmulas en CREACIÓN DE VALOR /
+        # COBERTURA Y RIESGO: no se duplican aquí.
+        try:
+            import pandas as _pd
+            from ..ratio_calculator import RatioCalculator as _RatioCalculator
+
+            # Copia superficial para inyectar insumos de facts sin afectar pasos posteriores (DCF)
+            _fd = dict(financial_data)
+            _fd["balance"] = dict(financial_data.get("balance", {}))
+            _fd["income"] = dict(financial_data.get("income", {}))
+
+            # Acciones emitidas desde facts XBRL (señal de dilución de Piotroski)
+            _shares_clean = {k: v for k, v in (shares_values_map or {}).items()
+                             if isinstance(v, (int, float)) and v}
+            if _shares_clean and "Acciones" not in _fd["balance"]:
+                _fd["balance"]["Acciones"] = _pd.Series(_shares_clean, dtype=float)
+
+            # D&A desde facts XBRL si el estado de resultados no lo trae (EBITDA consistente con la hoja)
+            _da_clean = {k: v for k, v in (da_values_map or {}).items()
+                         if isinstance(v, (int, float)) and v}
+            _da_ser = _fd["income"].get("DA", _pd.Series(dtype=float))
+            if _da_clean and (_da_ser.dropna().empty or (_da_ser.dropna() == 0).all()):
+                _fd["income"]["DA"] = _pd.Series(_da_clean, dtype=float)
+
+            _calc = _RatioCalculator(_fd)
+            _quality = _calc.calculate_quality_scores()
+            _solvency = _calc.calculate_solvency_ratios()
+            _static_sections = [
+                ("CRECIMIENTO", _calc.calculate_growth_ratios()),
+                ("DUPONT", _calc.calculate_dupont_ratios()),
+                ("CALIDAD Y SCORES", {
+                    "Deuda Financiera Neta / EBITDA": _solvency.get("Deuda Financiera Neta / EBITDA"),
+                    "Accruals (UN - CFO) / Activos": _quality.get("Accruals (UN - CFO) / Activos"),
+                    "Piotroski F-Score": _quality.get("Piotroski F-Score"),
+                }),
+            ]
+
+            def _value_for_label(series, lb: str):
+                """Valor de la serie cuyo índice normalizado (YYYYQn) coincide con la etiqueta."""
+                if series is None or getattr(series, "empty", True):
+                    return None
+                if lb in series.index:
+                    v = series[lb]
+                    return v if _pd.notna(v) else None
+                lb_norm = _normalize_label(lb)
+                if lb_norm is None:
+                    return None
+                for k in series.index:
+                    if _normalize_label(str(k)) == lb_norm:
+                        v = series[k]
+                        return v if _pd.notna(v) else None
+                return None
+
+            for _sec_es, _items in _static_sections:
+                _sec_name = section_map.get(_sec_es, _sec_es) if lang == "en" else _sec_es
+                self.formatter.format_section_header(ws, current_row, cols_total, _sec_name)
+                current_row += 1
+                for _name_es, _series in _items.items():
+                    _r_name = ratio_map.get(_name_es, _name_es) if lang == "en" else _name_es
+                    for j, header_label in enumerate(headers_in_sheet, start=2):
+                        if not isinstance(header_label, str):
+                            continue
+                        _val = _value_for_label(_series, header_label.strip())
+                        if _val is not None:
+                            ws.cell(row=current_row, column=j).value = float(_val)
+                    _rtype = self._determine_ratio_type(_r_name)
+                    self.formatter.format_ratio_row(ws, current_row, _r_name, years, _rtype)
+                    current_row += 1
+        except Exception as e:
+            logging.getLogger(__name__).warning(f"Static value sections skipped: {e}")
 
         # Aplicar formateo condicional
         data_start_row = header_row + 1

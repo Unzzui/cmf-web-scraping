@@ -265,6 +265,20 @@ class DataExtractor:
             else:
                 self.found_accounts.append(concept)
             result[key] = series
+
+        # Cuentas opcionales (deuda financiera, utilidades retenidas, acciones)
+        # para ratios avanzados; si no existen no se reportan como faltantes
+        optional_concepts = {
+            "OPFC": "Otros pasivos financieros corrientes",
+            "OPFNC": "Otros pasivos financieros no corrientes",
+            "UtilRet": "Ganancias (pérdidas) acumuladas",
+            "Acciones": "Número de acciones suscritas",
+        }
+        for key, concept in optional_concepts.items():
+            series = self.find_row_series(self.df_bal, concept)
+            if not series.empty and not series.dropna().empty:
+                result[key] = series
+                self.found_accounts.append(concept)
         return result
     
     def extract_income_statement_items(self) -> Dict[str, pd.Series]:
@@ -313,6 +327,17 @@ class DataExtractor:
             self.missing_accounts.append("Depreciación y amortización (D&A)")
             self.warnings.append("D&A: not available — EBITDA Margin will show N/A")
         items["DA"] = dep.add(amort, fill_value=0)
+
+        # Cuentas opcionales para ROIC (tasa impositiva efectiva implícita)
+        tax_concepts = {
+            "Impuesto": "Gasto por impuestos a las ganancias",
+            "PreTax": "Ganancia (pérdida), antes de impuestos",
+        }
+        for key, concept in tax_concepts.items():
+            ser = self.find_row_series(self.df_pl, concept)
+            if not ser.empty and not ser.dropna().empty:
+                items[key] = ser
+                self.found_accounts.append(concept)
 
         return items
     

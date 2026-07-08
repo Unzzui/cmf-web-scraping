@@ -62,6 +62,9 @@ class ValueProcessorMixin:
             "RENTABILIDAD": "PROFITABILITY",
             "EFICIENCIA OPERATIVA": "OPERATING EFFICIENCY",
             "FLUJOS Y ADICIONALES": "CASH FLOWS & OTHER",
+            "CRECIMIENTO": "GROWTH",
+            "DUPONT": "DUPONT",
+            "CALIDAD Y SCORES": "QUALITY & SCORES",
         }
 
         ratio_map = {
@@ -98,6 +101,24 @@ class ValueProcessorMixin:
             "Free Cash Flow (CFO - CAPEX)": "Free Cash Flow (CFO - CAPEX)",
             "AC / AT": "CA / TA",
             "PC / PT": "CL / TL",
+            # Solvencia adicional
+            "Deuda Financiera Neta / EBITDA": "Net Financial Debt / EBITDA",
+            # Crecimiento
+            "Variación Ingresos (YoY)": "Revenue Growth (YoY)",
+            "Variación EBITDA (YoY)": "EBITDA Growth (YoY)",
+            "Variación Utilidad Neta (YoY)": "Net Income Growth (YoY)",
+            "CAGR Ingresos 3 Años": "Revenue CAGR 3Y",
+            "CAGR Ingresos 5 Años": "Revenue CAGR 5Y",
+            # DuPont
+            "Margen Neto (DuPont)": "Net Margin (DuPont)",
+            "Rotación de Activos (DuPont)": "Asset Turnover (DuPont)",
+            "Multiplicador de Capital": "Equity Multiplier",
+            "ROE (DuPont)": "ROE (DuPont)",
+            # Calidad y scores
+            "Accruals (UN - CFO) / Activos": "Accruals (NI - CFO) / Assets",
+            "ROIC": "ROIC",
+            "Altman Z''-Score (EM)": "Altman Z''-Score (EM)",
+            "Piotroski F-Score": "Piotroski F-Score",
         }
         
         for section_name, ratios in all_ratios.items():

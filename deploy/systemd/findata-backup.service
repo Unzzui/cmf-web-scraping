@@ -1,0 +1,18 @@
+[Unit]
+Description=FindataChile: respaldo a Google Drive vía rclone
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Ajustar usuario y ruta a la instalación real del servidor
+User=findata
+WorkingDirectory=/opt/cmf-web-scraping
+# Ping opcional a healthchecks.io al terminar:
+# Environment=HEALTHCHECK_URL=https://hc-ping.com/<uuid>
+ExecStart=/opt/cmf-web-scraping/scripts/backup_to_drive.sh
+TimeoutStartSec=4h
+Nice=10
+
+[Install]
+WantedBy=multi-user.target

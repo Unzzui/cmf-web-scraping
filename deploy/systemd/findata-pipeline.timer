@@ -1,0 +1,13 @@
+[Unit]
+Description=FindataChile: corrida diaria del pipeline en temporada de reportes
+
+[Timer]
+# Diario a las 06:00 durante los meses de publicación CMF (mar/abr/may/jun/
+# ago/sep/nov/dic). skip_existing hace que las corridas sin datos nuevos
+# terminen en minutos; cuando la CMF publica, se descarga solo lo nuevo.
+OnCalendar=*-03,04,05,06,08,09,11,12-* 06:00
+Persistent=true
+RandomizedDelaySec=15m
+
+[Install]
+WantedBy=timers.target
