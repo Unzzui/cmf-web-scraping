@@ -212,11 +212,21 @@ def sort_by_hierarchical_keys(df: pd.DataFrame, company_rut: str = None) -> pd.D
     
     role_code = str(df.iloc[0].get('RoleCode', '')).strip()
     json_structure = json_structure_by_role.get(role_code, [])
-    
+
     if not json_structure:
         # No se encontró estructura para role
         return df
-    
+
+    # Canonicalizar los labels del template a la forma más reciente de la
+    # taxonomía CMF, para que la fila unificada (con label canónico) matchee.
+    try:
+        from label_rename import load_rename_map, canonicalize_label
+        _rmap = load_rename_map()
+        if _rmap:
+            json_structure = [canonicalize_label(role_code, str(l), _rmap) for l in json_structure]
+    except Exception:
+        pass
+
     # PASO 1: Crear DataFrame base con estructura de las "lineas"
     # PASO 1: Creando estructura base
     base_rows = []
@@ -245,26 +255,56 @@ def sort_by_hierarchical_keys(df: pd.DataFrame, company_rut: str = None) -> pd.D
     
     # PASO 2: Mapeo exacto de datos
     filled_count = 0
-    
+
+    # Precomputar la sección [sinopsis] de cada fila del template (cabecera previa
+    # más cercana). Permite ubicar un mismo label que aparece en 2 secciones
+    # (p. ej. 'Impuestos corrientes' en Activos y en Pasivos) según el SectionKey
+    # del dato, y llenar SIEMPRE la siguiente posición aún vacía (antes se
+    # abandonaba si la primera ya estaba llena, dejando la 2ª vacía).
+    def _norm_sec(s: str) -> str:
+        return re.sub(r'\s+', ' ', str(s or '')).strip().lower()
+
+    base_sections = {}
+    _cur_sec = ''
+    for _bidx, _brow in base_df.iterrows():
+        _blab = str(_brow['Label']).strip()
+        if '[sinopsis]' in _blab.lower():
+            _cur_sec = _blab
+        base_sections[_bidx] = _blab if '[sinopsis]' in _blab.lower() else _cur_sec
+
     for idx, data_row in df.iterrows():
         data_label = str(data_row.get('Label', '')).strip()
-        
+
         # Excluir cuentas conflictivas y [sinopsis] por ahora
         # Las cuentas conflictivas se procesarán SOLO en el PASO 3 con su LabelKeyIdExt correcto
         if data_label in cuentas_conflictivas or '[sinopsis]' in data_label:
             continue
-            
-        # Buscar coincidencia exacta en la estructura base
-        matching_rows = base_df[base_df['Label'] == data_label]
-        if not matching_rows.empty and not matching_rows.iloc[0]['_filled']:
-            # Llenar con los datos reales
-            match_idx = matching_rows.index[0]
-            for col in data_row.index:
-                if col not in ['_estructura_position', '_filled']:
-                    base_df.at[match_idx, col] = data_row[col]
-            base_df.at[match_idx, '_filled'] = True
-            filled_count += 1
-    
+
+        # Posiciones del template con este label aún NO llenas
+        matching = base_df[(base_df['Label'] == data_label) & (~base_df['_filled'].astype(bool))]
+        if matching.empty:
+            continue
+
+        # Preferir la posición cuya sección coincide con el SectionKey del dato
+        data_sec = _norm_sec(data_row.get('SectionKey', ''))
+        match_idx = None
+        if data_sec:
+            for _bidx in matching.index:
+                sec = _norm_sec(base_sections.get(_bidx, ''))
+                # coincidencia por contención en cualquier sentido (los SectionKey
+                # del CSV a veces son prefijos/variantes del header del template)
+                if sec and (sec == data_sec or sec in data_sec or data_sec in sec):
+                    match_idx = _bidx
+                    break
+        if match_idx is None:
+            match_idx = matching.index[0]
+
+        for col in data_row.index:
+            if col not in ['_estructura_position', '_filled']:
+                base_df.at[match_idx, col] = data_row[col]
+        base_df.at[match_idx, '_filled'] = True
+        filled_count += 1
+
     # Mapeo exacto completado
     
     # PASO 3: LLENAR CUENTAS CONFLICTIVAS por LabelKeyIdExt
@@ -407,9 +447,77 @@ def sort_by_hierarchical_keys(df: pd.DataFrame, company_rut: str = None) -> pd.D
         if not target_section_found:
             # Cuenta conflictiva no procesada
             pass
-    
+
     # Cuentas conflictivas procesadas
-    
+
+    # PASO 3b (FALLBACK robusto): el PASO 3 basado en LabelKeyIdExt falla cuando
+    # ese key es contradictorio con el SectionKey real (frecuente en flujos:
+    # keyExt dice 'operación' pero el dato es de 'financiación'), dejando la
+    # cuenta conflictiva SIN colocar y su celda vacía pese a tener datos. Aquí se
+    # coloca por (label, ACTIVIDAD) usando el SectionKey del dato, solo si esos
+    # datos no fueron ya colocados (evita doble conteo).
+    def _activity_of(s: str):
+        s = str(s or '').lower()
+        for a in ('operación', 'inversión', 'financiación'):
+            if f'actividades de {a}' in s or f'de {a}' in s:
+                return a
+        return None
+
+    _date_cols = [c for c in base_df.columns
+                  if c not in ('Label', 'RoleCode', 'LabelKeyId', 'LabelKeyIdExt',
+                               'SectionKey', '_estructura_position', '_filled')]
+
+    def _valtuple(row):
+        out = []
+        for c in _date_cols:
+            v = row.get(c)
+            out.append('' if (v is None or (isinstance(v, float) and pd.isna(v))) else str(v).strip())
+        return tuple(out)
+
+    def _nonempty(row):
+        return any(t not in ('', 'nan', 'None') for t in _valtuple(row))
+
+    # actividad de cada posición del template (header 'actividades de X' vigente)
+    base_activity = {}
+    _cur_act = None
+    for _bidx, _brow in base_df.iterrows():
+        _blab = str(_brow['Label'])
+        if '[sinopsis]' in _blab.lower():
+            _a = _activity_of(_blab)
+            if _a:
+                _cur_act = _a
+        base_activity[_bidx] = _cur_act
+
+    for _idx, data_row in df.iterrows():
+        data_label = str(data_row.get('Label', '')).strip()
+        if data_label not in cuentas_conflictivas or not _nonempty(data_row):
+            continue
+        # ¿ya está colocado este dato (mismos valores) en alguna fila del label?
+        dv = _valtuple(data_row)
+        already = any(
+            _valtuple(brow) == dv
+            for _, brow in base_df[base_df['Label'] == data_label].iterrows()
+        )
+        if already:
+            continue
+        data_act = _activity_of(data_row.get('SectionKey', ''))
+        cand = base_df[(base_df['Label'] == data_label) & (~base_df['_filled'].astype(bool))]
+        if cand.empty:
+            continue
+        match_idx = None
+        if data_act:
+            for _bidx in cand.index:
+                if base_activity.get(_bidx) == data_act:
+                    match_idx = _bidx
+                    break
+        if match_idx is None:
+            match_idx = cand.index[0]
+        for col in data_row.index:
+            if col not in ['_estructura_position', '_filled']:
+                base_df.at[match_idx, col] = data_row[col]
+        base_df.at[match_idx, '_filled'] = True
+        conflictive_added += 1
+
     # ORDENAR por la posición de estructura y limpiar
     final_df = base_df.sort_values('_estructura_position', kind='stable')
     final_df = final_df.drop(['_estructura_position', '_filled'], axis=1)
@@ -580,14 +688,57 @@ def split_by_role(df: pd.DataFrame, company_rut: str = None) -> tuple[pd.DataFra
         return result_df
     
     balance_df = prepare_for_excel(balance_df)
-    income_df = prepare_for_excel(income_df) 
+    income_df = prepare_for_excel(income_df)
     cashflow_df = prepare_for_excel(cashflow_df)
-    
-    # Balance Sheet procesado
-    # Income Statement procesado  
-    # Cash Flow procesado
-    
+
+    # Quitar filas duplicadas VACÍAS: si un mismo label aparece >1 vez y alguna
+    # copia tiene datos, se eliminan las copias sin datos (redundantes). No toca
+    # placeholders únicos ni grupos donde TODAS las copias están vacías.
+    balance_df = drop_empty_duplicate_labels(balance_df)
+    income_df = drop_empty_duplicate_labels(income_df)
+    cashflow_df = drop_empty_duplicate_labels(cashflow_df)
+
     return balance_df, income_df, cashflow_df
+
+
+def drop_empty_duplicate_labels(df: pd.DataFrame) -> pd.DataFrame:
+    """Elimina copias VACÍAS de labels que están duplicados y tienen otra copia
+    con datos. Preserva orden, filas [sinopsis] y placeholders únicos."""
+    if df is None or df.empty or 'Cuenta' not in df.columns:
+        return df
+    date_cols = [c for c in df.columns if c != 'Cuenta']
+
+    def _has_data(row) -> bool:
+        for c in date_cols:
+            v = row[c]
+            if v is None:
+                continue
+            if isinstance(v, float) and pd.isna(v):
+                continue
+            if isinstance(v, str) and v.strip() == '':
+                continue
+            if v == 0:
+                continue
+            return True
+        return False
+
+    labels = df['Cuenta'].astype(str).str.strip()
+    has_data = df.apply(_has_data, axis=1)
+    drop_idx = []
+    for lab, grp in df.groupby(labels):
+        if lab.startswith('[') or 'sinopsis' in lab.lower() or len(grp) <= 1:
+            continue
+        mask = has_data.loc[grp.index]
+        if mask.any() and (~mask).any():
+            # hay copias con datos y copias vacías -> borrar las vacías
+            drop_idx.extend(grp.index[~mask].tolist())
+        elif not mask.any():
+            # TODAS las copias vacías -> conservar solo la primera (evita label
+            # repetido vacío; mantiene un placeholder estructural)
+            drop_idx.extend(grp.index[1:].tolist())
+    if drop_idx:
+        df = df.drop(index=drop_idx)
+    return df
 
 
 def _quarter_from_month(m: int) -> str | None:
@@ -1499,7 +1650,17 @@ def generate_excel_from_primary_csv(company_dir: Path, lang: str = 'es',
     
     # 2. Cargar y combinar datos
     combined_df = load_and_combine_primary_roles(primary_files)
-    
+
+    # 2b. Unificar cuentas renombradas por la taxonomía CMF (misma identidad de
+    #     elemento XBRL, distinto preferred-label entre versiones). Evita filas
+    #     duplicadas con series de tiempo partidas. Fail-safe si falta el mapa.
+    try:
+        from label_rename import unify_renamed_accounts
+        combined_df = unify_renamed_accounts(combined_df)
+    except Exception as _e:
+        if os.getenv('X2E_DEBUG') == '1':
+            print(f"⚠️  unify_renamed_accounts no aplicado: {_e}")
+
     # 3. Separar por roles (3 hojas) - pasar el RUT para usar estructura específica
     balance_df, income_df, cashflow_df = split_by_role(combined_df, company_rut)
     

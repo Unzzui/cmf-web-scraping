@@ -1,0 +1,24 @@
+{
+  "210000": {
+    "Activo fijo": "Activos fijos",
+    "Capital emitido": "Capital emitido y pagado",
+    "Contratos de retrocompra y préstamos de valores": "Obligaciones por pactos de retrocompra y préstamos de valores",
+    "Instrumentos de deuda emitidos": "Instrumentos financieros de deuda emitidos",
+    "Intangibles": "Activos intangibles"
+  },
+  "310000": {
+    "Ganancia (Pérdida) de Operaciones Discontinuadas, Neta de Impuesto": "Resultado de operaciones discontinuadas después de Impuestos",
+    "Ingresos netos por comisiones": "Ingreso neto por comisiones",
+    "Remuneraciones y gastos del personal": "Gastos por obligaciones de beneficios a empleados",
+    "Resultado antes de impuesto a la renta": "Resultado de operaciones continuas antes de impuestos",
+    "Resultado de operaciones continuas": "Resultado de operaciones continuas después de impuestos",
+    "Utilidad neta de operaciones financieras": "Resultado financiero neto"
+  },
+  "510000": {
+    "Flujos de efectivo netos procedentes (utilizados en) operaciones": "Flujos de efectivo netos procedentes de (utilizados en) operaciones",
+    "Flujos de efectivo netos procedentes de (utilizados en) la operación": "Flujos de efectivo netos procedentes de (utilizados en) operaciones",
+    "Pagos de préstamos a entidades relacionadas": "Pagos de préstamos de entidades relacionadas",
+    "Pagos por cambios en las participaciones en la propiedad en subsidiarias que no resulta en una pérdida de control": "Pagos por cambios en las participaciones en la propiedad en subsidiarias que no dan lugar a la pérdida de control",
+    "Recursos por ventas de otros activos a largo plazo": "Importes procedentes de otros activos a largo plazo"
+  }
+}
