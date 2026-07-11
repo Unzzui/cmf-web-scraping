@@ -23,6 +23,7 @@ from .cash_flow import CashFlowMixin
 from .value_creation import ValueCreationMixin
 from .coverage_risk import CoverageRiskMixin
 from .nature_based import NatureBasedMixin
+from .derived_ratios import DerivedRatiosMixin
 
 
 class FormulaBuilder(
@@ -36,6 +37,7 @@ class FormulaBuilder(
     ValueCreationMixin,
     CoverageRiskMixin,
     NatureBasedMixin,
+    DerivedRatiosMixin,
 ):
     """
     Constructor de fórmulas Excel para análisis financiero.

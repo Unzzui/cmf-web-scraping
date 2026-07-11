@@ -1414,57 +1414,98 @@ class FormulaProcessorMixin:
                         out[lbl] = (v_dep or 0) + (v_amo or 0)
                 return out
 
+            # Columnas meta/identidad de un facts CSV ancho de Arelle (todo lo que
+            # NO es una columna de valor por período/dimensión).
+            _META_FACT_COLS = {'Label', 'qname', 'QName', 'concept', 'Concept', 'name', 'Name',
+                               'localName', 'unitRef', 'decimals', 'precision', 'Dec', 'Prec',
+                               'Lang', 'contextRef', 'id', 'uuid', 'Value', 'value',
+                               'entityIdentifier', 'periodStart', 'periodEnd', 'instant',
+                               'endInstant'}
+
+            def _col_period(col) -> str | None:
+                """Periodo YYYYQn a partir de un header de columna de valor.
+                Soporta headers dimensionales '2021-12-31 - Acciones ordinarias [miembro]'
+                extrayendo el prefijo de fecha, y años sueltos 'YYYY'."""
+                s = str(col).strip()
+                m = re.match(r"^(\d{4})-(\d{2})-\d{2}", s)
+                if m:
+                    q = {'03': 'Q1', '06': 'Q2', '09': 'Q3', '12': 'Q4'}.get(m.group(2))
+                    return f"{m.group(1)}{q}" if q else m.group(1)
+                if re.match(r"^\d{4}$", s):
+                    return f"{s}Q4"
+                return None
+
+            def _combined_label(df: _pd.DataFrame) -> _pd.Series:
+                """En el facts ancho, la etiqueta del concepto está INDENTADA en una de
+                las primeras columnas (Label, Unnamed:1..N), no siempre en 'Label'.
+                Coalesce esas columnas de identidad en una sola etiqueta por fila."""
+                id_cols = []
+                for c in df.columns:
+                    if c in _META_FACT_COLS and c not in ('Label',):
+                        # localName/qname/etc. marcan el fin del bloque de identidad-árbol
+                        if c in ('localName', 'qname', 'contextRef', 'Value'):
+                            break
+                    if _col_period(c) is not None:
+                        break
+                    id_cols.append(c)
+                if not id_cols:
+                    id_cols = ['Label'] if 'Label' in df.columns else list(df.columns[:1])
+
+                def _first_nonempty(row):
+                    for x in row:
+                        s = str(x).strip()
+                        if s and s.lower() != 'nan':
+                            return s
+                    return ''
+                return df[id_cols].apply(_first_nonempty, axis=1)
+
+            def _read_shares_row(row, df: _pd.DataFrame) -> dict[str, float]:
+                """Lee el valor de acciones de una fila coalesciendo columnas
+                dimensionales al periodo (misma fecha → mismo periodo)."""
+                res: dict[str, float] = {}
+                for col in df.columns:
+                    per = _col_period(col)
+                    if per is None:
+                        continue
+                    val = _parse_shares(row.get(col))
+                    if val is not None and not _pd.isna(val) and val > 0:
+                        # coalesce: primer valor no vacío por periodo (todas las
+                        # clases de acción reportan el mismo total)
+                        res.setdefault(per, val)
+                return res
+
             def _extract_shares(df: _pd.DataFrame) -> dict[str, float]:
                 out: dict[str, float] = {}
-
-                # Columnas tipo concepto/etiqueta
                 qname_col = next((c for c in ['qname', 'QName', 'concept', 'Concept'] if c in df.columns), None)
-                label_col = 'Label' if 'Label' in df.columns else None
-
-                # Columnas meta a omitir (alineado con _extract_da)
-                META_COLS = {'Label', 'qname', 'QName', 'concept', 'Concept', 'name', 'Name',
-                            'unitRef', 'decimals', 'precision', 'contextRef', 'id', 'uuid',
-                            'Value', 'value'}
+                comb = _combined_label(df)
 
                 # ---------- 1) Preferir QNAME: "NumberOfSharesIssued" ----------
-                mask_q = _pd.Series([False] * len(df))
                 if qname_col:
                     mask_q = df[qname_col].astype(str).str.contains(
                         r"(?:^|[:/])NumberOfSharesIssued$", case=False, na=False, regex=True
                     )
+                    if mask_q.any():
+                        out = _read_shares_row(df.loc[mask_q].iloc[0], df)
+                        if out:
+                            return out
 
-                if mask_q.any():
-                    row = df.loc[mask_q].iloc[0]
-                    for col in df.columns:
-                        if col in META_COLS:
-                            continue
-                        lbl = _to_lbl(col)
-                        val = _parse_shares(row.get(col))
-                        if val is not None and not _pd.isna(val):
-                            out[lbl] = val
-                    return out
-
-                # ---------- 2) Fallback por LABEL: "Total número de acciones emitidas" ----------
-                if label_col:
-                    ser = df[label_col].astype(str)
-                    # Excluir abstracts/resúmenes por si vienen en facts
-                    not_abstract = ~ser.str.contains(r"\[(?:abstract|resumen)\]", case=False, na=False, regex=True)
-
-                    mask_l = (
-                        ser.str.contains(r"^\s*Total\s+n(?:ú|u)mero\s+de\s+acciones\s+emitidas\s*$", case=False, na=False, regex=True)
-                        | ser.str.contains(r"^\s*Total\s+number\s+of\s+shares\s+issued\s*$", case=False, na=False, regex=True)  # opcional EN
-                    ) & not_abstract
-
-                    if mask_l.any():
-                        row = df.loc[mask_l].iloc[0]
-                        for col in df.columns:
-                            if col in META_COLS:
-                                continue
-                            lbl = _to_lbl(col)
-                            val = _parse_shares(row.get(col))
-                            if val is not None and not _pd.isna(val):
-                                out[lbl] = val
+                # ---------- 2) Fallback por LABEL (coalescido desde indentación) ----------
+                not_abstract = ~comb.str.contains(r"\[(?:abstract|resumen)\]", case=False, na=False, regex=True)
+                mask_l = (
+                    comb.str.contains(r"^\s*Total\s+n(?:ú|u)mero\s+de\s+acciones\s+emitidas\s*$", case=False, na=False, regex=True)
+                    | comb.str.contains(r"^\s*Total\s+number\s+of\s+shares\s+issued\s*$", case=False, na=False, regex=True)
+                ) & not_abstract
+                if mask_l.any():
+                    out = _read_shares_row(df.loc[mask_l].iloc[0], df)
+                    if out:
                         return out
+
+                # ---------- 3) Fallback secundario: 'acciones emitidas y completamente pagadas' ----------
+                mask_p = comb.str.contains(
+                    r"acciones\s+emitidas\s+y\s+completamente\s+pagadas", case=False, na=False, regex=True
+                ) & not_abstract
+                if mask_p.any():
+                    out = _read_shares_row(df.loc[mask_p].iloc[0], df)
 
                 return out
 
@@ -1494,7 +1535,7 @@ class FormulaProcessorMixin:
             for idx, pth in enumerate(ordered):
                 try:
                     if pth.exists():
-                        df_any = _pd.read_csv(pth)
+                        df_any = _pd.read_csv(pth, low_memory=False)
                         m = _extract_shares(df_any)
                         if idx == 0:
                             shares_values_map.update(m)
@@ -1504,6 +1545,28 @@ class FormulaProcessorMixin:
                                     shares_values_map[k] = v
                 except Exception:
                     pass
+
+            # El nº de acciones NO está en el estado de situación financiera; vive
+            # como fact dimensional (por clase de acción) en los facts_*.csv POR
+            # PERÍODO (out_<stem>/), no en el consolidado. Escanear todos y agregar
+            # (las acciones cambian lentamente; se conserva el valor por período de
+            # cualquier archivo que lo reporte, incluyendo comparativos).
+            try:
+                company_root = target_dir.parent
+                per_facts = sorted(company_root.glob("Estados_*_extracted/out_*/facts_*_es.csv"))
+                if not per_facts:
+                    per_facts = sorted(company_root.glob("Estados_*_extracted/out_*/facts_*_en.csv"))
+                for pth in per_facts:
+                    try:
+                        df_any = _pd.read_csv(pth, low_memory=False)
+                        for k, v in _extract_shares(df_any).items():
+                            if v and shares_values_map.get(k) in (None, 0):
+                                shares_values_map[k] = v
+                    except Exception:
+                        pass
+            except Exception:
+                pass
+
             if os.getenv('CMF_DEBUG_DA', '0') == '1': # Reusing debug flag
                 # Shares map loaded
                 pass
@@ -1831,78 +1894,30 @@ class FormulaProcessorMixin:
         except Exception:
             pass
 
-        # 3) Secciones de VALORES estáticos: CRECIMIENTO, DUPONT y CALIDAD Y SCORES
-        # (scores como Piotroski no son representables como fórmula Excel legible).
-        # ROIC y Altman Z-Score ya existen como fórmulas en CREACIÓN DE VALOR /
-        # COBERTURA Y RIESGO: no se duplican aquí.
+        # 3) CRECIMIENTO / DUPONT / CALIDAD Y SCORES como FÓRMULAS Excel.
+        #    Generadas por DerivedRatiosMixin (analisis_excel/formula_builder/
+        #    derived_ratios.py): referencian celdas de los estados para
+        #    transparencia. Incluye Piotroski F-Score (usa la fila de acciones ya
+        #    escrita). ROIC/Altman ya existen como fórmulas en CREACIÓN DE VALOR /
+        #    COBERTURA Y RIESGO y no se duplican aquí.
         try:
-            import pandas as _pd
-            from ..ratio_calculator import RatioCalculator as _RatioCalculator
-
-            # Copia superficial para inyectar insumos de facts sin afectar pasos posteriores (DCF)
-            _fd = dict(financial_data)
-            _fd["balance"] = dict(financial_data.get("balance", {}))
-            _fd["income"] = dict(financial_data.get("income", {}))
-
-            # Acciones emitidas desde facts XBRL (señal de dilución de Piotroski)
-            _shares_clean = {k: v for k, v in (shares_values_map or {}).items()
-                             if isinstance(v, (int, float)) and v}
-            if _shares_clean and "Acciones" not in _fd["balance"]:
-                _fd["balance"]["Acciones"] = _pd.Series(_shares_clean, dtype=float)
-
-            # D&A desde facts XBRL si el estado de resultados no lo trae (EBITDA consistente con la hoja)
-            _da_clean = {k: v for k, v in (da_values_map or {}).items()
-                         if isinstance(v, (int, float)) and v}
-            _da_ser = _fd["income"].get("DA", _pd.Series(dtype=float))
-            if _da_clean and (_da_ser.dropna().empty or (_da_ser.dropna() == 0).all()):
-                _fd["income"]["DA"] = _pd.Series(_da_clean, dtype=float)
-
-            _calc = _RatioCalculator(_fd)
-            _quality = _calc.calculate_quality_scores()
-            _solvency = _calc.calculate_solvency_ratios()
-            _static_sections = [
-                ("CRECIMIENTO", _calc.calculate_growth_ratios()),
-                ("DUPONT", _calc.calculate_dupont_ratios()),
-                ("CALIDAD Y SCORES", {
-                    "Deuda Financiera Neta / EBITDA": _solvency.get("Deuda Financiera Neta / EBITDA"),
-                    "Accruals (UN - CFO) / Activos": _quality.get("Accruals (UN - CFO) / Activos"),
-                    "Piotroski F-Score": _quality.get("Piotroski F-Score"),
-                }),
-            ]
-
-            def _value_for_label(series, lb: str):
-                """Valor de la serie cuyo índice normalizado (YYYYQn) coincide con la etiqueta."""
-                if series is None or getattr(series, "empty", True):
-                    return None
-                if lb in series.index:
-                    v = series[lb]
-                    return v if _pd.notna(v) else None
-                lb_norm = _normalize_label(lb)
-                if lb_norm is None:
-                    return None
-                for k in series.index:
-                    if _normalize_label(str(k)) == lb_norm:
-                        v = series[k]
-                        return v if _pd.notna(v) else None
-                return None
-
-            for _sec_es, _items in _static_sections:
+            for _sec_es, _items in formula_builder.build_derived_ratio_sections(headers_in_sheet, ws):
                 _sec_name = section_map.get(_sec_es, _sec_es) if lang == "en" else _sec_es
                 self.formatter.format_section_header(ws, current_row, cols_total, _sec_name)
                 current_row += 1
-                for _name_es, _series in _items.items():
+                for _name_es, _kind, _fmap in _items:
                     _r_name = ratio_map.get(_name_es, _name_es) if lang == "en" else _name_es
                     for j, header_label in enumerate(headers_in_sheet, start=2):
                         if not isinstance(header_label, str):
                             continue
-                        _val = _value_for_label(_series, header_label.strip())
-                        if _val is not None:
-                            ws.cell(row=current_row, column=j).value = float(_val)
-                    _rtype = self._determine_ratio_type(_r_name)
-                    self.formatter.format_ratio_row(ws, current_row, _r_name, years, _rtype)
+                        _expr = _fmap.get(header_label.strip())
+                        if _expr:
+                            ws.cell(row=current_row, column=j).value = f"={_expr}"
+                    self.formatter.format_ratio_row(
+                        ws, current_row, _r_name, years, self._determine_ratio_type(_r_name))
                     current_row += 1
         except Exception as e:
-            logging.getLogger(__name__).warning(f"Static value sections skipped: {e}")
+            logging.getLogger(__name__).warning(f"Derived ratio sections skipped: {e}")
 
         # Aplicar formateo condicional
         data_start_row = header_row + 1
