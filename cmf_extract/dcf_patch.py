@@ -1049,11 +1049,11 @@ class DCFBuilder:
             ("(-) Deuda Neta", f"=$B${deuda_row}"),
             ("Equity Value", f"=B{valuation_row + 4}-B{valuation_row + 5}"),
             ("Acciones", f"=$B${acciones_row}"),
-            ("Valor por Acción (DCF)", f"=IF(B{valuation_row + 7}>0,B{valuation_row + 6}/B{valuation_row + 7},\"\")*1000"),
+            ("Valor por Acción (DCF)", f"=IFERROR(IF(B{valuation_row + 7}>0,B{valuation_row + 6}/B{valuation_row + 7}*1000,\"\"),\"\")"),
             ("", ""),  # Línea separadora
             ("Precio Actual Mercado", "INPUT_REQUIRED"),  # Para que el usuario ingrese el precio
-            ("Prima/(Descuento) %", f"=IF(OR(B{valuation_row + 10}=0,B{valuation_row + 10}=\"\",ISBLANK(B{valuation_row + 10})),\"SIN PRECIO MERCADO\",IF(B{valuation_row + 8}<0,\"DCF NEG - VENTA\",(B{valuation_row + 8}-B{valuation_row + 10})/B{valuation_row + 10}))"),
-            ("Recomendación", f"=IF(OR(B{valuation_row + 10}=0,B{valuation_row + 10}=\"\",ISBLANK(B{valuation_row + 10})),\"NECESITA PRECIO MERCADO\",IF(B{valuation_row + 8}<0,\"VENTA FUERTE - DCF NEGATIVO\",IF(B{valuation_row + 11}>0.15,\"COMPRA FUERTE\",IF(B{valuation_row + 11}>0.05,\"COMPRA\",IF(B{valuation_row + 11}>-0.05,\"MANTENER\",IF(B{valuation_row + 11}>-0.15,\"VENTA\",\"VENTA FUERTE\"))))))"),
+            ("Prima/(Descuento) %", f"=IF(NOT(ISNUMBER(B{valuation_row + 10})),\"SIN PRECIO MERCADO\",IF(NOT(ISNUMBER(B{valuation_row + 8})),\"SIN VALOR DCF\",IF(B{valuation_row + 8}<0,\"DCF NEG - VENTA\",(B{valuation_row + 8}-B{valuation_row + 10})/B{valuation_row + 10})))"),
+            ("Recomendación", f"=IF(NOT(ISNUMBER(B{valuation_row + 10})),\"NECESITA PRECIO MERCADO\",IF(NOT(ISNUMBER(B{valuation_row + 8})),\"SIN VALOR DCF\",IF(B{valuation_row + 8}<0,\"VENTA FUERTE - DCF NEGATIVO\",IF(NOT(ISNUMBER(B{valuation_row + 11})),\"SIN PRIMA\",IF(B{valuation_row + 11}>0.15,\"COMPRA FUERTE\",IF(B{valuation_row + 11}>0.05,\"COMPRA\",IF(B{valuation_row + 11}>-0.05,\"MANTENER\",IF(B{valuation_row + 11}>-0.15,\"VENTA\",\"VENTA FUERTE\")))))))"),
         ]
         for i, (lbl, fx) in enumerate(blocks):
             rr = valuation_row + 1 + i
@@ -1421,7 +1421,7 @@ class DCFBuilder:
             cell.number_format = '#,##0'
             
             # Columna 9: Valor por Acción = Equity Value / Acciones
-            cell = ws.cell(row=r, column=9, value=f"=IF(H{r}>0,G{r}/H{r},\"\")*1000")
+            cell = ws.cell(row=r, column=9, value=f"=IFERROR(IF(H{r}>0,G{r}/H{r}*1000,\"\"),\"\")")
             cell.border = self.border
             cell.number_format = '_($* #,##0.00_);_($* (#,##0.00);_($* "-"_);_(@_)'
             
@@ -1467,9 +1467,9 @@ class DCFBuilder:
             ("  • Escenario Base", f"=I{base_result_row}"),
             ("  • Escenario Agresivo", f"=I{agresivo_result_row}"),
             ("", ""),
-            ("Rango Total", f"=I{agresivo_result_row}-I{conservador_result_row}"),
-            ("Valor Medio", f"=(I{conservador_result_row}+I{agresivo_result_row})/2"),
-            ("Coeficiente de Variación", f"=ABS((I{agresivo_result_row}-I{conservador_result_row})/(2*I{base_result_row}))")
+            ("Rango Total", f"=IFERROR(I{agresivo_result_row}-I{conservador_result_row},\"\")"),
+            ("Valor Medio", f"=IFERROR((I{conservador_result_row}+I{agresivo_result_row})/2,\"\")"),
+            ("Coeficiente de Variación", f"=IFERROR(ABS((I{agresivo_result_row}-I{conservador_result_row})/(2*I{base_result_row})),\"\")")
         ]
         
         for i, (label, formula) in enumerate(summary_metrics):

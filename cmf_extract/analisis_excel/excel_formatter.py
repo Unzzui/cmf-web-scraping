@@ -237,7 +237,7 @@ class ExcelFormatter:
         
         # Último valor
         last_cell = ws.cell(row=row, column=last_col_idx)
-        last_cell.value = f"=LOOKUP(2,1/(--({rng}<>\"\")),{rng})"
+        last_cell.value = f"=IFERROR(LOOKUP(2,1/(--({rng}<>\"\")),{rng}),\"\")"
         last_cell.alignment = self.center
         last_cell.border = self.border
         self._apply_number_format(last_cell, ratio_type)
