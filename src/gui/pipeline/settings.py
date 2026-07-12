@@ -13,7 +13,7 @@ import os
 import shutil
 from dataclasses import dataclass, asdict, field
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 
 def _scraping_repo_root() -> Path:
@@ -120,6 +120,39 @@ def _detect_arelle_dir(scraping_root: Path) -> str:
     return str(scraping_root / "tools" / "Arelle")
 
 
+def _detect_findatachile_repo(scraping_root: Path) -> str:
+    """Ubicar el repo FinDataChile (tiene scripts/dcf y ratio_calculator).
+
+    Se usa para: (a) leer las credenciales PG* del .env, y (b) invocar por
+    subprocess el recálculo de ratios/DCF que vive en su carpeta scripts/.
+    """
+    env = os.getenv("FINDATACHILE_REPO")
+    if env and (Path(env) / "scripts").is_dir():
+        return env
+    for c in (
+        scraping_root.parent / "FinDataChile",
+        Path.home() / "Proyectos" / "FinDataChile",
+        Path.home() / "Documents" / "coding" / "FinDataChile",
+        Path.home() / "FinDataChile",
+    ):
+        if (c / "scripts").is_dir():
+            return str(c)
+    return str(Path.home() / "Proyectos" / "FinDataChile")
+
+
+def _detect_dcf_python(findatachile_repo: str) -> str:
+    """Intérprete para correr ratios/DCF (necesita psycopg2 + deps de scripts/dcf).
+
+    Prioriza un venv propio de FinDataChile si existe; si no, deja vacío para
+    que el llamador use el intérprete actual (que en el pipeline es el .venv de
+    cmf-web-scraping, donde instalamos psycopg2-binary)."""
+    repo = Path(findatachile_repo)
+    for venv in (repo / ".venv" / "bin" / "python", repo / "venv" / "bin" / "python"):
+        if venv.exists():
+            return str(venv)
+    return ""
+
+
 @dataclass
 class PipelineSettings:
     """Ajustes del pipeline. Se serializa a JSON."""
@@ -146,6 +179,21 @@ class PipelineSettings:
     fdc_base_url: str = "http://localhost:3000"
     fdc_username: str = ""
     fdc_password: str = ""
+    fdc_price: int = 7500         # precio base CLP por producto (uno por empresa)
+
+    # --- Supabase (leg de tablas financieras: financial_data/ratios/dcf) ---
+    # Segundo sub-paso de la etapa UPLOAD: además del blob/catálogo (fdc_*),
+    # hace upsert de los datos financieros a Supabase y recalcula ratios/DCF.
+    supabase_enabled: bool = False
+    supabase_dry_run: bool = True          # default seguro para producción
+    pg_env_file: str = ""                  # .env con vars PG* (default: FinDataChile/.env)
+    findatachile_repo: str = ""            # repo con scripts/dcf y ratio_calculator
+    dcf_python: str = ""                   # intérprete con psycopg2 (vacío = el actual)
+    upload_with_ratios: bool = True
+    upload_with_dcf: bool = True
+    upload_ratios_annual_only: bool = False
+    # None = auto (override si el CSV ⊇ períodos en BD); True/False fuerzan.
+    supabase_override: Optional[bool] = None
 
     # --- Rendimiento / concurrencia ---
     download_workers: int = 3       # navegadores selenium en paralelo
@@ -168,6 +216,7 @@ class PipelineSettings:
         """Construir settings con auto-detección de todo lo que falte."""
         scraping = _scraping_repo_root()
         cmf = _detect_cmf_extract_repo(scraping)
+        findata = _detect_findatachile_repo(scraping)
         cpu = os.cpu_count() or 4
         return cls(
             scraping_repo=str(scraping),
@@ -178,6 +227,9 @@ class PipelineSettings:
             products_dir=str(cmf / "Products"),
             product_v1_dir=str(cmf / "Product_v1" / "Total"),
             companies_csv=str(scraping / "data" / "RUT_Chilean_Companies" / "RUT_Chilean_Companies.csv"),
+            findatachile_repo=findata,
+            pg_env_file=str(Path(findata) / ".env"),
+            dcf_python=_detect_dcf_python(findata),
             consolidate_workers=max(1, cpu // 2),
             arelle_workers=cpu,
         )
@@ -192,7 +244,10 @@ class PipelineSettings:
                 data = json.loads(path.read_text(encoding="utf-8"))
                 merged = {**asdict(defaults), **{k: v for k, v in data.items() if v not in (None, "")}}
                 # Mantener flags booleanos aunque sean False explícito
-                for k in ("fdc_enabled", "skip_existing", "debug"):
+                for k in ("fdc_enabled", "skip_existing", "debug",
+                          "supabase_enabled", "supabase_dry_run",
+                          "upload_with_ratios", "upload_with_dcf",
+                          "upload_ratios_annual_only"):
                     if k in data:
                         merged[k] = data[k]
                 # Portabilidad: si una ruta persistida NO existe (p. ej. settings
@@ -227,6 +282,18 @@ class PipelineSettings:
         for k in ("cmf_extract_python", "companies_csv"):
             if not ok_path(merged.get(k, "")):
                 merged[k] = defaults[k]
+        # FinDataChile (leg Supabase): sanar repo, .env y dcf_python.
+        def ok_findata(p: str) -> bool:
+            return bool(p) and (Path(p) / "scripts").is_dir()
+        if not ok_findata(merged.get("findatachile_repo", "")):
+            merged["findatachile_repo"] = defaults["findatachile_repo"]
+        if not ok_path(merged.get("pg_env_file", "")):
+            merged["pg_env_file"] = str(Path(merged["findatachile_repo"]) / ".env")
+        # dcf_python es opcional: si se persistió una ruta inexistente, blanquear
+        # (el llamador cae al intérprete actual, que tiene psycopg2).
+        dp = merged.get("dcf_python", "")
+        if dp and not ok_path(dp):
+            merged["dcf_python"] = ""
         # Carpetas de salida: si la persistida no está bajo el repo actual,
         # preferir el default in-repo (evita escribir en rutas de otro PC).
         scraping = str(_scraping_repo_root())
@@ -307,4 +374,36 @@ class PipelineSettings:
             has_creds = bool(self.fdc_username and self.fdc_password and self.fdc_base_url)
             add("Credenciales FinDataChile", has_creds,
                 self.fdc_base_url if has_creds else "Falta usuario/contraseña/URL")
+
+        # 6. Supabase (leg de tablas financieras), solo si está habilitado
+        if self.supabase_enabled:
+            # 6a. psycopg2 disponible en el intérprete actual (el que corre el
+            #     pipeline). El leg de tablas hace el upsert in-process.
+            try:
+                import psycopg2  # noqa: F401
+                add("psycopg2 disponible", True, "OK")
+            except Exception as e:
+                add("psycopg2 disponible", False,
+                    f"pip install psycopg2-binary ({e})")
+
+            # 6b. Credenciales PG* resolubles desde el .env
+            env_path = Path(self.pg_env_file) if self.pg_env_file else Path()
+            try:
+                from .supabase_uploader import load_env_file, resolve_pg_conn
+                env = load_env_file(env_path)
+                cfg = resolve_pg_conn(env)
+                add("Conexión Supabase (PG*)", True,
+                    f"{cfg['host']}:{cfg['port']}/{cfg['dbname']}")
+            except SystemExit as e:
+                add("Conexión Supabase (PG*)", False, str(e).splitlines()[0])
+            except Exception as e:
+                add("Conexión Supabase (PG*)", False, str(e))
+
+            # 6c. Repo FinDataChile con los scripts de ratios/DCF
+            fd = Path(self.findatachile_repo)
+            has_ratios = (fd / "scripts" / "ratio_calculator_postgresql.py").is_file()
+            has_dcf = (fd / "scripts" / "dcf" / "calculator.py").is_file()
+            add("Repo FinDataChile (ratios/DCF)", has_ratios and has_dcf,
+                str(fd) if (has_ratios and has_dcf)
+                else f"Faltan scripts ratios/DCF en {fd}/scripts")
         return checks

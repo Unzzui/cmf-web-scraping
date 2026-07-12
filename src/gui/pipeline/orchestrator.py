@@ -34,6 +34,7 @@ from .models import Stage, StageStatus, CompanyState, PipelineEvent, STAGE_ORDER
 from .settings import PipelineSettings
 from .cmf_extract_bridge import CmfExtractBridge
 from .findatachile_uploader import FinDataChileUploader
+from .supabase_uploader import SupabaseUploader
 
 
 def _import_any(modpaths: list[str], attr: str):
@@ -41,8 +42,13 @@ def _import_any(modpaths: list[str], attr: str):
     import importlib
     import sys
     root = Path(__file__).resolve().parents[3]
-    if str(root) not in sys.path:
-        sys.path.insert(0, str(root))
+    # Añadir tanto la raíz (para `src.xbrl.*`) como `src/` (para `xbrl.*`),
+    # ya que el downloader HTTP importa su sibling `xbrl.http_throttle` como
+    # paquete top-level. Sin `src/` en el path, el import HTTP falla en
+    # silencio y el pipeline cae al descargador Selenium (mucho más lento).
+    for p in (str(root), str(root / "src")):
+        if p not in sys.path:
+            sys.path.insert(0, p)
     for mp in modpaths:
         try:
             mod = importlib.import_module(mp)
@@ -89,6 +95,8 @@ class PipelineOrchestrator:
         self._bridges: dict[str, CmfExtractBridge] = {}
         self._uploader: Optional[FinDataChileUploader] = None
         self._uploader_lock = threading.Lock()
+        self._supa: Optional[SupabaseUploader] = None
+        self._supa_lock = threading.Lock()  # psycopg2 no es thread-safe
         self.running = False
 
     # ------------------------------------------------------------------ #
@@ -176,6 +184,20 @@ class PipelineOrchestrator:
             self._uploader = FinDataChileUploader(self.settings)
             if not self._uploader.available:
                 self._log("La librería 'requests' no está disponible; la subida fallará.", "WARNING")
+
+        if Stage.UPLOAD in stages and self.settings.supabase_enabled:
+            self._supa = SupabaseUploader(
+                env_file=Path(self.settings.pg_env_file) if self.settings.pg_env_file else None,
+                findatachile_repo=Path(self.settings.findatachile_repo) if self.settings.findatachile_repo else None,
+                dcf_python=Path(self.settings.dcf_python) if self.settings.dcf_python else None,
+            )
+            if not self._supa.available:
+                self._log("Supabase: falta psycopg2 o credenciales PG*; el leg de "
+                          "tablas fallará.", "WARNING")
+                self._supa = None
+            else:
+                mode = "DRY-RUN" if self.settings.supabase_dry_run else "LIVE"
+                self._log(f"Supabase: leg de tablas financieras activo ({mode}).")
 
         sem_dl = threading.Semaphore(max(1, self.settings.download_workers))
         sem_co = threading.Semaphore(max(1, self.settings.effective_consolidate_workers()))
@@ -385,33 +407,92 @@ class PipelineOrchestrator:
                 return
 
             # ---------------- ETAPA 3: SUBIR ----------------
-            if Stage.UPLOAD in stages and self.settings.fdc_enabled and not self._cancel.is_set():
-                if not st.output_file:
-                    self._set_stage(rut, Stage.UPLOAD, StageStatus.ERROR,
-                                    error="No hay Excel de análisis para subir")
-                    return
+            # Dos sub-pasos atómicos por empresa, dentro del mismo semáforo:
+            #   3A. blob + catálogo FinDataChile (crea/asegura la empresa)
+            #   3B. tablas financieras Supabase + ratios + DCF
+            # Orden 3A->3B obligatorio: 3A crea la empresa que 3B necesita.
+            do_upload = (Stage.UPLOAD in stages and not self._cancel.is_set()
+                         and (self.settings.fdc_enabled or self.settings.supabase_enabled))
+            if do_upload:
                 with sem_up:
                     if self._cancel.is_set():
                         return
-                    self._set_stage(rut, Stage.UPLOAD, StageStatus.RUNNING, "Subiendo a FinDataChile…")
-                    with self._uploader_lock:
-                        uploader = self._uploader
-                    if uploader is None:
-                        self._set_stage(rut, Stage.UPLOAD, StageStatus.ERROR,
-                                        error="Uploader no inicializado")
+                    self._set_stage(rut, Stage.UPLOAD, StageStatus.RUNNING, "Subiendo…")
+                    errors: list[str] = []
+                    details: list[str] = []
+
+                    # -------- 3A: blob + catálogo FinDataChile --------
+                    if self.settings.fdc_enabled:
+                        if self.settings.supabase_dry_run:
+                            # El endpoint no tiene dry-run: en modo seguro se omite.
+                            details.append("3A blob omitido (dry-run)")
+                        elif not st.output_file:
+                            errors.append("3A: no hay Excel de análisis para subir")
+                        else:
+                            with self._uploader_lock:
+                                uploader = self._uploader
+                            if uploader is None:
+                                errors.append("3A: uploader no inicializado")
+                            else:
+                                ok, msg = uploader.upload_file(
+                                    st.output_file,
+                                    company_name=st.name,
+                                    rut_completo=st.rut_completo,
+                                    start_year=st.start_year or config.get("end_year"),
+                                    end_year=st.end_year or config.get("start_year"),
+                                    quarterly=config.get("quarterly", False),
+                                )
+                                st.upload_blob_ok = bool(ok)
+                                if ok:
+                                    details.append(f"3A {msg}")
+                                else:
+                                    errors.append(f"3A: {msg}")
+
+                    if self._cancel.is_set():
                         return
-                    ok, msg = uploader.upload_file(
-                        st.output_file,
-                        company_name=st.name,
-                        rut_completo=st.rut_completo,
-                        start_year=st.start_year or config.get("end_year"),
-                        end_year=st.end_year or config.get("start_year"),
-                        quarterly=config.get("quarterly", False),
-                    )
-                    if ok:
-                        self._set_stage(rut, Stage.UPLOAD, StageStatus.DONE, msg)
+
+                    # -------- 3B: tablas financieras + ratios + DCF --------
+                    if self.settings.supabase_enabled:
+                        if self._supa is None:
+                            errors.append("3B: uploader Supabase no disponible (psycopg2/creds)")
+                        else:
+                            to_sql_dir = Path(self.settings.product_v1_dir) / "TO_SQL"
+                            # psycopg2 no es thread-safe: serializar el leg de tablas.
+                            with self._supa_lock:
+                                res = self._supa.upload_company_tables(
+                                    st.rut_completo,  # RUT-DV: identidad en companies/CSV
+                                    to_sql_dir=to_sql_dir,
+                                    override=self.settings.supabase_override,
+                                    dry_run=self.settings.supabase_dry_run,
+                                    with_ratios=self.settings.upload_with_ratios,
+                                    with_dcf=self.settings.upload_with_dcf,
+                                    annual_only=self.settings.upload_ratios_annual_only,
+                                    on_log=lambda line: self._log(line, "DETAIL", rut=rut),
+                                )
+                            if res.error:
+                                errors.append(f"3B: {res.error}")
+                            else:
+                                st.upload_datapoints = res.data_points
+                                st.upload_ratios_ok = res.ratios_ok
+                                st.upload_dcf_ok = res.dcf_ok
+                                partial: list[str] = []
+                                if self.settings.upload_with_ratios and res.ratios_ok is False:
+                                    partial.append("ratios")
+                                if self.settings.upload_with_dcf and res.dcf_ok is False:
+                                    partial.append("dcf")
+                                msg3b = f"3B {res.data_points} datapoints"
+                                if partial:
+                                    msg3b += f" (parcial: {'/'.join(partial)} falló)"
+                                details.append(msg3b)
+
+                    # -------- estado final de la etapa UPLOAD --------
+                    if errors:
+                        self._set_stage(rut, Stage.UPLOAD, StageStatus.ERROR,
+                                        detail="; ".join(details),
+                                        error="; ".join(errors))
                     else:
-                        self._set_stage(rut, Stage.UPLOAD, StageStatus.ERROR, error=msg)
+                        self._set_stage(rut, Stage.UPLOAD, StageStatus.DONE,
+                                        "; ".join(details) or "Subido")
         finally:
             st.finished_at = time.time()
             self._emit(PipelineEvent(kind="company_done", rut=rut))

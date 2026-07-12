@@ -64,6 +64,11 @@ class CompanyState:
     end_year: Optional[int] = None
     started_at: Optional[float] = None
     finished_at: Optional[float] = None
+    # --- Métricas de la etapa UPLOAD (para el resumen) ---
+    upload_blob_ok: Optional[bool] = None      # 3A: blob + catálogo FinDataChile
+    upload_datapoints: int = 0                  # 3B: financial_data upserts
+    upload_ratios_ok: Optional[bool] = None     # 3B: recálculo de ratios
+    upload_dcf_ok: Optional[bool] = None        # 3B: recálculo de DCF
 
     def __post_init__(self) -> None:
         if not self.stages:

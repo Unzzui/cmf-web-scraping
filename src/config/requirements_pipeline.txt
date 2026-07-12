@@ -18,5 +18,10 @@ openpyxl>=3.1
 requests>=2.31
 urllib3>=1.26
 
+# Ingesta directa a Supabase/Postgres (etapa UPLOAD -> financial_data/line_items).
+# El recálculo de ratios/DCF corre por subprocess en el intérprete de
+# FinDataChile; esta dependencia es solo para el upsert de tablas base.
+psycopg2-binary>=2.9
+
 # Gestión automática de ChromeDriver para selenium
 webdriver-manager>=4.0

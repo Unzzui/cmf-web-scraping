@@ -1,22 +1,25 @@
 #!/usr/bin/env python3
-"""Subida automática de los Excel de análisis a FinDataChile.
+"""Subida automática de los Excel de análisis a FinDataChile (leg 3A).
 
 Flujo (coincide con la API admin de FinDataChile):
-  1. POST /api/admin/login    JSON {username, password}  -> cookie admin-token
-  2. POST /api/admin/process-excel  multipart, campo 'files'  (requiere la cookie)
+  1. POST /api/admin/login          JSON {username, password}  -> cookie admin-token
+  2. POST /api/admin/process-files  multipart {file, metadata}  (requiere la cookie)
 
-FinDataChile deduce empresa/RUT/sector/años/idioma DEL NOMBRE del archivo
-(``parseFileName`` / ``parseRutFromFileName`` / ``determineSector``). El nombre
-que produce CMF_EXTRACT ("Empresa - RUT - Análisis ... [ES].xlsx") no parsea
-bien allí, así que subimos con un nombre NORMALIZADO que mapea exacto:
+Usamos ``process-files`` (el mismo endpoint que el panel admin), NO
+``process-excel``: process-files es el que gestiona el catálogo real con
+**versionado** y **un solo producto por empresa** (id = RUT). Cada Excel entra
+como una VERSIÓN (product_versions) bajo el producto de la empresa, de modo que
+quien compró la empresa accede a todas las actualizaciones sin volver a pagar.
 
-    EMPRESA_EEFF_{RUT}-{DV}_{Anual|Trimestral}_{ini}-{fin}.xlsx
-
-El archivo en disco no se renombra; sólo cambiamos el nombre del part multipart.
+FinDataChile deduce empresa/RUT/años/idioma del NOMBRE del archivo y de la
+``metadata`` que enviamos. Mandamos el Excel con su nombre real
+("Empresa - RUT - Análisis Financiero 2014-2026Q1 [ES].xlsx") porque ese es el
+formato que parsea el server.
 """
 
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 from typing import Optional
@@ -33,22 +36,59 @@ from .settings import PipelineSettings
 _XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
 
-def normalize_upload_name(
-    company_name: str,
-    rut_completo: str,
-    start_year: Optional[int],
-    end_year: Optional[int],
-    quarterly: bool,
-) -> str:
-    """Construir un nombre que FinDataChile parsea sin ambigüedad."""
-    name = re.sub(r"[^A-Za-z0-9ÁÉÍÓÚÑáéíóúñ]+", "_", (company_name or "EMPRESA").strip().upper())
-    name = re.sub(r"_+", "_", name).strip("_") or "EMPRESA"
-    freq = "Trimestral" if quarterly else "Anual"
-    sy = start_year if start_year else ""
-    ey = end_year if end_year else ""
-    years = f"{sy}-{ey}" if sy and ey else "0000-0000"
-    rut = rut_completo or "0-0"
-    return f"{name}_EEFF_{rut}_{freq}_{years}.xlsx"
+def parse_file_info(filename: str) -> dict:
+    """Extrae idioma / año-versión / trimestre del nombre del Excel.
+
+    Réplica de ``parseFileInfo`` del panel admin
+    (components/admin/file-upload-manager.tsx) para que el server versione igual.
+    Devuelve ``{language, period_type, version_year, quarter, is_versioned}``.
+    """
+    name = filename
+    language = "ES"
+    if re.search(r"\[EN\]", name, re.I):
+        language = "EN"
+    elif re.search(r"\[ES\]", name, re.I):
+        language = "ES"
+
+    version_year: Optional[int] = None
+    quarter = 0
+    is_versioned = False
+
+    m = re.search(r"(\d{4})-(\d{4})\s*Q([1-4])", name, re.I)
+    if m:  # 1) rango con trimestre: 2014-2026Q1
+        version_year = int(m.group(2))
+        quarter = int(m.group(3))
+        is_versioned = True
+    else:
+        m = re.search(r"(\d{4})\s*Q([1-4])", name, re.I)
+        if m:  # 2) año con trimestre (con rango opcional)
+            y = int(m.group(1))
+            quarter = int(m.group(2))
+            mr = re.search(r"(\d{4})-(\d{4})", name)
+            version_year = int(mr.group(2)) if mr else y
+            is_versioned = True
+        else:
+            mr = re.search(r"(\d{4})-(\d{4})", name)
+            if mr:  # 3) rango anual: 2014-2025
+                version_year = int(mr.group(2))
+                quarter = 0
+                is_versioned = True
+            else:
+                ms = re.search(r"(\d{4})", name)
+                if ms:  # 4) solo año
+                    version_year = int(ms.group(1))
+                    quarter = 0
+                    is_versioned = True
+
+    # Los Excel del pipeline son el histórico completo (Total) -> 'completo'.
+    period_type = "trimestral" if quarter > 0 else "completo"
+    return {
+        "language": language,
+        "period_type": period_type,
+        "version_year": version_year,
+        "quarter": quarter,
+        "is_versioned": is_versioned,
+    }
 
 
 class FinDataChileUploader:
@@ -98,7 +138,10 @@ class FinDataChileUploader:
         end_year: Optional[int],
         quarterly: bool,
     ) -> tuple[bool, str]:
-        """Sube un Excel. Reintenta una vez si la sesión expiró (401)."""
+        """Sube un Excel como versión del producto de la empresa (id = RUT).
+
+        Reintenta una vez si la sesión expiró (401).
+        """
         if not _HAS_REQUESTS:
             return False, "La librería 'requests' no está instalada"
         path = Path(file_path)
@@ -110,20 +153,37 @@ class FinDataChileUploader:
             if not ok:
                 return False, msg
 
-        upload_name = normalize_upload_name(
-            company_name, rut_completo, start_year, end_year, quarterly
-        )
-        url = self.settings.fdc_base_url.rstrip("/") + "/api/admin/process-excel"
+        info = parse_file_info(path.name)
+        metadata = {
+            "rut": rut_completo,
+            "periodType": info["period_type"],
+            "language": info["language"],
+            "versionInfo": {
+                "year": info["version_year"] or end_year,
+                "quarter": info["quarter"],
+                "isVersioned": True,
+            },
+            # createVersion=True -> ruta versionada (crea/actualiza la versión
+            # bajo el producto de la empresa). overwriteExisting para refrescar
+            # el archivo si ya existe esa versión.
+            "createVersion": True,
+            "isNewVersion": True,
+            "overwriteExisting": True,
+            "priceOverride": int(self.settings.fdc_price or 7500),
+        }
+
+        url = self.settings.fdc_base_url.rstrip("/") + "/api/admin/process-files"
 
         def _do_post():
             with open(path, "rb") as fh:
-                files = [("files", (upload_name, fh, _XLSX_MIME))]
-                return self._session.post(url, files=files, timeout=180)
+                # Mandamos el Excel con su NOMBRE REAL (el server lo parsea).
+                files = {"file": (path.name, fh, _XLSX_MIME)}
+                data = {"metadata": json.dumps(metadata, ensure_ascii=False)}
+                return self._session.post(url, files=files, data=data, timeout=180)
 
         try:
             resp = _do_post()
             if resp.status_code == 401:
-                # Sesión expirada: re-login y reintento único
                 self._logged_in = False
                 ok, msg = self.login()
                 if not ok:
@@ -139,10 +199,15 @@ class FinDataChileUploader:
                 err = f"HTTP {resp.status_code}"
             return False, f"Subida rechazada: {err}"
 
-        data = resp.json()
-        if data.get("errorDetails"):
-            return False, "; ".join(data["errorDetails"])
-        processed = data.get("processed", 0)
-        if processed:
-            return True, f"Subido como '{upload_name}'"
-        return False, "El servidor no procesó ningún archivo"
+        try:
+            data = resp.json()
+        except Exception:
+            return False, "Respuesta no-JSON del servidor"
+
+        if not data.get("success") or data.get("totalErrors"):
+            pf = (data.get("processedFiles") or [{}])[0]
+            return False, pf.get("error") or "El servidor no procesó el archivo"
+
+        pf = (data.get("processedFiles") or [{}])[0]
+        pid = pf.get("productId") or pf.get("baseProductId") or rut_completo
+        return True, f"Publicado en producto '{pid}' (${metadata['priceOverride']})"

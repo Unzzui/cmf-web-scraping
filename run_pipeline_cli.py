@@ -150,6 +150,12 @@ def preflight(settings: PipelineSettings, stages: list[Stage]) -> list[str]:
         c = checks.get("Credenciales FinDataChile")
         if c and not c["ok"]:
             problems.append(f"FinDataChile: {c['detail']}")
+        # Leg Supabase (solo aparecen en verify() si supabase_enabled)
+        for key in ("psycopg2 disponible", "Conexión Supabase (PG*)",
+                    "Repo FinDataChile (ratios/DCF)"):
+            c = checks.get(key)
+            if c and not c["ok"]:
+                problems.append(f"{key}: {c['detail']}")
     return problems
 
 
@@ -187,6 +193,35 @@ def parse_args() -> argparse.Namespace:
                     help="Ejecutar aunque el preflight detecte problemas")
     ap.add_argument("--backup", action="store_true",
                     help="Al terminar, correr scripts/backup_to_drive.sh")
+    # --- Publicación (etapa UPLOAD) ---
+    ap.add_argument("--fdc", action="store_true",
+                    help="Habilitar el leg 3A: subir el Excel a FinDataChile "
+                         "(Vercel Blob + products/product_versions).")
+    ap.add_argument("--fdc-url", default="",
+                    help="URL base de FinDataChile para el leg 3A "
+                         "(ej: https://www.findatachile.com). Si se omite, usa la "
+                         "configurada (default http://localhost:3000).")
+    ap.add_argument("--supabase", action="store_true",
+                    help="Habilitar el leg 3B: upsert de datos financieros a "
+                         "Supabase (financial_data/line_items) + ratios + DCF.")
+    ap.add_argument("--supabase-live", action="store_true",
+                    help="Desactivar el dry-run del leg Supabase (por defecto es "
+                         "dry-run seguro: no escribe en la BD). En modo dry-run el "
+                         "leg 3A (blob) también se omite.")
+    ap.add_argument("--no-ratios", action="store_true",
+                    help="No recalcular ratios financieros tras subir los datos.")
+    ap.add_argument("--no-dcf", action="store_true",
+                    help="No recalcular DCF tras subir los datos.")
+    ap.add_argument("--ratios-annual-only", action="store_true",
+                    help="Recalcular ratios solo para períodos anuales (más rápido).")
+    ap.add_argument("--supabase-no-override", action="store_true",
+                    help="Forzar upsert NO destructivo en el leg Supabase (nunca "
+                         "borra: solo inserta/actualiza). Más seguro para pilotos; "
+                         "no resuelve el caso label-rename-split.")
+    ap.add_argument("--supabase-override", action="store_true",
+                    help="Forzar override (DELETE+INSERT por empresa) en el leg "
+                         "Supabase. Resuelve label-rename-split pero reemplaza los "
+                         "datos de la empresa por los del CSV.")
     return ap.parse_args()
 
 
@@ -216,6 +251,35 @@ def main() -> int:
     settings = PipelineSettings.load()
     config["skip_existing"] = settings.skip_existing
     settings.companies_csv = str(Path(args.csv).resolve())
+
+    # Overrides de publicación desde flags (no se persisten a disco).
+    if args.fdc:
+        settings.fdc_enabled = True
+        if args.fdc_url:
+            settings.fdc_base_url = args.fdc_url.rstrip("/")
+        # Auto-leer credenciales admin del .env de FinDataChile (ADMIN_USERNAME/
+        # ADMIN_PASSWORD) si no están seteadas. Así no hace falta hardcodear la
+        # contraseña en este repo: vive solo en FinDataChile/.env.
+        if not (settings.fdc_username and settings.fdc_password):
+            from src.gui.pipeline.supabase_uploader import load_env_file
+            fdc_env = (load_env_file(Path(settings.pg_env_file))
+                       if settings.pg_env_file else {})
+            settings.fdc_username = settings.fdc_username or fdc_env.get("ADMIN_USERNAME", "")
+            settings.fdc_password = settings.fdc_password or fdc_env.get("ADMIN_PASSWORD", "")
+    if args.supabase:
+        settings.supabase_enabled = True
+    # dry-run seguro por defecto; --supabase-live lo desactiva.
+    settings.supabase_dry_run = not args.supabase_live
+    if args.no_ratios:
+        settings.upload_with_ratios = False
+    if args.no_dcf:
+        settings.upload_with_dcf = False
+    if args.ratios_annual_only:
+        settings.upload_ratios_annual_only = True
+    if args.supabase_no_override:
+        settings.supabase_override = False
+    elif args.supabase_override:
+        settings.supabase_override = True
 
     ruts = {r.strip() for r in args.companies.split(",") if r.strip()} or None
     categorias = {c.strip().lower() for c in args.categorias.split(",") if c.strip()}
@@ -282,19 +346,43 @@ def main() -> int:
     elapsed = finished_payload.get("elapsed", time.time() - started)
     rep.line(f"RESUMEN: {len(ok)} ok, {len(failed)} con error, "
              f"{len(skipped)} omitidas, {elapsed:.0f}s")
+    if Stage.UPLOAD in stages:
+        vals = list(orch.states.values())
+        total_dp = sum(s.upload_datapoints for s in vals)
+        blob_ok = sum(1 for s in vals if s.upload_blob_ok is True)
+        rat_ok = sum(1 for s in vals if s.upload_ratios_ok is True)
+        rat_fail = sum(1 for s in vals if s.upload_ratios_ok is False)
+        dcf_ok = sum(1 for s in vals if s.upload_dcf_ok is True)
+        dcf_fail = sum(1 for s in vals if s.upload_dcf_ok is False)
+        mode = "dry-run" if settings.supabase_dry_run else "live"
+        rep.line(f"UPLOAD ({mode}): {total_dp} datapoints | blob {blob_ok} | "
+                 f"ratios {rat_ok} ok/{rat_fail} fallidos | "
+                 f"dcf {dcf_ok} ok/{dcf_fail} fallidos")
     for s in failed:
         first_error = s.error or next(
             (f"{st.label}" for st, v in s.stages.items() if v == StageStatus.ERROR),
             "error desconocido")
         rep.line(f"  ERROR {s.rut_completo} {s.name}: {first_error}", "ERROR")
     if args.json:
-        print(json.dumps({
+        summary = {
             "kind": "summary",
             "ok": [s.rut_completo for s in ok],
             "failed": {s.rut_completo: (s.error or "error") for s in failed},
             "skipped": [c["rut"] for c in skipped],
             "elapsed": elapsed,
-        }, ensure_ascii=False), flush=True)
+        }
+        if Stage.UPLOAD in stages:
+            summary["upload_mode"] = "dry-run" if settings.supabase_dry_run else "live"
+            summary["upload"] = {
+                s.rut_completo: {
+                    "blob_ok": s.upload_blob_ok,
+                    "datapoints": s.upload_datapoints,
+                    "ratios_ok": s.upload_ratios_ok,
+                    "dcf_ok": s.upload_dcf_ok,
+                }
+                for s in orch.states.values()
+            }
+        print(json.dumps(summary, ensure_ascii=False), flush=True)
 
     if args.backup:
         rep.line("Iniciando respaldo a Google Drive…")
