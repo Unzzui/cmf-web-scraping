@@ -113,13 +113,41 @@ def find_primary_roles_files(company_dir: Path, lang: str) -> List[Path]:
     return [best]
 
 
+_PERIOD_COL_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def _coerce_period_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Convierte a float las columnas de período del primary_roles CSV.
+
+    El CSV escribe los importes con separador de miles ("297,404,543,000"), así que
+    read_csv infiere la columna como texto. Pandas >= 3 dejó de hacer el upcast
+    silencioso a object al asignar un str en una columna numérica y lanza
+    TypeError: Invalid value '297,404,543,000' for dtype 'float64'. Se normaliza
+    aquí, en el punto de entrada, en vez de parchear cada asignación aguas abajo.
+
+    La coma es siempre separador de miles en estos CSV (verificado: 0 casos de coma
+    decimal en 166k valores), por eso se elimina sin más.
+
+    Ojo con la condición: en pandas >= 3 estas columnas llegan con el dtype `str`
+    dedicado, no como `object`, así que hay que preguntar "¿no es numérica?" y no
+    "¿es object?".
+    """
+    for col in df.columns:
+        if _PERIOD_COL_RE.match(str(col)) and not pd.api.types.is_numeric_dtype(df[col]):
+            df[col] = pd.to_numeric(
+                df[col].astype(str).str.replace(",", "", regex=False).str.strip(),
+                errors="coerce",
+            )
+    return df
+
+
 def load_and_combine_primary_roles(primary_files: List[Path]) -> pd.DataFrame:
     """Carga y combina múltiples archivos primary_roles CSV"""
     if not primary_files:
         raise ValueError("No se encontraron archivos primary_roles CSV")
-    
+
     all_dfs = []
-    
+
     for file_path in primary_files:
         # Cargando archivo primary_roles
         try:
@@ -128,6 +156,7 @@ def load_and_combine_primary_roles(primary_files: List[Path]) -> pd.DataFrame:
             # int y pandas >= 3 rechaza asignar int en columnas str.
             if 'RoleCode' in df.columns:
                 df['RoleCode'] = df['RoleCode'].astype(str)
+            _coerce_period_columns(df)
             all_dfs.append(df)
         except Exception as e:
             # Error cargando archivo
@@ -201,7 +230,23 @@ def sort_by_hierarchical_keys(df: pd.DataFrame, company_rut: str = None) -> pd.D
                             json_structure_by_role[role_id] = lineas
                             # Usando estructura de QUIÑENCO como fallback
                     break
-        
+
+        # Completar los roles que el fallback no cubre. QUIÑENCO reporta el ER
+        # por función (310000) y no define 320000, así que una empresa que
+        # reporta el ER por naturaleza (Bolsa de Comercio, entre otras) se
+        # quedaba sin plantilla: la hoja salía en orden alfabético crudo, con el
+        # bloque "Ganancia (pérdida)…" arriba y los ingresos enterrados, dando la
+        # impresión de un estado de resultados sin ingresos.
+        for role_id in ('210000', '310000', '320000', '510000'):
+            if json_structure_by_role.get(role_id):
+                continue
+            for empresa in data.get('empresas', []):
+                lineas = next((r.get('lineas') for r in empresa.get('roles', [])
+                               if r.get('id') == role_id and r.get('lineas')), None)
+                if lineas:
+                    json_structure_by_role[role_id] = lineas
+                    break
+
     except Exception as e:
         # Error cargando estructura
         return df

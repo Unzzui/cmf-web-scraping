@@ -57,6 +57,49 @@ def _parse_year_range(name: str) -> tuple[int | None, int | None]:
     return int(m.group(1)), int(m.group(2))
 
 
+_DATASET_RE = re.compile(r"_(\d{6})_extracted$")
+# Rango del nombre del Excel de análisis: "… 2014-2025Q4 [ES].xlsx" / "… 2014-2025 [ES].xlsx"
+_COVERED_RE = re.compile(r"(\d{4})(?:Q[1-4])?\s*-\s*(\d{4})(?:Q([1-4]))?")
+
+
+def _newest_dataset_period(company_dir: Path) -> str | None:
+    """Último período (yyyymm) con dataset XBRL en disco para la empresa."""
+    best: str | None = None
+    for d in company_dir.iterdir():
+        if not d.is_dir():
+            continue
+        m = _DATASET_RE.search(d.name)
+        if m and (best is None or m.group(1) > best):
+            best = m.group(1)
+    return best
+
+
+def _covered_period(analysis_name: str) -> str | None:
+    """Último período (yyyymm) que cubre un Excel de análisis, según su nombre."""
+    m = _COVERED_RE.search(analysis_name)
+    if not m:
+        return None
+    year = m.group(2)
+    quarter = int(m.group(3) or 4)  # sin trimestre en el nombre => cierre anual
+    return f"{year}{quarter * 3:02d}"
+
+
+def _analysis_is_current(outputs: list[dict], company_dir: Path) -> bool:
+    """¿El análisis ya generado cubre el período más reciente descargado?
+
+    Sin esto, ``skip_existing`` salta la empresa por el solo hecho de tener un
+    Excel, y el trimestre recién descargado no entra nunca al consolidado: la
+    serie queda congelada hasta que alguien borre Product_v1 a mano.
+    """
+    newest = _newest_dataset_period(company_dir)
+    if newest is None:
+        return True  # sin XBRL en disco no hay nada que recalcular
+    covered = [c for c in (_covered_period(o["name"]) for o in outputs) if c]
+    if not covered:
+        return False  # no se pudo leer el rango: recalcular es lo seguro
+    return max(covered) >= newest
+
+
 def _find_analysis_outputs(product_v1_dir: Path, rut: str, rut_completo: str) -> list[dict]:
     """Buscar Excel de análisis ya generados para este RUT."""
     outputs: list[dict] = []
@@ -123,10 +166,12 @@ def main() -> int:
     if args.debug:
         os.environ["X2E_DEBUG"] = "1"
 
-    # --- Atajo skip_existing: si ya está el análisis, no recalculamos nada ---
+    # --- Atajo skip_existing: si el análisis ya cubre el último período XBRL
+    #     descargado, no recalculamos nada. Si hay un trimestre nuevo en disco
+    #     que el Excel no cubre, se recalcula aunque el Excel exista.
     if args.skip_existing:
         existing = _find_analysis_outputs(product_v1_dir, rut, rut_completo)
-        if existing:
+        if existing and _analysis_is_current(existing, company_dir):
             for ph in phases:
                 emit({"event": "stage", "stage": ph, "status": "skipped"})
             emit({"event": "final", "status": "ok", "outputs": existing, "skipped": True, "error": ""})

@@ -45,18 +45,52 @@ def map_sheet_to_role_id(sheet_name, roles_data):
         'Estado de Resultados': ['resultado', 'estado del resultado'],
         'Flujo Efectivo': ['flujos de efectivo', 'flujo de efectivo']
     }
-    
+
     search_terms = sheet_mappings.get(sheet_name, [])
     if not search_terms:
         return None
-    
+
     for role_id, role_info in roles_data.items():
         titulo_lower = role_info['titulo'].lower()
         for search_term in search_terms:
             if search_term in titulo_lower:
                 return role_id
-    
+
     return None
+
+
+# Marcadores para distinguir el estado de resultados por FUNCIÓN (310000) del
+# estado por NATURALEZA (320000) leyendo las propias cuentas de la hoja.
+_ER_FUNCION_MARKERS = ('costo de ventas', 'ganancia bruta')
+_ER_NATURALEZA_MARKERS = (
+    'gastos por beneficios a los empleados',
+    'materias primas y consumibles',
+    'otros gastos, por naturaleza',
+)
+
+
+def derive_role_id(sheet_name, labels):
+    """Deducir el role_id de una hoja sin depender de la plantilla JSON.
+
+    ``new_eeff_estructura.json`` sólo cubre 53 empresas, pero el JSON se usa
+    únicamente para saber qué RoleCode estampar por hoja. Las demás empresas se
+    descartaban en silencio y nunca llegaban a la BD. Balance y Flujo tienen
+    código fijo; para el ER se distingue por función vs por naturaleza según las
+    cuentas presentes.
+    """
+    if sheet_name == 'Balance General':
+        return '210000'
+    if sheet_name == 'Flujo Efectivo':
+        return '510000'
+    if sheet_name != 'Estado de Resultados':
+        return None
+
+    low = [str(l).strip().lower() for l in labels if l is not None]
+    if any(any(m in l for m in _ER_FUNCION_MARKERS) for l in low):
+        return '310000'
+    if any(any(m in l for m in _ER_NATURALEZA_MARKERS) for l in low):
+        return '320000'
+    return '310000'  # mismo default que detect_income_statement_role_from_facts
 
 def extract_data_from_excel(excel_path, sheet_name, rut_to_roles, rut):
     """Extraer labels y datos de todas las fechas de una hoja específica del Excel."""
@@ -75,10 +109,15 @@ def extract_data_from_excel(excel_path, sheet_name, rut_to_roles, rut):
             print(f"  ⚠️  No se encontró fila 'Cuenta' en {sheet_name}")
             return [], []
         
-        # Obtener role_id para esta hoja
+        # Obtener role_id para esta hoja. Si la empresa no está en la plantilla
+        # JSON (o la plantilla no cubre su rol), se deduce de las propias cuentas.
         roles_data = rut_to_roles.get(rut, {})
         role_id = map_sheet_to_role_id(sheet_name, roles_data)
-        
+
+        if not role_id:
+            sheet_labels = df.iloc[cuenta_row + 1:, 0].tolist()
+            role_id = derive_role_id(sheet_name, sheet_labels)
+
         if not role_id:
             print(f"  ⚠️  No se encontró role_id para {sheet_name} (RUT: {rut})")
             return [], []
@@ -296,11 +335,13 @@ def process_excel_files(input_dir, json_path, output_dir, progress_callback=None
 
         _log(f"  RUT: {rut} | Empresa: {company_name}")
 
-        # Verificar si tenemos datos para este RUT
+        # La plantilla JSON sólo cubre 53 empresas. Antes, las demás se
+        # descartaban aquí en silencio (y la fase reportaba "ok"), así que nunca
+        # podían llegar a la BD. Ahora se procesan igual: el RoleCode de cada
+        # hoja se deduce de las cuentas (ver derive_role_id).
         if rut not in rut_to_roles:
-            _log(f"  RUT {rut} no encontrado en estructura JSON")
-            continue
-        
+            _log(f"  RUT {rut} sin plantilla JSON; se deduce el rol de cada hoja")
+
         excel_path = os.path.join(input_dir, excel_file)
         
         # Recopilar todas las fechas únicas de todas las hojas
@@ -381,7 +422,22 @@ def process_excel_files(input_dir, json_path, output_dir, progress_callback=None
                 pass
             
             fieldnames = ['Label', 'RoleCode'] + ordered_dates
-            
+
+            # Blindaje: `ordered_dates` sale de escanear la fila 'Cuenta' de la primera
+            # hoja, y ese escaneo corta al primer hueco de la cabecera. Si una fila trae
+            # un período que el escaneo no vio, DictWriter aborta con ValueError y se cae
+            # la corrida COMPLETA (una empresa mata a las 230). Se completan los períodos
+            # faltantes a partir de las filas reales, ordenados de más reciente a más
+            # antiguo, igual que el orden natural del Excel.
+            faltantes = {k for row in company_data for k in row} - set(fieldnames)
+            if faltantes:
+                def _orden_periodo(p: str):
+                    m = re.match(r'^(\d{4})(?:Q([1-4]))?$', str(p))
+                    return (-int(m.group(1)), -int(m.group(2) or 4)) if m else (0, 0)
+                fieldnames += sorted(faltantes, key=_orden_periodo)
+                _log(f"  ⚠ {len(faltantes)} período(s) no detectados en la cabecera, "
+                     f"recuperados de las filas: {sorted(faltantes, key=_orden_periodo)[:4]}...")
+
             with open(csv_path, 'w', newline='', encoding='utf-8') as csvfile:
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                 writer.writeheader()

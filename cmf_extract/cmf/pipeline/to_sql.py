@@ -128,9 +128,20 @@ def run(
             progress_callback=cb,
             filter_ruts=filter_ruts if filter_ruts else None,
         )
-        # Mark all companies as success since process_excel_files handles errors internally
+        # Una empresa sólo es un éxito si realmente quedó su CSV en TO_SQL. Antes
+        # se marcaban todas como ok aunque process_excel_files no escribiera nada
+        # (p. ej. RUT sin plantilla JSON), y la fase reportaba "ok" con TO_SQL vacío.
+        out_path = Path(output_dir)
         for company_dir in company_dirs:
-            success.append(company_dir.name)
+            rut_match = re.search(r'(\d{8,9}-[\dkK])', company_dir.name)
+            rut = rut_match.group(1) if rut_match else company_dir.name.split("_", 1)[0]
+            if any(out_path.glob(f"*{rut}*.csv")):
+                success.append(company_dir.name)
+            else:
+                errors[company_dir.name] = (
+                    f"TO_SQL no generó CSV para {rut} "
+                    f"(revisa que el Excel de análisis exista y tenga datos)"
+                )
 
     except Exception as exc:
         for company_dir in company_dirs:

@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import os
 import re
 import sys
@@ -148,21 +149,41 @@ def find_datasets(base_dir: Path) -> List[DatasetInfo]:
     return datasets
 
 
-def find_xbrl_file(dataset_dir: Path, stem: str) -> Path | None:
-    """Preferir estrictamente el archivo *_C.xbrl del STEM.
+def find_xbrl_file_typed(dataset_dir: Path, stem: str) -> Tuple[Path | None, str | None]:
+    """Localiza el .xbrl del dataset y devuelve (ruta, tipo) con tipo en {'C','I'}.
 
-    Si no está exactamente, intenta cualquier *_C.xbrl en el dataset.
-    Como último recurso, retorna None (no usar el primer .xbrl arbitrario).
+    Prefiere el Consolidado (*_C.xbrl) y cae al Individual (*_I.xbrl) cuando el
+    emisor no publica consolidado. Varios emisores (Bolsa de Comercio desde
+    2023Q1, Metrogas desde 2024Q4, Chilquinta Distribución desde 2021Q3, …)
+    dejaron de presentar estados consolidados; exigir *_C.xbrl hacía que esos
+    períodos se descartaran en silencio y la serie quedara congelada.
+
+    Nunca cae a un .xbrl arbitrario: si no hay ni C ni I, retorna (None, None).
     """
-    exact = dataset_dir / f"{stem}_C.xbrl"
-    if exact.exists():
-        return exact
-    # Buscar cualquier *_C.xbrl dentro del dataset
-    for dirpath, dirnames, filenames in os.walk(dataset_dir):
-        for name in sorted(filenames):
-            if name.endswith('_C.xbrl'):
-                return Path(dirpath) / name
-    return None
+    for kind in ('C', 'I'):
+        exact = dataset_dir / f"{stem}_{kind}.xbrl"
+        if exact.exists():
+            return exact, kind
+    # El stem del directorio no siempre coincide con el del archivo: buscar por sufijo.
+    for kind in ('C', 'I'):
+        suffix = f"_{kind}.xbrl"
+        for dirpath, dirnames, filenames in os.walk(dataset_dir):
+            for name in sorted(filenames):
+                if name.endswith(suffix):
+                    return Path(dirpath) / name, kind
+    return None, None
+
+
+def find_xbrl_file(dataset_dir: Path, stem: str) -> Path | None:
+    """Ruta del .xbrl a procesar (Consolidado, o Individual si no hay consolidado)."""
+    path, _kind = find_xbrl_file_typed(dataset_dir, stem)
+    return path
+
+
+def dataset_statement_type(dataset_dir: Path, stem: str) -> str | None:
+    """Tipo de estado financiero publicado en el dataset: 'C', 'I' o None."""
+    _path, kind = find_xbrl_file_typed(dataset_dir, stem)
+    return kind
 
 
 def _arelle_timeout() -> int | None:
@@ -296,6 +317,34 @@ def run_arelle_exports(arelle_dir: Path, xbrl_file: Path, out_dir: Path, stem: s
                 '--logFile', str(pre_log.resolve()),
             ])
 
+        _verificar_facts_no_vacio(facts_csv, xbrl_file)
+
+
+def _verificar_facts_no_vacio(facts_csv: Path, xbrl_file: Path) -> None:
+    """Falla si Arelle exportó un CSV de facts con sólo la cabecera.
+
+    Arelle escribe la cabecera y DESPUÉS los hechos, y termina con exit 0 aunque no
+    haya podido resolver el DTS (taxonomía incompleta en el cache, .xsd del emisor
+    ausente, etc.). El resultado es un CSV de 1 línea que el pipeline aceptaba como
+    éxito: la empresa quedaba con huecos en el Balance de ese trimestre y nadie se
+    enteraba. Medido el 2026-07-12: 231 de 10.174 exports (2,3%) estaban así,
+    afectando a 58 empresas y dejando 74 Excel con columnas casi vacías.
+    """
+    if not facts_csv.exists():
+        return
+    try:
+        with facts_csv.open('rb') as fh:
+            lineas = sum(1 for _ in fh)
+    except OSError:
+        return
+    if lineas <= 1:
+        raise RuntimeError(
+            f"Arelle exportó un facts CSV vacío (sólo cabecera) para "
+            f"{xbrl_file.name}. Revisa el .log de Arelle: normalmente es la "
+            f"taxonomía incompleta en ~/.config/arelle/cache o falta el "
+            f"_shell.xsd del emisor en el dataset."
+        )
+
 
 def run_arelle_exports_progress(
     arelle_dir: Path,
@@ -408,6 +457,9 @@ def run_arelle_exports_progress(
                 '--logFile', str(pre_log.resolve()),
                 *offline_flags,
             ])
+
+        _verificar_facts_no_vacio(facts_csv, xbrl_file)
+
 
 def generate_excels(cmf_dir: Path, out_dir: Path, stem: str, langs: Sequence[str]) -> None:
     script = cmf_dir / 'xbrl_to_excel.py'
@@ -602,6 +654,10 @@ def _aggregate_facts_for_company(company_datasets: List[DatasetInfo], lang: str,
     all_dates: set[str] = set()
     min_ym: str | None = None
     max_ym: str | None = None
+    # Tipo de estado financiero efectivamente usado por período ('C' consolidado /
+    # 'I' individual). Se persiste como sidecar para que la Ficha Técnica y el gate
+    # de subida sepan que parte de la serie no es consolidada.
+    statement_types: dict[str, str] = {}
     
     # Helper para detectar fechas PURAS vs fechas con contexto
     def _is_pure_date_column(col_name: str) -> bool:
@@ -637,7 +693,11 @@ def _aggregate_facts_for_company(company_datasets: List[DatasetInfo], lang: str,
         facts_path = ds.dataset_dir / f"out_{ds.stem}" / f"facts_{ds.stem}_{lang}.csv"
         if not facts_path.exists():
             continue
-        
+
+        kind = dataset_statement_type(ds.dataset_dir, ds.stem)
+        if kind:
+            statement_types[ds.yyyyymm] = kind
+
         try:
             # Lectura rápida sin optimizaciones que causan lentitud
             facts_raw = pd.read_csv(facts_path, engine='python')
@@ -1209,7 +1269,26 @@ def _aggregate_facts_for_company(company_datasets: List[DatasetInfo], lang: str,
             print(f"      ║ Rango de datos: {min_ym} a {max_ym}")
     except Exception:
         pass
-    
+
+    # Sidecar con el tipo de estado por período. Los períodos 'I' (Individual) no
+    # son comparables con los 'C' (Consolidado): el individual excluye filiales.
+    try:
+        if statement_types and company_datasets:
+            individual = sorted(ym for ym, k in statement_types.items() if k == 'I')
+            payload = {
+                'by_period': dict(sorted(statement_types.items())),
+                'individual_periods': individual,
+                'mixed': bool(individual) and len(individual) < len(statement_types),
+            }
+            sidecar = company_datasets[0].company_dir / 'statement_types.json'
+            sidecar.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding='utf-8')
+            if individual:
+                print(f"      ║ ⚠ {len(individual)} período(s) sin consolidado, se usó Individual "
+                      f"({individual[0]}–{individual[-1]}): serie NO homogénea")
+    except Exception:
+        pass
+
+
     # Liberar memoria
     key_to_values.clear()
     key_to_buckets.clear()

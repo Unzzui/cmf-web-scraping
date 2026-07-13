@@ -163,7 +163,10 @@ def _run_single(
     def _process(ds, offline: bool):
         xbrl = find_xbrl_file(ds.dataset_dir, ds.stem)
         if not xbrl:
-            return ds, None
+            # Antes se retornaba (ds, None) — es decir, ÉXITO — y el período
+            # desaparecía de la serie sin dejar rastro. Un dataset sin .xbrl
+            # (ni C ni I) es un error de descarga, no un no-op.
+            return ds, RuntimeError(f"Sin .xbrl (C ni I) en {ds.dataset_dir.name}")
         out_dir = ds.dataset_dir / f"out_{ds.stem}"
         try:
             run_arelle_exports_progress(

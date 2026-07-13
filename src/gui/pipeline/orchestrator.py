@@ -21,6 +21,7 @@ consume desde el hilo principal de Tkinter.
 
 from __future__ import annotations
 
+import csv
 import os
 import queue
 import re
@@ -33,8 +34,13 @@ from typing import Optional
 from .models import Stage, StageStatus, CompanyState, PipelineEvent, STAGE_ORDER
 from .settings import PipelineSettings
 from .cmf_extract_bridge import CmfExtractBridge
+from .data_quality import check_company_csv
 from .findatachile_uploader import FinDataChileUploader
-from .supabase_uploader import SupabaseUploader
+from .supabase_uploader import (
+    SupabaseUploader,
+    find_company_csv,
+    load_statement_types,
+)
 
 
 def _import_any(modpaths: list[str], attr: str):
@@ -116,6 +122,69 @@ class PipelineOrchestrator:
             st.error = error
         self._emit(PipelineEvent(kind="stage", rut=rut, stage=stage,
                                  status=status, message=detail, level="ERROR" if error else "INFO"))
+
+    # ------------------------------------------------------------------ #
+    def _find_analysis_excel(self, st: CompanyState) -> str | None:
+        """Localiza en Product_v1 el Excel de análisis ya generado para la empresa.
+
+        Permite correr la etapa de subida por separado (--stages upload) sin volver a
+        regenerar el análisis, que tarda horas. Si hay varios (rangos distintos de
+        corridas previas), gana el más reciente.
+        """
+        try:
+            base = Path(self.settings.product_v1_dir)
+            if not base.is_dir():
+                return None
+            rut = (st.rut_completo or "").strip()
+            if not rut:
+                return None
+            cands = [p for p in base.glob("*.xlsx")
+                     if rut.upper() in p.name.upper() and not p.name.startswith("~$")]
+            if not cands:
+                return None
+            return str(max(cands, key=lambda p: p.stat().st_mtime))
+        except Exception:
+            return None
+
+    # ------------------------------------------------------------------ #
+    def _quality_gate(self, st: CompanyState):
+        """Evalúa el CSV a subir contra el gate de calidad.
+
+        Devuelve None si no se puede evaluar (sin CSV): en ese caso el leg 3B
+        reporta el error de forma explícita y no hay nada que poner en cuarentena.
+        """
+        try:
+            csv_data = find_company_csv(
+                Path(self.settings.product_v1_dir) / "TO_SQL", st.rut_completo)
+            if csv_data is None:
+                return None
+            return check_company_csv(
+                csv_data,
+                statement_types=load_statement_types(
+                    csv_data, self.settings.xbrl_base_dir),
+            )
+        except Exception as exc:  # el gate nunca debe tumbar el pipeline
+            self._log(f"No se pudo evaluar calidad de {st.name}: {exc}", "WARN")
+            return None
+
+    def _record_quarantine(self, st: CompanyState, report) -> None:
+        """Deja constancia de la empresa retenida en un CSV junto a los productos."""
+        try:
+            path = Path(self.settings.product_v1_dir) / "CUARENTENA.csv"
+            new_file = not path.exists()
+            with path.open("a", encoding="utf-8", newline="") as fh:
+                w = csv.writer(fh)
+                if new_file:
+                    w.writerow(["rut", "empresa", "ultimo_periodo", "filas_er",
+                                "filas_balance", "datapoints", "motivos"])
+                w.writerow([
+                    st.rut_completo, st.name, report.last_period or "",
+                    report.income_statement_rows, report.balance_sheet_rows,
+                    report.data_points,
+                    " | ".join(i.message for i in report.blocking_issues),
+                ])
+        except Exception:
+            pass
 
     # ------------------------------------------------------------------ #
     def start(self, companies: list[dict], config: dict, stages: list[Stage]) -> None:
@@ -418,6 +487,30 @@ class PipelineOrchestrator:
                     if self._cancel.is_set():
                         return
                     self._set_stage(rut, Stage.UPLOAD, StageStatus.RUNNING, "Subiendo…")
+
+                    # `output_file` sólo lo rellena la etapa CONSOLIDATE. Cuando se corre
+                    # sólo la etapa de subida (--stages upload), viene vacío y 3A abortaba
+                    # con "no hay Excel de análisis para subir" aunque el Excel estuviera
+                    # en disco. Se resuelve desde Product_v1 por RUT.
+                    if not st.output_file:
+                        st.output_file = self._find_analysis_excel(st)
+
+                    # Gate de calidad ANTES de ambos legs: 3A publica el Excel en
+                    # la tienda y 3B escribe las tablas; las dos son producción.
+                    # Una serie congelada (el emisor dejó de publicar consolidado)
+                    # o un estado de resultados sin línea de ingresos no llega a
+                    # producción por ninguna de las dos vías.
+                    qa = self._quality_gate(st)
+                    if qa is not None and not qa.ok:
+                        self._log(f"CUARENTENA {st.name}: {qa.summary()}", "WARN", rut=rut)
+                        self._record_quarantine(st, qa)
+                        self._set_stage(rut, Stage.UPLOAD, StageStatus.SKIPPED,
+                                        detail=f"Cuarentena: {qa.summary()}")
+                        return
+                    if qa is not None:
+                        for issue in qa.warnings:
+                            self._log(f"{st.name}: {issue.message}", "WARN", rut=rut)
+
                     errors: list[str] = []
                     details: list[str] = []
 

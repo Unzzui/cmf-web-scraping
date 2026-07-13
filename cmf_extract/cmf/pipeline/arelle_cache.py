@@ -35,6 +35,12 @@ _USER_AGENT = (
 
 _CACHE_ROOT = Path(os.path.expanduser("~/.config/arelle/cache"))
 
+# URLs que ya fallaron en esta corrida. Las taxonomías CMF inalcanzables son las
+# MISMAS para todas las empresas, y sin esto se reintentaban (con timeout de red)
+# una vez por empresa: con 232 empresas × ~177 URLs muertas el pre-poblado pasaba
+# a dominar el tiempo del pipeline. Se intenta una vez por proceso y basta.
+_FAILED_URLS: Set[str] = set()
+
 
 # ---------------------------------------------------------------------------
 # Path helpers
@@ -132,6 +138,41 @@ def _build_session():
     return s
 
 
+# Sólo estos códigos significan "el archivo no existe". Todo lo demás (5xx, 429,
+# timeouts, conexiones cortadas) es transitorio y SE REINTENTA.
+_STATUS_DEFINITIVOS = {403, 404, 410}
+
+
+def _fetch_with_retry(sess, url: str, intentos: int = 3) -> Optional[bytes]:
+    """Descarga una URL, reintentando ante fallos transitorios.
+
+    Distinguir "muerta" de "falló una vez" es crítico: esta descarga es un BFS sobre
+    la clausura de la taxonomía, así que si una URL se marca como muerta por un timeout
+    de red, TODO lo que cuelga de ella deja de descargarse y el cache queda truncado.
+    Arelle offline entonces no resuelve el DTS, exporta CERO hechos y termina con exit
+    0: el fallo es invisible hasta que aparecen huecos en los Excel.
+    """
+    import time as _time
+
+    for intento in range(intentos):
+        try:
+            r = sess.get(url, timeout=20, allow_redirects=True)
+            if r.status_code == 200 and r.content:
+                return r.content
+            if r.status_code in _STATUS_DEFINITIVOS:
+                _FAILED_URLS.add(url)  # no existe: no reintentar nunca
+                return None
+            # 5xx / 429 / respuesta vacía: transitorio
+        except Exception:
+            pass  # timeout, DNS, conexión cortada: transitorio
+        if intento < intentos - 1:
+            _time.sleep(0.5 * (2 ** intento))
+
+    # Agotados los reintentos: NO se agrega a _FAILED_URLS, para que la próxima
+    # empresa (o la próxima corrida) vuelva a intentarlo.
+    return None
+
+
 def _download_missing(urls: list[str], cb: Optional[ProgressCallback],
                       company_name: str) -> tuple[int, int, Set[str]]:
     """Descarga URLs faltantes en el cache. Devuelve (ok, errors, new_deps).
@@ -207,7 +248,7 @@ def populate_arelle_cache(company_dir: Path,
 
     while pending:
         url = pending.popleft()
-        if url in seen:
+        if url in seen or url in _FAILED_URLS:
             continue
         seen.add(url)
 
@@ -219,19 +260,14 @@ def populate_arelle_cache(company_dir: Path,
                 except Exception:
                     break  # sin requests no podemos descargar nada
             cache_path = arelle_cache_path(url)
-            try:
-                r = sess.get(url, timeout=20, allow_redirects=True)
-                if r.status_code == 200 and r.content:
-                    cache_path.parent.mkdir(parents=True, exist_ok=True)
-                    cache_path.write_bytes(r.content)
-                    downloaded += 1
-                    path = cache_path
-                else:
-                    failed += 1
-                    continue
-            except Exception:
+            content = _fetch_with_retry(sess, url)
+            if content is None:
                 failed += 1
                 continue
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            cache_path.write_bytes(content)
+            downloaded += 1
+            path = cache_path
             if progress_cb and downloaded % 10 == 0:
                 progress_cb(f"{company_name} - Cache: {downloaded} OK, {failed} fail",
                             downloaded, downloaded + len(pending))

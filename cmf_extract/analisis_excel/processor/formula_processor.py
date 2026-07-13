@@ -587,7 +587,7 @@ class FormulaProcessorMixin:
             "LIQUIDEZ": "Base de cálculo: saldos instantáneos al cierre de Qn (promedios de balance cuando corresponda).",
             "SOLVENCIA Y ESTRUCTURA": "Base de cálculo: saldos instantáneos; 'Deuda/EBITDA' usa EBITDA TTM y Deuda Neta a cierre de Qn.",
             "RENTABILIDAD": "Base de cálculo: numeradores y ventas en TTM; promedios de balance (Qn, Qn−4).",
-            "EFICIENCIA OPERATIVA": "Base de cálculo: COGS/Ventas en TTM; promedios (Qn, Qn−4); Días = DíasTrimestre(Qn)/Rotación.",
+            "EFICIENCIA OPERATIVA": "Base de cálculo: COGS/Ventas acumulados del ejercicio; promedios (Qn, Qn−4); Días = DíasAcumulados(Qn)/Rotación (Q1=90, Q2=181, Q3=273, Q4=365).",
             "FLUJOS Y ADICIONALES": "Base de cálculo: CFO/FCF en TTM; ratios sobre Resultados en TTM.",
             "CREACIÓN DE VALOR": "Base de cálculo: componentes en TTM y promedios de balance según corresponda.",
             "COBERTURA Y RIESGO": "Base de cálculo: coberturas en TTM cuando aplica (EBIT, CFO, intereses).",
@@ -596,7 +596,7 @@ class FormulaProcessorMixin:
             "LIQUIDITY": "Computation basis: instant balances at Qn end (balance averages where applicable).",
             "SOLVENCY & CAPITAL STRUCTURE": "Computation basis: instant balances; 'Debt/EBITDA' uses TTM EBITDA and Net Debt at Qn end.",
             "PROFITABILITY": "Computation basis: numerators and revenue in TTM; balance averages (Qn, Qn−4).",
-            "OPERATING EFFICIENCY": "Computation basis: COGS/Revenue in TTM; averages (Qn, Qn−4); Days = QuarterDays(Qn)/Turnover.",
+            "OPERATING EFFICIENCY": "Computation basis: year-to-date COGS/Revenue; averages (Qn, Qn−4); Days = CumulativeDays(Qn)/Turnover (Q1=90, Q2=181, Q3=273, Q4=365).",
             "CASH FLOWS & OTHER": "Computation basis: CFO/FCF in TTM; P&L-based ratios in TTM.",
             "VALUE CREATION": "Computation basis: TTM components and balance averages as applicable.",
             "COVERAGE & RISK": "Computation basis: coverage in TTM where applicable (EBIT, CFO, interest).",
@@ -700,7 +700,23 @@ class FormulaProcessorMixin:
                             def _pl_ref(key: str) -> Optional[str]:
                                 rownum = formula_builder.rows_pl.get(key)
                                 return formula_builder.create_cell_reference_by_label(formula_builder.sh_pl, rownum, label_norm) if rownum else None
-                            
+
+                            def _bal_avg_ref(key: str) -> Optional[str]:
+                                """Saldo promedio (Qn, Qn−4): el balance es un stock y el ER acumulado.
+
+                                Q4 no es un caso especial: su comparable es Q4 del año anterior, igual
+                                que cualquier otro trimestre.
+                                """
+                                current = _bal_ref(key)
+                                rownum = formula_builder.rows_bal.get(key)
+                                if not current or not rownum:
+                                    return current
+                                prev_label = f"{int(label_norm[:4]) - 1}Q{label_norm[5]}"
+                                prev = formula_builder.create_cell_reference_by_label(
+                                    formula_builder.sh_bal, rownum, prev_label)
+                                return f"AVERAGE({current},{prev})" if prev else current
+
+
                             # Ratios de liquidez (datos instantáneos de balance)
                             if ratio_name_base in ("Liquidez Corriente", "Current Ratio"):
                                 ca = _bal_ref("AC")
@@ -749,14 +765,11 @@ class FormulaProcessorMixin:
                             
                             # Ratios de rentabilidad (usar YTD anualizado en lugar de TTM)
                             elif ratio_name_base in ("Margen Bruto", "Gross Profit / Revenue", "Utilidad Bruta / Ventas"):
-                                # Para trimestres: usar datos YTD anualizados
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                annualization_factor = {1: 4, 2: 2, 3: 1.333, 4: 1}.get(quarter_num, 1)
-                                
                                 gross_profit_ytd = _pl_ref("Bruta")
                                 revenue_ytd = _pl_ref("Ventas")
                                 if gross_profit_ytd and revenue_ytd:
-                                    # Para márgenes, NO anualizar - usar YTD directamente
+                                    # Un margen es un cociente entre dos cifras del mismo período
+                                    # acumulado: anualizarlas cancelaría el factor. Se usa YTD directo.
                                     formula_str = f"IFERROR({gross_profit_ytd}/{revenue_ytd},\"\")"
                                     
                             elif ratio_name_base in ("Margen Operativo (EBIT)", "EBIT / Revenue", "EBIT / Ventas"):
@@ -773,203 +786,119 @@ class FormulaProcessorMixin:
                             
                             # Ratios de eficiencia (usar datos anualizados)
                             elif ratio_name_base in ("Rotación de Activos Fijos", "PPE Turnover", "Ventas / PPE Promedio"):
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                annualization_factor = {1: 4, 2: 2, 3: 1.333, 4: 1}.get(quarter_num, 1)
+                                annualization_factor = formula_builder._get_annualization_expr(label_norm)
                                 
                                 revenue_ytd = _pl_ref("Ventas")
-                                ppe = _bal_ref("PPE")
-                                if revenue_ytd and ppe:
+                                ppe_avg = _bal_avg_ref("PPE")
+                                if revenue_ytd and ppe_avg:
                                     # Anualizar ventas para comparabilidad
-                                    if annualization_factor != 1:
-                                        formula_str = f"IFERROR(({revenue_ytd}*{annualization_factor})/{ppe},\"\")"
+                                    if annualization_factor:
+                                        formula_str = f"IFERROR(({revenue_ytd}*{annualization_factor})/{ppe_avg},\"\")"
                                     else:
-                                        formula_str = f"IFERROR({revenue_ytd}/{ppe},\"\")"
+                                        formula_str = f"IFERROR({revenue_ytd}/{ppe_avg},\"\")"
                             
                             # ROE y ROA (anualizados para trimestres)
                             elif ratio_name_base in ("ROE", "Return on Equity", "Utilidad Neta / Patrimonio Promedio"):
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                annualization_factor = {1: 4, 2: 2, 3: 1.333, 4: 1}.get(quarter_num, 1)
+                                annualization_factor = formula_builder._get_annualization_expr(label_norm)
                                 
                                 net_income_ytd = _pl_ref("Neta")
-                                equity = _bal_ref("Patr")
-                                if net_income_ytd and equity:
-                                    if annualization_factor != 1:
-                                        formula_str = f"IFERROR(({net_income_ytd}*{annualization_factor})/{equity},\"\")"
+                                equity_avg = _bal_avg_ref("Patr")
+                                if net_income_ytd and equity_avg:
+                                    if annualization_factor:
+                                        formula_str = f"IFERROR(({net_income_ytd}*{annualization_factor})/{equity_avg},\"\")"
                                     else:
-                                        formula_str = f"IFERROR({net_income_ytd}/{equity},\"\")"
+                                        formula_str = f"IFERROR({net_income_ytd}/{equity_avg},\"\")"
                             
                             # Ratios de rotación y eficiencia (con días del trimestre)
                             elif ratio_name_base in ("Rotación de Activos", "Asset Turnover", "Ventas / Activos Promedio"):
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                annualization_factor = {1: 4, 2: 2, 3: 1.333, 4: 1}.get(quarter_num, 1)
+                                annualization_factor = formula_builder._get_annualization_expr(label_norm)
                                 
                                 revenue_ytd = _pl_ref("Ventas")
-                                ta = _bal_ref("AT")
-                                if revenue_ytd and ta:
-                                    if annualization_factor != 1:
-                                        formula_str = f"IFERROR(({revenue_ytd}*{annualization_factor})/{ta},\"\")"
+                                ta_avg = _bal_avg_ref("AT")
+                                if revenue_ytd and ta_avg:
+                                    if annualization_factor:
+                                        formula_str = f"IFERROR(({revenue_ytd}*{annualization_factor})/{ta_avg},\"\")"
                                     else:
-                                        formula_str = f"IFERROR({revenue_ytd}/{ta},\"\")"
-                                        
+                                        formula_str = f"IFERROR({revenue_ytd}/{ta_avg},\"\")"
+
                             elif ratio_name_base in ("Rotación de Inventarios", "Inventory Turnover", "Costo de Ventas / Inventario Promedio"):
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                annualization_factor = {1: 4, 2: 2, 3: 1.333, 4: 1}.get(quarter_num, 1)
-                                
+                                annualization_factor = formula_builder._get_annualization_expr(label_norm)
+
                                 cogs_ytd = _pl_ref("COGS")
-                                inv = _bal_ref("Inv")
-                                if cogs_ytd and inv:
-                                    if annualization_factor != 1:
-                                        formula_str = f"IFERROR(({cogs_ytd}*{annualization_factor})/{inv},\"\")"
+                                inv_avg = _bal_avg_ref("Inv")
+                                if cogs_ytd and inv_avg:
+                                    if annualization_factor:
+                                        formula_str = f"IFERROR(({cogs_ytd}*{annualization_factor})/{inv_avg},\"\")"
                                     else:
-                                        formula_str = f"IFERROR({cogs_ytd}/{inv},\"\")"
+                                        formula_str = f"IFERROR({cogs_ytd}/{inv_avg},\"\")"
                                         
                             elif ratio_name_base in ("Días de Inventario", "Days Inventory Outstanding"):
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                days_in_period = {1: 90, 2: 181, 3: 273, 4: 365}.get(quarter_num, 365)
+                                days_in_period = formula_builder._get_period_days(label_norm)
                                 
                                 cogs_ytd = _pl_ref("COGS")
-                                inv_current = _bal_ref("Inv")
-                                if cogs_ytd and inv_current:
-                                    if quarter_num != 4:
-                                        # Para trimestres: usar YTD sin anualizar y días del período específico
-                                        # Buscar inventario del año anterior mismo trimestre
-                                        year_current = int(label_norm[:4])
-                                        quarter_current = label_norm[5]
-                                        label_prev_year = f"{year_current-1}Q{quarter_current}"
-                                        inv_prev_year = formula_builder.create_cell_reference_by_label(formula_builder.sh_bal, formula_builder.rows_bal.get("Inv"), label_prev_year) if formula_builder.rows_bal.get("Inv") else None
-                                        
-                                        if inv_prev_year:
-                                            inv_avg = f"AVERAGE({inv_current},{inv_prev_year})"
-                                        else:
-                                            inv_avg = inv_current
-                                        
-                                        # Días del período / (COGS YTD / Inventario promedio)
-                                        formula_str = f"IFERROR({days_in_period}/({cogs_ytd}/{inv_avg}),\"\")"
-                                    else:
-                                        # Para año completo: usar promedio con año anterior
-                                        year_current = int(label_norm)
-                                        inv_prev_year = formula_builder.create_cell_reference(formula_builder.sh_bal.title, formula_builder.find_year_column(formula_builder.sh_bal, year_current-1), formula_builder.rows_bal.get("Inv")) if formula_builder.find_year_column(formula_builder.sh_bal, year_current-1) else None
-                                        
-                                        if inv_prev_year:
-                                            inv_avg = f"AVERAGE({inv_current},{inv_prev_year})"
-                                        else:
-                                            inv_avg = inv_current
-                                            
-                                        formula_str = f"IFERROR(365/({cogs_ytd}/{inv_avg}),\"\")"
+                                inv_avg = _bal_avg_ref("Inv")
+                                if cogs_ytd and inv_avg:
+                                    # Días del período / (COGS YTD / Inventario promedio)
+                                    formula_str = f"IFERROR({days_in_period}/({cogs_ytd}/{inv_avg}),\"\")"
                                         
                             elif ratio_name_base in ("Rotación de Cuentas por Cobrar", "Receivables Turnover", "Ventas / Cuentas por Cobrar Promedio"):
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                annualization_factor = {1: 4, 2: 2, 3: 1.333, 4: 1}.get(quarter_num, 1)
+                                annualization_factor = formula_builder._get_annualization_expr(label_norm)
                                 
                                 revenue_ytd = _pl_ref("Ventas")
-                                receivables = _bal_ref("CxC")
-                                if revenue_ytd and receivables:
-                                    if annualization_factor != 1:
-                                        formula_str = f"IFERROR(({revenue_ytd}*{annualization_factor})/{receivables},\"\")"
+                                receivables_avg = _bal_avg_ref("CxC")
+                                if revenue_ytd and receivables_avg:
+                                    if annualization_factor:
+                                        formula_str = f"IFERROR(({revenue_ytd}*{annualization_factor})/{receivables_avg},\"\")"
                                     else:
-                                        formula_str = f"IFERROR({revenue_ytd}/{receivables},\"\")"
+                                        formula_str = f"IFERROR({revenue_ytd}/{receivables_avg},\"\")"
                                         
                             elif ratio_name_base in ("Período Promedio de Cobro", "Average Collection Period", "365 / Rotación de CxC"):
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                days_in_period = {1: 90, 2: 181, 3: 273, 4: 365}.get(quarter_num, 365)
+                                days_in_period = formula_builder._get_period_days(label_norm)
                                 
                                 revenue_ytd = _pl_ref("Ventas")
-                                receivables_current = _bal_ref("CxC")
-                                if revenue_ytd and receivables_current:
-                                    if quarter_num != 4:
-                                        # Para trimestres: usar YTD sin anualizar y días del período específico
-                                        year_current = int(label_norm[:4])
-                                        quarter_current = label_norm[5]
-                                        label_prev_year = f"{year_current-1}Q{quarter_current}"
-                                        receivables_prev_year = formula_builder.create_cell_reference_by_label(formula_builder.sh_bal, formula_builder.rows_bal.get("CxC"), label_prev_year) if formula_builder.rows_bal.get("CxC") else None
-                                        
-                                        if receivables_prev_year:
-                                            receivables_avg = f"AVERAGE({receivables_current},{receivables_prev_year})"
-                                        else:
-                                            receivables_avg = receivables_current
-                                        
-                                        # Días del período / (Ventas YTD / CxC promedio)
-                                        formula_str = f"IFERROR({days_in_period}/({revenue_ytd}/{receivables_avg}),\"\")"
-                                    else:
-                                        # Para año completo: usar promedio con año anterior
-                                        year_current = int(label_norm)
-                                        receivables_prev_year = formula_builder.create_cell_reference(formula_builder.sh_bal.title, formula_builder.find_year_column(formula_builder.sh_bal, year_current-1), formula_builder.rows_bal.get("CxC")) if formula_builder.find_year_column(formula_builder.sh_bal, year_current-1) else None
-                                        
-                                        if receivables_prev_year:
-                                            receivables_avg = f"AVERAGE({receivables_current},{receivables_prev_year})"
-                                        else:
-                                            receivables_avg = receivables_current
-                                            
-                                        formula_str = f"IFERROR(365/({revenue_ytd}/{receivables_avg}),\"\")"
+                                receivables_avg = _bal_avg_ref("CxC")
+                                if revenue_ytd and receivables_avg:
+                                    # Días del período / (Ventas YTD / CxC promedio)
+                                    formula_str = f"IFERROR({days_in_period}/({revenue_ytd}/{receivables_avg}),\"\")"
                                         
                             elif ratio_name_base in ("Rotación de Cuentas por Pagar", "Payables Turnover"):
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                annualization_factor = {1: 4, 2: 2, 3: 1.333, 4: 1}.get(quarter_num, 1)
+                                annualization_factor = formula_builder._get_annualization_expr(label_norm)
                                 
                                 cogs_ytd = _pl_ref("COGS")
-                                payables = _bal_ref("CxP")
-                                if cogs_ytd and payables:
-                                    if annualization_factor != 1:
-                                        formula_str = f"IFERROR(({cogs_ytd}*{annualization_factor})/{payables},\"\")"
+                                payables_avg = _bal_avg_ref("CxP")
+                                if cogs_ytd and payables_avg:
+                                    if annualization_factor:
+                                        formula_str = f"IFERROR(({cogs_ytd}*{annualization_factor})/{payables_avg},\"\")"
                                     else:
-                                        formula_str = f"IFERROR({cogs_ytd}/{payables},\"\")"
+                                        formula_str = f"IFERROR({cogs_ytd}/{payables_avg},\"\")"
                                         
                             elif ratio_name_base in ("Período Promedio de Pago", "Average Payment Period", "365 / Rotación de CxP"):
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                days_in_period = {1: 90, 2: 181, 3: 273, 4: 365}.get(quarter_num, 365)
+                                days_in_period = formula_builder._get_period_days(label_norm)
                                 
                                 cogs_ytd = _pl_ref("COGS")
-                                payables_current = _bal_ref("CxP")
-                                if cogs_ytd and payables_current:
-                                    if quarter_num != 4:
-                                        # Para trimestres: usar YTD sin anualizar y días del período específico
-                                        year_current = int(label_norm[:4])
-                                        quarter_current = label_norm[5]
-                                        label_prev_year = f"{year_current-1}Q{quarter_current}"
-                                        payables_prev_year = formula_builder.create_cell_reference_by_label(formula_builder.sh_bal, formula_builder.rows_bal.get("CxP"), label_prev_year) if formula_builder.rows_bal.get("CxP") else None
-                                        
-                                        if payables_prev_year:
-                                            payables_avg = f"AVERAGE({payables_current},{payables_prev_year})"
-                                        else:
-                                            payables_avg = payables_current
-                                        
-                                        # Días del período / (COGS YTD / CxP promedio)
-                                        formula_str = f"IFERROR({days_in_period}/({cogs_ytd}/{payables_avg}),\"\")"
-                                    else:
-                                        # Para año completo: usar promedio con año anterior
-                                        year_current = int(label_norm)
-                                        payables_prev_year = formula_builder.create_cell_reference(formula_builder.sh_bal.title, formula_builder.find_year_column(formula_builder.sh_bal, year_current-1), formula_builder.rows_bal.get("CxP")) if formula_builder.find_year_column(formula_builder.sh_bal, year_current-1) else None
-                                        
-                                        if payables_prev_year:
-                                            payables_avg = f"AVERAGE({payables_current},{payables_prev_year})"
-                                        else:
-                                            payables_avg = payables_current
-                                            
-                                        formula_str = f"IFERROR(365/({cogs_ytd}/{payables_avg}),\"\")"
+                                payables_avg = _bal_avg_ref("CxP")
+                                if cogs_ytd and payables_avg:
+                                    # Días del período / (COGS YTD / CxP promedio)
+                                    formula_str = f"IFERROR({days_in_period}/({cogs_ytd}/{payables_avg}),\"\")"
                                         
                             elif ratio_name_base in ("Ciclo de Conversión de Efectivo", "Cash Conversion Cycle"):
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                days_in_period = {1: 90, 2: 181, 3: 273, 4: 365}.get(quarter_num, 365)
-                                annualization_factor = {1: 4, 2: 2, 3: 1.333, 4: 1}.get(quarter_num, 1)
-                                
+                                days_in_period = formula_builder._get_period_days(label_norm)
+
+                                # El CCE es exactamente la suma de los tres ratios de días de arriba,
+                                # así que usa su misma base. Antes anualizaba el numerador (×4 en Q1) Y
+                                # además dividía por los días acumulados, contando el ajuste dos veces:
+                                # el ciclo salía hasta 4x más corto de lo real.
                                 cogs_ytd = _pl_ref("COGS")
                                 revenue_ytd = _pl_ref("Ventas")
-                                inv = _bal_ref("Inv")
-                                receivables = _bal_ref("CxC")
-                                payables = _bal_ref("CxP")
-                                
-                                if cogs_ytd and revenue_ytd and inv and receivables and payables:
-                                    if annualization_factor != 1:
-                                        # Días Inventario + Días CxC - Días CxP
-                                        days_inv = f"{days_in_period}/(({cogs_ytd}*{annualization_factor})/{inv})"
-                                        days_rec = f"{days_in_period}/(({revenue_ytd}*{annualization_factor})/{receivables})"
-                                        days_pay = f"{days_in_period}/(({cogs_ytd}*{annualization_factor})/{payables})"
-                                        formula_str = f"IFERROR(({days_inv})+({days_rec})-({days_pay}),\"\")"
-                                    else:
-                                        days_inv = f"365/({cogs_ytd}/{inv})"
-                                        days_rec = f"365/({revenue_ytd}/{receivables})"
-                                        days_pay = f"365/({cogs_ytd}/{payables})"
-                                        formula_str = f"IFERROR(({days_inv})+({days_rec})-({days_pay}),\"\")"
+                                inv_avg = _bal_avg_ref("Inv")
+                                receivables_avg = _bal_avg_ref("CxC")
+                                payables_avg = _bal_avg_ref("CxP")
+
+                                if cogs_ytd and revenue_ytd and inv_avg and receivables_avg and payables_avg:
+                                    days_inv = f"{days_in_period}/({cogs_ytd}/{inv_avg})"
+                                    days_rec = f"{days_in_period}/({revenue_ytd}/{receivables_avg})"
+                                    days_pay = f"{days_in_period}/({cogs_ytd}/{payables_avg})"
+                                    formula_str = f"IFERROR(({days_inv})+({days_rec})-({days_pay}),\"\")"
                             
                             # Ratios adicionales
                             elif ratio_name_base in ("AC / AT", "CA / TA", "Current Assets / Total Assets"):
@@ -986,21 +915,19 @@ class FormulaProcessorMixin:
                                     
                             elif ratio_name_base in ("ROA", "Return on Assets", "Utilidad Neta / Activos Totales Promedio"):
                                 # Para trimestres: usar utilidad neta YTD anualizada
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                annualization_factor = {1: 4, 2: 2, 3: 1.333, 4: 1}.get(quarter_num, 1)
+                                annualization_factor = formula_builder._get_annualization_expr(label_norm)
                                 
                                 net_income_ytd = _pl_ref("Neta")
-                                ta = _bal_ref("AT")
-                                if net_income_ytd and ta:
-                                    if annualization_factor != 1:
-                                        formula_str = f"IFERROR(({net_income_ytd}*{annualization_factor})/{ta},\"\")"
+                                ta_avg = _bal_avg_ref("AT")
+                                if net_income_ytd and ta_avg:
+                                    if annualization_factor:
+                                        formula_str = f"IFERROR(({net_income_ytd}*{annualization_factor})/{ta_avg},\"\")"
                                     else:
-                                        formula_str = f"IFERROR({net_income_ytd}/{ta},\"\")"
+                                        formula_str = f"IFERROR({net_income_ytd}/{ta_avg},\"\")"
                                     
                             elif ratio_name_base in ("ROIC", "Return on Invested Capital"):
                                 # ROIC = EBIT(1-Tax) anualizado / (Patrimonio + Deuda)
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                annualization_factor = {1: 4, 2: 2, 3: 1.333, 4: 1}.get(quarter_num, 1)
+                                annualization_factor = formula_builder._get_annualization_expr(label_norm)
                                 
                                 ebit_ytd = _pl_ref("EBIT")
                                 equity = _bal_ref("Patr")
@@ -1008,15 +935,14 @@ class FormulaProcessorMixin:
                                 if ebit_ytd and equity:
                                     debt_part = f"+IFERROR({debt},0)" if debt else ""
                                     # Asumir tasa de impuestos del 27%
-                                    if annualization_factor != 1:
+                                    if annualization_factor:
                                         formula_str = f"IFERROR((({ebit_ytd}*{annualization_factor})*0.73)/({equity}{debt_part}),\"\")"
                                     else:
                                         formula_str = f"IFERROR(({ebit_ytd}*0.73)/({equity}{debt_part}),\"\")"
                                     
                             elif ratio_name_base in ("EVA (WACC=10%)", "Economic Value Added"):
                                 # EVA = NOPAT anualizado - (Capital Invertido × WACC)
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                annualization_factor = {1: 4, 2: 2, 3: 1.333, 4: 1}.get(quarter_num, 1)
+                                annualization_factor = formula_builder._get_annualization_expr(label_norm)
                                 
                                 ebit_ytd = _pl_ref("EBIT")
                                 equity = _bal_ref("Patr")
@@ -1024,15 +950,14 @@ class FormulaProcessorMixin:
                                 if ebit_ytd and equity:
                                     debt_part = f"+IFERROR({debt},0)" if debt else ""
                                     # NOPAT = EBIT × (1-0.27), Capital = Patrimonio + Deuda, WACC = 10%
-                                    if annualization_factor != 1:
+                                    if annualization_factor:
                                         formula_str = f"IFERROR((({ebit_ytd}*{annualization_factor})*0.73)-(({equity}{debt_part})*0.1),\"\")"
                                     else:
                                         formula_str = f"IFERROR(({ebit_ytd}*0.73)-(({equity}{debt_part})*0.1),\"\")"
                                     
                             elif ratio_name_base in ("Spread (ROIC - WACC)", "ROIC - WACC estimado (10%)"):
                                 # Spread = ROIC anualizado - WACC
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                annualization_factor = {1: 4, 2: 2, 3: 1.333, 4: 1}.get(quarter_num, 1)
+                                annualization_factor = formula_builder._get_annualization_expr(label_norm)
                                 
                                 ebit_ytd = _pl_ref("EBIT")
                                 equity = _bal_ref("Patr")
@@ -1040,7 +965,7 @@ class FormulaProcessorMixin:
                                 if ebit_ytd and equity:
                                     debt_part = f"+IFERROR({debt},0)" if debt else ""
                                     # ROIC - 10%
-                                    if annualization_factor != 1:
+                                    if annualization_factor:
                                         formula_str = f"IFERROR(((({ebit_ytd}*{annualization_factor})*0.73)/({equity}{debt_part}))-0.1,\"\")"
                                     else:
                                         formula_str = f"IFERROR((({ebit_ytd}*0.73)/({equity}{debt_part}))-0.1,\"\")"
@@ -1048,21 +973,19 @@ class FormulaProcessorMixin:
                             # Ratios de cobertura y riesgo
                             elif ratio_name_base in ("Cobertura Gastos Fijos", "Fixed Charge Coverage"):
                                 # (EBIT + Gastos Fijos) / Gastos Fijos - usar YTD anualizado
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                annualization_factor = {1: 4, 2: 2, 3: 1.333, 4: 1}.get(quarter_num, 1)
+                                annualization_factor = formula_builder._get_annualization_expr(label_norm)
                                 
                                 ebit_ytd = _pl_ref("EBIT")
                                 interest_ytd = _pl_ref("Interes")
                                 if ebit_ytd and interest_ytd:
-                                    if annualization_factor != 1:
+                                    if annualization_factor:
                                         formula_str = f"IFERROR((({ebit_ytd}*{annualization_factor})+ABS(({interest_ytd}*{annualization_factor})))/ABS(({interest_ytd}*{annualization_factor})),\"\")"
                                     else:
                                         formula_str = f"IFERROR(({ebit_ytd}+ABS({interest_ytd}))/ABS({interest_ytd}),\"\")"
                                     
                             elif ratio_name_base in ("Altman Z-Score", "Z-Score"):
                                 # Z = 1.2×(WC/TA) + 1.4×(RE/TA) + 3.3×(EBIT/TA) + 0.6×(E/D) + 1.0×(S/TA)
-                                quarter_num = int(label_norm[5]) if len(label_norm) == 6 else 4
-                                annualization_factor = {1: 4, 2: 2, 3: 1.333, 4: 1}.get(quarter_num, 1)
+                                annualization_factor = formula_builder._get_annualization_expr(label_norm)
                                 
                                 ca = _bal_ref("AC")
                                 cl = _bal_ref("PC")
@@ -1077,7 +1000,7 @@ class FormulaProcessorMixin:
                                     wc_ta = f"({ca}-{cl})/{ta}"
                                     re_ta = f"IFERROR({retained_earnings}/{ta},0)" if retained_earnings else "0"
                                     
-                                    if annualization_factor != 1:
+                                    if annualization_factor:
                                         ebit_ta = f"({ebit_ytd}*{annualization_factor})/{ta}"
                                         s_ta = f"({sales_ytd}*{annualization_factor})/{ta}"
                                     else:

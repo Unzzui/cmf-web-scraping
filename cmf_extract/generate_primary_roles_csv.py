@@ -258,13 +258,22 @@ def clean_insufficient_date_columns(df: pd.DataFrame, min_threshold_pct: float =
         # Parámetros configurables
         median_pct = float(os.getenv('CMF_DATE_MEDIAN_PCT', '0.35'))  # Default: 35% de mediana
         min_absolute = int(os.getenv('CMF_DATE_MIN_ABSOLUTE', '50'))   # Default: mínimo 50 filas
-        
-        # Usar el más estricto de: 35% mediana, 15% del máximo, o 50 filas absolutas
+
+        # El piso absoluto asume una empresa con muchas líneas por período. En empresas
+        # pequeñas (inmobiliarias, securitizadoras, clubes) ni la columna más completa
+        # llega a 50 valores, así que el piso descarta TODAS las columnas y el CSV queda
+        # sin períodos: el Excel sale como esqueleto vacío y la empresa cae en cuarentena
+        # con "CSV sin filas o sin períodos válidos". Se acota el piso a la mitad de la
+        # columna más rica para que nunca pueda barrer el set completo.
+        min_absolute_effective = min(min_absolute, max_count * 0.5)
+
+        # Usar el más estricto de: 35% mediana, 15% del máximo, o el piso acotado
         threshold_median = median_count * median_pct
         threshold_max = max_count * 0.15  # 15% del máximo
         threshold_base = len(df) * min_threshold_pct
-        
-        dynamic_threshold = max(threshold_median, threshold_max, threshold_base, min_absolute)
+
+        dynamic_threshold = max(threshold_median, threshold_max, threshold_base,
+                                min_absolute_effective)
     else:
         dynamic_threshold = len(df) * min_threshold_pct
     

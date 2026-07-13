@@ -162,7 +162,13 @@ def cross_fill_da(out_dir: Path) -> None:
                 pass
 
 
-INPUT_PATTERN = re.compile(r"^estados_(?P<rut>\d{7,8}(?:-[0-9kK])?)_(?P<range>\d{4}-\d{4})_(?P<lang>es|en)\.xlsx$")
+# El rango puede no ser YYYY-YYYY: cuando la empresa no tiene un rango de fechas
+# determinable, la fase 2 nombra el archivo "estados_<rut>_consolidado_es.xlsx". Si el
+# patrón no matchea, rut cae al literal "RUT" y el cálculo del dígito verificador
+# revienta con int('T'). El RUT admite 4 dígitos: hay fondos como 9069-7.
+INPUT_PATTERN = re.compile(
+    r"^estados_(?P<rut>\d{4,8}(?:-[0-9kK])?)_(?P<range>\d{4}-\d{4}|[A-Za-zñÑ]+)_(?P<lang>es|en)\.xlsx$"
+)
 
 
 def find_input_excels(input_dir: Path, only_subdir: str | None = None, langs: tuple[str, ...] = ("es", "en")) -> list[Path]:
@@ -497,6 +503,10 @@ def normalize_rut_with_dv(rut: str) -> str:
     if len(parts) == 2 and parts[1]:
         dv = parts[1].upper()
         return f"{num}-{dv}"
+    if not num.isdigit():
+        # No es un RUT; devolverlo tal cual en vez de reventar calculando el dígito
+        # verificador sobre letras.
+        return rut
     # Compute DV
     dv = _compute_rut_dv(num)
     return f"{num}-{dv}"
@@ -670,9 +680,14 @@ def process_one(input_file: Path, output_dir: Path, workers: int, frequency: str
                         try:
                             a, b = range_str.split("-")
                             yr_min = min(int(a), int(b))
-                            range_str_effective = f"{yr_min}-{last_label}"
                         except Exception:
-                            range_str_effective = f"{range_str}-{last_label}"
+                            # El nombre del archivo no trae rango (ej. "consolidado"):
+                            # derivarlo del período más antiguo presente en la hoja.
+                            years = [int(lb[:4]) for lb in labels_sorted if lb[:4].isdigit()]
+                            yr_min = min(years) if years else None
+                        range_str_effective = (
+                            f"{yr_min}-{last_label}" if yr_min else last_label
+                        )
         except Exception:
             pass
     elif frequency == "Total":
@@ -708,9 +723,14 @@ def process_one(input_file: Path, output_dir: Path, workers: int, frequency: str
                         try:
                             a, b = range_str.split("-")
                             yr_min = min(int(a), int(b))
-                            range_str_effective = f"{yr_min}-{last_label}"
                         except Exception:
-                            range_str_effective = f"{range_str}-{last_label}"
+                            # El nombre del archivo no trae rango (ej. "consolidado"):
+                            # derivarlo del período más antiguo presente en la hoja.
+                            years = [int(lb[:4]) for lb in labels_sorted if lb[:4].isdigit()]
+                            yr_min = min(years) if years else None
+                        range_str_effective = (
+                            f"{yr_min}-{last_label}" if yr_min else last_label
+                        )
         except Exception:
             pass
     pretty_name = make_pretty_name(company, rut, range_str_effective, lang)

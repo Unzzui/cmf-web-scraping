@@ -103,11 +103,12 @@ class EfficiencyMixin:
                     inv_prev4 = self.create_cell_reference_by_label(self.sh_bal, self.rows_bal["Inv"], lb_prev4) if lb_prev4 else None
                     inv_avg = f"AVERAGE({inv_now},{inv_prev4})" if inv_now and inv_prev4 else (inv_now or inv_prev4)
                     if cogs and inv_avg:
-                        rot_expr = f"IFERROR({cogs}/{inv_avg},\"N/A\")"
-                        m_rot[lb] = rot_expr
-                        # Usar días correspondientes al período
-                        period_days = self._get_period_days(lb)
-                        m_dias[lb] = f"IFERROR({period_days}/({rot_expr}),\"N/A\")"
+                        # La rotación va en base anual (numerador YTD anualizado) para que sea
+                        # comparable entre trimestres. Los días se escriben sobre el YTD sin anualizar
+                        # y los días acumulados del período: es la forma legible del mismo cociente y
+                        # cumple exactamente Días = DíasAño / Rotación.
+                        m_rot[lb] = f"IFERROR({self._annualized(cogs, lb)}/{inv_avg},\"N/A\")"
+                        m_dias[lb] = f"IFERROR({self._get_period_days(lb)}/(IFERROR({cogs}/{inv_avg},\"N/A\")),\"N/A\")"
                 # duplicar claves anuales (YYYY) usando referencias anuales
                 for y in self.years:
                     if str(y) in m_rot:
@@ -125,7 +126,7 @@ class EfficiencyMixin:
                     if cogs_y and inv_avg_y:
                         rot_expr_y = f"IFERROR({cogs_y}/{inv_avg_y},\"N/A\")"
                         m_rot[str(y)] = rot_expr_y
-                        m_dias[str(y)] = f"IFERROR(365/({rot_expr_y}),\"N/A\")"
+                        m_dias[str(y)] = f"IFERROR({self._get_year_days(str(y))}/({rot_expr_y}),\"N/A\")"
             else:
                 for y in self.years:
                     cogs = None
@@ -157,7 +158,7 @@ class EfficiencyMixin:
                     if cogs and inv_avg:
                         rot_expr = f"IFERROR({cogs}/{inv_avg},\"N/A\")"
                         m_rot[str(y)] = rot_expr
-                        m_dias[str(y)] = f"IFERROR(365/({rot_expr}),\"N/A\")"
+                        m_dias[str(y)] = f"IFERROR({self._get_year_days(str(y))}/({rot_expr}),\"N/A\")"
             return m_rot, m_dias
 
         rot_inv, dias_inv = f_rot_inv_y_dias()
@@ -188,11 +189,8 @@ class EfficiencyMixin:
                     cxc_prev4 = self.create_cell_reference_by_label(self.sh_bal, self.rows_bal["CxC"], lb_prev4) if lb_prev4 else None
                     cxc_avg = f"AVERAGE({cxc_now},{cxc_prev4})" if cxc_now and cxc_prev4 else (cxc_now or cxc_prev4)
                     if ven and cxc_avg:
-                        rot_expr = f"IFERROR({ven}/{cxc_avg},\"N/A\")"
-                        m_rot[lb] = rot_expr
-                        # Usar días correspondientes al período
-                        period_days = self._get_period_days(lb)
-                        m_dias[lb] = f"IFERROR({period_days}/({rot_expr}),\"N/A\")"
+                        m_rot[lb] = f"IFERROR({self._annualized(ven, lb)}/{cxc_avg},\"N/A\")"
+                        m_dias[lb] = f"IFERROR({self._get_period_days(lb)}/(IFERROR({ven}/{cxc_avg},\"N/A\")),\"N/A\")"
                 # duplicar claves anuales (YYYY)
                 for y in self.years:
                     if str(y) in m_rot:
@@ -206,7 +204,7 @@ class EfficiencyMixin:
                     if ven_y and cxc_avg_y:
                         rot_expr_y = f"IFERROR({ven_y}/{cxc_avg_y},\"N/A\")"
                         m_rot[str(y)] = rot_expr_y
-                        m_dias[str(y)] = f"IFERROR(365/({rot_expr_y}),\"N/A\")"
+                        m_dias[str(y)] = f"IFERROR({self._get_year_days(str(y))}/({rot_expr_y}),\"N/A\")"
             else:
                 for y in self.years:
                     ven = self.create_cell_reference(
@@ -218,7 +216,7 @@ class EfficiencyMixin:
                     if ven and cxc_avg:
                         rot_expr = f"IFERROR({ven}/{cxc_avg},\"N/A\")"
                         m_rot[str(y)] = rot_expr
-                        m_dias[str(y)] = f"IFERROR(365/({rot_expr}),\"N/A\")"
+                        m_dias[str(y)] = f"IFERROR({self._get_year_days(str(y))}/({rot_expr}),\"N/A\")"
             return m_rot, m_dias
 
         rot_cxc, dias_cobro = f_rot_cxc_y_dias()
@@ -278,11 +276,8 @@ class EfficiencyMixin:
                         cxp_prev4 = self.create_cell_reference_by_label(self.sh_bal, self.rows_bal["CxP"], lb_prev4) if lb_prev4 else None
                         cxp_avg = f"AVERAGE({cxp_now},{cxp_prev4})" if cxp_now and cxp_prev4 else (cxp_now or cxp_prev4)
                     if comp and cxp_avg:
-                        rot_expr = f"IFERROR({comp}/{cxp_avg},\"N/A\")"
-                        m_rot[lb] = rot_expr
-                        # Usar días correspondientes al período
-                        period_days = self._get_period_days(lb)
-                        m_dias[lb] = f"IFERROR({period_days}/({rot_expr}),\"N/A\")"
+                        m_rot[lb] = f"IFERROR({self._annualized(comp, lb)}/{cxp_avg},\"N/A\")"
+                        m_dias[lb] = f"IFERROR({self._get_period_days(lb)}/(IFERROR({comp}/{cxp_avg},\"N/A\")),\"N/A\")"
                 # duplicar claves anuales (YYYY)
                 for y in self.years:
                     if str(y) in m_rot:
@@ -333,7 +328,7 @@ class EfficiencyMixin:
                     if comp_y and cxp_avg_y:
                         rot_expr_y = f"IFERROR({comp_y}/{cxp_avg_y},\"N/A\")"
                         m_rot[str(y)] = rot_expr_y
-                        m_dias[str(y)] = f"IFERROR(365/({rot_expr_y}),\"N/A\")"
+                        m_dias[str(y)] = f"IFERROR({self._get_year_days(str(y))}/({rot_expr_y}),\"N/A\")"
             else:
                 for y in self.years:
                     cogs = None
@@ -380,7 +375,7 @@ class EfficiencyMixin:
                     if comp and cxp_avg:
                         rot_expr = f"IFERROR({comp}/{cxp_avg},\"N/A\")"
                         m_rot[str(y)] = rot_expr
-                        m_dias[str(y)] = f"IFERROR(365/({rot_expr}),\"N/A\")"
+                        m_dias[str(y)] = f"IFERROR({self._get_year_days(str(y))}/({rot_expr}),\"N/A\")"
             return m_rot, m_dias
 
         rot_cxp, dias_pago = f_rot_cxp_y_dias()
@@ -488,17 +483,17 @@ class EfficiencyMixin:
                             if work_cap_a:
                                 inv_numerator_parts_a.append(f"-IFERROR({work_cap_a},0)")
                             inv_numerator_a = "+".join(inv_numerator_parts_a)
-                            dias_inv_formula_a = f"IFERROR(365/(IFERROR(({inv_numerator_a})/{inv_avg_a},\"N/A\")),\"N/A\")"
+                            dias_inv_formula_a = f"IFERROR({self._get_year_days(str(y))}/(IFERROR(({inv_numerator_a})/{inv_avg_a},\"N/A\")),\"N/A\")"
 
                             # Días Cobro
-                            dias_cobro_formula_a = f"IFERROR(365/(IFERROR({ventas_a}/{cxc_avg_a},\"N/A\")),\"N/A\")"
+                            dias_cobro_formula_a = f"IFERROR({self._get_year_days(str(y))}/(IFERROR({ventas_a}/{cxc_avg_a},\"N/A\")),\"N/A\")"
 
                             # Días Pago
                             pago_numerator_parts_a = [f"IFERROR({raw_mat_a},0)"]
                             if work_cap_a:
                                 pago_numerator_parts_a.append(f"-IFERROR({work_cap_a},0)")
                             pago_numerator_a = "+".join(pago_numerator_parts_a)
-                            dias_pago_formula_a = f"IFERROR(365/(IFERROR(({pago_numerator_a})/{cxp_avg_a},\"N/A\")),\"N/A\")"
+                            dias_pago_formula_a = f"IFERROR({self._get_year_days(str(y))}/(IFERROR(({pago_numerator_a})/{cxp_avg_a},\"N/A\")),\"N/A\")"
 
                             # CCE = Días Inventario + Días Cobro - Días Pago
                             m[str(y)] = f"IFERROR({dias_inv_formula_a}+{dias_cobro_formula_a}-{dias_pago_formula_a},\"N/A\")"
@@ -527,17 +522,17 @@ class EfficiencyMixin:
                             if work_cap_a:
                                 inv_numerator_parts_a.append(f"-IFERROR({work_cap_a},0)")
                             inv_numerator_a = "+".join(inv_numerator_parts_a)
-                            dias_inv_formula_a = f"IFERROR(365/(IFERROR(({inv_numerator_a})/{inv_avg_a},\"N/A\")),\"N/A\")"
+                            dias_inv_formula_a = f"IFERROR({self._get_year_days(str(y))}/(IFERROR(({inv_numerator_a})/{inv_avg_a},\"N/A\")),\"N/A\")"
 
                             # Días Cobro
-                            dias_cobro_formula_a = f"IFERROR(365/(IFERROR({ventas_a}/{cxc_avg_a},\"N/A\")),\"N/A\")"
+                            dias_cobro_formula_a = f"IFERROR({self._get_year_days(str(y))}/(IFERROR({ventas_a}/{cxc_avg_a},\"N/A\")),\"N/A\")"
 
                             # Días Pago
                             pago_numerator_parts_a = [f"IFERROR({raw_mat_a},0)"]
                             if work_cap_a:
                                 pago_numerator_parts_a.append(f"-IFERROR({work_cap_a},0)")
                             pago_numerator_a = "+".join(pago_numerator_parts_a)
-                            dias_pago_formula_a = f"IFERROR(365/(IFERROR(({pago_numerator_a})/{cxp_avg_a},\"N/A\")),\"N/A\")"
+                            dias_pago_formula_a = f"IFERROR({self._get_year_days(str(y))}/(IFERROR(({pago_numerator_a})/{cxp_avg_a},\"N/A\")),\"N/A\")"
 
                             # CCE = Días Inventario + Días Cobro - Días Pago
                             m[str(y)] = f"IFERROR({dias_inv_formula_a}+{dias_cobro_formula_a}-{dias_pago_formula_a},\"N/A\")"

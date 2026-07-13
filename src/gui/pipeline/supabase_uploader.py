@@ -28,12 +28,15 @@ de :class:`SupabaseUploader` mantiene una sola conexión; el llamador
 from __future__ import annotations
 
 import csv
+import json
 import os
 import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, Iterable, Optional
+
+from .data_quality import check_company_csv
 
 # Defaults independientes del repo (para la fachada)
 DEFAULT_ENV_FILE = Path.home() / "Proyectos" / "FinDataChile" / ".env"
@@ -225,6 +228,35 @@ def list_companies(to_sql_dir: Path) -> list[CompanyCSV]:
 def _rut_numeric(rut: str) -> str:
     """Parte numérica del RUT (antes del DV): '90222000-3' / '90222000' -> '90222000'."""
     return (rut or "").upper().split("-", 1)[0]
+
+
+def load_statement_types(csv_data: "CompanyCSV",
+                         xbrl_base_dir: str | Path | None = None) -> dict | None:
+    """Lee el sidecar ``statement_types.json`` que escribe la consolidación.
+
+    Indica qué períodos provienen de estados Individuales en vez de Consolidados.
+    Es best-effort: sólo alimenta un aviso no bloqueante, así que si no se
+    encuentra el directorio XBRL simplemente se devuelve None.
+    """
+    base = xbrl_base_dir or os.getenv("CMF_XBRL_BASE_DIR")
+    if not base:
+        return None
+    base_dir = Path(base)
+    if not base_dir.is_dir():
+        return None
+    target = _rut_numeric(csv_data.rut)
+    for company_dir in base_dir.iterdir():
+        if not company_dir.is_dir():
+            continue
+        if _rut_numeric(company_dir.name) != target:
+            continue
+        sidecar = company_dir / "statement_types.json"
+        if sidecar.is_file():
+            try:
+                return json.loads(sidecar.read_text(encoding="utf-8"))
+            except (OSError, ValueError):
+                return None
+    return None
 
 
 def find_company_csv(to_sql_dir: Path, rut: str) -> CompanyCSV | None:
@@ -427,6 +459,9 @@ class UploadStats:
     error: str = ""
     dcf_ok: bool | None = None  # None=no se intento, True/False=resultado
     ratios_ok: bool | None = None  # idem para ratios financieros
+    # Gate de calidad: si no pasa, la empresa NO se escribe en produccion.
+    quarantined: bool = False
+    quality_summary: str = ""
 
 
 def fmt_period(year: int, quarter: int) -> str:
@@ -575,13 +610,26 @@ def upload_company(db: Database, csv_data: CompanyCSV, override: bool,
     log(f"   Periodos nuevos: {len(new_periods)}  a actualizar: "
         f"{len(common_periods)}")
 
+    # Gate de calidad. Se evalua ANTES del dry-run para que el dry-run tambien
+    # muestre el veredicto, y antes de cualquier escritura: un CSV degradado con
+    # override activo puede BORRAR el historico bueno de produccion.
+    report = check_company_csv(csv_data, statement_types=load_statement_types(csv_data))
+    for issue in report.warnings:
+        log(f"   [aviso] {issue.message}")
+    if not report.ok:
+        stats.quarantined = True
+        stats.skipped = True
+        stats.quality_summary = report.summary()
+        log(f"   [CUARENTENA] no se sube a produccion: {stats.quality_summary}")
+        log(f"      ultimo periodo={report.last_period} "
+            f"filas ER={report.income_statement_rows} "
+            f"filas balance={report.balance_sheet_rows} "
+            f"datapoints={report.data_points}")
+        return stats
+    stats.quality_summary = report.summary()
+
     if dry_run:
         log("   dry-run -> no se modifica nada")
-        return stats
-
-    if not csv_data.rows or not csv_data.periods:
-        log("   [warn] CSV vacio o sin periodos validos; se omite")
-        stats.skipped = True
         return stats
 
     import_id = db.start_import(company_id, csv_data.filename)
@@ -664,6 +712,8 @@ class SupabaseUploadResult:
     skipped: bool = False
     dry_run: bool = False
     error: str = ""
+    quarantined: bool = False
+    quality_summary: str = ""
 
     @property
     def ok(self) -> bool:
@@ -783,6 +833,8 @@ class SupabaseUploader:
             result.new_periods = stats.new_periods
             result.updated_periods = stats.existing_periods
             result.skipped = stats.skipped
+            result.quarantined = stats.quarantined
+            result.quality_summary = stats.quality_summary
             if stats.error:
                 result.error = stats.error
                 return result

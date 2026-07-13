@@ -466,32 +466,64 @@ class NatureBasedMixin:
 
     def _get_period_days(self, label: str) -> int:
         """
-        Retorna el número de días correspondientes al período.
+        Retorna los días que cubre el período de un label.
+
+        Las columnas trimestrales del Estado de Resultados vienen ACUMULADAS desde
+        el 1 de enero (así las publica la CMF): Q2 son 6 meses, Q3 nueve y Q4 el año
+        completo. Por eso los días también son acumulados (Q1=90, Q2=181, Q3=273,
+        Q4=365) y no los días sueltos del trimestre. Usar los sueltos hace que los
+        ratios de días (inventario, cobro, pago) se dividan por una rotación anual
+        con un numerador trimestral, subestimándolos hasta 4x en Q4.
 
         Args:
             label: Etiqueta del período (ej: "2024Q1", "2024")
 
         Returns:
-            Número de días del período
+            Días acumulados hasta el cierre del período
         """
-        if re.match(r"^\d{4}Q[1-4]$", label):
-            quarter = int(label[-1])
-            year = int(label[:4])
+        m = re.match(r"^(\d{4})Q([1-4])$", label)
+        if not m:
+            # Período anual: el ejercicio completo.
+            return self._get_year_days(label)
 
-            # Calcular días según el trimestre
-            if quarter == 1:  # Q1: Enero, Febrero, Marzo
-                # Enero (31) + Febrero (28/29) + Marzo (31)
-                feb_days = 29 if (year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)) else 28
-                return 31 + feb_days + 31
-            elif quarter == 2:  # Q2: Abril, Mayo, Junio
-                return 30 + 31 + 30  # 91 días
-            elif quarter == 3:  # Q3: Julio, Agosto, Septiembre
-                return 31 + 31 + 30  # 92 días
-            else:  # Q4: Octubre, Noviembre, Diciembre
-                return 31 + 30 + 31  # 92 días
-        else:
-            # Para períodos anuales, usar 365
-            return 365
+        quarter = int(m.group(2))
+        # Días acumulados a fin de marzo / junio / septiembre / diciembre.
+        cumulative = {1: 90, 2: 181, 3: 273, 4: 365}[quarter]
+        return cumulative + (1 if self._is_leap(label) else 0)
+
+    @staticmethod
+    def _is_leap(label: str) -> bool:
+        m = re.match(r"^(\d{4})", label)
+        if not m:
+            return False
+        year = int(m.group(1))
+        return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
+
+    def _get_year_days(self, label: str) -> int:
+        """Días del ejercicio completo al que pertenece el label (365 o 366)."""
+        return 366 if self._is_leap(label) else 365
+
+    def _get_annualization_expr(self, label: str) -> Optional[str]:
+        """Factor para llevar una cifra acumulada YTD a base anual, como expresión Excel.
+
+        Es exactamente el recíproco de los días del período, de modo que
+        `DíasAño / Rotación` devuelva el ratio de días correspondiente. Se emite como
+        división literal ("(365/90)") en vez de un decimal redondeado para que la
+        fórmula sea autoexplicativa y no arrastre error: los factores fijos que había
+        antes (Q3 = 1.333 en vez de 365/273 = 1.3370) descuadraban con los días.
+
+        Devuelve None cuando el período ya cubre el año y no hay que anualizar.
+        """
+        period_days = self._get_period_days(label)
+        year_days = self._get_year_days(label)
+        if period_days >= year_days:
+            return None
+        return f"({year_days}/{period_days})"
+
+    def _annualized(self, expr: str, label: str) -> str:
+        """Envuelve una cifra acumulada YTD para llevarla a base anual, si hace falta."""
+        factor = self._get_annualization_expr(label)
+        return f"({expr}*{factor})" if factor else expr
 
     def _build_nature_based_operating_costs_ttm(self, label: str) -> Optional[str]:
         """

@@ -416,13 +416,19 @@ def main() -> int:
     log_section("Resumen")
     ok = [r for r in results if not r.error and not r.skipped]
     errs = [r for r in results if r.error]
-    skipped = [r for r in results if r.skipped]
-    log(f"OK: {len(ok)}   Errores: {len(errs)}   Omitidas: {len(skipped)}   "
+    quarantined = [r for r in results if getattr(r, "quarantined", False)]
+    skipped = [r for r in results if r.skipped and not getattr(r, "quarantined", False)]
+    log(f"OK: {len(ok)}   Errores: {len(errs)}   "
+        f"Cuarentena: {len(quarantined)}   Omitidas: {len(skipped)}   "
         f"Tiempo: {elapsed:.1f}s")
     if errs:
         log("\nErrores:")
         for r in errs:
             log(f"  - {r.company}: {r.error}")
+    if quarantined:
+        log("\nEn cuarentena (NO subidas a produccion):")
+        for r in quarantined:
+            log(f"  - {r.company}: {r.quality_summary}")
     if not args.dry_run and ok:
         total_data = sum(r.data_points for r in ok)
         total_items = sum(r.line_items for r in ok)

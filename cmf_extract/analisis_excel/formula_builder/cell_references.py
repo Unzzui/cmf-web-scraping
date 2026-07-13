@@ -286,12 +286,12 @@ class CellReferenceMixin:
         return f"{y-1}Q4"
 
     def _days_factor_for_label(self, label: str) -> str:
-        """Devuelve días del período: Q1=90, Q2=181, Q3=273, Q4=365; anual/otro: 365."""
-        m = re.match(r"^(\d{4})Q([1-4])$", label)
-        if not m:
-            return "365"
-        q = int(m.group(2))
-        return {1: "90", 2: "181", 3: "273", 4: "365"}.get(q, "365")
+        """Días acumulados del período, como literal para incrustar en una fórmula.
+
+        Delega en `_get_period_days` (NatureBasedMixin) para no mantener dos tablas
+        de días que puedan divergir: ambos mixins conviven en FormulaBuilder.
+        """
+        return str(self._get_period_days(label))
 
     def _unwrap_iferror(self, excel_expr: str) -> str:
         """Quita el envoltorio IFERROR(X,"") si existe, tolerando espacios."""
