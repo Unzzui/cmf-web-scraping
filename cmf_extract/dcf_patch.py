@@ -436,10 +436,67 @@ class DCFBuilder:
         return "0"
 
     def _get_tasa_impuestos_formula(self) -> str:
+        """Tasa efectiva de impuestos, calculada de los estados de la propia empresa.
+
+        Antes esto devolvía la constante "0.27" para las 218 empresas. La tasa corporativa
+        de Chile es 27%, sí — pero la tasa EFECTIVA que paga cada empresa no lo es casi
+        nunca: créditos, pérdidas de arrastre, filiales en otras jurisdicciones y
+        diferencias temporarias la mueven. Medida sobre los estados 2021-2025:
+
+            mediana 22,6%   ·   p10 8,7%   ·   p90 29,5%
+            58 de 162 empresas están a MÁS DE 8 puntos del 27%
+
+        Y no es un decimal cosmético: la tasa entra dos veces en el modelo — en el NOPAT
+        (EBIT × (1 − t)) y en el escudo fiscal del WACC (Kd × (1 − t)). Un error de 10
+        puntos mueve el precio objetivo, que es el número sobre el que alguien decide
+        comprar o vender.
+
+        MISMA SEMÁNTICA QUE EL DCF DE LA BASE (scripts/dcf/excel_aligned.py):
+        promedio de |impuesto| / utilidad-antes-de-impuestos sobre los años con utilidad
+        positiva, acotado a [10%, 40%]. En años de pérdida el cociente no significa nada
+        (una empresa que pierde plata puede registrar un crédito), así que esos años NO
+        entran en el promedio — de ahí el conteo explícito del denominador en vez de un
+        AVERAGE, que los contaría igual.
+
+        Si no se puede calcular, se cae al 27% legal. Es un respaldo, no la respuesta.
         """
-        Tasa de impuestos fija en 27% para todos los cálculos
-        """
-        return "0.27"
+        fila_imp = self.rows_pl.get("ImpGanan")
+        fila_ebt = self.rows_pl.get("AntesImp")
+        if not fila_imp or not fila_ebt:
+            return "0.27"
+
+        anuales = self._iter_annual_periods()
+        if not anuales:
+            return "0.27"
+
+        numerador, denominador = [], []
+        for periodo in anuales:
+            ref_imp = self.create_cell_reference_by_label(self.sh_pl, fila_imp, periodo)
+            ref_ebt = self.create_cell_reference_by_label(self.sh_pl, fila_ebt, periodo)
+            if not ref_imp or not ref_ebt:
+                continue
+            # Sólo los años con utilidad positiva.
+            numerador.append(f"IF({ref_ebt}>0,ABS({ref_imp})/{ref_ebt},0)")
+            denominador.append(f"IF({ref_ebt}>0,1,0)")
+
+        if not numerador:
+            return "0.27"
+
+        suma = "+".join(numerador)
+        cuenta = "+".join(denominador)
+        # El acotado a [10%, 40%] evita que un año raro (un crédito fiscal grande, una
+        # base imponible casi nula) arrastre todo el modelo.
+        return f"=IFERROR(MAX(MIN(({suma})/({cuenta}),0.4),0.1),0.27)"
+
+    def _iter_annual_periods(self) -> list:
+        """Los períodos anuales de la serie, en orden. Un cierre anual es Q4."""
+        anuales = []
+        for periodo in self._iter_periods_from_sheet(self.sh_pl):
+            if re.match(r"^\d{4}Q4$", periodo):
+                anuales.append(periodo)
+            elif re.match(r"^\d{4}$", periodo):
+                anuales.append(periodo)
+        return anuales
     
     def _get_acciones_formula(self) -> str:
         """
