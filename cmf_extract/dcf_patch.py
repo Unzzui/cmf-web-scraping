@@ -191,6 +191,12 @@ class DCFBuilder:
             "Efec": "Efectivo y equivalentes al efectivo",
             "DeudaFinCorr": "Otros pasivos financieros corrientes",
             "DeudaFinNC": "Otros pasivos financieros no corrientes",
+            # BAJO IFRS 16 UN ARRIENDO ES DEUDA. Y no es un matiz contable:
+            # en SMU los arriendos son el 58,6% de su deuda total, en Tricot el 54,2%,
+            # en Falabella el 28,9%. Dejarlos fuera de la deuda neta INFLA el valor
+            # patrimonial y, con él, el precio objetivo.
+            "ArrendCorr": "Pasivos por arrendamientos corrientes",
+            "ArrendNC": "Pasivos por arrendamientos no corrientes",
             "PPE": "Propiedades, planta y equipo",
         }
         
@@ -399,29 +405,37 @@ class DCFBuilder:
         return "0.04"
 
     def _get_deuda_neta_formula(self, period: str = None) -> str:
+        """Deuda neta = deuda financiera + ARRIENDOS − efectivo.
+
+        Los arriendos NO estaban. El DCF de la base tenía hasta el comentario que lo
+        confesaba —"Net Debt (SIN leases — igual a Excel)"— así que los dos modelos
+        omitían lo mismo y por eso parecían coincidir. Estaban mal juntos.
+
+        Bajo IFRS 16 un contrato de arriendo es un pasivo financiero: la empresa se
+        obligó a pagar un flujo futuro, igual que con un crédito. Omitirlo baja la deuda
+        neta, y como
+
+            valor patrimonial = valor de la empresa − deuda neta
+
+        el precio objetivo sale INFLADO. Medido sobre la base:
+
+            ALMENDRAL              sobreestimado  72%
+            TELEFÓNICA MÓVILES                  129%
+            ESMAX (combustibles)              1.236%   ← su arriendo supera su patrimonio
+
+        No es un sesgo parejo: golpea a retail, telecomunicaciones y combustibles, que
+        son los que operan con locales arrendados. Justo donde el analista más mira.
         """
-        Genera fórmula dinámica para deuda neta usando sistema de referencias como formula_builder.py
-        
-        Args:
-            period: Período específico a usar (ej: "2024", "2025Q2"). Si None, usa el más reciente disponible.
-        """
-        # Determinar el período a usar
         if period is None:
             period = self._find_latest_period()
-        
+
         terms = []
-        
-        # Deuda financiera corriente
-        if self.sh_bal and "DeudaFinCorr" in self.rows_bal and self.rows_bal["DeudaFinCorr"]:
-            deuda_corr_ref = self.create_cell_reference_by_label(self.sh_bal, self.rows_bal["DeudaFinCorr"], period)
-            if deuda_corr_ref:
-                terms.append(deuda_corr_ref)
-        
-        # Deuda financiera no corriente
-        if self.sh_bal and "DeudaFinNC" in self.rows_bal and self.rows_bal["DeudaFinNC"]:
-            deuda_nc_ref = self.create_cell_reference_by_label(self.sh_bal, self.rows_bal["DeudaFinNC"], period)
-            if deuda_nc_ref:
-                terms.append(deuda_nc_ref)
+
+        for clave in ("DeudaFinCorr", "DeudaFinNC", "ArrendCorr", "ArrendNC"):
+            if self.sh_bal and self.rows_bal.get(clave):
+                ref = self.create_cell_reference_by_label(self.sh_bal, self.rows_bal[clave], period)
+                if ref:
+                    terms.append(ref)
         
         # Efectivo y equivalentes
         cash_ref = None
