@@ -112,6 +112,57 @@ class PipelineOrchestrator:
     def _log(self, message: str, level: str = "INFO", rut: Optional[str] = None) -> None:
         self._emit(PipelineEvent(kind="log", message=message, level=level, rut=rut))
 
+    def _exportar_csv_para_sql(self, st) -> tuple[bool, str]:
+        """Regenera el CSV de TO_SQL a partir del Excel recién consolidado.
+
+        Devuelve (ok, mensaje). Si el CSV no queda escrito, es un ERROR, no un aviso:
+        subir sin él significa subir el CSV de una corrida anterior.
+        """
+        from pathlib import Path as _Path
+
+        product_v1 = _Path(self.settings.product_v1_dir)
+        to_sql_dir = product_v1 / "TO_SQL"
+        json_path = product_v1.parent.parent / "new_eeff_estructura.json"
+        if not json_path.is_file():
+            # Buscarlo hacia arriba: la raíz del repo cambia según desde dónde se corra.
+            for padre in product_v1.parents:
+                cand = padre / "new_eeff_estructura.json"
+                if cand.is_file():
+                    json_path = cand
+                    break
+        if not json_path.is_file():
+            return False, "no encuentro new_eeff_estructura.json"
+
+        try:
+            from excel_to_csv_mapping import process_excel_files
+        except ImportError:
+            try:
+                from cmf_extract.excel_to_csv_mapping import process_excel_files
+            except ImportError as exc:
+                return False, f"no puedo importar excel_to_csv_mapping: {exc}"
+
+        rut = (st.rut_completo or "").upper()
+        antes = set(to_sql_dir.glob(f"*{rut.split('-')[0]}*financial_data.csv")) if to_sql_dir.is_dir() else set()
+
+        to_sql_dir.mkdir(parents=True, exist_ok=True)
+        process_excel_files(
+            input_dir=str(product_v1),
+            json_path=str(json_path),
+            output_dir=str(to_sql_dir),
+            filter_ruts={rut},
+        )
+
+        escritos = list(to_sql_dir.glob(f"*{rut.split('-')[0]}*financial_data.csv"))
+        if not escritos:
+            return False, f"no se escribió el CSV de {rut} (¿RUT sin plantilla en el JSON?)"
+
+        # Que el CSV sea NUEVO, no el de la corrida pasada.
+        mas_nuevo = max(escritos, key=lambda f: f.stat().st_mtime)
+        if antes and mas_nuevo.stat().st_mtime < st.started_at:
+            return False, f"el CSV de {rut} no se regeneró (quedó el de la corrida anterior)"
+
+        return True, f"3.0 CSV regenerado ({mas_nuevo.name})"
+
     def _set_stage(self, rut: str, stage: Stage, status: StageStatus,
                    detail: str = "", error: str = "") -> None:
         st = self.states[rut]
@@ -120,8 +171,14 @@ class PipelineOrchestrator:
             st.detail = detail
         if error:
             st.error = error
+        # El mensaje del evento era `detail`, así que cuando había ERROR el log escribía
+        # sólo "Subir: Error" y el motivo se guardaba en `st.error`, donde nadie lo veía.
+        # Un fallo que no dice por qué falló obliga a reconstruirlo desde cero: son 18
+        # empresas que fallaron mudas mientras la causa (el CSV que nunca se regeneró)
+        # estaba ahí, en una variable.
+        mensaje = f"{detail} — {error}" if (detail and error) else (error or detail)
         self._emit(PipelineEvent(kind="stage", rut=rut, stage=stage,
-                                 status=status, message=detail, level="ERROR" if error else "INFO"))
+                                 status=status, message=mensaje, level="ERROR" if error else "INFO"))
 
     # ------------------------------------------------------------------ #
     def _find_analysis_excel(self, st: CompanyState) -> str | None:
@@ -513,6 +570,32 @@ class PipelineOrchestrator:
 
                     errors: list[str] = []
                     details: list[str] = []
+
+                    # -------- 3.0: Excel recién consolidado -> CSV de TO_SQL --------
+                    #
+                    # El leg 3B NO lee el Excel: lee un CSV de Product_v1/Total/TO_SQL/.
+                    # Y ese CSV lo escribía una fase (`to_sql`) que el pipeline NUNCA
+                    # ejecutaba — sólo existía como opción de menú en la GUI.
+                    #
+                    # O sea que se podía reconsolidar una empresa entera, con todas las
+                    # correcciones, y la subida tomaba igual el CSV de la corrida
+                    # anterior. Los datos viejos entraban a producción y el log decía
+                    # "Subir: Listo 4497 datapoints". Peor aún: si la empresa no tenía
+                    # CSV de una corrida vieja, la subida fallaba sin decir por qué —
+                    # 18 de 24 empresas, todas con el mismo "Subir: Error" mudo.
+                    #
+                    # Ahora el CSV se regenera del Excel que se acaba de consolidar,
+                    # justo antes de subirlo. La consolidación y la subida dejan de ser
+                    # dos mundos que no se hablan.
+                    if self.settings.supabase_enabled and st.output_file:
+                        try:
+                            csv_ok, csv_msg = self._exportar_csv_para_sql(st)
+                            if csv_ok:
+                                details.append(csv_msg)
+                            else:
+                                errors.append(f"3.0: {csv_msg}")
+                        except Exception as exc:
+                            errors.append(f"3.0: export CSV falló: {exc}")
 
                     # -------- 3A: blob + catálogo FinDataChile --------
                     if self.settings.fdc_enabled:
