@@ -5,34 +5,20 @@ semanas) no tenga que reconstruir el contexto desde los commits.
 
 ---
 
-## 1. Dos riesgos que hay que resolver antes que cualquier feature
+## 1. Dos riesgos que ya se cerraron (13 jul 2026)
 
-### 1.1 Las migraciones NO están en git
+**Las migraciones ya están en git.** `migrations/` estaba en el `.gitignore`: 20 de 30
+migraciones —incluidas las tres del XBRL, aplicadas en producción— vivían en un solo disco.
+El `.gitignore` además escondía una colisión: había **dos migraciones numeradas 027**
+(`027_ratio_direction` y `027_xbrl_mineria`) y nadie podía verlo. Las del XBRL se
+renumeraron a **030/031/032**, y `schema_migrations` se actualizó en la base para que las
+dos fuentes digan lo mismo.
 
-`migrations/` está en el `.gitignore` de FinDataChile. Las migraciones **027**
-(`xbrl_mineria`), **028** (`xbrl_metadatos`) y **029** (`xbrl_paquete`) están **aplicadas
-en la base de producción** y no existen en ningún repositorio.
-
-Eso significa que hoy la base tiene siete tablas y trece columnas que **ningún archivo
-versionado describe**. Si alguien clona el repo y levanta una base nueva, el cargador
-falla y no hay forma de saber por qué.
-
-Las tres migraciones están en `~/Proyectos/FinDataChile/migrations/` en la máquina de
-desarrollo. Hay que decidir: sacar `migrations/` del `.gitignore` (lo correcto) o moverlas
-a un lugar versionado.
-
-**Esto no es deuda técnica, es una bomba de tiempo.** Es el mismo patrón que ya nos costó
-caro: algo que funciona en una máquina y no existe en ninguna otra.
-
-### 1.2 La taxonomía de la CMF no está versionada
-
-`cmf_extract/cmf_taxonomia.py` depende de `docs/CMF_CLCI_2026/` (14 MB, sin trackear).
-Sin ese paquete, el módulo **se degrada a un fallback** y la detección de segmentos vuelve
-a una lista escrita a mano — la que daba 4.448 millones de ingresos donde Arauco tiene
-1.482.
-
-El código avisa (`disponible()` devuelve `False`), pero nadie lo mira. Hay que commitearlo
-o dejar el `.gitignore` explícito diciendo de dónde bajarlo.
+**La taxonomía de la CMF ya está versionada.** `docs/CMF_CLCI_2026` no es documentación: es
+una dependencia de `cmf_taxonomia.py`. Sin ella el módulo se degrada **en silencio** a una
+lista escrita a mano, y los segmentos vuelven a sumar mal. Ahora hay un test que falla si
+el paquete no está — un aviso en el log no sirve, porque nadie lo mira y el dato equivocado
+ya viajó.
 
 ---
 
