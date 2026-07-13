@@ -14,6 +14,10 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 from .utils.lang_map import load_mappings, guess_is_english
 
+# ISO 4217. Lo que no esté aquí NO es una moneda, por mucho que una empresa lo haya
+# escrito en la casilla de "moneda de presentación".
+_MONEDAS_ISO = {"CLP", "USD", "EUR"}
+
 
 class DataExtractor:
     """
@@ -184,7 +188,24 @@ class DataExtractor:
                     years_set.add(y)
 
         self.years = sorted(years_set)
-        # Intentar detectar moneda por año desde notas [110000] si es posible (heurística)
+
+        # La moneda sale del XBRL, no de lo que la empresa haya escrito a mano.
+        #
+        # Antes se raspaba una fila de TEXTO LIBRE ("Moneda de presentación") de las
+        # notas, y se tomaba tal cual lo que hubiera ahí. Arauco escribió "USA" en 2014,
+        # y la Ficha Técnica del producto salió diciendo:
+        #
+        #     Moneda: 2014 USA; 2015-2026 USD
+        #
+        # "USA" no es una moneda: no existe en ISO 4217. Su XBRL de ese mismo período
+        # declara `iso4217:USD`, explícito y sin ambigüedad. El dato correcto estaba en
+        # el archivo fuente y el pipeline prefirió una casilla de texto.
+        self.currency_by_year = self._monedas_desde_xbrl()
+        if self.currency_by_year:
+            return
+
+        # Respaldo: sólo si no hay XBRL a mano. Y ahora se VALIDA contra ISO 4217, para
+        # que un "USA" se descarte en vez de viajar hasta el cliente.
         try:
             # Buscar una fila que describa la moneda de presentación en df_pl/df_bal
             def _scan(df: pd.DataFrame) -> dict[int, str]:
@@ -207,9 +228,40 @@ class DataExtractor:
             cur: dict[int, str] = {}
             cur.update(_scan(self.df_pl))
             cur.update(_scan(self.df_bal))
-            self.currency_by_year = cur
+            self.currency_by_year = {
+                anio: m.upper() for anio, m in cur.items()
+                if m.strip().upper() in _MONEDAS_ISO
+            }
         except Exception:
             self.currency_by_year = {}
+
+    def _monedas_desde_xbrl(self) -> dict[int, str]:
+        """Mapa año → moneda, leído de la unidad `<xbrli:measure>` del XBRL.
+
+        El RUT sale del nombre del archivo (``estados_93458000-1_2026-2014_es.xlsx``),
+        que es como el pipeline nombra sus salidas.
+        """
+        try:
+            from cmf_extract.currency_detect import monedas_por_anio
+        except ImportError:
+            try:
+                from currency_detect import monedas_por_anio
+            except ImportError:
+                return {}
+
+        m = re.search(r"(\d{7,8}-[\dkK])", str(self.file_path))
+        if not m:
+            return {}
+        rut = m.group(1).upper()
+
+        raiz = Path(__file__).resolve().parents[2] / "data" / "XBRL" / "Total"
+        if not raiz.is_dir():
+            return {}
+        carpeta = next((d for d in raiz.iterdir() if d.is_dir() and d.name.upper().startswith(rut)), None)
+        if carpeta is None:
+            return {}
+
+        return monedas_por_anio(carpeta)
     
     def find_row_series(self, df: pd.DataFrame, concept_name: str) -> pd.Series:
         """

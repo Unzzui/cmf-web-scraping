@@ -15,6 +15,12 @@ from openpyxl.utils import get_column_letter
 from openpyxl.utils.cell import column_index_from_string
 
 try:
+    from cmf_extract import excel_style as est
+except ImportError:  # ejecutado desde dentro de cmf_extract/
+    import excel_style as est
+
+
+try:
     from openpyxl.worksheet.data_validation import DataValidation
 except ImportError:
     DataValidation = None
@@ -567,42 +573,54 @@ class DCFBuilder:
     # Estilos
     # ----------------------------
     def _setup_styles(self):
-        brand_primary = '0F172A'
-        brand_secondary = '1F2937'
-        brand_accent = '2563EB'
-        brand_gray_150 = 'F0F0F0'
-        base_font = 'Calibri'
+        """Estilos del DCF. Todos salen de cmf_extract/excel_style.py.
 
-        # Fonts existentes
-        self.header_font = Font(name=base_font, size=16, bold=True, color="FFFFFF")
-        self.subheader_font = Font(name=base_font, size=11, bold=True, color="FFFFFF")
-        self.input_font = Font(name=base_font, size=10)
-        self.data_font = Font(name=base_font, size=10)
-        
-        # Nuevos fonts profesionales
-        self.section_title_font = Font(name=base_font, size=13, bold=True, color=brand_primary)
-        self.key_metric_font = Font(name=base_font, size=11, bold=True, color="FFFFFF")
-        self.result_font = Font(name=base_font, size=11, bold=True, color=brand_primary)
-        self.label_font = Font(name=base_font, size=10, color="374151")
+        Antes: Calibri, navy #0F172A, acento AZUL #2563EB, celdas de input celeste
+        #DBEEF3, resultados en AMARILLO #FFEB9C. Cinco colores compitiendo, ninguno con
+        significado — y un lenguaje visual completamente distinto al del Excel que genera
+        la web (Inter, tinta, cobre).
 
-        # Fills existentes
-        self.header_fill = PatternFill(start_color=brand_primary, end_color=brand_primary, fill_type="solid")
-        self.subheader_fill = PatternFill(start_color=brand_secondary, end_color=brand_secondary, fill_type="solid")
-        self.input_fill = PatternFill(start_color="DBEEF3", end_color="DBEEF3", fill_type="solid")
-        self.calculated_fill = PatternFill(start_color=brand_gray_150, end_color=brand_gray_150, fill_type="solid")
-        self.value_fill = PatternFill(start_color="FFEB9C", end_color="FFEB9C", fill_type="solid")
-        
-        # Nuevos fills profesionales (manteniendo colores originales)
-        self.section_fill = PatternFill(start_color="F8FAFC", end_color="F8FAFC", fill_type="solid")  # Fondo suave sección
-        self.key_result_fill = PatternFill(start_color="FFEB9C", end_color="FFEB9C", fill_type="solid")  # Mantener amarillo original
-        self.projection_header_fill = PatternFill(start_color=brand_secondary, end_color=brand_secondary, fill_type="solid")  # Mantener gris secundario
-        self.valuation_fill = PatternFill(start_color=brand_secondary, end_color=brand_secondary, fill_type="solid")  # Mantener gris secundario  
-        self.sensitivity_fill = PatternFill(start_color=brand_secondary, end_color=brand_secondary, fill_type="solid")  # Mantener gris secundario
-        
-        # Bordes existentes y nuevos
-        thin = Side(border_style="thin", color="000000")
-        medium = Side(border_style="medium", color=brand_primary)
-        thick = Side(border_style="thick", color=brand_accent)
+        Ahora las celdas EDITABLES se distinguen por fondo suave, y lo único con acento es
+        el rótulo de sección. El resultado de la valoración no necesita fondo amarillo:
+        necesita ser el número más grande de la hoja.
+        """
+        # Fuentes
+        self.header_font = est.fuente(16, bold=True, color=est.PAPER)
+        # BLANCA: sólo válida sobre RELLENO_TINTA. Nunca sobre una celda clara.
+        self.subheader_font = est.fuente(11, bold=True, color=est.PAPER)
+        # Para rótulos que van sobre el papel. Antes se reusaba la blanca y el texto
+        # desaparecía (p. ej. "DEFINICIONES:" en la hoja DRIVERS WC).
+        self.rotulo_font = est.ETIQUETA           # rótulo de sección, cobre
+        self.rotulo_fuerte_font = est.CUERPO_FUERTE
+        self.input_font = est.fuente(10, color=est.INK)
+        self.data_font = est.fuente(10, color=est.INK)
+
+        self.section_title_font = est.SECCION
+        self.key_metric_font = est.fuente(11, bold=True, color=est.PAPER)
+        # TINTA, no blanca: acompaña a `key_result_fill`, que es un panel CLARO. La
+        # fuente blanca (`key_metric_font`) sólo vale sobre relleno tinta.
+        self.result_font = est.fuente(11, bold=True, color=est.INK)
+        self.label_font = est.fuente(10, color=est.INK)
+
+        # Rellenos
+        self.header_fill = est.RELLENO_TINTA
+        self.subheader_fill = est.RELLENO_TINTA
+        # Las celdas que el analista PUEDE tocar. Es la única distinción funcional de la
+        # hoja, y por eso es la única que merece un fondo.
+        self.input_fill = est.RELLENO_SUAVE
+        self.calculated_fill = est.RELLENO_PAPEL
+        self.value_fill = est.RELLENO_SUAVE
+
+        self.section_fill = est.RELLENO_SUAVE
+        self.key_result_fill = est.RELLENO_SUAVE
+        self.projection_header_fill = est.RELLENO_TINTA
+        self.valuation_fill = est.RELLENO_TINTA
+        self.sensitivity_fill = est.RELLENO_TINTA
+
+        # Bordes: una hairline, nunca una rejilla.
+        thin = Side(border_style="thin", color=est.LINE)
+        medium = Side(border_style="thin", color=est.INK)
+        thick = Side(border_style="medium", color=est.EMBER)
         
         self.border = Border(top=thin, left=thin, right=thin, bottom=thin)
         self.section_border = Border(top=medium, left=medium, right=medium, bottom=medium)
@@ -615,7 +633,8 @@ class DCFBuilder:
         self.right_center = Alignment(horizontal="right", vertical="center")
 
     def _apply_sheet_header(self, ws, title: str, subtitle: str = None, ncols: int = 10):
-        ws.sheet_properties.tabColor = "2563EB"
+        # El color de la pestaña es el acento de la marca, no un azul cualquiera.
+        ws.sheet_properties.tabColor = est.EMBER[2:]  # openpyxl quiere RGB sin el alfa
         ws.merge_cells(f"A1:{get_column_letter(ncols)}1")
         ws["A1"] = title
         ws["A1"].font = self.header_font
@@ -626,7 +645,7 @@ class DCFBuilder:
         if subtitle:
             ws.merge_cells(f"A2:{get_column_letter(ncols)}2")
             ws["A2"] = subtitle
-            ws["A2"].font = Font(name="Calibri", size=11, color="111827")
+            ws["A2"].font = est.fuente(11, color=est.INK)
             ws["A2"].alignment = self.center
             ws.row_dimensions[2].height = 20  # Aumentado
     
@@ -677,7 +696,7 @@ class DCFBuilder:
         separator_row = start_row + 1
         for col in range(1, ncols + 1):
             cell = ws.cell(row=separator_row, column=col)
-            cell.fill = PatternFill(start_color="E5E7EB", end_color="E5E7EB", fill_type="solid")
+            cell.fill = est.relleno(est.LINE)
         ws.row_dimensions[separator_row].height = 3
         
         return start_row + 2  # Retorna la siguiente fila disponible
@@ -775,6 +794,26 @@ class DCFBuilder:
                         # Saltar celdas combinadas
                         pass
 
+    def _colorear_por_signo(self, ws, coordenada: str) -> None:
+        """Verde si el número es positivo, rojo si es negativo. Nada si es cero.
+
+        Se hace con formato condicional porque la celda es una FÓRMULA: su signo no se
+        conoce hasta que Excel la evalúa, y además cambia cuando el usuario toca los
+        supuestos — que es justamente para lo que sirve el modelo.
+        """
+        from openpyxl.formatting.rule import CellIsRule
+
+        ws.conditional_formatting.add(
+            coordenada,
+            CellIsRule(operator="greaterThan", formula=["0"],
+                       font=est.fuente(10, bold=True, color=est.GROWTH)),
+        )
+        ws.conditional_formatting.add(
+            coordenada,
+            CellIsRule(operator="lessThan", formula=["0"],
+                       font=est.fuente(10, bold=True, color=est.LOSS)),
+        )
+
     # ----------------------------
     # Hojas
     # ----------------------------
@@ -786,7 +825,7 @@ class DCFBuilder:
 
         row = 4
         ws[f"A{row}"] = "DEFINICIONES:"
-        ws[f"A{row}"].font = self.subheader_font
+        ws[f"A{row}"].font = self.rotulo_font
         row += 1
         for txt in [
             "CxC = Deudores comerciales y otras cuentas por cobrar corrientes",
@@ -864,7 +903,7 @@ class DCFBuilder:
         # desde el DCF mediante self._wc_avg_cell.
         avg_row = data_row + max(n, 1) + 2
         ws[f"A{avg_row}"] = "Driver capital de trabajo (NWC/Ventas, mediana):"
-        ws[f"A{avg_row}"].font = self.subheader_font
+        ws[f"A{avg_row}"].font = self.rotulo_fuerte_font
         # Usamos el NIVEL NWC/Ventas (mediana de años completos), estable, en vez de
         # ΔNWC/ΔVentas que se dispara cuando las ventas anuales crecen poco. En el DCF
         # ΔNWC = ΔVentas × (NWC/Ventas), que es la relación económica correcta.
@@ -1167,11 +1206,11 @@ class DCFBuilder:
             # Destacar resultados clave con colores especiales
             if "Enterprise Value" in lbl or "Equity Value" in lbl:
                 cell.fill = self.key_result_fill
-                cell.font = self.key_metric_font
+                cell.font = self.result_font
                 ws[f"A{rr}"].font = self.result_font
             elif "Valor por Acción (DCF)" in lbl:
                 cell.fill = self.key_result_fill
-                cell.font = self.key_metric_font
+                cell.font = self.result_font
                 ws[f"A{rr}"].font = self.result_font
                 # Hacer la fila más alta para destacar el resultado final
                 ws.row_dimensions[rr].height = 25
@@ -1187,7 +1226,7 @@ class DCFBuilder:
                 ws[f"A{rr}"].font = self.result_font
             elif "Recomendación" in lbl:
                 cell.fill = self.key_result_fill
-                cell.font = self.key_metric_font
+                cell.font = self.result_font
                 ws[f"A{rr}"].font = self.result_font
                 ws.row_dimensions[rr].height = 25
             elif lbl == "":  # Línea separadora
@@ -1321,7 +1360,7 @@ class DCFBuilder:
                 
                 if c == 1:  # Nombre del escenario
                     cell.value = v
-                    cell.font = Font(name="Calibri", size=10, bold=True, color="FFFFFF")
+                    cell.font = est.fuente(10, bold=True, color=est.PAPER)
                     cell.fill = self.subheader_fill
                     cell.alignment = self.center
                 elif isinstance(v, str) and v.startswith("="):  # Fórmulas dinámicas
@@ -1511,7 +1550,7 @@ class DCFBuilder:
             # Destacar Equity Value para Base
             if scenario_name == "Base":
                 cell.fill = self.key_result_fill
-                cell.font = self.key_metric_font
+                cell.font = self.result_font
             
             # Columna 8: Acciones (referencia común)
             cell = ws.cell(row=r, column=8, value=f"={acciones_ref}")
@@ -1524,13 +1563,8 @@ class DCFBuilder:
             cell.number_format = '_($* #,##0.00_);_($* (#,##0.00);_($* "-"_);_(@_)'
             
             # Destacar Valor por Acción
-            if scenario_name == "Base":
-                cell.fill = self.key_result_fill
-                cell.font = self.key_metric_font
-            elif scenario_name == "Conservador":
-                cell.fill = PatternFill(start_color="FEF3C7", end_color="FEF3C7", fill_type="solid")  # Amarillo suave
-            elif scenario_name == "Agresivo":
-                cell.fill = PatternFill(start_color="D1FAE5", end_color="D1FAE5", fill_type="solid")  # Verde suave
+            cell.fill = self.key_result_fill
+            cell.font = self.result_font
             
             # Columna 10: Premium/Descuento vs Base
             base_row = calc_header_row + 2  # Fila del escenario Base (segunda fila)
@@ -1539,16 +1573,18 @@ class DCFBuilder:
                 cell.border = self.border
                 cell.number_format = '0.0%'
                 
-                # Color coding para premium/descuento
-                if scenario_name == "Conservador":
-                    cell.fill = PatternFill(start_color="FEE2E2", end_color="FEE2E2", fill_type="solid")  # Rojo suave
-                elif scenario_name == "Agresivo":
-                    cell.fill = PatternFill(start_color="DCFCE7", end_color="DCFCE7", fill_type="solid")  # Verde suave
+                # La prima/descuento SÍ es dirección: se colorea por el signo del
+                # resultado, no por el nombre del escenario. Un escenario "Agresivo"
+                # puede perfectamente valer MENOS que el Base si los supuestos que el
+                # usuario editó lo llevan ahí — pintarlo de verde por llamarse Agresivo
+                # sería afirmar algo que la celda no dice.
+                cell.fill = self.key_result_fill
+                self._colorear_por_signo(ws, cell.coordinate)
             else:
                 cell = ws.cell(row=r, column=10, value="Base")
                 cell.border = self.border
                 cell.alignment = self.center
-                cell.font = Font(name="Calibri", size=10, bold=True)
+                cell.font = est.CUERPO_FUERTE
                 
         # SECCIÓN 3: RESUMEN EJECUTIVO
         summary_start_row = calc_header_row + len(scenarios) + 3
@@ -1704,7 +1740,7 @@ class DCFBuilder:
             cell.fill = (self.input_fill if kind == "in"
                          else self.key_result_fill if kind == "result"
                          else self.calculated_fill)
-            cell.font = self.key_metric_font if kind == "result" else self.input_font
+            cell.font = self.result_font if kind == "result" else self.input_font
 
         # Reconectar el supuesto "WACC (%)" del modelo al WACC calculado.
         wcell = ws.cell(row=wacc_row, column=2)

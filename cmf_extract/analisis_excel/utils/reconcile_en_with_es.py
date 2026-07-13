@@ -24,6 +24,11 @@ from openpyxl.styles.fills import Fill as _Fill
 from openpyxl.styles import PatternFill as _PatternFill
 from openpyxl.styles import Font as _Font
 from openpyxl.styles import Alignment as _Alignment
+try:
+    from cmf_extract import excel_style as est
+except ImportError:
+    import excel_style as est
+
 
 
 SHEET_MAP = {
@@ -254,11 +259,11 @@ def _apply_generator_styles_base_sheet(ws, hdr_row: int, lang: str = "en") -> No
     subcat_alt_bg = "F5F5F5"
     total_bg = "E0E7FF"
 
-    font_title = _Font(bold=True, color="FFFFFF", size=16, name="Calibri")
-    font_header = _Font(bold=True, color="FFFFFF", size=11, name="Calibri")
-    font_normal = _Font(size=10, name="Calibri")
-    font_bold = _Font(bold=True, size=10, name="Calibri")
-    font_white_small = _Font(color="111827", size=11, name="Calibri")
+    font_title = _Font(bold=True, color="FFFFFF", size=16, name=est.FAMILIA)
+    font_header = _Font(bold=True, color="FFFFFF", size=11, name=est.FAMILIA)
+    font_normal = _Font(size=10, name=est.FAMILIA)
+    font_bold = _Font(bold=True, size=10, name=est.FAMILIA)
+    font_white_small = _Font(color="111827", size=11, name=est.FAMILIA)
 
     align_center = _Alignment(horizontal="center", vertical="center", wrap_text=True)
     align_left = _Alignment(horizontal="left", vertical="center", wrap_text=True)
@@ -376,7 +381,7 @@ def _apply_generator_styles_base_sheet(ws, hdr_row: int, lang: str = "en") -> No
             # Columna 1: etiqueta de cuenta
             c0 = ws.cell(row=r, column=1)
             if is_category:
-                c0.font = _Font(bold=True, color="FFFFFF", size=11, name="Calibri")
+                c0.font = _Font(bold=True, color="FFFFFF", size=11, name=est.FAMILIA)
                 c0.fill = fill_category
                 c0.alignment = align_left
             elif is_total:

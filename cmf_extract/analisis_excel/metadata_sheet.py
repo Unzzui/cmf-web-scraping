@@ -36,17 +36,30 @@ from openpyxl.styles import (
 )
 from openpyxl.utils import get_column_letter
 
+try:
+    from cmf_extract import excel_style as est
+except ImportError:  # ejecutado desde dentro de cmf_extract/
+    import excel_style as est
+
 # ---------------------------------------------------------------------------
 # Colour palette (shared with ExcelFormatter brand colours)
 # ---------------------------------------------------------------------------
-_NAVY = "0F172A"       # brand primary
-_DARK_GRAY = "1F2937"  # brand secondary
-_LIGHT_GRAY = "F3F4F6" # field-label background
-_TEXT_GRAY = "6B7280"  # disclaimer / muted text
-_BLUE_LINK = "1D4ED8"  # hyperlink blue
-_WHITE = "FFFFFF"
-_BLACK = "000000"
-_BORDER_COLOR = "D1D5DB"
+# Esta hoja tenía su propia paleta —azul marino, azul de enlace, tres grises de
+# Tailwind— dentro de un libro cuyo sistema de diseño no contempla ninguno. Ahora los
+# nombres siguen, pero apuntan a los tokens de excel_style: la Ficha Técnica se ve como
+# el resto del producto.
+#
+# En ARGB de 8 dígitos, no de 6: con 6, openpyxl antepone "00" (alfa CERO) y el color
+# queda declarado como transparente. Es la razón por la que la auditoría veía
+# "00F4F6F8" como un color ajeno, siendo el mismo gris de la paleta.
+_NAVY = est.INK
+_DARK_GRAY = est.INK
+_LIGHT_GRAY = est.SOFT
+_TEXT_GRAY = est.MUTED
+_BLUE_LINK = est.EMBER          # el acento cálido hace de enlace; no hay azul en Fey
+_WHITE = est.PAPER
+_BLACK = est.INK
+_BORDER_COLOR = est.LINE
 
 # ---------------------------------------------------------------------------
 # Internal helpers
@@ -198,7 +211,7 @@ def create_metadata_sheet(
         title_row,
         1,
         heading,
-        font=Font(bold=True, color=_WHITE, size=14),
+        font=est.fuente(bold=True, color=_WHITE, size=14),
         fill=_solid_fill(_NAVY),
         alignment=Alignment(horizontal="center", vertical="center"),
         border=_thin_border(),
@@ -220,7 +233,7 @@ def create_metadata_sheet(
         subtitle_row,
         1,
         subtitle,
-        font=Font(color=_WHITE, size=11),
+        font=est.fuente(color=_WHITE, size=11),
         fill=_solid_fill(_DARK_GRAY),
         alignment=Alignment(horizontal="left", vertical="center", indent=1),
         border=_thin_border(),
@@ -230,10 +243,10 @@ def create_metadata_sheet(
     # ------------------------------------------------------------------
     # Data rows (label / value pairs)
     # ------------------------------------------------------------------
-    label_font = Font(bold=True, color=_BLACK, size=10)
+    label_font = est.fuente(bold=True, color=_BLACK, size=10)
     label_fill = _solid_fill(_LIGHT_GRAY)
-    value_font = Font(color=_BLACK, size=10)
-    link_font = Font(color=_BLUE_LINK, size=10, underline="single")
+    value_font = est.fuente(color=_BLACK, size=10)
+    link_font = est.fuente(color=_BLUE_LINK, size=10, underline="single")
     left_align = Alignment(horizontal="left", vertical="center", indent=1)
     border = _thin_border()
 
@@ -287,7 +300,7 @@ def create_metadata_sheet(
         disclaimer_row,
         1,
         disclaimer,
-        font=Font(italic=True, color=_TEXT_GRAY, size=9),
+        font=est.fuente(italic=True, color=_TEXT_GRAY, size=9),
         alignment=Alignment(
             horizontal="left",
             vertical="center",

@@ -6,6 +6,11 @@ Contains the ``_create_methodology_sheet`` method extracted from
 ``BulkProcessor``.
 """
 
+try:
+    from cmf_extract import excel_style as est
+except ImportError:  # ejecutado desde dentro de cmf_extract/
+    import excel_style as est
+
 
 class MethodologySheetMixin:
     """Mixin that adds ``_create_methodology_sheet`` to BulkProcessor."""
@@ -31,12 +36,15 @@ class MethodologySheetMixin:
         # ------------------------------------------------------------------
         # Palette
         # ------------------------------------------------------------------
-        NAVY = "1F3864"
-        WHITE = "FFFFFF"
-        HEADER_BG = "2E4B8A"   # table header row
-        ALT_ROW = "EEF2F8"     # alternating row tint
-        CAT_BG = "D6E0F0"      # category sub-header
-        BORDER_COLOR = "B0BEC5"
+        # Los nombres se quedan; los colores salen de excel_style. Antes esta hoja
+        # traía azul marino, azul de cabecera y azul de categoría — tres azules en un
+        # producto cuyo único acento es el cobre.
+        NAVY = est.INK
+        WHITE = est.PAPER
+        HEADER_BG = est.INK        # la cabecera es una banda de tinta, y su texto blanco
+        ALT_ROW = est.SOFT
+        CAT_BG = est.SOFT          # el sub-encabezado se distingue por el peso, no por color
+        BORDER_COLOR = est.LINE
 
         thin = Side(style="thin", color=BORDER_COLOR)
         full_border = Border(left=thin, right=thin, top=thin, bottom=thin)
@@ -61,7 +69,7 @@ class MethodologySheetMixin:
         ws.merge_cells("A1:E1")
         title_cell = ws["A1"]
         title_cell.value = title_text
-        title_cell.font = Font(bold=True, size=14, color=WHITE)
+        title_cell.font = est.fuente(bold=True, size=14, color=WHITE)
         title_cell.fill = _fill(NAVY)
         title_cell.alignment = Alignment(horizontal="center", vertical="center")
         ws.row_dimensions[1].height = 28
@@ -77,7 +85,7 @@ class MethodologySheetMixin:
         ws.merge_cells("A2:E2")
         intro_cell = ws["A2"]
         intro_cell.value = intro
-        intro_cell.font = Font(size=10, italic=True, color="374151")
+        intro_cell.font = est.fuente(size=10, italic=True, color=est.MUTED)
         intro_cell.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
         ws.row_dimensions[2].height = 22
 
@@ -96,7 +104,7 @@ class MethodologySheetMixin:
 
         for col_idx, header in enumerate(headers, start=1):
             cell = ws.cell(row=4, column=col_idx, value=header)
-            cell.font = Font(bold=True, size=10, color=WHITE)
+            cell.font = est.fuente(bold=True, size=10, color=WHITE)
             cell.fill = _fill(HEADER_BG)
             cell.alignment = Alignment(horizontal="center", vertical="center", wrap_text=True)
             _apply_border(cell)
@@ -352,7 +360,7 @@ class MethodologySheetMixin:
                     end_row=current_row, end_column=5,
                 )
                 cat_cell = ws.cell(row=current_row, column=1, value=cat_label.upper())
-                cat_cell.font = Font(bold=True, size=10, color="1F3864")
+                cat_cell.font = est.fuente(bold=True, size=10, color=est.INK)
                 cat_cell.fill = _fill(CAT_BG)
                 cat_cell.alignment = Alignment(
                     horizontal="left", vertical="center", indent=1
@@ -377,7 +385,7 @@ class MethodologySheetMixin:
                 cell.alignment = Alignment(
                     horizontal="left", vertical="center", wrap_text=True
                 )
-                cell.font = Font(size=9)
+                cell.font = est.fuente(size=9)
                 _apply_border(cell)
             ws.row_dimensions[current_row].height = 30
             current_row += 1
@@ -399,7 +407,7 @@ class MethodologySheetMixin:
             end_row=current_row, end_column=5,
         )
         ttm_cell = ws.cell(row=current_row, column=1, value=ttm_note)
-        ttm_cell.font = Font(size=9, italic=True, color="374151")
+        ttm_cell.font = est.fuente(size=9, italic=True, color=est.MUTED)
         ttm_cell.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
         ws.row_dimensions[current_row].height = 42
 

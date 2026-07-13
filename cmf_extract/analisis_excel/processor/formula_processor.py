@@ -21,6 +21,12 @@ from ..data_extractor import DataExtractor
 from ..formula_builder import FormulaBuilder
 from ..metadata_sheet import create_metadata_sheet
 
+try:
+    from cmf_extract import excel_style as est
+except ImportError:  # ejecutado desde dentro de cmf_extract/
+    import excel_style as est
+
+
 
 def _xbrl_search_root() -> Path:
     """Raíz donde buscar los facts XBRL (out_consolidated_*).
@@ -404,11 +410,61 @@ class FormulaProcessorMixin:
             parts = [f"{a}-{b} {c}" if a != b else f"{a} {c}" for (a,b,c) in spans]
             return ("; ".join(parts), len(unique_codes) > 1)
 
-        cmap_facts = _get_currency_map_from_facts()
+        def _monedas_desde_unidades_xbrl() -> dict[int, str] | None:
+            """Moneda por año, leída de la UNIDAD del XBRL. La fuente autoritativa.
+
+            Lo que había antes leía `DescriptionOfPresentationCurrency`, que es un campo
+            de TEXTO LIBRE, y le extraía cualquier palabra de tres mayúsculas:
+
+                m3 = _re.search(r"\b([A-Z]{3})\b", val)
+
+            Arauco escribió ahí algo como "Dólares de USA", y el producto salió con:
+
+                Moneda: 2014 USA; 2015-2026 USD
+
+            "USA" no es una moneda — no existe en ISO 4217 — y además inventaba un cambio
+            de moneda en 2015 que nunca ocurrió. Todo por una expresión regular aplicada a
+            una frase en prosa.
+
+            La unidad del XBRL no tiene ese problema: `<xbrli:measure>iso4217:USD</...>`
+            es un código ISO, no una descripción.
+            """
+            try:
+                from cmf_extract.currency_detect import monedas_por_anio
+            except ImportError:
+                try:
+                    from currency_detect import monedas_por_anio
+                except ImportError:
+                    return None
+            import re as _re_u
+            m = _re_u.search(r"(\d{7,8}-[\dkK])", file_path.name)
+            if not m:
+                return None
+            rut = m.group(1).upper()
+            raiz = _xbrl_search_root()
+            if not raiz or not raiz.is_dir():
+                return None
+            carpeta = next((d for d in raiz.iterdir()
+                            if d.is_dir() and d.name.upper().startswith(rut)), None)
+            if carpeta is None:
+                return None
+            return monedas_por_anio(carpeta) or None
+
+        _MONEDAS_ISO = {"CLP", "USD", "EUR"}
+
+        cmap_facts = _monedas_desde_unidades_xbrl()
+        if not cmap_facts:
+            # Respaldo: el texto libre de las notas. Ahora VALIDADO contra ISO 4217, para
+            # que un "USA" se descarte en vez de viajar impreso hasta el cliente.
+            crudo = _get_currency_map_from_facts()
+            if crudo:
+                cmap_facts = {a: str(c).upper() for a, c in crudo.items()
+                              if str(c).strip().upper() in _MONEDAS_ISO} or None
         if not cmap_facts:
             try:
                 cby = financial_data.get('currency_by_year') or {}
-                cmap_facts = {int(y): str(cby[y]) for y in cby.keys()} if cby else None
+                cmap_facts = {int(y): str(cby[y]).upper() for y in cby.keys()
+                              if str(cby[y]).strip().upper() in _MONEDAS_ISO} or None
             except Exception:
                 cmap_facts = None
         spans_text, multi_currency = _build_currency_spans_from_map(cmap_facts)
@@ -454,7 +510,7 @@ class FormulaProcessorMixin:
                 txt = note_en if lang == 'en' else note_es
                 ws.merge_cells(start_row=3, start_column=1, end_row=3, end_column=ncols)
                 cell = ws.cell(row=3, column=1, value=txt)
-                cell.font = Font(size=9, color="6B7280")
+                cell.font = est.fuente(9, color=est.MUTED)
                 cell.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
             except Exception:
                 pass
@@ -657,7 +713,7 @@ class FormulaProcessorMixin:
                     if note:
                         ws.merge_cells(start_row=current_row, start_column=1, end_row=current_row, end_column=cols_total)
                         cell = ws.cell(row=current_row, column=1, value=note)
-                        cell.font = Font(size=9, color="6B7280")
+                        cell.font = est.fuente(9, color=est.MUTED)
                         cell.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
                         current_row += 1
                 except Exception:
@@ -1131,7 +1187,7 @@ class FormulaProcessorMixin:
                         )
                     if flag_formula:
                         fc = ws.cell(row=current_row, column=flags_col, value=flag_formula)
-                        fc.font = Font(color="B45309", size=9, italic=True)
+                        fc.font = est.fuente(9, color=est.EMBER, italic=True)
                         fc.alignment = Alignment(horizontal="left", vertical="center")
                         fc.border = self.formatter.border
                 except Exception:
@@ -1931,7 +1987,7 @@ class FormulaProcessorMixin:
             )
             ws_notes.merge_cells(start_row=notes_row, start_column=1, end_row=notes_row, end_column=3)
             disc_cell = ws_notes.cell(row=notes_row, column=1, value=disclaimer)
-            disc_cell.font = Font(italic=True, color="6B7280", size=9)
+            disc_cell.font = est.fuente(9, color=est.MUTED, italic=True)
             disc_cell.alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
             notes_row += 2  # spacer
 
@@ -1940,7 +1996,7 @@ class FormulaProcessorMixin:
                 title = "Notes — Currency information" if lang == 'en' else "Notas — Información de moneda"
                 ws_notes.merge_cells(start_row=notes_row, start_column=1, end_row=notes_row, end_column=3)
                 ctitle = ws_notes.cell(row=notes_row, column=1, value=title)
-                ctitle.font = Font(bold=True, size=13)
+                ctitle.font = est.SECCION
                 ctitle.alignment = Alignment(horizontal="left", vertical="center")
                 notes_row += 1
                 src = "ifrs:DescriptionOfPresentationCurrency / Descripción de la moneda de presentación"
@@ -1997,8 +2053,8 @@ class FormulaProcessorMixin:
                 ws_notes.cell(row=notes_row, column=1, value=_transitions_text(spans)).alignment = Alignment(horizontal="left", vertical="center", wrap_text=True)
                 notes_row += 1
                 if cmap:
-                    ws_notes.cell(row=notes_row, column=1, value=("Year" if lang=='en' else "Año")).font = Font(bold=True)
-                    ws_notes.cell(row=notes_row, column=2, value=("Currency" if lang=='en' else "Moneda")).font = Font(bold=True)
+                    ws_notes.cell(row=notes_row, column=1, value=("Year" if lang=='en' else "Año")).font = est.CUERPO_FUERTE
+                    ws_notes.cell(row=notes_row, column=2, value=("Currency" if lang=='en' else "Moneda")).font = est.CUERPO_FUERTE
                     notes_row += 1
                     for y in sorted(cmap.keys()):
                         ws_notes.cell(row=notes_row, column=1, value=int(y))
@@ -2039,10 +2095,17 @@ class FormulaProcessorMixin:
                 periods=display_labels,
                 frequency=freq,
                 lang=lang,
-                currency=unit_text or ("Miles de CLP" if lang == "es" else "Thousands CLP"),
+                # unit_text ya trae la moneda REAL (leída del XBRL). El fallback NO puede
+                # afirmar pesos: 18 empresas reportan en dólares, y una Ficha Técnica que
+                # dice "Miles de CLP" sobre cifras en dólares es un error de un factor de
+                # 900 presentado como si fuera un dato.
+                currency=unit_text or ("Moneda no determinada" if lang == "es" else "Currency not determined"),
             )
-        except Exception:
-            pass
+        except Exception as _exc_meta:
+            # No se traga el fallo en silencio: si la Ficha Técnica no se pudo crear, el
+            # Excel sale sin la hoja que declara la fuente, el período y la moneda —
+            # justo lo que hace verificable el producto.
+            print(f"      ⚠️  No se pudo crear la Ficha Técnica: {_exc_meta}")
 
         # Guardar archivo: incluir pista de idioma para evitar confusión en carpetas mixtas
         output_filename = (
@@ -2067,6 +2130,27 @@ class FormulaProcessorMixin:
                 progress_cb('saving', 5, 6)
             except Exception:
                 pass
+        # Última parada antes de que el archivo salga hacia un cliente: ¿se LEE todo lo
+        # que dice? Un Excel se guarda igual de bien con letra blanca sobre fondo blanco,
+        # y así salieron la cabecera entera de RATIOS & KPIs y el WACC del DCF. Nada en el
+        # proceso lo detectaba, porque "generó sin error" no es lo mismo que "se lee".
+        try:
+            from cmf_extract import excel_style as _est
+
+            # Primero la tipografía: openpyxl deja en Calibri toda celda sin estilo
+            # explícito, y así entraban 2.544 celdas ajenas al libro.
+            _n = _est.aplicar_tipografia_base(wb)
+            if _n:
+                print(f"      · tipografía normalizada en {_n} celdas")
+
+            _ilegibles = _est.verificar_contraste(wb)
+            if _ilegibles:
+                print(f"      ⚠️  {len(_ilegibles)} celdas ILEGIBLES (contraste < 3:1):")
+                for _hoja, _coord, _razon in _ilegibles[:6]:
+                    print(f"            [{_hoja}]!{_coord} — {_razon}:1")
+        except Exception as _exc:
+            print(f"      ⚠️  No pude verificar el contraste: {_exc}")
+
         wb.save(str(output_path))
         # Si hubo uso de ES_DATA, escribir log en Product_v1
         try:

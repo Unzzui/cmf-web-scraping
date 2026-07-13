@@ -11,6 +11,11 @@ from openpyxl import load_workbook
 from openpyxl.styles import Font, Alignment, PatternFill, Border, Side
 from openpyxl.utils import get_column_letter
 
+try:
+    from cmf_extract import excel_style as est
+except ImportError:  # ejecutado desde dentro de cmf_extract/
+    import excel_style as est
+
 def extract_company_info(filename):
     """Extrae información de la empresa del nombre del archivo y formatea el RUT (76.129.263-3)."""
     try:
@@ -129,22 +134,32 @@ def create_professional_dashboard(workbook, company_name, rut, period, currency=
         start_sheet.column_dimensions[get_column_letter(col)].width = col_width
     
     # === ESTILOS PROFESIONALES ===
-    header_primary = PatternFill("solid", fgColor="0F172A")
-    header_secondary = PatternFill("solid", fgColor="1E293B") 
-    accent_blue = PatternFill("solid", fgColor="3B82F6")
-    accent_green = PatternFill("solid", fgColor="10B981")
-    accent_purple = PatternFill("solid", fgColor="8B5CF6")
-    accent_orange = PatternFill("solid", fgColor="F59E0B")
+    # Paleta: cmf_extract/excel_style.py — la misma que usa el Excel de la web.
+    #
+    # Antes la portada tenía azul, verde Y morado como acentos (#3B82F6, #10B981,
+    # #8B5CF6). Tres colores decorando tres tarjetas, sin que ninguno significara nada.
+    # El sistema de diseño es explícito: el color es SEÑAL, no decoración.
+    header_primary = est.RELLENO_TINTA
+    header_secondary = est.RELLENO_TINTA
+
+    # Los botones de navegación van sobre TINTA, no sobre el gris suave: su texto es
+    # blanco. Al quitar el arcoíris se cambiaron los rellenos y no las letras, y los
+    # cinco botones quedaron blanco-sobre-casi-blanco — invisibles. Un color de fondo
+    # y un color de letra son UNA decisión, nunca dos: por eso ahora el relleno se
+    # elige junto a la fuente (nav_font), y el par se verifica en verificar_contraste().
+    nav_fill = est.RELLENO_TINTA
     
-    card_bg = PatternFill("solid", fgColor="F8FAFC")
-    card_header = PatternFill("solid", fgColor="E2E8F0")
+    card_bg = est.RELLENO_SUAVE
+    card_header = est.RELLENO_SUAVE
     
     # Tipografías
-    brand_font = Font(name='Segoe UI', size=18, bold=True, color='FFFFFF')
-    title_font = Font(name='Segoe UI', size=14, bold=True, color='1E293B')
-    subtitle_font = Font(name='Segoe UI', size=12, bold=True, color='475569')
-    body_font = Font(name='Segoe UI', size=10, color='64748B')
-    nav_font = Font(name='Segoe UI', size=11, bold=True, color='FFFFFF')
+    # Una sola tipografía (Inter) hace todos los roles, igual que en el sitio. La jerarquía
+    # sale del peso y el tamaño; el acento (cobre) se reserva para los rótulos de sección.
+    brand_font = est.fuente(18, bold=True, color=est.PAPER)
+    title_font = est.fuente(14, bold=True, color=est.INK)
+    subtitle_font = est.ETIQUETA
+    body_font = est.fuente(10, color=est.MUTED)
+    nav_font = est.fuente(11, bold=True, color=est.PAPER)
     
     # Alineaciones
     center = Alignment(horizontal='center', vertical='center')
@@ -172,8 +187,8 @@ def create_professional_dashboard(workbook, company_name, rut, period, currency=
     # === HERO SECTION ===
     set_cell_with_merge(start_sheet, f'B{row}', f'M{row}',
                        f"ANÁLISIS FINANCIERO: {company_name.upper()}",
-                       Font(name='Segoe UI', size=20, bold=True, color='1E293B'),
-                       center, PatternFill("solid", fgColor="F1F5F9"))
+                       est.TITULO,
+                       center, est.RELLENO_SUAVE)
     
     row += 2
     
@@ -224,7 +239,7 @@ def create_professional_dashboard(workbook, company_name, rut, period, currency=
     ]
     
     tech_content = [
-        "Ratios: +30 indicadores",
+        "Ratios: 34 indicadores",
         "Formato: Excel dinámico"
     ]
     
@@ -248,7 +263,7 @@ def create_professional_dashboard(workbook, company_name, rut, period, currency=
     # === NAVEGACIÓN PROFESIONAL ===
     set_cell_with_merge(start_sheet, f'B{row}', f'M{row}',
                        "NAVEGACIÓN RÁPIDA - MÓDULOS DE ANÁLISIS",
-                       Font(name='Segoe UI', size=14, bold=True, color='FFFFFF'),
+                       est.fuente(14, bold=True, color=est.PAPER),
                        center, header_secondary)
     
     row += 1
@@ -258,11 +273,11 @@ def create_professional_dashboard(workbook, company_name, rut, period, currency=
     
     # Navegación en grid profesional 2x4
     nav_items = [
-        ("Balance General", accent_blue),
-        ("Estado de Resultados", accent_green),
-        ("Flujo de Efectivo", accent_purple),
-        ("Ratios & KPIs", accent_orange),
-        ("Resumen Comparativo", accent_green)
+        ("Balance General", nav_fill),
+        ("Estado de Resultados", nav_fill),
+        ("Flujo de Efectivo", nav_fill),
+        ("Ratios & KPIs", nav_fill),
+        ("Resumen Comparativo", nav_fill),
     ]
     
     # Navegación
@@ -315,15 +330,15 @@ def create_professional_dashboard(workbook, company_name, rut, period, currency=
     # === FOOTER PROFESIONAL ===
     set_cell_with_merge(start_sheet, f'B{row}', f'M{row}',
                        "Datos oficiales IFRS de CMF Chile. Solo fines educativos/profesionales. No constituye asesoría de inversión.",
-                       Font(name='Segoe UI', size=9, color='6B7280'), center)
+                       est.NOTA, center)
     
     row += 1
     
     # Sección de configuración técnica
     set_cell_with_merge(start_sheet, f'B{row}', f'M{row}',
                        "CONFIGURACIÓN DE SEPARADORES DECIMALES",
-                       Font(name='Segoe UI', size=11, bold=True, color='1E293B'),
-                       center, PatternFill("solid", fgColor="FEF3C7"), thin_border)
+                       est.fuente(11, bold=True, color=est.INK),
+                       center, est.RELLENO_SUAVE, thin_border)
     
     row += 1
     
@@ -337,22 +352,22 @@ def create_professional_dashboard(workbook, company_name, rut, period, currency=
     
     set_cell_with_merge(start_sheet, f'B{row}', f'M{row+3}',
                        tech_instructions,
-                       Font(name='Segoe UI', size=9, color='374151'),
-                       wrap, PatternFill("solid", fgColor="FFFBEB"), thin_border)
+                       est.fuente(9, color=est.MUTED),
+                       wrap, est.RELLENO_SUAVE, thin_border)
     
     row += 5
     
     # Información de contacto y soporte
     set_cell_with_merge(start_sheet, f'B{row}', f'M{row}',
                        "Web: www.findatachile.com | Soporte: contacto@findatachile.com | Resolveremos cualquier consulta o problema a la brevedad",
-                       Font(name='Segoe UI', size=10, bold=True, color='3B82F6'), center)
+                       est.fuente(10, bold=True, color=est.EMBER), center)
     
     row += 2
     
     # Footer final corporativo
     set_cell_with_merge(start_sheet, f'B{row}', f'M{row}',
                        "FinData Chile - Transforming Financial Data into Strategic Intelligence",
-                       Font(name='Segoe UI', size=12, bold=True, color='FFFFFF'),
+                       est.fuente(12, bold=True, color=est.PAPER),
                        center, header_primary)
     
     # Configurar alturas para mejor visualización

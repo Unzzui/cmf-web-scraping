@@ -26,6 +26,11 @@ from pathlib import Path
 from typing import List
 
 import pandas as pd
+try:
+    from cmf_extract import excel_style as est
+except ImportError:  # ejecutado desde dentro de cmf_extract/
+    import excel_style as est
+
 
 
 def detect_income_statement_role_from_primary(df: pd.DataFrame, company_rut: str = None) -> str:
@@ -1244,12 +1249,22 @@ def apply_excel_formatting(workbook, worksheet, df: pd.DataFrame, sheet_name: st
     """Aplica el formateo exacto del xbrl_to_excel.py"""
     
     # Paleta corporativa y tipografía (copiado exacto de xbrl_to_excel.py)
-    brand_primary = '#0F172A'   # Navy oscuro
-    brand_secondary = '#1F2937' # Gris azulado oscuro
-    brand_accent = '#2563EB'    # Azul acento sobrio
-    brand_gray_100 = '#F7F7F7'
-    brand_gray_150 = '#F0F0F0'
-    base_font = 'Calibri'
+    # Paleta impresa de Fey — cmf_extract/excel_style.py. Es LA MISMA que usa el Excel que
+    # genera la web (lib/excel-report.ts).
+    #
+    # Antes: navy #0F172A, gris azulado #1F2937, acento AZUL #2563EB, y Calibri. El Excel
+    # de la web usaba Inter, tinta #0B0D12 y cobre. Dos archivos del mismo producto con
+    # dos marcas distintas — y en un producto financiero eso hace la misma pregunta que un
+    # ratio inconsistente: "si esto no lo cuidan, ¿los números sí?".
+    #
+    # xlsxwriter quiere '#RRGGBB'; los tokens vienen en ARGB, así que se recorta el alfa.
+    _hex = lambda argb: '#' + argb[2:]
+    brand_primary = _hex(est.INK)        # tinta — cabeceras
+    brand_secondary = _hex(est.INK)      # una sola tinta: no hay dos negros
+    brand_accent = _hex(est.EMBER)       # cobre — el acento, y sólo donde significa algo
+    brand_gray_100 = _hex(est.SOFT)      # fila alterna
+    brand_gray_150 = _hex(est.LINE)      # hairline
+    base_font = est.FAMILIA              # Inter
     
     # Formatos (copiados exactos de xbrl_to_excel.py)
     title_format = workbook.add_format({
@@ -1265,7 +1280,7 @@ def apply_excel_formatting(workbook, worksheet, df: pd.DataFrame, sheet_name: st
     subtitle_format = workbook.add_format({
         'font_size': 11,
         'font_name': base_font,
-        'font_color': '#111827',
+        'font_color': _hex(est.INK),
         'align': 'center',
         'valign': 'vcenter'
     })
@@ -1296,7 +1311,7 @@ def apply_excel_formatting(workbook, worksheet, df: pd.DataFrame, sheet_name: st
         'border': 0,
         'font_size': 10,
         'font_name': base_font,
-        'font_color': '#CC0000'
+        'font_color': _hex(est.LOSS)   # pérdida — el rojo es SEÑAL, no decoración
     })
     
     concept_format = workbook.add_format({
@@ -1339,7 +1354,7 @@ def apply_excel_formatting(workbook, worksheet, df: pd.DataFrame, sheet_name: st
         'indent': 1,
         'font_size': 10,
         'font_name': base_font,
-        'bg_color': '#FAFAFA'
+        'bg_color': _hex(est.SOFT)
     })
     
     subcategory_format_alt = workbook.add_format({
@@ -1349,14 +1364,14 @@ def apply_excel_formatting(workbook, worksheet, df: pd.DataFrame, sheet_name: st
         'indent': 1,
         'font_size': 10,
         'font_name': base_font,
-        'bg_color': '#F5F5F5'
+        'bg_color': _hex(est.SOFT)
     })
     
     total_format = workbook.add_format({
         'bold': True,
         'font_size': 10,
         'font_name': base_font,
-        'bg_color': '#E0E7FF',
+        'bg_color': _hex(est.SOFT),
         'align': 'left',
         'valign': 'vcenter'
     })
@@ -1367,7 +1382,7 @@ def apply_excel_formatting(workbook, worksheet, df: pd.DataFrame, sheet_name: st
         'align': 'right',
         'font_size': 10,
         'font_name': base_font,
-        'bg_color': '#E0E7FF'
+        'bg_color': _hex(est.SOFT)
     })
     
     # Configuración de la hoja

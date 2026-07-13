@@ -13,6 +13,12 @@ from typing import Dict
 
 from ..ratio_calculator import RatioCalculator
 
+try:
+    from cmf_extract import excel_style as est
+except ImportError:  # ejecutado desde dentro de cmf_extract/
+    import excel_style as est
+
+
 
 class ValueProcessorMixin:
     """Mixin that adds ``_process_with_values`` to BulkProcessor."""
@@ -182,7 +188,7 @@ class ValueProcessorMixin:
                 for idx, line in enumerate(lines):
                     ws.merge_cells(start_row=row0 + idx, start_column=1, end_row=row0 + idx, end_column=ncols)
                     c = ws.cell(row=row0 + idx, column=1, value=f"• {line}")
-                    c.font = Font(size=9, color="6B7280")
+                    c.font = est.fuente(9, color=est.MUTED)
                     c.alignment = Alignment(horizontal="left", vertical="top", wrap_text=True)
             except Exception:
                 pass

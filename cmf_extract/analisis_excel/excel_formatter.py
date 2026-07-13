@@ -12,6 +12,30 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.formatting.rule import ColorScaleRule, DataBarRule
 
+try:
+    from cmf_extract import excel_style as est
+except ImportError:  # ejecutado desde dentro de cmf_extract/
+    import excel_style as est
+
+
+class _RellenoUnico(dict):
+    """Un dict que devuelve SIEMPRE el mismo relleno, mire quien mire.
+
+    Los `.get(seccion, default)` estan repartidos por el archivo; en vez de tocarlos uno
+    por uno, esto garantiza que ninguna seccion pueda volver a tener su propio color.
+    """
+
+    def __init__(self, relleno):
+        super().__init__()
+        self._relleno = relleno
+
+    def get(self, _clave, _default=None):
+        return self._relleno
+
+    def __getitem__(self, _clave):
+        return self._relleno
+
+
 
 class ExcelFormatter:
     """
@@ -23,35 +47,44 @@ class ExcelFormatter:
         self._setup_styles()
     
     def _setup_styles(self):
-        """Configura los estilos predefinidos."""
-        # Colores de fondo
-        # Alinear con paleta usada en xbrl_to_excel.py
-        # brand_primary = '#0F172A' (navy oscuro), brand_secondary = '#1F2937' (gris azulado)
-        self.header_fill = PatternFill("solid", fgColor="0F172A")
-        self.subheader_fill = PatternFill("solid", fgColor="1F2937")
-        
-        self.section_fills = {
-            "LIQUIDEZ": PatternFill("solid", fgColor="D1E7DD"),
-            "SOLVENCIA Y ESTRUCTURA": PatternFill("solid", fgColor="FAD7A0"),
-            "RENTABILIDAD": PatternFill("solid", fgColor="F8D7DA"),
-            "EFICIENCIA OPERATIVA": PatternFill("solid", fgColor="D6EAF8"),
-            "FLUJOS Y ADICIONALES": PatternFill("solid", fgColor="E8DAEF"),
-            "CRECIMIENTO": PatternFill("solid", fgColor="FDEBD0"),
-            "DUPONT": PatternFill("solid", fgColor="D4EFDF"),
-            "CALIDAD Y SCORES": PatternFill("solid", fgColor="FCF3CF"),
-        }
-        # Estilo tabla notas
-        self.notes_header_fill = PatternFill("solid", fgColor="EFEFEF")
-        self.notes_header_font = Font(bold=True, color="000000", size=11)
-        self.notes_cell_font = Font(color="000000", size=10)
-        self.notes_alt_fill = PatternFill("solid", fgColor="F7FAFC")
-        
+        """Estilos del libro. Todos salen de cmf_extract/excel_style.py.
+
+        ANTES había aquí un arcoíris: ocho rellenos pastel, uno por sección (verde para
+        liquidez, naranja para solvencia, rosa para rentabilidad, celeste para
+        eficiencia, morado, amarillo…). Eso es color como DECORACIÓN, que es justo lo que
+        el sistema de diseño prohíbe: el color se usa como SEÑAL, o no se usa.
+        Ocho pasteles no comunican nada — la jerarquía ya la dan el peso y el tamaño.
+
+        Y no se declaraba ninguna tipografía, así que el libro caía en Calibri mientras
+        el Excel que genera la web usa Inter. Dos archivos del mismo producto, con dos
+        marcas distintas. En un producto financiero eso hace la misma pregunta que un
+        ratio inconsistente: "si esto no lo cuidan, ¿los números sí?".
+        """
+        self.header_fill = est.RELLENO_TINTA
+        # TINTA, no gris: en los cuatro sitios donde se usa va acompañada de
+        # `bold_white_small`. Con relleno claro, la cabecera de RATIOS & KPIs entera
+        # (indicador + los 49 períodos) quedaba blanco sobre casi-blanco: contraste
+        # 1,08:1. El texto estaba, y no se veía.
+        self.subheader_fill = est.RELLENO_TINTA
+
+        # Todas las secciones comparten el mismo fondo. Lo que las distingue es el
+        # rótulo en Ember, no un color de relleno distinto para cada una.
+        self.section_fill = est.RELLENO_SUAVE
+        self.section_font = est.ETIQUETA
+        self.section_fills = _RellenoUnico(est.RELLENO_SUAVE)
+
+        # Tabla de notas
+        self.notes_header_fill = est.RELLENO_SUAVE
+        self.notes_header_font = est.fuente(11, bold=True, color=est.INK)
+        self.notes_cell_font = est.fuente(10, color=est.INK)
+        self.notes_alt_fill = est.RELLENO_SUAVE
+
         # Fuentes
-        self.bold_white = Font(bold=True, color="FFFFFF", size=13)
-        self.bold_white_small = Font(bold=True, color="FFFFFF", size=11)
-        self.bold_dark = Font(bold=True, color="000000", size=11)
-        self.normal = Font(color="000000", size=10)
-        
+        self.bold_white = est.fuente(13, bold=True, color=est.PAPER)
+        self.bold_white_small = est.fuente(11, bold=True, color=est.PAPER)
+        self.bold_dark = est.fuente(11, bold=True, color=est.INK)
+        self.normal = est.fuente(10, color=est.INK)
+
         # Alineaciones
         self.center = Alignment(horizontal="center", vertical="center", wrap_text=True)
         self.left = Alignment(horizontal="left", vertical="center", wrap_text=True)
@@ -156,7 +189,7 @@ class ExcelFormatter:
                 "DUPONT": "DUPONT",
                 "QUALITY & SCORES": "CALIDAD Y SCORES",
             }
-            fill = self.section_fills.get(en_to_es.get(section_name, ""), PatternFill("solid", fgColor="EFEFEF"))
+            fill = self.section_fills.get(en_to_es.get(section_name, ""), est.RELLENO_SUAVE)
         section_cell.fill = fill
         
         # Aplicar bordes a todas las celdas de la fila
@@ -300,7 +333,7 @@ class ExcelFormatter:
                     if cell.value == "N/A":
                         formatter.format_na_style(cell)
         """
-        cell.font = Font(color="999999", italic=True, size=10)
+        cell.font = est.fuente(10, color=est.MUTED, italic=True)
         cell.alignment = Alignment(horizontal="center", vertical="center")
     
     def format_quality_section(self, ws, start_row: int, quality_data: dict,
@@ -323,17 +356,17 @@ class ExcelFormatter:
         """
         is_en = lang == "en"
         border = self.border
-        gray_fill = PatternFill("solid", fgColor="F3F4F6")
-        header_fill = PatternFill("solid", fgColor="E5E7EB")
-        label_font = Font(bold=True, color="374151", size=10)
-        value_font = Font(color="374151", size=10)
+        gray_fill = est.RELLENO_SUAVE
+        header_fill = est.relleno(est.LINE)
+        label_font = est.fuente(10, bold=True, color=est.INK)
+        value_font = est.fuente(10, color=est.INK)
 
         # Section title
         r = start_row
         ws.merge_cells(start_row=r, start_column=1, end_row=r, end_column=cols_total)
         title = "DATA QUALITY" if is_en else "CALIDAD DE DATOS"
         c = ws.cell(row=r, column=1, value=title)
-        c.font = Font(bold=True, color="000000", size=11)
+        c.font = est.fuente(11, bold=True, color=est.INK)
         c.fill = header_fill
         c.alignment = self.left
         for col in range(1, cols_total + 1):
@@ -402,7 +435,7 @@ class ExcelFormatter:
         cell = ws.cell(row=row, column=flags_col)
         cell.alignment = self.left
         cell.border = self.border
-        cell.font = Font(color="B45309", size=9, italic=True)
+        cell.font = est.fuente(9, color=est.EMBER, italic=True)
 
     def apply_conditional_formatting(self, ws, data_start_row: int, data_end_row: int,
                                    years: List[int]):
@@ -426,10 +459,12 @@ class ExcelFormatter:
         
         ws.conditional_formatting.add(
             year_range,
+            # Una sola tinta: papel → cobre tenue. La escala anterior era viridis
+            # (amarillo → verde → petróleo): tres colores para representar UNA magnitud,
+            # y en un estado financiero el verde y el rojo ya significan otra cosa.
             ColorScaleRule(
-                start_type="percentile", start_value=5, start_color="FDE725",
-                mid_type="percentile", mid_value=50, mid_color="5DC863",
-                end_type="percentile", end_value=95, end_color="2A788E"
+                start_type="percentile", start_value=5, start_color=est.PAPER[2:],
+                end_type="percentile", end_value=95, end_color=est.EMBER_TENUE[2:],
             )
         )
         
@@ -480,7 +515,7 @@ class ExcelFormatter:
         tip_title = ws.cell(row=tip_title_row, column=1, value=tip_title_text)
         tip_title.font = self.bold_dark
         tip_title.alignment = self.left
-        tip_title.fill = PatternFill("solid", fgColor="EFEFEF")
+        tip_title.fill = est.RELLENO_SUAVE
         
         # Nota metodológica para trimestrales (TTM)
         if include_quarterly_note:
@@ -518,7 +553,7 @@ class ExcelFormatter:
             section_cell = ws.cell(row=tip_row, column=1, value=section_name)
             section_cell.font = self.bold_dark
             section_cell.fill = self.section_fills.get(section_name, 
-                                                     PatternFill("solid", fgColor="EFEFEF"))
+                                                     est.RELLENO_SUAVE)
             
             for c in range(1, 4):
                 ws.cell(row=tip_row, column=c).border = self.border
