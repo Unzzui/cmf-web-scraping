@@ -33,6 +33,14 @@ class DCFBuilder:
         self.financial_data = financial_data
         self.years = financial_data.get("years", [])
 
+        # Moneda en la que la empresa REPORTA sus estados. La inyecta formula_processor
+        # desde los facts del XBRL. 18 empresas del catálogo reportan en dólares (SQM,
+        # COPEC, CMPC, LATAM, ARAUCO, COLBÚN…), y el precio de su acción cotiza en PESOS.
+        # Sin esto, el DCF calcula un valor intrínseco en dólares y lo compara contra un
+        # precio en pesos: la "Prima/(Descuento)" y la "Recomendación" salen desviadas
+        # ~900x, y siempre dicen "extremadamente sobrevalorada".
+        self.reporting_currency = str(financial_data.get("reporting_currency") or "CLP").upper()
+
         # Estilos
         self._setup_styles()
 
@@ -453,7 +461,7 @@ class DCFBuilder:
                 return f'=IFERROR(LOOKUP(2,1/({rng}<>""),{rng}),"")'
         return '""'
     
-    def _get_cagr_formula(self, years_back: int = 3) -> str:
+    def _get_cagr_formula(self, years_back: int = 5) -> str:
         """
         Calcula CAGR automático de ventas basado en períodos históricos disponibles.
         Maneja correctamente el orden de columnas desde más reciente a más antiguo.
@@ -469,17 +477,34 @@ class DCFBuilder:
         if not periods or len(periods) < 2:
             return "0.05"
             
-        # Filtrar solo años completos (sin trimestres) y limpiar
+        # Cierres ANUALES.
+        #
+        # ESTE FILTRO ESTABA MUERTO. Exigía que el período NO contuviera "Q":
+        #
+        #     if "Q" not in period_str and len(period_str) >= 4:
+        #
+        # Pero TODOS los encabezados del Excel son "2026Q1", "2025Q4", "2024Q4"…
+        # Ninguno pasaba jamás, así que `annual_periods` quedaba vacío y la función
+        # retornaba "0.05" SIEMPRE. Verificado en 7 Excel de producción: la celda
+        # "Crecimiento Ventas Y+1" contiene el literal 0.05, no una fórmula.
+        #
+        # O sea que TODOS los Excel vendidos proyectaban un 5% de crecimiento, igual
+        # para Falabella que para SQM. Y como Y+2 a Y+5 se derivan de esa celda
+        # (=MAX(B13*0.9,0.02)…), toda la proyección de cinco años colgaba de un número
+        # inventado.
+        #
+        # El cierre anual de una empresa es su Q4. (Los formatos antiguos traían el año
+        # a secas; se aceptan los dos.)
         annual_periods = []
         for p in periods:
             period_str = str(p).strip()
-            # Buscar años de 4 dígitos que NO contengan "Q"
-            if "Q" not in period_str and len(period_str) >= 4:
-                # Extraer solo el año (primeros 4 dígitos)
-                year_match = period_str[:4]
-                if year_match.isdigit():
-                    annual_periods.append((year_match, period_str))  # (año, etiqueta_original)
-        
+            if len(period_str) < 4 or not period_str[:4].isdigit():
+                continue
+            up = period_str.upper()
+            es_anual = ("Q" not in up) or up.endswith("Q4")
+            if es_anual:
+                annual_periods.append((period_str[:4], period_str))
+
         if len(annual_periods) < 2:
             return "0.05"
         
@@ -517,7 +542,10 @@ class DCFBuilder:
             
             # CAGR calculado
             # Referencias CAGR identificadas
-            return f"=IFERROR(POWER({end_ref}/{start_ref},1/{best_years_diff})-1,0.05)"
+            # Tope 15% y piso 2%: los mismos que aplica el DCF que se guarda en la BD
+            # (scripts/dcf/excel_aligned.py). Sin ellos, una empresa que dobló ventas en
+            # un año proyectaría 100% anual durante cinco años.
+            return f"=IFERROR(MAX(MIN(POWER({end_ref}/{start_ref},1/{best_years_diff})-1,0.15),0.02),0.05)"
         
         # Fallback: usar los dos períodos más recientes si están disponibles
         if len(annual_periods) >= 2:
@@ -531,7 +559,7 @@ class DCFBuilder:
                 years_diff = float(recent_year) - float(prev_year)
                 if years_diff > 0:
                     # CAGR fallback calculado
-                    return f"=IFERROR(POWER({end_ref}/{start_ref},1/{years_diff})-1,0.05)"
+                    return f"=IFERROR(MAX(MIN(POWER({end_ref}/{start_ref},1/{years_diff})-1,0.15),0.02),0.05)"
         
         return "0.05"  # Fallback final
 
@@ -913,10 +941,19 @@ class DCFBuilder:
         # Referencia al driver de capital de trabajo (mediana anual robusta)
         wc_ref = getattr(self, "_wc_avg_cell", "'DRIVERS WC'!$B$21")
 
+        # La base de la proyección es el último CIERRE ANUAL, no el trimestre en curso.
+        #
+        # Antes se pasaba `selected_period` (p. ej. "2026Q1") y las ventas base salían de
+        # anualizar ese trimestre (×4). Para cualquier negocio estacional —una viña, un
+        # retail, una salmonera— eso distorsiona los cinco años de proyección de una sola
+        # vez. El DCF que se guarda en la BD (scripts/dcf/excel_aligned.py) usa el último
+        # año real, y ahora el Excel también.
+        periodo_base_anual = self._find_base_annual_period()
+
         inputs = [
-            ("Año base", selected_period, "input"),
-            ("Ventas año base (M$)", self._get_ventas_base_formula(selected_period), "formula"),
-            ("Crecimiento Ventas Y+1 (%)", self._get_cagr_formula(3), "formula"),
+            ("Año base", periodo_base_anual, "input"),
+            ("Ventas año base (M$)", self._get_ventas_base_formula(periodo_base_anual), "formula"),
+            ("Crecimiento Ventas Y+1 (%)", self._get_cagr_formula(5), "formula"),
             ("Crecimiento Ventas Y+2 (%)", f"=MAX(B{inputs_row + 2}*0.9,0.02)", "formula"),  # Referencia correcta al Y+1
             ("Crecimiento Ventas Y+3 (%)", f"=MAX(B{inputs_row + 3}*0.9,0.02)", "formula"),  # Referencia correcta al Y+2
             ("Crecimiento Ventas Y+4 (%)", f"=MAX(B{inputs_row + 4}*0.85,0.015)", "formula"), # Referencia correcta al Y+3
@@ -928,9 +965,25 @@ class DCFBuilder:
             ("ΔNWC / ΔVentas (%)", f"=IFERROR(MIN(MAX({wc_ref},-0.20),0.20),0.10)", "formula"),
             ("WACC (%)", "0.10", "input"),
             ("g - Tasa de crecimiento terminal (%)", "0.02", "fixed"),  # Fijo en 2%
+            # La moneda viaja PEGADA al modelo, no en una nota al pie.
+            ("Moneda de los estados", self.reporting_currency, "input"),
+            # Editable. Si los estados están en pesos vale 1 y no hace nada. Si están en
+            # dólares, es lo que convierte el valor por acción a pesos para poder
+            # compararlo con el precio de bolsa. El analista puede ajustarlo al tipo de
+            # cambio que quiera usar — pero NUNCA se compara sin convertir.
+            ("Tipo de cambio (CLP por 1 %s)" % self.reporting_currency,
+             "1" if self.reporting_currency == "CLP" else "950", "input"),
             ("Deuda neta (M$)", self._get_deuda_neta_formula(selected_period), "formula"),
             ("Acciones en circulación (M)", self._get_acciones_formula(), "formula"),
         ]
+
+        # Fila de cada parámetro, resuelta POR ETIQUETA.
+        #
+        # Antes las filas eran offsets fijos (wacc_row = inputs_row + 12, deuda_row = +14…).
+        # Agregar un parámetro en medio de la lista desplazaba todo y el modelo apuntaba a
+        # celdas equivocadas SIN dar error: el Excel simplemente calculaba otra cosa. Es
+        # una trampa que se dispara sola la próxima vez que alguien toque esta lista.
+        self._param_rows = {label: inputs_row + i for i, (label, _v, _k) in enumerate(inputs)}
 
         for i, (label, val, kind) in enumerate(inputs):
             r = inputs_row + i
@@ -987,14 +1040,15 @@ class DCFBuilder:
         # Extract numeric year from base annual period (e.g. "2025Q4" -> 2025)
         _bp = self._find_base_annual_period()
         base_year = int(re.match(r"(\d{4})", _bp).group(1)) if re.match(r"(\d{4})", _bp) else 2025
-        ventas_base_row = inputs_row + 1
-        crec_rows = [inputs_row + 2, inputs_row + 3, inputs_row + 4, inputs_row + 5, inputs_row + 6]
-        margen_ebit_row = inputs_row + 7
-        tasa_imp_row = inputs_row + 8
-        da_ventas_row = inputs_row + 9
-        capex_ventas_row = inputs_row + 10
-        nwc_ventas_row = inputs_row + 11
-        wacc_row = inputs_row + 12
+        P = self._param_rows
+        ventas_base_row = P["Ventas año base (M$)"]
+        crec_rows = [P[f"Crecimiento Ventas Y+{k} (%)"] for k in range(1, 6)]
+        margen_ebit_row = P["Margen EBIT (%)"]
+        tasa_imp_row = P["Tasa efectiva de impuestos (%)"]
+        da_ventas_row = P["D&A / Ventas (%)"]
+        capex_ventas_row = P["CapEx / Ventas (%)"]
+        nwc_ventas_row = P["ΔNWC / ΔVentas (%)"]
+        wacc_row = P["WACC (%)"]
 
         for k in range(1, 6):
             r = projection_start_row + 1 + k
@@ -1036,24 +1090,68 @@ class DCFBuilder:
         valuation_row = val_header_row - 1
 
         last_fcff_row = projection_start_row + 6
-        g_row = inputs_row + 13
-        deuda_row = inputs_row + 14
-        acciones_row = inputs_row + 15
+        g_row = P["g - Tasa de crecimiento terminal (%)"]
+        deuda_row = P["Deuda neta (M$)"]
+        acciones_row = P["Acciones en circulación (M)"]
+        fx_row = P[f"Tipo de cambio (CLP por 1 {self.reporting_currency})"]
 
-        # Bloques de valuación con precio de mercado y análisis de inversión
+        # Bloques de valuación. Las filas se resuelven POR ETIQUETA, igual que los
+        # parámetros: los offsets numéricos (valuation_row + 8, + 10, + 11…) se desplazan
+        # solos en cuanto alguien agrega una fila, y el Excel calcula otra cosa sin dar
+        # ningún error.
+        V = {}
+        _labels = [
+            "Valor Terminal", "VT Presente", "Suma FCFF PV", "Enterprise Value",
+            "(-) Deuda Neta", "Equity Value", "Acciones",
+            f"Valor por Acción (DCF, {self.reporting_currency})",
+            "Valor por Acción (DCF, CLP)", "",
+            "Precio Actual Mercado (CLP)", "Prima/(Descuento) %", "Recomendación",
+        ]
+        for i, lbl in enumerate(_labels):
+            V[lbl] = valuation_row + 1 + i
+
+        r_dcf_moneda = V[f"Valor por Acción (DCF, {self.reporting_currency})"]
+        r_dcf_clp = V["Valor por Acción (DCF, CLP)"]
+        r_precio = V["Precio Actual Mercado (CLP)"]
+        r_prima = V["Prima/(Descuento) %"]
+
         blocks = [
             ("Valor Terminal", f"=H{last_fcff_row}*(1+$B${g_row})/($B${wacc_row}-$B${g_row})"),
-            ("VT Presente", f"=B{valuation_row + 1}*I{last_fcff_row}"),
+            ("VT Presente", f"=B{V['Valor Terminal']}*I{last_fcff_row}"),
             ("Suma FCFF PV", f"=SUM(J{projection_start_row + 2}:J{last_fcff_row})"),
-            ("Enterprise Value", f"=B{valuation_row + 2}+B{valuation_row + 3}"),
+            ("Enterprise Value", f"=B{V['VT Presente']}+B{V['Suma FCFF PV']}"),
             ("(-) Deuda Neta", f"=$B${deuda_row}"),
-            ("Equity Value", f"=B{valuation_row + 4}-B{valuation_row + 5}"),
+            ("Equity Value", f"=B{V['Enterprise Value']}-B{V['(-) Deuda Neta']}"),
             ("Acciones", f"=$B${acciones_row}"),
-            ("Valor por Acción (DCF)", f"=IFERROR(IF(B{valuation_row + 7}>0,B{valuation_row + 6}/B{valuation_row + 7}*1000,\"\"),\"\")"),
-            ("", ""),  # Línea separadora
-            ("Precio Actual Mercado", "INPUT_REQUIRED"),  # Para que el usuario ingrese el precio
-            ("Prima/(Descuento) %", f"=IF(NOT(ISNUMBER(B{valuation_row + 10})),\"SIN PRECIO MERCADO\",IF(NOT(ISNUMBER(B{valuation_row + 8})),\"SIN VALOR DCF\",IF(B{valuation_row + 8}<0,\"DCF NEG - VENTA\",(B{valuation_row + 8}-B{valuation_row + 10})/B{valuation_row + 10})))"),
-            ("Recomendación", f"=IF(NOT(ISNUMBER(B{valuation_row + 10})),\"NECESITA PRECIO MERCADO\",IF(NOT(ISNUMBER(B{valuation_row + 8})),\"SIN VALOR DCF\",IF(B{valuation_row + 8}<0,\"VENTA FUERTE - DCF NEGATIVO\",IF(NOT(ISNUMBER(B{valuation_row + 11})),\"SIN PRIMA\",IF(B{valuation_row + 11}>0.15,\"COMPRA FUERTE\",IF(B{valuation_row + 11}>0.05,\"COMPRA\",IF(B{valuation_row + 11}>-0.05,\"MANTENER\",IF(B{valuation_row + 11}>-0.15,\"VENTA\",\"VENTA FUERTE\")))))))"),
+            # Valor por acción EN LA MONEDA DE LOS ESTADOS. Para SQM, COPEC o ARAUCO, esto
+            # sale en dólares.
+            (f"Valor por Acción (DCF, {self.reporting_currency})",
+             f"=IFERROR(IF(B{V['Acciones']}>0,B{V['Equity Value']}/B{V['Acciones']}*1000,\"\"),\"\")"),
+            # Y AQUÍ se convierte a pesos. Éste es el número que se compara contra la bolsa,
+            # porque la acción cotiza en pesos.
+            #
+            # Antes esta fila no existía: el Excel comparaba un valor intrínseco en DÓLARES
+            # contra un precio de mercado en PESOS. Para las 18 empresas que reportan en USD,
+            # la "Prima/(Descuento)" salía desviada ~900x y la "Recomendación" decía siempre
+            # "VENTA FUERTE". Un analista que le creyera vendía justo lo que debía comprar.
+            ("Valor por Acción (DCF, CLP)", f"=IFERROR(B{r_dcf_moneda}*$B${fx_row},\"\")"),
+            ("", ""),
+            ("Precio Actual Mercado (CLP)", "INPUT_REQUIRED"),
+            # La prima compara PESOS CONTRA PESOS.
+            ("Prima/(Descuento) %",
+             f"=IF(NOT(ISNUMBER(B{r_precio})),\"SIN PRECIO MERCADO\","
+             f"IF(NOT(ISNUMBER(B{r_dcf_clp})),\"SIN VALOR DCF\","
+             f"IF(B{r_dcf_clp}<0,\"DCF NEG - VENTA\","
+             f"(B{r_dcf_clp}-B{r_precio})/B{r_precio})))"),
+            ("Recomendación",
+             f"=IF(NOT(ISNUMBER(B{r_precio})),\"NECESITA PRECIO MERCADO\","
+             f"IF(NOT(ISNUMBER(B{r_dcf_clp})),\"SIN VALOR DCF\","
+             f"IF(B{r_dcf_clp}<0,\"VENTA FUERTE - DCF NEGATIVO\","
+             f"IF(NOT(ISNUMBER(B{r_prima})),\"SIN PRIMA\","
+             f"IF(B{r_prima}>0.15,\"COMPRA FUERTE\","
+             f"IF(B{r_prima}>0.05,\"COMPRA\","
+             f"IF(B{r_prima}>-0.05,\"MANTENER\","
+             f"IF(B{r_prima}>-0.15,\"VENTA\",\"VENTA FUERTE\")))))))"),
         ]
         for i, (lbl, fx) in enumerate(blocks):
             rr = valuation_row + 1 + i
@@ -1941,73 +2039,35 @@ def add_multi_period_dcf_functionality(workbook: Workbook, financial_data: Dict[
         # Crear DCF completo usando el método existente pero con período personalizado
         # Temporalmente modificar las fórmulas para usar el período más reciente
         
-        # Guardar las fórmulas originales
-        original_ventas_formula = dcf._get_ventas_base_formula
-        original_margen_formula = dcf._get_margen_ebit_formula
+        # La base de la valoración es el último CIERRE ANUAL. Punto.
+        #
+        # Aquí había un monkey-patch (`temp_ventas_formula`) que pisaba la fórmula de
+        # ventas base y la reemplazaba por el ÚLTIMO TRIMESTRE ANUALIZADO: Q1×4, Q2×2,
+        # Q3×1,33. Para Celulosa Arauco, cuyo último período es 2026Q1, eso significaba
+        # tomar UN trimestre, multiplicarlo por cuatro, y colgar de ahí los cinco años de
+        # proyección, el valor terminal y el precio objetivo.
+        #
+        # Para cualquier negocio estacional —una viña, una salmonera, un retail— eso es
+        # una distorsión enorme. Y además rompía la paridad con el DCF que se guarda en la
+        # base (scripts/dcf/excel_aligned.py), que usa el último año real: el mismo cliente
+        # veía un precio objetivo en la ficha web y otro distinto en su Excel.
+        #
+        # El margen EBIT y la deuda neta también se anclan al cierre anual, por lo mismo.
+        periodo_base = dcf._find_base_annual_period()
+
         original_deuda_neta_formula = dcf._get_deuda_neta_formula
-        
-        # Crear funciones temporales para el período más reciente
-        def temp_ventas_formula(period=None):
-            # Usar latest_period siempre para este DCF específico
-            if "Q" in latest_period and dcf.sh_pl and "Ventas" in dcf.rows_pl and dcf.rows_pl["Ventas"]:
-                # Para trimestres, proyectar el año completo basado en el desempeño
-                # Ejemplo: Si estamos en 2025Q2, tomar ventas Q2 y proyectar año completo
-                quarter_ref = dcf.create_cell_reference_by_label(dcf.sh_pl, dcf.rows_pl["Ventas"], latest_period)
-                
-                if quarter_ref:
-                    # Determinar el multiplicador según el trimestre
-                    if "Q1" in latest_period:
-                        multiplier = 4.0  # Q1 * 4 = año completo proyectado
-                    elif "Q2" in latest_period:
-                        multiplier = 2.0  # Q2 * 2 = año completo proyectado (6 meses)
-                    elif "Q3" in latest_period:
-                        multiplier = 1.33  # Q3 * 1.33 = año completo proyectado (9 meses)
-                    elif "Q4" in latest_period:
-                        multiplier = 1.0  # Q4 ya es el año completo
-                    else:
-                        multiplier = 4.0  # Default
-                    
-                    return f"=IFERROR({quarter_ref}*{multiplier},\"N/D\")"
-                    
-            # Fallback: usar ratios anualizados si están disponibles
-            elif "Q" in latest_period and dcf.sh_ratios:
-                ref = dcf.create_cell_reference_by_label(dcf.sh_ratios, dcf.rows_ratios.get("Ventas"), latest_period)
-                if ref:
-                    return f"=IFERROR({ref},\"N/D\")"
-                    
-            # Fallback: usar Estado de Resultados directamente
-            elif dcf.sh_pl and "Ventas" in dcf.rows_pl and dcf.rows_pl["Ventas"]:
-                ref = dcf.create_cell_reference_by_label(dcf.sh_pl, dcf.rows_pl["Ventas"], latest_period)
-                if ref:
-                    return f"=IFERROR({ref},\"N/D\")"
-            return "=\"N/D\""
-        
-        def temp_margen_formula():
-            if dcf.sh_ratios and "MargenEBIT" in dcf.rows_ratios and dcf.rows_ratios["MargenEBIT"]:
-                ref = dcf.create_cell_reference_by_label(dcf.sh_ratios, dcf.rows_ratios["MargenEBIT"], latest_period)
-                if ref:
-                    return f"=IFERROR({ref},0.10)"
-            return "0.10"
-            
+
         def temp_deuda_neta_formula(period=None):
-            # Usar latest_period siempre para este DCF específico
-            return original_deuda_neta_formula(latest_period)
-        
-        # Establecer el período para este DCF específico  
-        dcf._current_dcf_period = latest_period
-        
-        # Reemplazar temporalmente las funciones
-        dcf._get_ventas_base_formula = temp_ventas_formula
-        dcf._get_margen_ebit_formula = temp_margen_formula
+            return original_deuda_neta_formula(periodo_base)
+
+        dcf._current_dcf_period = periodo_base
         dcf._get_deuda_neta_formula = temp_deuda_neta_formula
         
         # Crear el DCF completo
         projection_start_row_latest, valuation_row_latest, inputs_start_row_latest = dcf.create_dcf_sheet()
         dcf.wb.worksheets[-1].title = f"DCF {latest_period}"
         
-        # Restaurar las funciones originales
-        dcf._get_ventas_base_formula = original_ventas_formula
-        dcf._get_margen_ebit_formula = original_margen_formula
+        # Restaurar la función original (ventas y margen ya no se parchean).
         dcf._get_deuda_neta_formula = original_deuda_neta_formula
         
         # Limpiar el período específico

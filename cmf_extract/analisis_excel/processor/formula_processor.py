@@ -412,9 +412,30 @@ class FormulaProcessorMixin:
             except Exception:
                 cmap_facts = None
         spans_text, multi_currency = _build_currency_spans_from_map(cmap_facts)
-        # Componer texto de unidad: mantener magnitud y solo agregar moneda si hay múltiples
-        base_unit = ("Thousands CLP" if lang == 'en' else "Miles CLP")
+
+        # La unidad NO se asume. Antes era:
+        #     base_unit = "Miles CLP"          # hardcodeado
+        # y la moneda sólo se agregaba si había VARIAS. O sea que SQM, COPEC, CMPC, LATAM
+        # —que reportan en dólares y siempre lo han hecho— llevaban "Miles CLP" en el
+        # encabezado de todas sus hojas. Para el analista que compra ese Excel, eso es un
+        # error de un factor de 900 anunciado como si fuera un dato.
+        moneda_actual = 'CLP'
+        if cmap_facts:
+            moneda_actual = str(cmap_facts[max(cmap_facts.keys())]).upper()
+        base_unit = (f"Thousands {moneda_actual}" if lang == 'en' else f"Miles {moneda_actual}")
+
+        # Si además CAMBIÓ de moneda a mitad de la serie (Enel Chile pasó de CLP a USD en
+        # 2025), hay que decirlo: esos años no son comparables entre sí sin convertir.
         unit_text = base_unit if not (spans_text and multi_currency) else (base_unit + (" • Currency: " if lang=='en' else " • Moneda: ") + spans_text)
+
+        # Que el DCF sepa en qué moneda están los estados: sin esto compara un valor
+        # intrínseco en dólares contra un precio de bolsa en pesos.
+        try:
+            if cmap_facts:
+                financial_data['currency_by_year'] = dict(cmap_facts)
+                financial_data['reporting_currency'] = moneda_actual
+        except Exception:
+            pass
         header_row = self.formatter.setup_worksheet_structure(ws, period_vector, sheet_name, lang=lang, unit_text=unit_text)
 
         # Nota metodológica compacta (siempre en combinado)
