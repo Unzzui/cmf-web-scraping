@@ -72,6 +72,25 @@ CONCEPTOS_SEGMENTO = (
 # La deuda financiera del balance, para medir cuánto de ella cubre la nota de créditos.
 DEUDA_BALANCE = ("OtherCurrentFinancialLiabilities", "OtherNoncurrentFinancialLiabilities")
 
+# Metadatos que hoy adivinamos o no tenemos. Ver migración 028.
+#
+# NO se lee `LevelOfRoundingUsedInFinancialStatements`, aunque prometía declarar la
+# ESCALA de las cifras — justo el bug que más caro nos salió. Se verificó contra los 74
+# archivos: es TEXTO LIBRE con 38 valores distintos ('"Llos presentes esta…', 'Toda la
+# información…') y no predice nada. Falabella declara "Pesos", Aguas Andinas "Miles de
+# Pesos", y las dos traen los hechos en UNIDADES. El /1000 del pipeline es correcto.
+# Un dato que no se puede creer es peor que ninguno.
+#
+# Tampoco `NumeroAccionistas`: mezcla el número de accionistas con el de acciones
+# ('64' junto a '1705831078'). Nadie lo llena en serio.
+METADATOS = {
+    "xbrl_actividad_cmf": "CodigoActividadPrincipal",       # 92% — el sector OFICIAL
+    "xbrl_cotiza_santiago": "BolsaComercioSantiago",        # 78%
+    "xbrl_cotiza_electronica": "BolsaElectronicaChile",
+    "xbrl_acciones_inscritas": "AccionesInscritas",
+}
+_BOOLEANOS = {"xbrl_cotiza_santiago", "xbrl_cotiza_electronica", "xbrl_acciones_inscritas"}
+
 
 # El piso NO es cosmético. Hay créditos que declaran una tasa de 0,0000004 — algunas
 # empresas rellenan el campo con basura en vez de dejarlo vacío. En NUMERIC(8,6) eso
@@ -140,6 +159,14 @@ def _identidad(doc: xf.Documento) -> dict[str, str | None]:
     # Empleados: es un conteo, y viene con unidad 'pure'. Se toma el consolidado.
     empleados = [h.numero for h in doc.consolidados("NumberOfEmployees") if h.numero]
     fuera["xbrl_empleados"] = max(empleados) if empleados else None
+
+    for columna, concepto in METADATOS.items():
+        hechos = doc.consolidados(concepto)
+        valor = hechos[0].valor.strip() if hechos else None
+        if columna in _BOOLEANOS:
+            fuera[columna] = (valor.lower() == "si") if valor else None
+        else:
+            fuera[columna] = valor or None
     return fuera
 
 
@@ -278,6 +305,10 @@ def main() -> None:
                      xbrl_matriz = COALESCE(%(xbrl_matriz)s, xbrl_matriz),
                      xbrl_matriz_ultima = COALESCE(%(xbrl_matriz_ultima)s, xbrl_matriz_ultima),
                      xbrl_empleados = COALESCE(%(xbrl_empleados)s, xbrl_empleados),
+                     xbrl_actividad_cmf = COALESCE(%(xbrl_actividad_cmf)s, xbrl_actividad_cmf),
+                     xbrl_cotiza_santiago = COALESCE(%(xbrl_cotiza_santiago)s, xbrl_cotiza_santiago),
+                     xbrl_cotiza_electronica = COALESCE(%(xbrl_cotiza_electronica)s, xbrl_cotiza_electronica),
+                     xbrl_acciones_inscritas = COALESCE(%(xbrl_acciones_inscritas)s, xbrl_acciones_inscritas),
                      xbrl_perfil_as_of = %(as_of)s
                    WHERE id = %(id)s""",
                 {**ident, "as_of": fecha_ult, "id": company_id},
@@ -304,6 +335,23 @@ def main() -> None:
                                      moneda = EXCLUDED.moneda""",
                     [{**s, "cid": company_id, "y": anio, "q": trimestre} for s in segs],
                     page_size=200)
+
+            aprob = doc.consolidados("FechaSesionDirectorioAprobaronEstadosFinancieros")
+            tipo = doc.consolidados("TipoEEFF")
+            if args.apply:
+                cur.execute(
+                    """INSERT INTO xbrl_periodos
+                         (company_id, period_year, period_quarter, fecha_aprobacion,
+                          tipo_eeff, moneda)
+                       VALUES (%s, %s, %s, %s, %s, %s)
+                       ON CONFLICT (company_id, period_year, period_quarter)
+                       DO UPDATE SET fecha_aprobacion = EXCLUDED.fecha_aprobacion,
+                                     tipo_eeff = EXCLUDED.tipo_eeff,
+                                     moneda = EXCLUDED.moneda""",
+                    (company_id, anio, trimestre,
+                     aprob[0].valor.strip() if aprob else None,
+                     tipo[0].valor.strip() if tipo else None,
+                     doc.moneda()))
 
             creditos, resumen = _deuda(ruta, doc, fecha)
             n_deuda += len(creditos)
