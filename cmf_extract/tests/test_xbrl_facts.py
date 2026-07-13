@@ -98,6 +98,10 @@ def test_las_hojas_de_un_eje_reconstruyen_su_raiz():
 
         hojas 1.098.195.514.000  −  eliminaciones 344.869.872.000
               +  no asignado 1.411.434.000  =  754.737.076.000  = consolidado, al peso.
+
+    Y "hoja del eje" tampoco basta: en SMU, `UnallocatedAmountsMember` ES una hoja, pero
+    cuelga de las partidas de RECONCILIACIÓN, no de los segmentos. Un segmento es una
+    hoja que DESCIENDE de `OperatingSegmentsMember`.
     """
     revisadas = 0
     for empresa in _empresas():
@@ -105,7 +109,8 @@ def test_las_hojas_de_un_eje_reconstruyen_su_raiz():
         if ruta is None:
             continue
         doc = xf.leer(ruta)
-        agregados = xf.miembros_agregados(ruta)
+        hijos = xf.arbol(ruta)
+        segmentos = xf.hojas_bajo(hijos, "OperatingSegmentsMember")
 
         raices = [
             h for h in doc.hechos
@@ -117,7 +122,7 @@ def test_las_hojas_de_un_eje_reconstruyen_su_raiz():
         raiz = max(raices, key=lambda h: h.contexto.fin or "")
 
         hojas = [
-            h for h in xf.hojas_de_eje(doc, "OperatingSegmentsAxis", agregados, "Revenue")
+            h for h in xf.hojas_de_eje(doc, "OperatingSegmentsAxis", segmentos, "Revenue")
             if h.es_numerico
             and h.contexto.inicio == raiz.contexto.inicio
             and h.contexto.fin == raiz.contexto.fin
@@ -128,7 +133,7 @@ def test_las_hojas_de_un_eje_reconstruyen_su_raiz():
         suma = sum(h.numero for h in hojas)
         desvio = abs(suma - raiz.numero) / abs(raiz.numero)
         assert desvio < 0.005, (
-            f"{empresa.name}: las hojas suman {suma:,.0f} y su raíz vale {raiz.numero:,.0f}"
+            f"{empresa.name}: los segmentos suman {suma:,.0f} y su total vale {raiz.numero:,.0f}"
         )
         revisadas += 1
 

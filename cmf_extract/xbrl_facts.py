@@ -309,31 +309,25 @@ _DEFARC_RE = re.compile(
     re.I,
 )
 
-# La jerarquía local no alcanza, y hay una razón concreta.
+# La jerarquía del archivo de la empresa no alcanza, y hay una razón concreta.
 #
-# En Aguas Andinas, `OperatingSegmentsMember` no tiene hijos declarados en el archivo, así
-# que la regla "hoja = sin hijos" lo daba por segmento. Pero no es un miembro: es el
-# DOMINIO del eje — su raíz — y vale exactamente el consolidado. Contarlo sumaba el total
-# junto a sus partes, y los ingresos daban 421 mil millones donde hay 210.
+# En Aguas Andinas, `OperatingSegmentsMember` no tiene hijos declarados en su archivo, así
+# que la regla "hoja = sin hijos" lo daba por segmento. Pero no es un miembro: es la RAÍZ
+# del eje, y vale exactamente el consolidado. Contarlo sumaba el total junto a sus partes,
+# y los ingresos daban 421 mil millones donde hay 210.
 #
-# El dominio no lo declara la empresa: lo declara la taxonomía IFRS, que es un archivo
-# remoto que no descargamos. Pero eso NO es adivinar: `OperatingSegmentsMember` es la raíz
-# del eje de segmentos por definición de la taxonomía publicada, igual que
-# `ReportableSegmentsMember` es un subtotal por definición. Son constantes del estándar,
-# no una heurística sobre los datos.
-_RAICES_Y_SUBTOTALES = {
-    # raíces de eje (valen el consolidado entero)
+# La raíz no la declara la empresa: la declara la TAXONOMÍA de la CMF, que sí tenemos
+# (docs/CMF_CLCI_2026). Antes esto era una lista escrita a mano por mí; ahora sale del
+# paquete oficial, arco por arco — y si la CMF agrega un eje, funciona sin tocar nada.
+#
+# Fallback: si el paquete no está en disco, quedan sólo los padres del archivo local. Es
+# peor, pero se degrada avisando, no en silencio.
+_FALLBACK_SIN_TAXONOMIA = {
+    "EntitysTotalMember",
     "OperatingSegmentsMember",
-    "GeographicalAreasMember",
-    "ProductsAndServicesMember",
-    "MajorCustomersMember",
-    "SegmentConsolidationItemsMember",
-    # subtotales y partidas de reconciliación
     "ReportableSegmentsMember",
-    "EliminationOfIntersegmentAmountsMember",
     "MaterialReconcilingItemsMember",
-    "EntitysTotalForSegmentConsolidationItemsMember",
-    "UnallocatedAmountsMember",
+    "EliminationOfIntersegmentAmountsMember",
 }
 
 
@@ -341,11 +335,14 @@ def miembros_agregados(xbrl_path: Path | str) -> set[str]:
     """Los miembros que NO son una hoja: raíces de eje, subtotales y padres.
 
     Dos fuentes, y las dos hacen falta:
-      · el linkbase de definiciones — dice qué miembro tiene hijos (subtotal de esta
-        empresa: `AllOtherSegmentsMember` lo es en Arauco y no lo es en otras);
-      · la taxonomía IFRS — dice cuál es la raíz del eje, que el archivo local no declara.
+      · la TAXONOMÍA de la CMF — dice cuál es la raíz de cada eje y cuáles son los
+        subtotales del estándar. El archivo de la empresa no lo declara.
+      · el linkbase de definiciones de la EMPRESA — dice qué miembro tiene hijos en SU
+        desglose (`AllOtherSegmentsMember` es un subtotal en Arauco y una hoja en otras).
     """
-    agregados = set(_RAICES_Y_SUBTOTALES)
+    from . import cmf_taxonomia
+
+    agregados = set(cmf_taxonomia.miembros_agregados()) or set(_FALLBACK_SIN_TAXONOMIA)
 
     xbrl_path = Path(xbrl_path)
     def_file = next(xbrl_path.parent.glob("*-definition.xml"), None)
@@ -355,9 +352,67 @@ def miembros_agregados(xbrl_path: Path | str) -> set[str]:
     return agregados
 
 
-def hojas_de_eje(doc: "Documento", eje: str, agregados: set[str],
+def arbol(xbrl_path: Path | str) -> dict[str, set[str]]:
+    """padre → hijos. El árbol completo de miembros, de las DOS fuentes.
+
+    La taxonomía de la CMF trae la parte estándar (OperatingSegmentsMember →
+    ReportableSegmentsMember) y el archivo de la empresa trae la suya
+    (ReportableSegmentsMember → Item804 "CELULOSA"). Ninguna de las dos basta sola.
+    """
+    from . import cmf_taxonomia
+
+    hijos: dict[str, set[str]] = {}
+    for padre, hijo in cmf_taxonomia.arcos_padre_hijo():
+        hijos.setdefault(padre, set()).add(hijo)
+
+    def_file = next(Path(xbrl_path).parent.glob("*-definition.xml"), None)
+    if def_file is not None:
+        raw = leer_texto(def_file)
+        for padre, hijo in _DEFARC_RE.findall(raw):
+            hijos.setdefault(padre.split(":")[-1], set()).add(hijo.split(":")[-1])
+    return hijos
+
+
+def hojas_bajo(hijos: dict[str, set[str]], ancestro: str) -> set[str]:
+    """Las HOJAS que cuelgan de un ancestro. Éstas —y sólo éstas— suman su total.
+
+    "Hoja del eje" NO es lo mismo que "segmento". En SMU, `UnallocatedAmountsMember` es
+    una hoja perfectamente válida del eje… pero cuelga de MaterialReconcilingItems, no de
+    OperatingSegments. Sumarla con los segmentos daba 721.591 millones donde el total de
+    segmentos es 717.316:
+
+        OperatingSegmentsAxis
+          EntitysTotalMember
+            OperatingSegmentsMember          <- lo que suman los segmentos
+              ReportableSegmentsMember
+                Segmento_1, Segmento_2       <- HOJAS, y son segmentos
+              AllOtherSegmentsMember
+            MaterialReconcilingItemsMember   <- reconciliación, NO son segmentos
+              EliminationOfIntersegmentAmountsMember
+              UnallocatedAmountsMember       <- HOJA, pero NO es un segmento
+
+    Por eso se pide el ancestro: un segmento es una hoja que DESCIENDE de
+    `OperatingSegmentsMember`. Una lista de exclusiones nunca habría capturado eso.
+    """
+    hojas: set[str] = set()
+    visto: set[str] = set()
+    pila = [ancestro]
+    while pila:
+        m = pila.pop()
+        if m in visto:
+            continue
+        visto.add(m)
+        descendencia = hijos.get(m)
+        if descendencia:
+            pila.extend(descendencia)
+        elif m != ancestro:
+            hojas.add(m)
+    return hojas
+
+
+def hojas_de_eje(doc: "Documento", eje: str, hojas: set[str],
                  concepto: str | None = None) -> list["Hecho"]:
-    """Los hechos de un eje que son una HOJA. Éstos —y sólo éstos— suman el consolidado.
+    """Los hechos del eje cuyo miembro está en `hojas` (ver `hojas_bajo`).
 
     Se exige además que el hecho tenga ESE eje y ningún otro: un hecho cruzado
     (segmento × producto, p. ej.) es un desglose del desglose, y sumarlo con los
@@ -370,7 +425,7 @@ def hojas_de_eje(doc: "Documento", eje: str, agregados: set[str],
         if len(h.contexto.ejes) != 1:
             continue
         eje_h, miembro = h.contexto.ejes[0]
-        if eje_h == eje and miembro not in agregados:
+        if eje_h == eje and miembro in hojas:
             fuera.append(h)
     return fuera
 
