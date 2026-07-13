@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ifrs18/role/ifrs-16_2025-03-27_role-832610" xlink:href="../cl-ci_ifrs-16_2025-03-27_role-832610.xsd#ifrs-16_2025-03-27_role-832610"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="https://xbrl.org/2023/arcrole/summation-item" xlink:href="https://www.xbrl.org/2023/calculation-1.1.xsd#summation-item"/>
+  <link:calculationLink xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ifrs18/role/ifrs-16_2025-03-27_role-832610">
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe1AñoHasta3AñosLeasingNominales" xlink:label="lbl25875"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe1AñoHasta2AñosLeasingNominales" xlink:label="lbl25876"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="220.0" xlink:from="lbl25875" xlink:to="lbl25876"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe2AñosHasta3AñosLeasingNominales" xlink:label="lbl25877"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="230.0" xlink:to="lbl25877" xlink:from="lbl25875"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe3AñosHasta5AñosLeasingNominales" xlink:label="lbl25878"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe3AñosHasta4AñosLeasingNominales" xlink:label="lbl25879"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="250.0" xlink:from="lbl25878" xlink:to="lbl25879"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe4AñosHasta5AñosLeasingNominales" xlink:label="lbl25880"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="260.0" xlink:to="lbl25880" xlink:from="lbl25878"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MontosNominalesLeasing" xlink:label="lbl25881"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_Hasta90DiasLeasingNominales" xlink:label="lbl25882"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="190.0" xlink:from="lbl25881" xlink:to="lbl25882"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe90DiasHasta1AñoLeasingNominales" xlink:label="lbl25883"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="200.0" xlink:to="lbl25883" xlink:from="lbl25881"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="210.0" xlink:from="lbl25881" xlink:to="lbl25875"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="240.0" xlink:from="lbl25881" xlink:to="lbl25878"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe5AñosLeasingNominales" xlink:label="lbl25884"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="270.0" xlink:to="lbl25884" xlink:from="lbl25881"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_CurrentLeaseLiabilities" xlink:label="lbl25885"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_Hasta90DiasLeasingContable" xlink:label="lbl25886"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="310.0" xlink:from="lbl25885" xlink:to="lbl25886"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_Masde90DiasHasta1AñoLeasingContable" xlink:label="lbl25887"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="320.0" xlink:to="lbl25887" xlink:from="lbl25885"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_NoncurrentLeaseLiabilities" xlink:label="lbl25888"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe1AñoHasta3AñosLeasingContable" xlink:label="lbl25889"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="340.0" xlink:from="lbl25888" xlink:to="lbl25889"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe3AñosHasta5AñosLeasingContable" xlink:label="lbl25890"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="370.0" xlink:to="lbl25890" xlink:from="lbl25888"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe5AñosLeasingContable" xlink:label="lbl25891"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="400.0" xlink:to="lbl25891" xlink:from="lbl25888"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe1AñoHasta2AñosLeasingContable" xlink:label="lbl25892"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="350.0" xlink:to="lbl25892" xlink:from="lbl25889"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe2AñosHasta3AñosLeasingContable" xlink:label="lbl25893"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="360.0" xlink:to="lbl25893" xlink:from="lbl25889"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe3AñosHasta4AñosLeasingContable" xlink:label="lbl25894"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="380.0" xlink:to="lbl25894" xlink:from="lbl25890"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe4AñosHasta5AñosLeasingContable" xlink:label="lbl25895"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="390.0" xlink:to="lbl25895" xlink:from="lbl25890"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_LeaseLiabilities" xlink:label="lbl25896"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="300.0" xlink:from="lbl25896" xlink:to="lbl25885"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="330.0" xlink:from="lbl25896" xlink:to="lbl25888"/>
+  </link:calculationLink>
+</link:linkbase>

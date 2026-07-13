@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xbrldt="http://xbrl.org/2005/xbrldt" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xbrl.org/2005/xbrldt http://www.xbrl.org/2005/xbrldt-2005.xsd">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/ias-16_2025-03-27_role-822100b" xlink:href="../cl-ci_ias-16_2025-03-27_role-822100.xsd#ias-16_2025-03-27_role-822100b"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/hypercube-dimension" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#hypercube-dimension"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/dimension-domain" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#dimension-domain"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/domain-member" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#domain-member"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/all" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#all"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/dimension-default" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#dimension-default"/>
+  <link:definitionLink xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/ias-16_2025-03-27_role-822100b">
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfReconciliationOfChangesInPropertyPlantAndEquipmentIncludingRightofuseAssetsTable" xlink:label="lbl19447"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ClassesOfPropertyPlantAndEquipmentAxis" xlink:label="lbl19448"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/hypercube-dimension" xlink:from="lbl19447" xlink:to="lbl19448"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_CarryingAmountAccumulatedDepreciationAmortisationAndImpairmentAndGrossCarryingAmountAxis" xlink:label="lbl19449"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/hypercube-dimension" xlink:to="lbl19449" xlink:from="lbl19447"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PropertyPlantAndEquipmentIncludingRightofuseAssetsAxis" xlink:label="lbl19450"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/hypercube-dimension" xlink:to="lbl19450" xlink:from="lbl19447"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PropertyPlantAndEquipmentByOperatingLeaseStatusAxis" xlink:label="lbl19451"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/hypercube-dimension" xlink:to="lbl19451" xlink:from="lbl19447"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ClassesOfPropertyPlantAndEquipmentDomain" xlink:label="lbl19452"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-domain" xlink:to="lbl19452" xlink:from="lbl19448"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_CarryingAmountMember" xlink:label="lbl19453"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-domain" xlink:to="lbl19453" xlink:from="lbl19449"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PropertyPlantAndEquipmentIncludingRightofuseAssetsDomain" xlink:label="lbl19454"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-domain" xlink:to="lbl19454" xlink:from="lbl19450"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PropertyPlantAndEquipmentByOperatingLeaseStatusDomain" xlink:label="lbl19455"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-domain" xlink:to="lbl19455" xlink:from="lbl19451"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_LandAndBuildingsMember" xlink:label="lbl19456"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="2.0" xlink:to="lbl19456" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_LandMember" xlink:label="lbl19457"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="3.0" xlink:to="lbl19457" xlink:from="lbl19456"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_BuildingsMember" xlink:label="lbl19458"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="4.0" xlink:to="lbl19458" xlink:from="lbl19456"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_MachineryMember" xlink:label="lbl19459"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="5.0" xlink:to="lbl19459" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_VehiclesMember" xlink:label="lbl19460"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="6.0" xlink:to="lbl19460" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ShipsMember" xlink:label="lbl19461"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="7.0" xlink:to="lbl19461" xlink:from="lbl19460"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AircraftMember" xlink:label="lbl19462"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="8.0" xlink:to="lbl19462" xlink:from="lbl19460"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_MotorVehiclesMember" xlink:label="lbl19463"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="11.0" xlink:to="lbl19463" xlink:from="lbl19460"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_FixturesAndFittingsMember" xlink:label="lbl19464"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="12.0" xlink:to="lbl19464" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_OfficeEquipmentMember" xlink:label="lbl19465"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="13.0" xlink:to="lbl19465" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ComputerEquipmentMember" xlink:label="lbl19466"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="14.0" xlink:to="lbl19466" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_CommunicationAndNetworkEquipmentMember" xlink:label="lbl19467"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="15.0" xlink:to="lbl19467" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_NetworkInfrastructureMember" xlink:label="lbl19468"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="16.0" xlink:to="lbl19468" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_BearerPlantsMember" xlink:label="lbl19469"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="17.0" xlink:to="lbl19469" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_TangibleExplorationAndEvaluationAssetsMember" xlink:label="lbl19470"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="18.0" xlink:to="lbl19470" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_MiningAssetsMember" xlink:label="lbl19471"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="19.0" xlink:to="lbl19471" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_MiningPropertyMember" xlink:label="lbl19472"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="20.0" xlink:to="lbl19472" xlink:from="lbl19471"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_OilAndGasAssetsMember" xlink:label="lbl19473"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="21.0" xlink:to="lbl19473" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PowerGeneratingAssetsMember" xlink:label="lbl19474"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="22.0" xlink:to="lbl19474" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_LeaseholdImprovementsMember" xlink:label="lbl19475"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="23.0" xlink:to="lbl19475" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ConstructionInProgressMember" xlink:label="lbl19476"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="25.0" xlink:to="lbl19476" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_OwneroccupiedPropertyMeasuredUsingInvestmentPropertyFairValueModelMember" xlink:label="lbl19477"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="26.0" xlink:to="lbl19477" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_OtherPropertyPlantAndEquipmentMember" xlink:label="lbl19478"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="27.0" xlink:to="lbl19478" xlink:from="lbl19452"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GrossCarryingAmountMember" xlink:label="lbl19479"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="2.0" xlink:to="lbl19479" xlink:from="lbl19453"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AccumulatedDepreciationAmortisationAndImpairmentMember" xlink:label="lbl19480"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="3.0" xlink:to="lbl19480" xlink:from="lbl19453"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AccumulatedDepreciationAndAmortisationMember" xlink:label="lbl19481"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="4.0" xlink:to="lbl19481" xlink:from="lbl19480"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AccumulatedImpairmentMember" xlink:label="lbl19482"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="5.0" xlink:to="lbl19482" xlink:from="lbl19480"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PropertyPlantAndEquipmentMember" xlink:label="lbl19483"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="2.0" xlink:to="lbl19483" xlink:from="lbl19454"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_RightofuseAssetsMember" xlink:label="lbl19484"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="3.0" xlink:to="lbl19484" xlink:from="lbl19454"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PropertyPlantAndEquipmentSubjectToOperatingLeasesMember" xlink:label="lbl19485"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="2.0" xlink:to="lbl19485" xlink:from="lbl19455"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PropertyPlantAndEquipmentNotSubjectToOperatingLeasesMember" xlink:label="lbl19486"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="3.0" xlink:to="lbl19486" xlink:from="lbl19455"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfReconciliationOfChangesInPropertyPlantAndEquipmentIncludingRightofuseAssetsAbstract" xlink:label="lbl19487"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfReconciliationOfChangesInPropertyPlantAndEquipmentIncludingRightofuseAssetsLineItems" xlink:label="lbl19488"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1150.0" xlink:from="lbl19487" xlink:to="lbl19488"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19489"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1160.0" xlink:to="lbl19489" xlink:from="lbl19488"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ChangesInPropertyPlantAndEquipmentIncludingRightofuseAssetsAbstract" xlink:label="lbl19490"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1170.0" xlink:to="lbl19490" xlink:from="lbl19488"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AdditionsOtherThanThroughBusinessCombinationsPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19491"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1180.0" xlink:to="lbl19491" xlink:from="lbl19490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AcquisitionsThroughBusinessCombinationsPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19492"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1190.0" xlink:to="lbl19492" xlink:from="lbl19490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IncreaseDecreaseThroughNetExchangeDifferencesPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19493"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1200.0" xlink:to="lbl19493" xlink:from="lbl19490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DepreciationPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19494"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1210.0" xlink:to="lbl19494" xlink:from="lbl19490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ImpairmentLossRecognisedInProfitOrLossPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19495"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1220.0" xlink:to="lbl19495" xlink:from="lbl19490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ReversalOfImpairmentLossRecognisedInProfitOrLossPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19496"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1230.0" xlink:to="lbl19496" xlink:from="lbl19490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_RevaluationIncreaseDecreasePropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19497"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1240.0" xlink:to="lbl19497" xlink:from="lbl19490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ImpairmentLossRecognisedInOtherComprehensiveIncomePropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19498"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1250.0" xlink:to="lbl19498" xlink:from="lbl19490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncomePropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19499"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1260.0" xlink:to="lbl19499" xlink:from="lbl19490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IncreaseDecreaseThroughTransfersAndOtherChangesPropertyPlantAndEquipmentIncludingRightofuseAssetsAbstract" xlink:label="lbl19500"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1270.0" xlink:to="lbl19500" xlink:from="lbl19490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IncreaseDecreaseThroughTransfersPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19501"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1280.0" xlink:to="lbl19501" xlink:from="lbl19500"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IncreaseDecreaseThroughTransfersFromToInvestmentPropertyPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19502"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1290.0" xlink:to="lbl19502" xlink:from="lbl19501"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IncreaseDecreaseThroughTransfersFromConstructionInProgressPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19503"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1300.0" xlink:to="lbl19503" xlink:from="lbl19501"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IncreaseDecreaseThroughOtherChangesPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19504"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1310.0" xlink:to="lbl19504" xlink:from="lbl19500"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IncreaseDecreaseThroughTransfersAndOtherChangesPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19505"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1320.0" xlink:to="lbl19505" xlink:from="lbl19500"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisposalsAndRetirementsPropertyPlantAndEquipmentIncludingRightofuseAssetsAbstract" xlink:label="lbl19506"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1330.0" xlink:to="lbl19506" xlink:from="lbl19490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisposalsPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19507"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1340.0" xlink:to="lbl19507" xlink:from="lbl19506"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_RetirementsPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19508"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1350.0" xlink:to="lbl19508" xlink:from="lbl19506"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisposalsAndRetirementsPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19509"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1360.0" xlink:to="lbl19509" xlink:from="lbl19506"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DecreaseThroughClassifiedAsHeldForSalePropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19510"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1370.0" xlink:to="lbl19510" xlink:from="lbl19490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DecreaseThroughLossOfControlOfSubsidiaryPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19511"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1380.0" xlink:to="lbl19511" xlink:from="lbl19490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IncreaseDecreaseInPropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19512"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1390.0" xlink:to="lbl19512" xlink:from="lbl19490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PropertyPlantAndEquipmentIncludingRightofuseAssets" xlink:label="lbl19513"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="1400.0" xlink:from="lbl19488" xlink:to="lbl19513"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/all" xbrldt:closed="true" xbrldt:contextElement="scenario" xlink:from="lbl19487" xlink:to="lbl19447"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ClassesOfPropertyPlantAndEquipmentDomain" xlink:label="lbl19514"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-default" xlink:from="lbl19448" xlink:to="lbl19514"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_CarryingAmountMember" xlink:label="lbl19515"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-default" xlink:from="lbl19449" xlink:to="lbl19515"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PropertyPlantAndEquipmentIncludingRightofuseAssetsDomain" xlink:label="lbl19516"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-default" xlink:from="lbl19450" xlink:to="lbl19516"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PropertyPlantAndEquipmentByOperatingLeaseStatusDomain" xlink:label="lbl19517"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-default" xlink:from="lbl19451" xlink:to="lbl19517"/>
+  </link:definitionLink>
+</link:linkbase>

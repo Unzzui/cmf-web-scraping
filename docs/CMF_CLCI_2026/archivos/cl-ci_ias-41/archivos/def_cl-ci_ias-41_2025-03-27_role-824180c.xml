@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xbrldt="http://xbrl.org/2005/xbrldt" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xbrl.org/2005/xbrldt http://www.xbrl.org/2005/xbrldt-2005.xsd">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/ias-41_2025-03-27_role-824180c" xlink:href="../cl-ci_ias-41_2025-03-27_role-824180.xsd#ias-41_2025-03-27_role-824180c"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/hypercube-dimension" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#hypercube-dimension"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/dimension-domain" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#dimension-domain"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/domain-member" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#domain-member"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/all" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#all"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/dimension-default" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#dimension-default"/>
+  <link:definitionLink xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/ias-41_2025-03-27_role-824180c">
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfReconciliationOfChangesInBiologicalAssetsTable" xlink:label="lbl23484"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_MeasurementAxis" xlink:label="lbl23485"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/hypercube-dimension" xlink:from="lbl23484" xlink:to="lbl23485"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_CarryingAmountAccumulatedDepreciationAmortisationAndImpairmentAndGrossCarryingAmountAxis" xlink:label="lbl23486"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/hypercube-dimension" xlink:to="lbl23486" xlink:from="lbl23484"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_BiologicalAssetsAxis" xlink:label="lbl23487"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/hypercube-dimension" xlink:to="lbl23487" xlink:from="lbl23484"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_MeasurementDomain" xlink:label="lbl23488"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-domain" xlink:to="lbl23488" xlink:from="lbl23485"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_CarryingAmountMember" xlink:label="lbl23489"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-domain" xlink:to="lbl23489" xlink:from="lbl23486"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_BiologicalAssetsDomain" xlink:label="lbl23490"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-domain" xlink:to="lbl23490" xlink:from="lbl23487"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AtFairValueMember" xlink:label="lbl23491"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="2.0" xlink:to="lbl23491" xlink:from="lbl23488"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AtCostMember" xlink:label="lbl23492"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="3.0" xlink:to="lbl23492" xlink:from="lbl23488"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GrossCarryingAmountMember" xlink:label="lbl23493"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="2.0" xlink:to="lbl23493" xlink:from="lbl23489"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AccumulatedDepreciationAmortisationAndImpairmentMember" xlink:label="lbl23494"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="3.0" xlink:to="lbl23494" xlink:from="lbl23489"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AccumulatedDepreciationAndAmortisationMember" xlink:label="lbl23495"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="4.0" xlink:to="lbl23495" xlink:from="lbl23494"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AccumulatedImpairmentMember" xlink:label="lbl23496"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="5.0" xlink:to="lbl23496" xlink:from="lbl23494"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_CurrentBiologicalAssetsMember" xlink:label="lbl23497"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="2.0" xlink:to="lbl23497" xlink:from="lbl23490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_NoncurrentBiologicalAssetsMember" xlink:label="lbl23498"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="3.0" xlink:to="lbl23498" xlink:from="lbl23490"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfReconciliationOfChangesInBiologicalAssetsAbstract" xlink:label="lbl23499"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfReconciliationOfChangesInBiologicalAssetsLineItems" xlink:label="lbl23500"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="220.0" xlink:from="lbl23499" xlink:to="lbl23500"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ReconciliationOfChangesInBiologicalAssetsAbstract" xlink:label="lbl23501"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="230.0" xlink:to="lbl23501" xlink:from="lbl23500"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ChangesInBiologicalAssetsAbstract" xlink:label="lbl23502"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="240.0" xlink:to="lbl23502" xlink:from="lbl23501"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AdditionsOtherThanThroughBusinessCombinationsBiologicalAssetsAbstract" xlink:label="lbl23503"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="250.0" xlink:to="lbl23503" xlink:from="lbl23502"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AdditionsFromSubsequentExpenditureRecognisedAsAssetBiologicalAssets" xlink:label="lbl23504"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="260.0" xlink:to="lbl23504" xlink:from="lbl23503"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AdditionsFromPurchasesBiologicalAssets" xlink:label="lbl23505"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="270.0" xlink:to="lbl23505" xlink:from="lbl23503"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AdditionsOtherThanThroughBusinessCombinationsBiologicalAssets" xlink:label="lbl23506"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="280.0" xlink:to="lbl23506" xlink:from="lbl23503"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AcquisitionsThroughBusinessCombinationsBiologicalAssets" xlink:label="lbl23507"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="290.0" xlink:to="lbl23507" xlink:from="lbl23502"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IncreaseDecreaseThroughNetExchangeDifferencesBiologicalAssets" xlink:label="lbl23508"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="300.0" xlink:to="lbl23508" xlink:from="lbl23502"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DepreciationBiologicalAssets" xlink:label="lbl23509"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="310.0" xlink:to="lbl23509" xlink:from="lbl23502"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ImpairmentLossRecognisedInProfitOrLossBiologicalAssets" xlink:label="lbl23510"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="320.0" xlink:to="lbl23510" xlink:from="lbl23502"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ReversalOfImpairmentLossRecognisedInProfitOrLossBiologicalAssets" xlink:label="lbl23511"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="330.0" xlink:to="lbl23511" xlink:from="lbl23502"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesOnFairValueAdjustmentBiologicalAssetsAbstract" xlink:label="lbl23512"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="340.0" xlink:to="lbl23512" xlink:from="lbl23502"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesOnFairValueAdjustmentAttributableToPhysicalChangesBiologicalAssets" xlink:label="lbl23513"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="350.0" xlink:to="lbl23513" xlink:from="lbl23512"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesOnFairValueAdjustmentAttributableToPriceChangesBiologicalAssets" xlink:label="lbl23514"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="360.0" xlink:to="lbl23514" xlink:from="lbl23512"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesOnFairValueAdjustmentBiologicalAssets" xlink:label="lbl23515"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="370.0" xlink:to="lbl23515" xlink:from="lbl23512"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IncreaseDecreaseThroughTransfersAndOtherChangesBiologicalAssets" xlink:label="lbl23516"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="380.0" xlink:to="lbl23516" xlink:from="lbl23502"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisposalsBiologicalAssets" xlink:label="lbl23517"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="390.0" xlink:to="lbl23517" xlink:from="lbl23502"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DecreaseDueToHarvestBiologicalAssets" xlink:label="lbl23518"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="400.0" xlink:to="lbl23518" xlink:from="lbl23502"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DecreaseThroughClassifiedAsHeldForSaleBiologicalAssets" xlink:label="lbl23519"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="410.0" xlink:to="lbl23519" xlink:from="lbl23502"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ChangesInBiologicalAssets" xlink:label="lbl23520"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="420.0" xlink:to="lbl23520" xlink:from="lbl23502"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_BiologicalAssets" xlink:label="lbl23521"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="430.0" xlink:to="lbl23521" xlink:from="lbl23501"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/all" xbrldt:closed="true" xbrldt:contextElement="scenario" xlink:from="lbl23499" xlink:to="lbl23484"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_MeasurementDomain" xlink:label="lbl23522"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-default" xlink:from="lbl23485" xlink:to="lbl23522"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_CarryingAmountMember" xlink:label="lbl23523"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-default" xlink:from="lbl23486" xlink:to="lbl23523"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_BiologicalAssetsDomain" xlink:label="lbl23524"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-default" xlink:from="lbl23487" xlink:to="lbl23524"/>
+  </link:definitionLink>
+</link:linkbase>

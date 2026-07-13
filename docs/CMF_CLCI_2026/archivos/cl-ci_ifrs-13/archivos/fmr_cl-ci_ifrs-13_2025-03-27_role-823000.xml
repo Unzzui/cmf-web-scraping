@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xs="https://www.w3.org/2001/XMLSchema"
+               xmlns:xbrli="http://www.xbrl.org/2003/instance"
+               xmlns:xfi="http://www.xbrl.org/2008/function/instance"
+               xmlns:gen="http://xbrl.org/2008/generic"
+               xmlns:xlink="http://www.w3.org/1999/xlink"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:va="http://xbrl.org/2008/assertion/value"
+               xmlns:variable="http://xbrl.org/2008/variable"
+               xmlns:cf="http://xbrl.org/2008/filter/concept"
+               xmlns:pf="http://xbrl.org/2008/filter/period"
+               xmlns:ifrs-full="https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full"
+               xmlns:label="http://xbrl.org/2008/label"
+               xmlns:msg="http://xbrl.org/2010/message"
+               xmlns:df="http://xbrl.org/2008/filter/dimension"
+               xmlns:cl-ci="https://www.cmfchile.cl/cl/fr/ci/2026-01-02"
+               xsi:schemaLocation="http://xbrl.org/2008/assertion/value http://www.xbrl.org/2008/value-assertion.xsd http://xbrl.org/2008/variable http://www.xbrl.org/2008/variable.xsd http://xbrl.org/2008/filter/concept http://www.xbrl.org/2008/concept-filter.xsd http://xbrl.org/2008/filter/period http://www.xbrl.org/2008/period-filter.xsd http://xbrl.org/2008/label http://www.xbrl.org/2008/generic-label.xsd http://xbrl.org/2010/message http://www.xbrl.org/2010/generic-message.xsd http://xbrl.org/2008/filter/dimension http://www.xbrl.org/2008/dimension-filter.xsd http://xbrl.org/2008/generic http://www.xbrl.org/2008/generic-link.xsd https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd https://www.cmfchile.cl/cl/fr/ci/2026-01-02 ../../cl-ci_cor_2026-01-02.xsd">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/ifrs-13_2025-03-27_role-823000" xlink:href="../cl-ci_ifrs-13_2025-03-27_role-823000.xsd#ifrs-13_2025-03-27_role-823000"/>
+  <link:roleRef xlink:type="simple" roleURI="http://www.xbrl.org/2010/role/message" xlink:href="http://www.xbrl.org/2010/generic-message.xsd#standard-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-satisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-unsatisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/element-label" xlink:href="http://www.xbrl.org/2008/generic-label.xsd#element-label"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-set" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-set"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-filter" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-filter"/>
+  <gen:link xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/ifrs-13_2025-03-27_role-823000">
+    <va:valueAssertion xlink:type="resource" id="regla823001" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:ActivosNota eq $cl-ci:ActivosNota2  + $ifrs-full:IncreaseDecreaseInFairValueMeasurementAssets" xlink:label="lbl22026"/>
+    <msg:message xlink:type="resource" id="id10959" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22035">Rol[823000] Regla823001: Informa Activos al final del periodo OK; contexto  {$ifrs-full:IncreaseDecreaseInFairValueMeasurementAssets/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl22026" xlink:to="lbl22035"/>
+    <va:valueAssertion xlink:type="resource" id="regla823002" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:PasivosNota eq $cl-ci:PasivosNota2  + $ifrs-full:IncreaseDecreaseInFairValueMeasurementLiabilities" xlink:label="lbl22037"/>
+    <msg:message xlink:type="resource" id="id10962" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22046">Rol[823000a] Regla823002: Informa Pasivo al final del periodo OK; contexto  {$ifrs-full:IncreaseDecreaseInFairValueMeasurementLiabilities/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl22037" xlink:to="lbl22046"/>
+    <va:valueAssertion xlink:type="resource" id="regla823003" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:PatrimonioNota eq $cl-ci:PatrimonioNota2  + $ifrs-full:IncreaseDecreaseInFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl22048"/>
+    <msg:message xlink:type="resource" id="id10965" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22057">Rol[823000b] Regla823003: Informa Patrimonio al final del periodo OK; contexto  {$ifrs-full:IncreaseDecreaseInFairValueMeasurementEntitysOwnEquityInstruments/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl22048" xlink:to="lbl22057"/>
+    <va:valueAssertion xlink:type="resource" id="regla823004" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:ActivosNota = sum($cl-ci:ActivosNota2)" xlink:label="lbl22059"/>
+    <msg:message xlink:type="resource" id="id10968" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22065">Rol[823000] Regla823004: Suma dimensiones Activos OK; contexto  {$cl-ci:ActivosNota/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl22059" xlink:to="lbl22065"/>
+    <va:valueAssertion xlink:type="resource" id="regla823005" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:IncreaseDecreaseInFairValueMeasurementAssets = sum($ifrs-full:IncreaseDecreaseInFairValueMeasurementAssets2)" xlink:label="lbl22067"/>
+    <msg:message xlink:type="resource" id="id10971" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22071">Rol[823000] Regla823005: Suma dimensiones Total incrementos (disminuciones) de la medición del valor razonable, activos OK; contexto  {$ifrs-full:IncreaseDecreaseInFairValueMeasurementAssets/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl22067" xlink:to="lbl22071"/>
+    <va:valueAssertion xlink:type="resource" id="regla823006" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:PasivosNota = sum($cl-ci:PasivosNota2)" xlink:label="lbl22073"/>
+    <msg:message xlink:type="resource" id="id10974" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22079">Rol[823000a] Regla823006: Suma dimensiones Pasivo OK; contexto  {$cl-ci:PasivosNota/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl22073" xlink:to="lbl22079"/>
+    <va:valueAssertion xlink:type="resource" id="regla823007" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:IncreaseDecreaseInFairValueMeasurementLiabilities = sum($ifrs-full:IncreaseDecreaseInFairValueMeasurementLiabilities2)" xlink:label="lbl22081"/>
+    <msg:message xlink:type="resource" id="id10977" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22085">Rol[823000a] Regla823007: Suma dimensiones Total incrementos (disminuciones) de la medición del valor razonable, pasivos OK; contexto  {$ifrs-full:IncreaseDecreaseInFairValueMeasurementLiabilities/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl22081" xlink:to="lbl22085"/>
+    <va:valueAssertion xlink:type="resource" id="regla823008" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:PatrimonioNota = sum($cl-ci:PatrimonioNota2)" xlink:label="lbl22087"/>
+    <msg:message xlink:type="resource" id="id10980" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22093">Rol[823000b] Regla823008: Suma dimensiones Patrimonio OK; contexto  {$cl-ci:PatrimonioNota/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl22087" xlink:to="lbl22093"/>
+    <va:valueAssertion xlink:type="resource" id="regla823009" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:IncreaseDecreaseInFairValueMeasurementEntitysOwnEquityInstruments = sum($ifrs-full:IncreaseDecreaseInFairValueMeasurementEntitysOwnEquityInstruments2)" xlink:label="lbl22095"/>
+    <msg:message xlink:type="resource" id="id10983" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22099">Rol[823000b] Regla823009: Suma dimensiones Total incrementos (disminuciones) de la medición del valor razonable, instrumentos de patrimonio propio de la entidad OK; contexto  {$ifrs-full:IncreaseDecreaseInFairValueMeasurementEntitysOwnEquityInstruments/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl22095" xlink:to="lbl22099"/>
+    <msg:message xlink:type="resource" id="id10960" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22036">Rol[823000] Regla823001: Error Activos al final del periodo; contexto  {$ifrs-full:IncreaseDecreaseInFairValueMeasurementAssets/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl22026" xlink:to="lbl22036"/>
+    <msg:message xlink:type="resource" id="id10963" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22047">Rol[823000a] Regla823002: Error Pasivo al final del periodo; contexto  {$ifrs-full:IncreaseDecreaseInFairValueMeasurementLiabilities/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl22037" xlink:to="lbl22047"/>
+    <msg:message xlink:type="resource" id="id10966" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22058">Rol[823000b] Regla823003: Error Patrimonio al final del periodo; contexto  {$ifrs-full:IncreaseDecreaseInFairValueMeasurementEntitysOwnEquityInstruments/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl22048" xlink:to="lbl22058"/>
+    <msg:message xlink:type="resource" id="id10969" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22066">Rol[823000] Regla823004: Error en suma dimensiones Activos; contexto  {$cl-ci:ActivosNota/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl22059" xlink:to="lbl22066"/>
+    <msg:message xlink:type="resource" id="id10972" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22072">Rol[823000] Regla823005: Error en suma dimensiones Total incrementos (disminuciones) de la medición del valor razonable, activos; contexto  {$ifrs-full:IncreaseDecreaseInFairValueMeasurementAssets/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl22067" xlink:to="lbl22072"/>
+    <msg:message xlink:type="resource" id="id10975" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22080">Rol[823000a] Regla823006: Error en suma dimensiones Pasivo; contexto  {$cl-ci:PasivosNota/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl22073" xlink:to="lbl22080"/>
+    <msg:message xlink:type="resource" id="id10978" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22086">Rol[823000a] Regla823007: Error en suma dimensiones Total incrementos (disminuciones) de la medición del valor razonable, pasivos; contexto  {$ifrs-full:IncreaseDecreaseInFairValueMeasurementLiabilities/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl22081" xlink:to="lbl22086"/>
+    <msg:message xlink:type="resource" id="id10981" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22094">Rol[823000b] Regla823008: Error en suma dimensiones Patrimonio; contexto  {$cl-ci:PatrimonioNota/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl22087" xlink:to="lbl22094"/>
+    <msg:message xlink:type="resource" id="id10984" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl22100">Rol[823000b] Regla823009: Error en suma dimensiones Total incrementos (disminuciones) de la medición del valor razonable, instrumentos de patrimonio propio de la entidad; contexto  {$ifrs-full:IncreaseDecreaseInFairValueMeasurementEntitysOwnEquityInstruments/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl22095" xlink:to="lbl22100"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10958" xlink:label="lbl22034">823001</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl22026" xlink:to="lbl22034"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10961" xlink:label="lbl22045">823002</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl22037" xlink:to="lbl22045"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10964" xlink:label="lbl22056">823003</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl22048" xlink:to="lbl22056"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10967" xlink:label="lbl22064">823004</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl22059" xlink:to="lbl22064"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10970" xlink:label="lbl22070">823005</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl22067" xlink:to="lbl22070"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10973" xlink:label="lbl22078">823006</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl22073" xlink:to="lbl22078"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10976" xlink:label="lbl22084">823007</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl22081" xlink:to="lbl22084"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10979" xlink:label="lbl22092">823008</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl22087" xlink:to="lbl22092"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10982" xlink:label="lbl22098">823009</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl22095" xlink:to="lbl22098"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl22027" id="id10985"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:ActivosNota" xlink:from="lbl22026" xlink:to="lbl22027"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl22030" id="id10986"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:ActivosNota2" xlink:from="lbl22026" xlink:to="lbl22030"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl22032" id="id10987"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInFairValueMeasurementAssets" xlink:from="lbl22026" xlink:to="lbl22032"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl22038" id="id10988"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PasivosNota" xlink:from="lbl22037" xlink:to="lbl22038"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl22041" id="id10989"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PasivosNota2" xlink:from="lbl22037" xlink:to="lbl22041"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl22043" id="id10990"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInFairValueMeasurementLiabilities" xlink:from="lbl22037" xlink:to="lbl22043"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl22049" id="id10991"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PatrimonioNota" xlink:from="lbl22048" xlink:to="lbl22049"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl22052" id="id10992"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PatrimonioNota2" xlink:from="lbl22048" xlink:to="lbl22052"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl22054" id="id10993"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInFairValueMeasurementEntitysOwnEquityInstruments" xlink:from="lbl22048" xlink:to="lbl22054"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl22060" id="id10994"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:ActivosNota" xlink:from="lbl22059" xlink:to="lbl22060"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl22062" id="id10995"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:ActivosNota2" xlink:from="lbl22059" xlink:to="lbl22062"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl22068" id="id10996"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInFairValueMeasurementAssets" xlink:from="lbl22067" xlink:to="lbl22068"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl22069" id="id10997"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInFairValueMeasurementAssets2" xlink:from="lbl22067" xlink:to="lbl22069"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl22074" id="id10998"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PasivosNota" xlink:from="lbl22073" xlink:to="lbl22074"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl22076" id="id10999"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PasivosNota2" xlink:from="lbl22073" xlink:to="lbl22076"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl22082" id="id11000"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInFairValueMeasurementLiabilities" xlink:from="lbl22081" xlink:to="lbl22082"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl22083" id="id11001"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInFairValueMeasurementLiabilities2" xlink:from="lbl22081" xlink:to="lbl22083"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl22088" id="id11002"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PatrimonioNota" xlink:from="lbl22087" xlink:to="lbl22088"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl22090" id="id11003"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PatrimonioNota2" xlink:from="lbl22087" xlink:to="lbl22090"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl22096" id="id11004"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInFairValueMeasurementEntitysOwnEquityInstruments" xlink:from="lbl22095" xlink:to="lbl22096"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl22097" id="id11005"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInFairValueMeasurementEntitysOwnEquityInstruments2" xlink:from="lbl22095" xlink:to="lbl22097"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl22028" id="id11006">
+      <cf:concept>
+        <cf:qname>cl-ci:ActivosNota</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22027" xlink:to="lbl22028"/>
+    <pf:instantDuration xlink:type="resource" boundary="end" variable="ifrs-full:IncreaseDecreaseInFairValueMeasurementAssets" xlink:label="lbl22029" id="id11007"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22027" xlink:to="lbl22029"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22030" xlink:to="lbl22028"/>
+    <pf:instantDuration xlink:type="resource" boundary="start" variable="ifrs-full:IncreaseDecreaseInFairValueMeasurementAssets" xlink:label="lbl22031" id="id11008"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22030" xlink:to="lbl22031"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl22033" id="id11009">
+      <cf:concept>
+        <cf:qname>ifrs-full:IncreaseDecreaseInFairValueMeasurementAssets</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22032" xlink:to="lbl22033"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl22039" id="id11010">
+      <cf:concept>
+        <cf:qname>cl-ci:PasivosNota</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22038" xlink:to="lbl22039"/>
+    <pf:instantDuration xlink:type="resource" boundary="end" variable="ifrs-full:IncreaseDecreaseInFairValueMeasurementLiabilities" xlink:label="lbl22040" id="id11011"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22038" xlink:to="lbl22040"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22041" xlink:to="lbl22039"/>
+    <pf:instantDuration xlink:type="resource" boundary="start" variable="ifrs-full:IncreaseDecreaseInFairValueMeasurementLiabilities" xlink:label="lbl22042" id="id11012"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22041" xlink:to="lbl22042"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl22044" id="id11013">
+      <cf:concept>
+        <cf:qname>ifrs-full:IncreaseDecreaseInFairValueMeasurementLiabilities</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22043" xlink:to="lbl22044"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl22050" id="id11014">
+      <cf:concept>
+        <cf:qname>cl-ci:PatrimonioNota</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22049" xlink:to="lbl22050"/>
+    <pf:instantDuration xlink:type="resource" boundary="end" variable="ifrs-full:IncreaseDecreaseInFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl22051" id="id11015"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22049" xlink:to="lbl22051"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22052" xlink:to="lbl22050"/>
+    <pf:instantDuration xlink:type="resource" boundary="start" variable="ifrs-full:IncreaseDecreaseInFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl22053" id="id11016"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22052" xlink:to="lbl22053"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl22055" id="id11017">
+      <cf:concept>
+        <cf:qname>ifrs-full:IncreaseDecreaseInFairValueMeasurementEntitysOwnEquityInstruments</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22054" xlink:to="lbl22055"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22060" xlink:to="lbl22028"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl22061" id="id11018">
+      <df:dimension>
+        <df:qname>cl-ci:InformacionARevelarSobreMedicionValorRazonableActivosEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:ClassesOfAssetsDomain</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22060" xlink:to="lbl22061"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22062" xlink:to="lbl22028"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl22063" id="id11019">
+      <df:dimension>
+        <df:qname>cl-ci:InformacionARevelarSobreMedicionValorRazonableActivosEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:ClassesOfAssetsDomain</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/ifrs-13_2025-03-27_role-823000</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22062" xlink:to="lbl22063"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22068" xlink:to="lbl22033"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22068" xlink:to="lbl22061"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22069" xlink:to="lbl22033"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22069" xlink:to="lbl22063"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22074" xlink:to="lbl22039"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl22075" id="id11020">
+      <df:dimension>
+        <df:qname>cl-ci:InformacionARevelarSobreMedicionValorRazonablePasivosEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:ClassesOfLiabilitiesDomain</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22074" xlink:to="lbl22075"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22076" xlink:to="lbl22039"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl22077" id="id11021">
+      <df:dimension>
+        <df:qname>cl-ci:InformacionARevelarSobreMedicionValorRazonablePasivosEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:ClassesOfLiabilitiesDomain</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/ifrs-13_2025-03-27_role-823000a</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22076" xlink:to="lbl22077"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22082" xlink:to="lbl22044"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22082" xlink:to="lbl22075"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22083" xlink:to="lbl22044"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22083" xlink:to="lbl22077"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22088" xlink:to="lbl22050"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl22089" id="id11022">
+      <df:dimension>
+        <df:qname>cl-ci:InformacionARrevelarSobreMedicionValorRazonablePatrimonioEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:ClassesOfEntitysOwnEquityInstrumentsDomain</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22088" xlink:to="lbl22089"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22090" xlink:to="lbl22050"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl22091" id="id11023">
+      <df:dimension>
+        <df:qname>cl-ci:InformacionARrevelarSobreMedicionValorRazonablePatrimonioEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:ClassesOfEntitysOwnEquityInstrumentsDomain</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/ifrs-13_2025-03-27_role-823000b</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22090" xlink:to="lbl22091"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22096" xlink:to="lbl22055"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22096" xlink:to="lbl22089"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22097" xlink:to="lbl22055"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl22097" xlink:to="lbl22091"/>
+  </gen:link>
+</link:linkbase>

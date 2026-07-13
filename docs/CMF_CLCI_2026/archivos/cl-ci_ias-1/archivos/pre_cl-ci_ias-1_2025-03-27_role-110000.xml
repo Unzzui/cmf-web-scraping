@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/ias-1_2025-03-27_role-110000" xlink:href="../cl-ci_ias-1_2025-03-27_role-110000.xsd#ias-1_2025-03-27_role-110000"/>
+  <link:presentationLink xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/ias-1_2025-03-27_role-110000">
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfGeneralInformationAboutFinancialStatementsExplanatory" xlink:label="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_NameOfReportingEntityOrOtherMeansOfIdentification" xlink:label="lbl13380"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="20.0" xlink:from="lbl13379" xlink:to="lbl13380"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_RUTEntidadInforma" xlink:label="lbl13381"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="30.0" xlink:to="lbl13381" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ExplanationOfChangeInNameOfReportingEntityOrOtherMeansOfIdentificationFromEndOfPrecedingReportingPeriod" xlink:label="lbl13382"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="50.0" xlink:to="lbl13382" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ChangeInNameOfReportingEntityOrOtherMeansOfIdentificationFromEndOfPrecedingReportingPeriod" xlink:label="lbl13383"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="55.0" xlink:to="lbl13383" xlink:from="lbl13382"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_TipoEEFF" xlink:label="lbl13384"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="65.0" xlink:to="lbl13384" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_DateOfEndOfReportingPeriod" xlink:label="lbl13385"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="70.0" xlink:to="lbl13385" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PeriodCoveredByFinancialStatements" xlink:label="lbl13386"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="80.0" xlink:to="lbl13386" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_DescriptionOfPresentationCurrency" xlink:label="lbl13387"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="90.0" xlink:to="lbl13387" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_LevelOfRoundingUsedInFinancialStatements" xlink:label="lbl13388"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="100.0" xlink:to="lbl13388" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_CodigoActividadPrincipal" xlink:label="lbl13389"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="130.0" xlink:to="lbl13389" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_CodigoActividadDos" xlink:label="lbl13390"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="140.0" xlink:to="lbl13390" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_CodigoActividadTres" xlink:label="lbl13391"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="150.0" xlink:to="lbl13391" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_NombreEmpresaAuditoriExterna" xlink:label="lbl13392"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="155.0" xlink:to="lbl13392" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_NombreSocioFirmaOpinion" xlink:label="lbl13393"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="160.0" xlink:to="lbl13393" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_RutSocioFirmaOpinion" xlink:label="lbl13394"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="165.0" xlink:to="lbl13394" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_TipoOpinionEEFFDiciembre" xlink:label="lbl13395"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="170.0" xlink:to="lbl13395" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_InformeEEFFJunio" xlink:label="lbl13396"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="175.0" xlink:to="lbl13396" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_FechaEmisionOpinionEstadosFinancieros" xlink:label="lbl13397"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="180.0" xlink:to="lbl13397" xlink:from="lbl13379"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_FechaSesionDirectorioAprobaronEstadosFinancieros" xlink:label="lbl13398"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="190.0" xlink:to="lbl13398" xlink:from="lbl13379"/>
+  </link:presentationLink>
+</link:linkbase>

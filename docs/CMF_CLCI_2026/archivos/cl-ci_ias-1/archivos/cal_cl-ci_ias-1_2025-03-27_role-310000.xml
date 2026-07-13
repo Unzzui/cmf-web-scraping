@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/ias-1_2025-03-27_role-310000" xlink:href="../cl-ci_ias-1_2025-03-27_role-310000.xsd#ias-1_2025-03-27_role-310000"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="https://xbrl.org/2023/arcrole/summation-item" xlink:href="https://www.xbrl.org/2023/calculation-1.1.xsd#summation-item"/>
+  <link:calculationLink xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/ias-1_2025-03-27_role-310000">
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GrossProfit" xlink:label="lbl13742"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_Revenue" xlink:label="lbl13743"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="30.0" xlink:from="lbl13742" xlink:to="lbl13743"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_CostOfSales" xlink:label="lbl13744"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="-1" order="40.0" xlink:to="lbl13744" xlink:from="lbl13742"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ProfitLossFromOperatingActivities" xlink:label="lbl13745"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="50.0" xlink:from="lbl13745" xlink:to="lbl13742"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_OtherIncome" xlink:label="lbl13746"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="80.0" xlink:to="lbl13746" xlink:from="lbl13745"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DistributionCosts" xlink:label="lbl13747"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="-1" order="90.0" xlink:to="lbl13747" xlink:from="lbl13745"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AdministrativeExpense" xlink:label="lbl13748"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="-1" order="100.0" xlink:to="lbl13748" xlink:from="lbl13745"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_OtherExpenseByFunction" xlink:label="lbl13749"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="-1" order="110.0" xlink:to="lbl13749" xlink:from="lbl13745"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_OtherGainsLosses" xlink:label="lbl13750"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="120.0" xlink:to="lbl13750" xlink:from="lbl13745"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ProfitLossBeforeTax" xlink:label="lbl13751"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="123.0" xlink:from="lbl13751" xlink:to="lbl13745"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainLossArisingFromDerecognitionOfFinancialAssetsMeasuredAtAmortisedCost" xlink:label="lbl13752"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="126.0" xlink:to="lbl13752" xlink:from="lbl13751"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_FinanceIncome" xlink:label="lbl13753"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="130.0" xlink:to="lbl13753" xlink:from="lbl13751"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_FinanceCosts" xlink:label="lbl13754"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="-1" order="140.0" xlink:to="lbl13754" xlink:from="lbl13751"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ImpairmentLossImpairmentGainAndReversalOfImpairmentLossDeterminedInAccordanceWithIFRS9" xlink:label="lbl13755"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="-1" order="145.0" xlink:to="lbl13755" xlink:from="lbl13751"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod" xlink:label="lbl13756"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="150.0" xlink:to="lbl13756" xlink:from="lbl13751"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesOnExchangeDifferencesOnTranslationRecognisedInProfitOrLoss" xlink:label="lbl13757"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="160.0" xlink:to="lbl13757" xlink:from="lbl13751"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_ResultadosUnidadesReajuste" xlink:label="lbl13758"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="170.0" xlink:to="lbl13758" xlink:from="lbl13751"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesArisingFromDifferenceBetweenPreviousCarryingAmountAndFairValueOfFinancialAssetsReclassifiedAsMeasuredAtFairValue" xlink:label="lbl13759"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="180.0" xlink:to="lbl13759" xlink:from="lbl13751"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_CumulativeGainLossPreviouslyRecognisedInOtherComprehensiveIncomeArisingFromReclassificationOfFinancialAssetsOutOfFairValueThroughOtherComprehensiveIncomeIntoFairValueThroughProfitOrLossMeasurementCategory" xlink:label="lbl13760"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="182.0" xlink:to="lbl13760" xlink:from="lbl13751"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_HedgingGainsLossesForHedgeOfGroupOfItemsWithOffsettingRiskPositions" xlink:label="lbl13761"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="185.0" xlink:to="lbl13761" xlink:from="lbl13751"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ProfitLossFromContinuingOperations" xlink:label="lbl13762"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="190.0" xlink:from="lbl13762" xlink:to="lbl13751"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IncomeTaxExpenseContinuingOperations" xlink:label="lbl13763"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="-1" order="200.0" xlink:to="lbl13763" xlink:from="lbl13762"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ProfitLoss" xlink:label="lbl13764"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="210.0" xlink:from="lbl13764" xlink:to="lbl13762"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ProfitLossFromDiscontinuedOperations" xlink:label="lbl13765"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="220.0" xlink:to="lbl13765" xlink:from="lbl13764"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_BasicEarningsLossPerShare" xlink:label="lbl13766"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_BasicEarningsLossPerShareFromContinuingOperations" xlink:label="lbl13767"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="300.0" xlink:from="lbl13766" xlink:to="lbl13767"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_BasicEarningsLossPerShareFromDiscontinuedOperations" xlink:label="lbl13768"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="310.0" xlink:to="lbl13768" xlink:from="lbl13766"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DilutedEarningsLossPerShare" xlink:label="lbl13769"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DilutedEarningsLossPerShareFromContinuingOperations" xlink:label="lbl13770"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="340.0" xlink:from="lbl13769" xlink:to="lbl13770"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DilutedEarningsLossPerShareFromDiscontinuedOperations" xlink:label="lbl13771"/>
+    <link:calculationArc xlink:type="arc" xlink:arcrole="https://xbrl.org/2023/arcrole/summation-item" weight="+1" order="350.0" xlink:to="lbl13771" xlink:from="lbl13769"/>
+  </link:calculationLink>
+</link:linkbase>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xbrldt="http://xbrl.org/2005/xbrldt" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xbrl.org/2005/xbrldt http://www.xbrl.org/2005/xbrldt-2005.xsd">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/circ-1901_2008-10-30_role-872000" xlink:href="../cl-ci_circ-1901_2008-10-30_role-872000.xsd#circ-1901_2008-10-30_role-872000"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/hypercube-dimension" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#hypercube-dimension"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/dimension-domain" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#dimension-domain"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/domain-member" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#domain-member"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/all" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#all"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/dimension-default" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#dimension-default"/>
+  <link:definitionLink xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/circ-1901_2008-10-30_role-872000">
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_InformacionARrevelarSobreMedioAmbienteTabla" xlink:label="lbl28345"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_ProyectosProteccionMedioAmbienteEje" xlink:label="lbl28346"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/hypercube-dimension" xlink:from="lbl28345" xlink:to="lbl28346"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_TotalDesembolsosEnMedioAmbienteMiembro" xlink:label="lbl28347"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-domain" xlink:to="lbl28347" xlink:from="lbl28346"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_InformacionARrevelarSobreMedioAmbienteSinopsis" xlink:label="lbl28348"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_InformacionARevelarSobreMedioAmbientePartidas" xlink:label="lbl28349"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="60.0" xlink:from="lbl28348" xlink:to="lbl28349"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_IdentificacionEmpresa" xlink:label="lbl28350"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="70.0" xlink:to="lbl28350" xlink:from="lbl28349"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_NombreProyecto" xlink:label="lbl28351"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="80.0" xlink:to="lbl28351" xlink:from="lbl28349"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_Concepto" xlink:label="lbl28352"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="90.0" xlink:to="lbl28352" xlink:from="lbl28349"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_DesembolsosEfectuadosAlPeriodoActualSinopsis" xlink:label="lbl28353"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="100.0" xlink:to="lbl28353" xlink:from="lbl28349"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_EstadoDelProyecto" xlink:label="lbl28354"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="110.0" xlink:to="lbl28354" xlink:from="lbl28353"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MontoDesembolsosAlPeriodoActual" xlink:label="lbl28355"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="120.0" xlink:to="lbl28355" xlink:from="lbl28353"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_ActivoGasto" xlink:label="lbl28356"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="130.0" xlink:to="lbl28356" xlink:from="lbl28353"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_ItemActivoGastoDeDestino" xlink:label="lbl28357"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="140.0" xlink:to="lbl28357" xlink:from="lbl28353"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MontoDesembolsoAlPeriodoAnterior" xlink:label="lbl28358"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="150.0" xlink:to="lbl28358" xlink:from="lbl28349"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_DesembolsosComprometidosAFuturoSinopsis" xlink:label="lbl28359"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="160.0" xlink:to="lbl28359" xlink:from="lbl28349"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MontoDesembolsoAFuturo" xlink:label="lbl28360"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="170.0" xlink:to="lbl28360" xlink:from="lbl28359"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_FechaEstimadaDesembolso" xlink:label="lbl28361"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="180.0" xlink:to="lbl28361" xlink:from="lbl28359"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/all" xbrldt:closed="true" xbrldt:contextElement="scenario" xlink:from="lbl28348" xlink:to="lbl28345"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_TotalDesembolsosEnMedioAmbienteMiembro" xlink:label="lbl28362"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-default" xlink:from="lbl28346" xlink:to="lbl28362"/>
+  </link:definitionLink>
+</link:linkbase>

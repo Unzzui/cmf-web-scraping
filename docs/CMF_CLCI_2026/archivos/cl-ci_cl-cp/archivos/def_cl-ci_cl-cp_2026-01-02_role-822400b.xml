@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xbrldt="http://xbrl.org/2005/xbrldt" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xbrl.org/2005/xbrldt http://www.xbrl.org/2005/xbrldt-2005.xsd">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400b" xlink:href="../cl-ci_cl-cp_2026-01-02_role-822400.xsd#cl-cp_2026-01-02_role-822400b"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/hypercube-dimension" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#hypercube-dimension"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/dimension-domain" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#dimension-domain"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/domain-member" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#domain-member"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/all" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#all"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/dimension-default" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#dimension-default"/>
+  <link:definitionLink xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400b">
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_ObligacionesConPublicoTabla" xlink:label="lbl20913"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_EmisionesDeudaEje" xlink:label="lbl20914"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/hypercube-dimension" xlink:from="lbl20913" xlink:to="lbl20914"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_ObligacionesEmisionesDeudaMiembro" xlink:label="lbl20915"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-domain" xlink:to="lbl20915" xlink:from="lbl20914"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_ObligacionesConPublicoSinopsis" xlink:label="lbl20916"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_ObligacionesConPublicoPartidas" xlink:label="lbl20917"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="650.0" xlink:from="lbl20916" xlink:to="lbl20917"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_RUTEntidadDeudora" xlink:label="lbl20918"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="660.0" xlink:to="lbl20918" xlink:from="lbl20917"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_NombreEntidadDeudora" xlink:label="lbl20919"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="670.0" xlink:to="lbl20919" xlink:from="lbl20917"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_PaisEmpresaDeudora" xlink:label="lbl20920"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="680.0" xlink:to="lbl20920" xlink:from="lbl20917"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_NumeroInscripcion" xlink:label="lbl20921"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="690.0" xlink:to="lbl20921" xlink:from="lbl20917"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_Series" xlink:label="lbl20922"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="700.0" xlink:to="lbl20922" xlink:from="lbl20917"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_FechaVencimiento" xlink:label="lbl20923"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="710.0" xlink:to="lbl20923" xlink:from="lbl20917"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MonedaOUnidadReajuste" xlink:label="lbl20924"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="720.0" xlink:to="lbl20924" xlink:from="lbl20917"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_PeriodicidadAmortizacion" xlink:label="lbl20925"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="730.0" xlink:to="lbl20925" xlink:from="lbl20917"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_TasaEfectiva" xlink:label="lbl20926"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="740.0" xlink:to="lbl20926" xlink:from="lbl20917"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_TasaNominal" xlink:label="lbl20927"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="750.0" xlink:to="lbl20927" xlink:from="lbl20917"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MontosNominalesObligacionesPublicoSinopsis" xlink:label="lbl20928"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="760.0" xlink:to="lbl20928" xlink:from="lbl20917"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_Hasta90DiasObligacionesPublicoNominales" xlink:label="lbl20929"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="770.0" xlink:to="lbl20929" xlink:from="lbl20928"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe90DiasHasta1AñoObligacionesPublicoNominales" xlink:label="lbl20930"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="780.0" xlink:to="lbl20930" xlink:from="lbl20928"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe1AñoHasta3AñosObligacionesPublicoNominales" xlink:label="lbl20931"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="790.0" xlink:to="lbl20931" xlink:from="lbl20928"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe1AñoHasta2AñosObligacionesPublicoNominales" xlink:label="lbl20932"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="792.0" xlink:to="lbl20932" xlink:from="lbl20931"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe2AñosHasta3AñosObligacionesPublicoNominales" xlink:label="lbl20933"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="794.0" xlink:to="lbl20933" xlink:from="lbl20931"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe3AñosHasta5AñosObligacionesPublicoNominales" xlink:label="lbl20934"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="800.0" xlink:to="lbl20934" xlink:from="lbl20928"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe3AñosHasta4AñosObligacionesPublicoNominales" xlink:label="lbl20935"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="802.0" xlink:to="lbl20935" xlink:from="lbl20934"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe4AñosHasta5AñosObligacionesPublicoNominales" xlink:label="lbl20936"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="804.0" xlink:to="lbl20936" xlink:from="lbl20934"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe5AñosObligacionesPublicoNominales" xlink:label="lbl20937"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="810.0" xlink:to="lbl20937" xlink:from="lbl20928"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MontosNominalesObligacionesPublico" xlink:label="lbl20938"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="820.0" xlink:to="lbl20938" xlink:from="lbl20928"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_ValoresContablesObligacionesPublicoSinopsis" xlink:label="lbl20939"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="830.0" xlink:to="lbl20939" xlink:from="lbl20917"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_ObligacionesConPublicoCorrientes" xlink:label="lbl20940"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="840.0" xlink:to="lbl20940" xlink:from="lbl20939"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_Hasta90DiasObligacionesPublicoContable" xlink:label="lbl20941"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="850.0" xlink:to="lbl20941" xlink:from="lbl20940"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_Masde90DiasHasta1AñoObligacionesPublicoContable" xlink:label="lbl20942"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="860.0" xlink:to="lbl20942" xlink:from="lbl20940"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_ObligacionesConPublicoNoCorrientes" xlink:label="lbl20943"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="870.0" xlink:to="lbl20943" xlink:from="lbl20939"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe1AñoHasta3AñosObligacionesPublicoContable" xlink:label="lbl20944"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="880.0" xlink:to="lbl20944" xlink:from="lbl20943"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe1AñoHasta2AñosObligacionesPublicoContable" xlink:label="lbl20945"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="882.0" xlink:to="lbl20945" xlink:from="lbl20944"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe2AñosHasta3AñosObligacionesPublicoContable" xlink:label="lbl20946"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="884.0" xlink:to="lbl20946" xlink:from="lbl20944"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe3AñosHasta5AñosObligacionesPublicoContable" xlink:label="lbl20947"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="890.0" xlink:to="lbl20947" xlink:from="lbl20943"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe3AñosHasta4AñosObligacionesPublicoContable" xlink:label="lbl20948"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="892.0" xlink:to="lbl20948" xlink:from="lbl20947"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe4AñosHasta5AñosObligacionesPublicoContable" xlink:label="lbl20949"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="894.0" xlink:to="lbl20949" xlink:from="lbl20947"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_MasDe5AñosObligacionesPublicoContable" xlink:label="lbl20950"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="900.0" xlink:to="lbl20950" xlink:from="lbl20943"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_ObligacionesConPublico" xlink:label="lbl20951"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="910.0" xlink:to="lbl20951" xlink:from="lbl20939"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/all" xbrldt:closed="true" xbrldt:contextElement="scenario" xlink:from="lbl20916" xlink:to="lbl20913"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_ObligacionesEmisionesDeudaMiembro" xlink:label="lbl20952"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-default" xlink:from="lbl20914" xlink:to="lbl20952"/>
+  </link:definitionLink>
+</link:linkbase>

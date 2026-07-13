@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xbrldt="http://xbrl.org/2005/xbrldt" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xbrl.org/2005/xbrldt http://www.xbrl.org/2005/xbrldt-2005.xsd">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/ifrs-12_2025-03-27_role-825700e" xlink:href="../cl-ci_ifrs-12_2025-03-27_role-825700.xsd#ifrs-12_2025-03-27_role-825700e"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/hypercube-dimension" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#hypercube-dimension"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/dimension-domain" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#dimension-domain"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/domain-member" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#domain-member"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/int/dim/arcrole/all" xlink:href="http://www.xbrl.org/2005/xbrldt-2005.xsd#all"/>
+  <link:definitionLink xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/ifrs-12_2025-03-27_role-825700e">
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfUnconsolidatedStructuredEntitiesTable" xlink:label="lbl24375"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_UnconsolidatedStructuredEntitiesAxis" xlink:label="lbl24376"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/hypercube-dimension" xlink:from="lbl24375" xlink:to="lbl24376"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_UnconsolidatedStructuredEntitiesDomain" xlink:label="lbl24377"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/dimension-domain" xlink:to="lbl24377" xlink:from="lbl24376"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_UnconsolidatedStructuredEntitiesMember" xlink:label="lbl24378"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="2.0" xlink:to="lbl24378" xlink:from="lbl24377"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_SecuritisationVehiclesMember" xlink:label="lbl24379"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="3.0" xlink:to="lbl24379" xlink:from="lbl24378"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AssetbackedFinancingsMember" xlink:label="lbl24380"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="4.0" xlink:to="lbl24380" xlink:from="lbl24378"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_InvestmentFundsMember" xlink:label="lbl24381"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="5.0" xlink:to="lbl24381" xlink:from="lbl24378"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfUnconsolidatedStructuredEntitiesAbstract" xlink:label="lbl24382"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfUnconsolidatedStructuredEntitiesLineItems" xlink:label="lbl24383"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="20.0" xlink:from="lbl24382" xlink:to="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfInformationAboutInterestsInStructuredEntityExplanatory" xlink:label="lbl24384"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="30.0" xlink:to="lbl24384" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfHowEntityDeterminedWhichStructuredEntitiesItSponsored" xlink:label="lbl24385"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="40.0" xlink:to="lbl24385" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IncomeFromStructuredEntities" xlink:label="lbl24386"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="50.0" xlink:to="lbl24386" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfTypesOfIncomeFromStructuredEntities" xlink:label="lbl24387"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="60.0" xlink:to="lbl24387" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AssetsTransferredToStructuredEntitiesAtTimeOfTransfer" xlink:label="lbl24388"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="70.0" xlink:to="lbl24388" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AssetsRecognisedInEntitysFinancialStatementsInRelationToStructuredEntities" xlink:label="lbl24389"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="80.0" xlink:to="lbl24389" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_LiabilitiesRecognisedInEntitysFinancialStatementsInRelationToStructuredEntities" xlink:label="lbl24390"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="90.0" xlink:to="lbl24390" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfLineItemsInStatementOfFinancialPositionInWhichAssetsAndLiabilitiesRecognisedInRelationToStructuredEntitiesAreRecognised" xlink:label="lbl24391"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="100.0" xlink:to="lbl24391" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_MaximumExposureToLossFromInterestsInStructuredEntities" xlink:label="lbl24392"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="110.0" xlink:to="lbl24392" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_InformationAboutHowMaximumExposureToLossFromInterestsInStructuredEntitiesIsDetermined" xlink:label="lbl24393"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="120.0" xlink:to="lbl24393" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfFactAndReasonsWhyMaximumExposureToLossFromInterestsInStructuredEntitiesCannotBeQuantified" xlink:label="lbl24394"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="130.0" xlink:to="lbl24394" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfComparisonBetweenAssetsAndLiabilitiesRecognisedInRelationToStructuredEntitiesAndMaximumExposureToLossFromInterestsInStructuredEntities" xlink:label="lbl24395"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="140.0" xlink:to="lbl24395" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfTypeOfSupportProvidedToStructuredEntityWithoutHavingContractualObligationToDoSo" xlink:label="lbl24396"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="150.0" xlink:to="lbl24396" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_SupportProvidedToStructuredEntityWithoutHavingContractualObligationToDoSo" xlink:label="lbl24397"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="160.0" xlink:to="lbl24397" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForProvidingSupportToStructuredEntityWithoutHavingContractualObligationToDoSo" xlink:label="lbl24398"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="170.0" xlink:to="lbl24398" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfIntentionsToProvideSupportToStructuredEntity" xlink:label="lbl24399"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="180.0" xlink:to="lbl24399" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AdditionalInformationAboutNatureOfAndChangesInRisksAssociatedWithInterestsInStructuredEntitiesExplanatory" xlink:label="lbl24400"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="190.0" xlink:to="lbl24400" xlink:from="lbl24383"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfTermsOfContractualArrangementsThatCouldRequireParentOrSubsidiariesToProvideFinancialSupportToStructuredEntity" xlink:label="lbl24401"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="200.0" xlink:to="lbl24401" xlink:from="lbl24400"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_LossesIncurredInRelationToInterestsInStructuredEntities" xlink:label="lbl24402"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="210.0" xlink:to="lbl24402" xlink:from="lbl24400"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfWhetherEntityIsRequiredToAbsorbLossesOfStructuredEntitiesBeforeOtherParties" xlink:label="lbl24403"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="220.0" xlink:to="lbl24403" xlink:from="lbl24400"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_MaximumLimitOfLossesOfStructuredEntitiesWhichEntityIsRequiredToAbsorbBeforeOtherParties" xlink:label="lbl24404"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="230.0" xlink:to="lbl24404" xlink:from="lbl24400"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfRankingAndAmountsOfPotentialLossesInStructuredEntitiesBorneByPartiesWhoseInterestsRankLowerThanEntitysInterestsExplanatory" xlink:label="lbl24405"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="240.0" xlink:to="lbl24405" xlink:from="lbl24400"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfInformationAboutLiquidityArrangementsGuaranteesOrOtherCommitmentsWithThirdPartiesThatMayAffectFairValueOrRiskOfInterestsInStructuredEntitiesExplanatory" xlink:label="lbl24406"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="250.0" xlink:to="lbl24406" xlink:from="lbl24400"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfDifficultiesStructuredEntityExperiencedInFinancingItsActivities" xlink:label="lbl24407"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="260.0" xlink:to="lbl24407" xlink:from="lbl24400"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfFormsOfFundingOfStructuredEntityAndTheirWeightedaverageLifeExplanatory" xlink:label="lbl24408"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/domain-member" order="270.0" xlink:to="lbl24408" xlink:from="lbl24400"/>
+    <link:definitionArc xlink:type="arc" xlink:arcrole="http://xbrl.org/int/dim/arcrole/all" xbrldt:closed="true" xbrldt:contextElement="scenario" xlink:from="lbl24382" xlink:to="lbl24375"/>
+  </link:definitionLink>
+</link:linkbase>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xs="https://www.w3.org/2001/XMLSchema"
+               xmlns:xbrli="http://www.xbrl.org/2003/instance"
+               xmlns:xfi="http://www.xbrl.org/2008/function/instance"
+               xmlns:gen="http://xbrl.org/2008/generic"
+               xmlns:xlink="http://www.w3.org/1999/xlink"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:va="http://xbrl.org/2008/assertion/value"
+               xmlns:variable="http://xbrl.org/2008/variable"
+               xmlns:cf="http://xbrl.org/2008/filter/concept"
+               xmlns:df="http://xbrl.org/2008/filter/dimension"
+               xmlns:label="http://xbrl.org/2008/label"
+               xmlns:msg="http://xbrl.org/2010/message"
+               xmlns:ifrs-full="https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full"
+               xsi:schemaLocation="http://xbrl.org/2008/assertion/value http://www.xbrl.org/2008/value-assertion.xsd http://xbrl.org/2008/variable http://www.xbrl.org/2008/variable.xsd http://xbrl.org/2008/filter/concept http://www.xbrl.org/2008/concept-filter.xsd http://xbrl.org/2008/filter/dimension http://www.xbrl.org/2008/dimension-filter.xsd http://xbrl.org/2008/label http://www.xbrl.org/2008/generic-label.xsd http://xbrl.org/2010/message http://www.xbrl.org/2010/generic-message.xsd http://xbrl.org/2008/generic http://www.xbrl.org/2008/generic-link.xsd https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/ifrs-2_2025-03-27_role-834120" xlink:href="../cl-ci_ifrs-2_2025-03-27_role-834120.xsd#ifrs-2_2025-03-27_role-834120"/>
+  <link:roleRef xlink:type="simple" roleURI="http://www.xbrl.org/2010/role/message" xlink:href="http://www.xbrl.org/2010/generic-message.xsd#standard-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-satisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-unsatisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/element-label" xlink:href="http://www.xbrl.org/2008/generic-label.xsd#element-label"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-set" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-set"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-filter" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-filter"/>
+  <gen:link xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/ifrs-2_2025-03-27_role-834120">
+    <va:valueAssertion xlink:type="resource" id="regla834121" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:NumberOfInstrumentsGrantedInSharebasedPaymentArrangement = sum($ifrs-full:NumberOfInstrumentsGrantedInSharebasedPaymentArrangement2)" xlink:label="lbl26171"/>
+    <msg:message xlink:type="resource" id="id12963" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26178">Rol[834120a] Regla834121: Suma dimensiones Número de instrumentos concedidos en acuerdos de pagos basados en acciones OK; contexto  {$ifrs-full:NumberOfInstrumentsGrantedInSharebasedPaymentArrangement/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26171" xlink:to="lbl26178"/>
+    <va:valueAssertion xlink:type="resource" id="regla834122" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:NumberOfOutstandingShareOptions = sum($ifrs-full:NumberOfOutstandingShareOptions2)" xlink:label="lbl26180"/>
+    <msg:message xlink:type="resource" id="id12966" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26187">Rol[834120b] Regla834122: Suma dimensiones Número de opciones de acciones en circulación OK; contexto  {$ifrs-full:NumberOfOutstandingShareOptions/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26180" xlink:to="lbl26187"/>
+    <msg:message xlink:type="resource" id="id12964" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26179">Rol[834120a] Regla834121: Error en suma dimensiones Número de instrumentos concedidos en acuerdos de pagos basados en acciones; contexto  {$ifrs-full:NumberOfInstrumentsGrantedInSharebasedPaymentArrangement/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26171" xlink:to="lbl26179"/>
+    <msg:message xlink:type="resource" id="id12967" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26188">Rol[834120b] Regla834122: Error en suma dimensiones Número de opciones de acciones en circulación; contexto  {$ifrs-full:NumberOfOutstandingShareOptions/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26180" xlink:to="lbl26188"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id12962" xlink:label="lbl26177">834121</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26171" xlink:to="lbl26177"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id12965" xlink:label="lbl26186">834122</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26180" xlink:to="lbl26186"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26172" id="id12968"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NumberOfInstrumentsGrantedInSharebasedPaymentArrangement" xlink:from="lbl26171" xlink:to="lbl26172"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26175" id="id12969"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NumberOfInstrumentsGrantedInSharebasedPaymentArrangement2" xlink:from="lbl26171" xlink:to="lbl26175"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26181" id="id12970"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NumberOfOutstandingShareOptions" xlink:from="lbl26180" xlink:to="lbl26181"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26184" id="id12971"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NumberOfOutstandingShareOptions2" xlink:from="lbl26180" xlink:to="lbl26184"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl26173" id="id12972">
+      <cf:concept>
+        <cf:qname>ifrs-full:NumberOfInstrumentsGrantedInSharebasedPaymentArrangement</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26172" xlink:to="lbl26173"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl26174" id="id12973">
+      <df:dimension>
+        <df:qname>ifrs-full:TypesOfSharebasedPaymentArrangementsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:TypesOfSharebasedPaymentArrangementsDomain</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26172" xlink:to="lbl26174"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26175" xlink:to="lbl26173"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl26176" id="id12974">
+      <df:dimension>
+        <df:qname>ifrs-full:TypesOfSharebasedPaymentArrangementsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:TypesOfSharebasedPaymentArrangementsDomain</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/ifrs-2_2025-03-27_role-834120a</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26175" xlink:to="lbl26176"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl26182" id="id12975">
+      <cf:concept>
+        <cf:qname>ifrs-full:NumberOfOutstandingShareOptions</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26181" xlink:to="lbl26182"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl26183" id="id12976">
+      <df:dimension>
+        <df:qname>ifrs-full:RangesOfExercisePricesForOutstandingShareOptionsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:RangesOfExercisePricesForOutstandingShareOptionsDomain</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26181" xlink:to="lbl26183"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26184" xlink:to="lbl26182"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl26185" id="id12977">
+      <df:dimension>
+        <df:qname>ifrs-full:RangesOfExercisePricesForOutstandingShareOptionsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:RangesOfExercisePricesForOutstandingShareOptionsDomain</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/ifrs-2_2025-03-27_role-834120b</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26184" xlink:to="lbl26185"/>
+  </gen:link>
+</link:linkbase>

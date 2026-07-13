@@ -23,3 +23,6 @@ config/pipeline_settings.json
 __pycache__/
 *.pyc
 *.pyo
+
+# Metadatos que Windows le pega a los archivos descargados. No son parte de nada.
+*:Zone.Identifier

@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/ifrs-13_2025-03-27_role-823000" xlink:href="../cl-ci_ifrs-13_2025-03-27_role-823000.xsd#ifrs-13_2025-03-27_role-823000"/>
+  <link:presentationLink xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/ifrs-13_2025-03-27_role-823000">
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfFairValueMeasurementExplanatory" xlink:label="lbl21716"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfFairValueMeasurementOfAssetsExplanatory" xlink:label="lbl21717"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="20.0" xlink:from="lbl21716" xlink:to="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfFairValueMeasurementOfAssetsAbstract" xlink:label="lbl21718"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="30.0" xlink:to="lbl21718" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfFairValueMeasurementOfAssetsTable" xlink:label="lbl21719"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="40.0" xlink:to="lbl21719" xlink:from="lbl21718"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_InformacionARevelarSobreMedicionValorRazonableActivosEje" xlink:label="lbl21720"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="50.0" xlink:to="lbl21720" xlink:from="lbl21719"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ClassesOfAssetsDomain" xlink:label="lbl21721"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="60.0" xlink:to="lbl21721" xlink:from="lbl21720"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfFairValueMeasurementOfAssetsLineItems" xlink:label="lbl21722"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="70.0" xlink:to="lbl21722" xlink:from="lbl21718"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_TipoActivo" xlink:label="lbl21723"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="80.0" xlink:to="lbl21723" xlink:from="lbl21722"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_TipoMedicion" xlink:label="lbl21724"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="90.0" xlink:to="lbl21724" xlink:from="lbl21722"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_JerarquiaMedicion" xlink:label="lbl21725"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="100.0" xlink:to="lbl21725" xlink:from="lbl21722"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ReconciliationOfChangesInFairValueMeasurementAssetsAbstract" xlink:label="lbl21726"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="110.0" xlink:to="lbl21726" xlink:from="lbl21722"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_ActivosNota" xlink:label="lbl21727"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" preferredLabel="http://www.xbrl.org/2003/role/periodStartLabel" order="120.0" xlink:to="lbl21727" xlink:from="lbl21726"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ChangesInFairValueMeasurementAssetsAbstract" xlink:label="lbl21728"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="130.0" xlink:to="lbl21728" xlink:from="lbl21726"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInProfitOrLossFairValueMeasurementAssetsAbstract" xlink:label="lbl21729"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="132.0" xlink:to="lbl21729" xlink:from="lbl21728"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInProfitOrLossOnExchangeDifferencesFairValueMeasurementAssets" xlink:label="lbl21730"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="134.0" xlink:to="lbl21730" xlink:from="lbl21729"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInProfitOrLossExcludingExchangeDifferencesFairValueMeasurementAssets" xlink:label="lbl21731"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="136.0" xlink:to="lbl21731" xlink:from="lbl21729"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInProfitOrLossFairValueMeasurementAssets" xlink:label="lbl21732"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" preferredLabel="http://www.xbrl.org/2003/role/totalLabel" order="140.0" xlink:to="lbl21732" xlink:from="lbl21729"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInOtherComprehensiveIncomeFairValueMeasurementAssetsAbstract" xlink:label="lbl21733"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="142.0" xlink:to="lbl21733" xlink:from="lbl21728"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInOtherComprehensiveIncomeOnExchangeDifferencesFairValueMeasurementAssets" xlink:label="lbl21734"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="144.0" xlink:to="lbl21734" xlink:from="lbl21733"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInOtherComprehensiveIncomeExcludingExchangeDifferencesFairValueMeasurementAssets" xlink:label="lbl21735"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="146.0" xlink:to="lbl21735" xlink:from="lbl21733"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInOtherComprehensiveIncomeFairValueMeasurementAssets" xlink:label="lbl21736"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" preferredLabel="http://www.xbrl.org/2003/role/totalLabel" order="150.0" xlink:to="lbl21736" xlink:from="lbl21733"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PurchasesFairValueMeasurementAssets" xlink:label="lbl21737"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="160.0" xlink:to="lbl21737" xlink:from="lbl21728"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_SalesFairValueMeasurementAssets" xlink:label="lbl21738"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="170.0" xlink:to="lbl21738" xlink:from="lbl21728"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IssuesFairValueMeasurementAssets" xlink:label="lbl21739"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="180.0" xlink:to="lbl21739" xlink:from="lbl21728"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_SettlementsFairValueMeasurementAssets" xlink:label="lbl21740"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="190.0" xlink:to="lbl21740" xlink:from="lbl21728"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_TransfersIntoLevel3OfFairValueHierarchyAssets" xlink:label="lbl21741"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="200.0" xlink:to="lbl21741" xlink:from="lbl21728"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_TransfersOutOfLevel3OfFairValueHierarchyAssets" xlink:label="lbl21742"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="210.0" xlink:to="lbl21742" xlink:from="lbl21728"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IncreaseDecreaseInFairValueMeasurementAssets" xlink:label="lbl21743"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" preferredLabel="http://www.xbrl.org/2003/role/totalLabel" order="220.0" xlink:to="lbl21743" xlink:from="lbl21728"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_ActivosNota" xlink:label="lbl21744"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" preferredLabel="http://www.xbrl.org/2003/role/periodEndLabel" order="230.0" xlink:from="lbl21726" xlink:to="lbl21744"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForFairValueMeasurementAssets" xlink:label="lbl21745"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="240.0" xlink:to="lbl21745" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_TransfersOutOfLevel1IntoLevel2OfFairValueHierarchyAssets" xlink:label="lbl21746"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="250.0" xlink:to="lbl21746" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForTransfersOutOfLevel1IntoLevel2OfFairValueHierarchyAssets" xlink:label="lbl21747"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="260.0" xlink:to="lbl21747" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_TransfersOutOfLevel2IntoLevel1OfFairValueHierarchyAssets" xlink:label="lbl21748"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="270.0" xlink:to="lbl21748" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForTransfersOutOfLevel2IntoLevel1OfFairValueHierarchyAssets" xlink:label="lbl21749"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="280.0" xlink:to="lbl21749" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfPolicyForDeterminingWhenTransfersBetweenLevelsAreDeemedToHaveOccurredAssets" xlink:label="lbl21750"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="290.0" xlink:to="lbl21750" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfValuationTechniquesUsedInFairValueMeasurementAssets" xlink:label="lbl21751"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="300.0" xlink:to="lbl21751" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ValuationTechniquesUsedInFairValueMeasurementAssets" xlink:label="lbl21752"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="305.0" xlink:to="lbl21752" xlink:from="lbl21751"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfInputsUsedInFairValueMeasurementAssets" xlink:label="lbl21753"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="310.0" xlink:to="lbl21753" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfChangeInValuationTechniqueUsedInFairValueMeasurementAssets" xlink:label="lbl21754"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="320.0" xlink:to="lbl21754" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForChangeInValuationTechniqueUsedInFairValueMeasurementAssets" xlink:label="lbl21755"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="330.0" xlink:to="lbl21755" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfLineItemsInProfitOrLossWhereGainsLossesAreRecognisedFairValueMeasurementAssets" xlink:label="lbl21756"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="340.0" xlink:to="lbl21756" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfLineItemsInOtherComprehensiveIncomeWhereGainsLossesAreRecognisedFairValueMeasurementAssets" xlink:label="lbl21757"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="350.0" xlink:to="lbl21757" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForTransfersIntoLevel3OfFairValueHierarchyAssets" xlink:label="lbl21758"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="360.0" xlink:to="lbl21758" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForTransfersOutOfLevel3OfFairValueHierarchyAssets" xlink:label="lbl21759"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="370.0" xlink:to="lbl21759" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_StatementThatThereWereNoTransfersBetweenLevel1AndLevel2OfFairValueHierarchyAssets" xlink:label="lbl21760"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="372.0" xlink:to="lbl21760" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_StatementThatThereWereNoTransfersBetweenLevel1Level2OrLevel3OfFairValueHierarchyAssets" xlink:label="lbl21761"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="374.0" xlink:to="lbl21761" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInProfitOrLossAttributableToChangeInUnrealisedGainsOrLossesForAssetsHeldAtEndOfPeriodFairValueMeasurement" xlink:label="lbl21762"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="380.0" xlink:to="lbl21762" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfLineItemsInProfitOrLossWhereGainsLossesAttributableToChangeInUnrealisedGainsOrLossesForAssetsHeldAtEndOfPeriodAreRecognisedFairValueMeasurement" xlink:label="lbl21763"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="390.0" xlink:to="lbl21763" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfValuationProcessesUsedInFairValueMeasurementAssets" xlink:label="lbl21764"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="400.0" xlink:to="lbl21764" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfGroupWithinEntityThatDecidesEntitysValuationPoliciesAndProceduresAssets" xlink:label="lbl21765"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="410.0" xlink:to="lbl21765" xlink:from="lbl21764"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfToWhomGroupWithinEntityThatDecidesEntitysValuationPoliciesAndProceduresReportsAssets" xlink:label="lbl21766"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="420.0" xlink:to="lbl21766" xlink:from="lbl21764"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfInternalReportingProceduresForDiscussingAndAssessingFairValueMeasurementsAssets" xlink:label="lbl21767"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="430.0" xlink:to="lbl21767" xlink:from="lbl21764"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfFrequencyAndMethodsForTestingProceduresOfPricingModelsAssets" xlink:label="lbl21768"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="440.0" xlink:to="lbl21768" xlink:from="lbl21764"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfProcessForAnalysingChangesInFairValueMeasurementsAssets" xlink:label="lbl21769"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="450.0" xlink:to="lbl21769" xlink:from="lbl21764"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfHowEntityDeterminedThatThirdpartyInformationUsedInFairValueMeasurementWasDevelopedInAccordanceWithIFRS13Assets" xlink:label="lbl21770"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="460.0" xlink:to="lbl21770" xlink:from="lbl21764"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfMethodsUsedToDevelopAndSubstantiateUnobservableInputsUsedInFairValueMeasurementAssets" xlink:label="lbl21771"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="470.0" xlink:to="lbl21771" xlink:from="lbl21764"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfFactThatHighestAndBestUseOfNonfinancialAssetDiffersFromCurrentUse" xlink:label="lbl21772"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="550.0" xlink:to="lbl21772" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonWhyNonfinancialAssetIsBeingUsedInMannerDifferentFromHighestAndBestUse" xlink:label="lbl21773"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="560.0" xlink:to="lbl21773" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfInformationSufficientToPermitReconciliationOfClassesDeterminedForFairValueMeasurementToLineItemsInStatementOfFinancialPositionAssetsExplanatory" xlink:label="lbl21774"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="570.0" xlink:to="lbl21774" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfAccountingPolicyDecisionToUseExceptionInIFRS1348Assets" xlink:label="lbl21775"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="580.0" xlink:to="lbl21775" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AccountingPolicyDecisionToUseExceptionInIFRS1348Assets" xlink:label="lbl21776"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="585.0" xlink:to="lbl21776" xlink:from="lbl21775"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfNatureOfClassOfAssetsMeasuredAtFairValue" xlink:label="lbl21777"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="590.0" xlink:to="lbl21777" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfHowThirdpartyInformationWasTakenIntoAccountWhenMeasuringFairValueAssets" xlink:label="lbl21778"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="600.0" xlink:to="lbl21778" xlink:from="lbl21717"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfFairValueMeasurementOfLiabilitiesExplanatory" xlink:label="lbl21779"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="610.0" xlink:to="lbl21779" xlink:from="lbl21716"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfFairValueMeasurementOfLiabilitiesAbstract" xlink:label="lbl21780"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="620.0" xlink:to="lbl21780" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfFairValueMeasurementOfLiabilitiesTable" xlink:label="lbl21781"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="630.0" xlink:to="lbl21781" xlink:from="lbl21780"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_InformacionARevelarSobreMedicionValorRazonablePasivosEje" xlink:label="lbl21782"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="640.0" xlink:to="lbl21782" xlink:from="lbl21781"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ClassesOfLiabilitiesDomain" xlink:label="lbl21783"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="650.0" xlink:to="lbl21783" xlink:from="lbl21782"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfFairValueMeasurementOfLiabilitiesLineItems" xlink:label="lbl21784"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="660.0" xlink:to="lbl21784" xlink:from="lbl21780"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_TipoPasivo" xlink:label="lbl21785"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="670.0" xlink:to="lbl21785" xlink:from="lbl21784"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="680.0" xlink:from="lbl21784" xlink:to="lbl21724"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="690.0" xlink:from="lbl21784" xlink:to="lbl21725"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ReconciliationOfChangesInFairValueMeasurementLiabilitiesAbstract" xlink:label="lbl21786"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="700.0" xlink:to="lbl21786" xlink:from="lbl21784"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_PasivosNota" xlink:label="lbl21787"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" preferredLabel="http://www.xbrl.org/2003/role/periodStartLabel" order="710.0" xlink:to="lbl21787" xlink:from="lbl21786"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ChangesInFairValueMeasurementLiabilitiesAbstract" xlink:label="lbl21788"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="720.0" xlink:to="lbl21788" xlink:from="lbl21786"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInProfitOrLossFairValueMeasurementLiabilitiesAbstract" xlink:label="lbl21789"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="722.0" xlink:to="lbl21789" xlink:from="lbl21788"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInProfitOrLossOnExchangeDifferencesFairValueMeasurementLiabilities" xlink:label="lbl21790"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="724.0" xlink:to="lbl21790" xlink:from="lbl21789"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInProfitOrLossExcludingExchangeDifferencesFairValueMeasurementLiabilities" xlink:label="lbl21791"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="726.0" xlink:to="lbl21791" xlink:from="lbl21789"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInProfitOrLossFairValueMeasurementLiabilities" xlink:label="lbl21792"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" preferredLabel="http://www.xbrl.org/2009/role/negatedLabel" order="730.0" xlink:to="lbl21792" xlink:from="lbl21789"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInOtherComprehensiveIncomeFairValueMeasurementLiabilitiesAbstract" xlink:label="lbl21793"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="732.0" xlink:to="lbl21793" xlink:from="lbl21788"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInOtherComprehensiveIncomeOnExchangeDifferencesFairValueMeasurementLiabilities" xlink:label="lbl21794"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="734.0" xlink:to="lbl21794" xlink:from="lbl21793"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInOtherComprehensiveIncomeExcludingExchangeDifferencesFairValueMeasurementLiabilities" xlink:label="lbl21795"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="736.0" xlink:to="lbl21795" xlink:from="lbl21793"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInOtherComprehensiveIncomeFairValueMeasurementLiabilities" xlink:label="lbl21796"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" preferredLabel="http://www.xbrl.org/2009/role/negatedLabel" order="740.0" xlink:to="lbl21796" xlink:from="lbl21793"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PurchasesFairValueMeasurementLiabilities" xlink:label="lbl21797"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="750.0" xlink:to="lbl21797" xlink:from="lbl21788"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_SalesFairValueMeasurementLiabilities" xlink:label="lbl21798"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="760.0" xlink:to="lbl21798" xlink:from="lbl21788"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IssuesFairValueMeasurementLiabilities" xlink:label="lbl21799"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="770.0" xlink:to="lbl21799" xlink:from="lbl21788"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_SettlementsFairValueMeasurementLiabilities" xlink:label="lbl21800"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="780.0" xlink:to="lbl21800" xlink:from="lbl21788"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_TransfersIntoLevel3OfFairValueHierarchyLiabilities" xlink:label="lbl21801"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="790.0" xlink:to="lbl21801" xlink:from="lbl21788"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_TransfersOutOfLevel3OfFairValueHierarchyLiabilities" xlink:label="lbl21802"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="800.0" xlink:to="lbl21802" xlink:from="lbl21788"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IncreaseDecreaseInFairValueMeasurementLiabilities" xlink:label="lbl21803"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" preferredLabel="http://www.xbrl.org/2003/role/totalLabel" order="810.0" xlink:to="lbl21803" xlink:from="lbl21788"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_PasivosNota" xlink:label="lbl21804"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" preferredLabel="http://www.xbrl.org/2003/role/periodEndLabel" order="820.0" xlink:from="lbl21786" xlink:to="lbl21804"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForFairValueMeasurementLiabilities" xlink:label="lbl21805"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="830.0" xlink:to="lbl21805" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_TransfersOutOfLevel1IntoLevel2OfFairValueHierarchyLiabilities" xlink:label="lbl21806"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="840.0" xlink:to="lbl21806" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForTransfersOutOfLevel1IntoLevel2OfFairValueHierarchyLiabilities" xlink:label="lbl21807"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="850.0" xlink:to="lbl21807" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_TransfersOutOfLevel2IntoLevel1OfFairValueHierarchyLiabilities" xlink:label="lbl21808"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="860.0" xlink:to="lbl21808" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForTransfersOutOfLevel2IntoLevel1OfFairValueHierarchyLiabilities" xlink:label="lbl21809"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="870.0" xlink:to="lbl21809" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfPolicyForDeterminingWhenTransfersBetweenLevelsAreDeemedToHaveOccurredLiabilities" xlink:label="lbl21810"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="880.0" xlink:to="lbl21810" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfValuationTechniquesUsedInFairValueMeasurementLiabilities" xlink:label="lbl21811"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="890.0" xlink:to="lbl21811" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ValuationTechniquesUsedInFairValueMeasurementLiabilities" xlink:label="lbl21812"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="895.0" xlink:to="lbl21812" xlink:from="lbl21811"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfInputsUsedInFairValueMeasurementLiabilities" xlink:label="lbl21813"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="900.0" xlink:to="lbl21813" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfChangeInValuationTechniqueUsedInFairValueMeasurementLiabilities" xlink:label="lbl21814"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="910.0" xlink:to="lbl21814" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForChangeInValuationTechniqueUsedInFairValueMeasurementLiabilities" xlink:label="lbl21815"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="920.0" xlink:to="lbl21815" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfLineItemsInProfitOrLossWhereGainsLossesAreRecognisedFairValueMeasurementLiabilities" xlink:label="lbl21816"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="930.0" xlink:to="lbl21816" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfLineItemsInOtherComprehensiveIncomeWhereGainsLossesAreRecognisedFairValueMeasurementLiabilities" xlink:label="lbl21817"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="940.0" xlink:to="lbl21817" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForTransfersIntoLevel3OfFairValueHierarchyLiabilities" xlink:label="lbl21818"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="950.0" xlink:to="lbl21818" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForTransfersOutOfLevel3OfFairValueHierarchyLiabilities" xlink:label="lbl21819"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="960.0" xlink:to="lbl21819" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_StatementThatThereWereNoTransfersBetweenLevel1AndLevel2OfFairValueHierarchyLiabilities" xlink:label="lbl21820"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="962.0" xlink:to="lbl21820" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_StatementThatThereWereNoTransfersBetweenLevel1Level2OrLevel3OfFairValueHierarchyLiabilities" xlink:label="lbl21821"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="964.0" xlink:to="lbl21821" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInProfitOrLossAttributableToChangeInUnrealisedGainsOrLossesForLiabilitiesHeldAtEndOfPeriodFairValueMeasurement" xlink:label="lbl21822"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="970.0" xlink:to="lbl21822" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfLineItemsInProfitOrLossWhereGainsLossesAttributableToChangeInUnrealisedGainsOrLossesForLiabilitiesHeldAtEndOfPeriodAreRecognisedFairValueMeasurement" xlink:label="lbl21823"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="980.0" xlink:to="lbl21823" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfValuationProcessesUsedInFairValueMeasurementLiabilities" xlink:label="lbl21824"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="990.0" xlink:to="lbl21824" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfGroupWithinEntityThatDecidesEntitysValuationPoliciesAndProceduresLiabilities" xlink:label="lbl21825"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1000.0" xlink:to="lbl21825" xlink:from="lbl21824"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfToWhomGroupWithinEntityThatDecidesEntitysValuationPoliciesAndProceduresReportsLiabilities" xlink:label="lbl21826"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1010.0" xlink:to="lbl21826" xlink:from="lbl21824"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfInternalReportingProceduresForDiscussingAndAssessingFairValueMeasurementsLiabilities" xlink:label="lbl21827"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1020.0" xlink:to="lbl21827" xlink:from="lbl21824"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfFrequencyAndMethodsForTestingProceduresOfPricingModelsLiabilities" xlink:label="lbl21828"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1030.0" xlink:to="lbl21828" xlink:from="lbl21824"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfProcessForAnalysingChangesInFairValueMeasurementsLiabilities" xlink:label="lbl21829"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1040.0" xlink:to="lbl21829" xlink:from="lbl21824"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfHowEntityDeterminedThatThirdpartyInformationUsedInFairValueMeasurementWasDevelopedInAccordanceWithIFRS13Liabilities" xlink:label="lbl21830"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1050.0" xlink:to="lbl21830" xlink:from="lbl21824"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfMethodsUsedToDevelopAndSubstantiateUnobservableInputsUsedInFairValueMeasurementLiabilities" xlink:label="lbl21831"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1060.0" xlink:to="lbl21831" xlink:from="lbl21824"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfInformationSufficientToPermitReconciliationOfClassesDeterminedForFairValueMeasurementToLineItemsInStatementOfFinancialPositionLiabilitiesExplanatory" xlink:label="lbl21832"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1140.0" xlink:to="lbl21832" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfAccountingPolicyDecisionToUseExceptionInIFRS1348Liabilities" xlink:label="lbl21833"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1150.0" xlink:to="lbl21833" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_AccountingPolicyDecisionToUseExceptionInIFRS1348Liabilities" xlink:label="lbl21834"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1155.0" xlink:to="lbl21834" xlink:from="lbl21833"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfNatureOfClassOfLiabilitiesMeasuredAtFairValue" xlink:label="lbl21835"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1160.0" xlink:to="lbl21835" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfHowThirdpartyInformationWasTakenIntoAccountWhenMeasuringFairValueLiabilities" xlink:label="lbl21836"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1170.0" xlink:to="lbl21836" xlink:from="lbl21779"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfFairValueMeasurementOfEquityExplanatory" xlink:label="lbl21837"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1180.0" xlink:to="lbl21837" xlink:from="lbl21716"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfFairValueMeasurementOfEquityAbstract" xlink:label="lbl21838"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1190.0" xlink:to="lbl21838" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfFairValueMeasurementOfEquityTable" xlink:label="lbl21839"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1200.0" xlink:to="lbl21839" xlink:from="lbl21838"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_InformacionARrevelarSobreMedicionValorRazonablePatrimonioEje" xlink:label="lbl21840"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1210.0" xlink:to="lbl21840" xlink:from="lbl21839"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ClassesOfEntitysOwnEquityInstrumentsDomain" xlink:label="lbl21841"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1220.0" xlink:to="lbl21841" xlink:from="lbl21840"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfFairValueMeasurementOfEquityLineItems" xlink:label="lbl21842"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1230.0" xlink:to="lbl21842" xlink:from="lbl21838"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1240.0" xlink:from="lbl21842" xlink:to="lbl21724"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1250.0" xlink:from="lbl21842" xlink:to="lbl21725"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ReconciliationOfChangesInFairValueMeasurementEntitysOwnEquityInstrumentsAbstract" xlink:label="lbl21843"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1260.0" xlink:to="lbl21843" xlink:from="lbl21842"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_PatrimonioNota" xlink:label="lbl21844"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" preferredLabel="http://www.xbrl.org/2003/role/periodStartLabel" order="1270.0" xlink:to="lbl21844" xlink:from="lbl21843"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ChangesInFairValueMeasurementEntitysOwnEquityInstrumentsAbstract" xlink:label="lbl21845"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1280.0" xlink:to="lbl21845" xlink:from="lbl21843"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInProfitOrLossFairValueMeasurementEntitysOwnEquityInstrumentsAbstract" xlink:label="lbl21846"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1282.0" xlink:to="lbl21846" xlink:from="lbl21845"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInProfitOrLossOnExchangeDifferencesFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21847"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1284.0" xlink:to="lbl21847" xlink:from="lbl21846"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInProfitOrLossExcludingExchangeDifferencesFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21848"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1286.0" xlink:to="lbl21848" xlink:from="lbl21846"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInProfitOrLossFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21849"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" preferredLabel="http://www.xbrl.org/2009/role/negatedTotalLabel" order="1290.0" xlink:to="lbl21849" xlink:from="lbl21846"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInOtherComprehensiveIncomeFairValueMeasurementEntitysOwnEquityInstrumentsAbstract" xlink:label="lbl21850"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1292.0" xlink:to="lbl21850" xlink:from="lbl21845"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInOtherComprehensiveIncomeOnExchangeDifferencesFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21851"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1294.0" xlink:to="lbl21851" xlink:from="lbl21850"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInOtherComprehensiveIncomeExcludingExchangeDifferencesFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21852"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1296.0" xlink:to="lbl21852" xlink:from="lbl21850"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInOtherComprehensiveIncomeFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21853"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" preferredLabel="http://www.xbrl.org/2009/role/negatedTotalLabel" order="1300.0" xlink:to="lbl21853" xlink:from="lbl21850"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_PurchasesFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21854"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1310.0" xlink:to="lbl21854" xlink:from="lbl21845"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_SalesFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21855"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1320.0" xlink:to="lbl21855" xlink:from="lbl21845"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IssuesFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21856"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1330.0" xlink:to="lbl21856" xlink:from="lbl21845"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_SettlementsFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21857"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1340.0" xlink:to="lbl21857" xlink:from="lbl21845"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_TransfersIntoLevel3OfFairValueHierarchyEntitysOwnEquityInstruments" xlink:label="lbl21858"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1350.0" xlink:to="lbl21858" xlink:from="lbl21845"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_TransfersOutOfLevel3OfFairValueHierarchyEntitysOwnEquityInstruments" xlink:label="lbl21859"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1360.0" xlink:to="lbl21859" xlink:from="lbl21845"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_IncreaseDecreaseInFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21860"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" preferredLabel="http://www.xbrl.org/2003/role/totalLabel" order="1370.0" xlink:to="lbl21860" xlink:from="lbl21845"/>
+    <link:loc xlink:type="locator" xlink:href="../../cl-ci_cor_2026-01-02.xsd#cl-ci_PatrimonioNota" xlink:label="lbl21861"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" preferredLabel="http://www.xbrl.org/2003/role/periodEndLabel" order="1380.0" xlink:from="lbl21843" xlink:to="lbl21861"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21862"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1390.0" xlink:to="lbl21862" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_TransfersOutOfLevel1IntoLevel2OfFairValueHierarchyEntitysOwnEquityInstruments" xlink:label="lbl21863"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1400.0" xlink:to="lbl21863" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForTransfersOutOfLevel1IntoLevel2OfFairValueHierarchyEntitysOwnEquityInstruments" xlink:label="lbl21864"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1410.0" xlink:to="lbl21864" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_TransfersOutOfLevel2IntoLevel1OfFairValueHierarchyEntitysOwnEquityInstruments" xlink:label="lbl21865"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1420.0" xlink:to="lbl21865" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForTransfersOutOfLevel2IntoLevel1OfFairValueHierarchyEntitysOwnEquityInstruments" xlink:label="lbl21866"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1430.0" xlink:to="lbl21866" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfPolicyForDeterminingWhenTransfersBetweenLevelsAreDeemedToHaveOccurredEntitysOwnEquityInstruments" xlink:label="lbl21867"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1440.0" xlink:to="lbl21867" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfValuationTechniquesUsedInFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21868"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1450.0" xlink:to="lbl21868" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_ValuationTechniquesUsedInFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21869"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1455.0" xlink:to="lbl21869" xlink:from="lbl21868"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfInputsUsedInFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21870"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1460.0" xlink:to="lbl21870" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfChangeInValuationTechniqueUsedInFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21871"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1470.0" xlink:to="lbl21871" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForChangeInValuationTechniqueUsedInFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21872"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1480.0" xlink:to="lbl21872" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfLineItemsInProfitOrLossWhereGainsLossesAreRecognisedFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21873"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1490.0" xlink:to="lbl21873" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfLineItemsInOtherComprehensiveIncomeWhereGainsLossesAreRecognisedFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21874"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1500.0" xlink:to="lbl21874" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForTransfersIntoLevel3OfFairValueHierarchyEntitysOwnEquityInstruments" xlink:label="lbl21875"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1510.0" xlink:to="lbl21875" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfReasonsForTransfersOutOfLevel3OfFairValueHierarchyEntitysOwnEquityInstruments" xlink:label="lbl21876"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1520.0" xlink:to="lbl21876" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_StatementThatThereWereNoTransfersBetweenLevel1AndLevel2OfFairValueHierarchyEntitysOwnEquityInstruments" xlink:label="lbl21877"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1522.0" xlink:to="lbl21877" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_StatementThatThereWereNoTransfersBetweenLevel1Level2OrLevel3OfFairValueHierarchyEntitysOwnEquityInstruments" xlink:label="lbl21878"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1524.0" xlink:to="lbl21878" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_GainsLossesRecognisedInProfitOrLossAttributableToChangeInUnrealisedGainsOrLossesForEntitysOwnEquityInstrumentsHeldAtEndOfPeriodFairValueMeasurement" xlink:label="lbl21879"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1530.0" xlink:to="lbl21879" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfLineItemsInProfitOrLossWhereGainsLossesAttributableToChangeInUnrealisedGainsOrLossesForEntitysOwnEquityInstrumentsHeldAtEndOfPeriodAreRecognisedFairValueMeasurement" xlink:label="lbl21880"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1540.0" xlink:to="lbl21880" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfValuationProcessesUsedInFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21881"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1550.0" xlink:to="lbl21881" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfGroupWithinEntityThatDecidesEntitysValuationPoliciesAndProceduresEntitysOwnEquityInstruments" xlink:label="lbl21882"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1560.0" xlink:to="lbl21882" xlink:from="lbl21881"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfToWhomGroupWithinEntityThatDecidesEntitysValuationPoliciesAndProceduresReportsEntitysOwnEquityInstruments" xlink:label="lbl21883"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1570.0" xlink:to="lbl21883" xlink:from="lbl21881"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfInternalReportingProceduresForDiscussingAndAssessingFairValueMeasurementsEntitysOwnEquityInstruments" xlink:label="lbl21884"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1580.0" xlink:to="lbl21884" xlink:from="lbl21881"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfFrequencyAndMethodsForTestingProceduresOfPricingModelsEntitysOwnEquityInstruments" xlink:label="lbl21885"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1590.0" xlink:to="lbl21885" xlink:from="lbl21881"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfProcessForAnalysingChangesInFairValueMeasurementsEntitysOwnEquityInstruments" xlink:label="lbl21886"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1600.0" xlink:to="lbl21886" xlink:from="lbl21881"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfHowEntityDeterminedThatThirdpartyInformationUsedInFairValueMeasurementWasDevelopedInAccordanceWithIFRS13EntitysOwnEquityInstruments" xlink:label="lbl21887"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1610.0" xlink:to="lbl21887" xlink:from="lbl21881"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfMethodsUsedToDevelopAndSubstantiateUnobservableInputsUsedInFairValueMeasurementEntitysOwnEquityInstruments" xlink:label="lbl21888"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1620.0" xlink:to="lbl21888" xlink:from="lbl21881"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfInformationSufficientToPermitReconciliationOfClassesDeterminedForFairValueMeasurementToLineItemsInStatementOfFinancialPositionEntitysOwnEquityInstrumentsExplanatory" xlink:label="lbl21889"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1700.0" xlink:to="lbl21889" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfNatureOfClassOfEntitysOwnEquityInstrumentsMeasuredAtFairValue" xlink:label="lbl21890"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1710.0" xlink:to="lbl21890" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfHowThirdpartyInformationWasTakenIntoAccountWhenMeasuringFairValueEntitysOwnEquityInstruments" xlink:label="lbl21891"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1720.0" xlink:to="lbl21891" xlink:from="lbl21837"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfSignificantUnobservableInputsUsedInFairValueMeasurementOfAssetsExplanatory" xlink:label="lbl21892"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1730.0" xlink:to="lbl21892" xlink:from="lbl21716"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfSignificantUnobservableInputsUsedInFairValueMeasurementOfLiabilitiesExplanatory" xlink:label="lbl21893"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1740.0" xlink:to="lbl21893" xlink:from="lbl21716"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfSignificantUnobservableInputsUsedInFairValueMeasurementOfEquityExplanatory" xlink:label="lbl21894"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1750.0" xlink:to="lbl21894" xlink:from="lbl21716"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfLiabilitiesMeasuredAtFairValueAndIssuedWithInseparableThirdpartyCreditEnhancementExplanatory" xlink:label="lbl21895"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1760.0" xlink:to="lbl21895" xlink:from="lbl21716"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfLiabilitiesMeasuredAtFairValueAndIssuedWithInseparableThirdpartyCreditEnhancementAbstract" xlink:label="lbl21896"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1770.0" xlink:to="lbl21896" xlink:from="lbl21895"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfLiabilitiesMeasuredAtFairValueAndIssuedWithInseparableThirdpartyCreditEnhancementTable" xlink:label="lbl21897"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1780.0" xlink:to="lbl21897" xlink:from="lbl21896"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_LiabilitiesMeasuredAtFairValueAndIssuedWithInseparableThirdpartyCreditEnhancementAxis" xlink:label="lbl21898"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1790.0" xlink:to="lbl21898" xlink:from="lbl21897"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_LiabilitiesMeasuredAtFairValueAndIssuedWithInseparableThirdpartyCreditEnhancementDomain" xlink:label="lbl21899"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1800.0" xlink:to="lbl21899" xlink:from="lbl21898"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DisclosureOfLiabilitiesMeasuredAtFairValueAndIssuedWithInseparableThirdpartyCreditEnhancementLineItems" xlink:label="lbl21900"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1810.0" xlink:to="lbl21900" xlink:from="lbl21896"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfExistenceOfThirdpartyCreditEnhancement" xlink:label="lbl21901"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1820.0" xlink:to="lbl21901" xlink:from="lbl21900"/>
+    <link:loc xlink:type="locator" xlink:href="http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd#ifrs-full_DescriptionOfWhetherThirdpartyCreditEnhancementIsReflectedInFairValueMeasurement" xlink:label="lbl21902"/>
+    <link:presentationArc xlink:type="arc" xlink:arcrole="http://www.xbrl.org/2003/arcrole/parent-child" order="1830.0" xlink:to="lbl21902" xlink:from="lbl21900"/>
+  </link:presentationLink>
+</link:linkbase>

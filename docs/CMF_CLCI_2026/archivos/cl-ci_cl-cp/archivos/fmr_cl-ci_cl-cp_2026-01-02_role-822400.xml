@@ -1,0 +1,1231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xs="https://www.w3.org/2001/XMLSchema"
+               xmlns:xbrli="http://www.xbrl.org/2003/instance"
+               xmlns:xfi="http://www.xbrl.org/2008/function/instance"
+               xmlns:gen="http://xbrl.org/2008/generic"
+               xmlns:xlink="http://www.w3.org/1999/xlink"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:va="http://xbrl.org/2008/assertion/value"
+               xmlns:variable="http://xbrl.org/2008/variable"
+               xmlns:cf="http://xbrl.org/2008/filter/concept"
+               xmlns:df="http://xbrl.org/2008/filter/dimension"
+               xmlns:label="http://xbrl.org/2008/label"
+               xmlns:msg="http://xbrl.org/2010/message"
+               xmlns:mf="http://xbrl.org/2008/filter/match"
+               xmlns:ifrs-full="https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full"
+               xmlns:cl-ci="https://www.cmfchile.cl/cl/fr/ci/2026-01-02"
+               xsi:schemaLocation="http://xbrl.org/2008/assertion/value http://www.xbrl.org/2008/value-assertion.xsd http://xbrl.org/2008/variable http://www.xbrl.org/2008/variable.xsd http://xbrl.org/2008/filter/concept http://www.xbrl.org/2008/concept-filter.xsd http://xbrl.org/2008/filter/dimension http://www.xbrl.org/2008/dimension-filter.xsd http://xbrl.org/2008/label http://www.xbrl.org/2008/generic-label.xsd http://xbrl.org/2010/message http://www.xbrl.org/2010/generic-message.xsd http://xbrl.org/2008/filter/match http://www.xbrl.org/2013/match-filter.xsd http://xbrl.org/2008/generic http://www.xbrl.org/2008/generic-link.xsd https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd https://www.cmfchile.cl/cl/fr/ci/2026-01-02 ../../cl-ci_cor_2026-01-02.xsd">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400" xlink:href="../cl-ci_cl-cp_2026-01-02_role-822400.xsd#cl-cp_2026-01-02_role-822400"/>
+  <link:roleRef xlink:type="simple" roleURI="http://www.xbrl.org/2010/role/message" xlink:href="http://www.xbrl.org/2010/generic-message.xsd#standard-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-satisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-unsatisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/element-label" xlink:href="http://www.xbrl.org/2008/generic-label.xsd#element-label"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-set" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-set"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-filter" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-filter"/>
+  <gen:link xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400">
+    <va:valueAssertion xlink:type="resource" id="regla822401" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:RUTEntidadDeudora) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:PrestamosMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400a','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21160"/>
+    <msg:message xlink:type="resource" id="id10602" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21165">Rol[822400a] Regla822401: Informa RUT entidad deudora OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21160" xlink:to="lbl21165"/>
+    <va:valueAssertion xlink:type="resource" id="regla822402" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:NombreEntidadDeudora) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:PrestamosMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400a','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21167"/>
+    <msg:message xlink:type="resource" id="id10605" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21171">Rol[822400a] Regla822402: Informa Nombre entidad deudora OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21167" xlink:to="lbl21171"/>
+    <va:valueAssertion xlink:type="resource" id="regla822403" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:PaisEmpresaDeudora) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:PrestamosMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400a','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21173"/>
+    <msg:message xlink:type="resource" id="id10608" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21177">Rol[822400a] Regla822403: Informa País de la empresa deudora OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21173" xlink:to="lbl21177"/>
+    <va:valueAssertion xlink:type="resource" id="regla822404" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:NombreEntidadAcreedora) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:PrestamosMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400a','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21179"/>
+    <msg:message xlink:type="resource" id="id10611" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21183">Rol[822400a] Regla822404: Informa Nombre entidad acreedora OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21179" xlink:to="lbl21183"/>
+    <va:valueAssertion xlink:type="resource" id="regla822405" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:MonedaOUnidadReajuste) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:PrestamosMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400a','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21185"/>
+    <msg:message xlink:type="resource" id="id10614" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21189">Rol[822400a] Regla822405: Informa Moneda o unidad de reajuste OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21185" xlink:to="lbl21189"/>
+    <va:valueAssertion xlink:type="resource" id="regla822406" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:TipoAmortizacion) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:PrestamosMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400a','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21191"/>
+    <msg:message xlink:type="resource" id="id10617" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21195">Rol[822400a] Regla822406: Informa Tipo de amortización OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21191" xlink:to="lbl21195"/>
+    <va:valueAssertion xlink:type="resource" id="regla822407" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:TasaEfectiva) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:PrestamosMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400a','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21197"/>
+    <msg:message xlink:type="resource" id="id10620" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21201">Rol[822400a] Regla822407: Informa Tasa  efectiva OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21197" xlink:to="lbl21201"/>
+    <va:valueAssertion xlink:type="resource" id="regla822408" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:TasaNominal) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:PrestamosMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400a','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21203"/>
+    <msg:message xlink:type="resource" id="id10623" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21207">Rol[822400a] Regla822408: Informa Tasa nominal OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21203" xlink:to="lbl21207"/>
+    <va:valueAssertion xlink:type="resource" id="regla822409" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:RUTEntidadDeudora) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:ObligacionesEmisionesDeudaMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400b','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21209"/>
+    <msg:message xlink:type="resource" id="id10626" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21213">Rol[822400b] Regla822409: Informa RUT entidad deudora OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21209" xlink:to="lbl21213"/>
+    <va:valueAssertion xlink:type="resource" id="regla822410" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:NombreEntidadDeudora) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:ObligacionesEmisionesDeudaMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400b','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21215"/>
+    <msg:message xlink:type="resource" id="id10629" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21218">Rol[822400b] Regla822410: Informa Nombre entidad deudora OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21215" xlink:to="lbl21218"/>
+    <va:valueAssertion xlink:type="resource" id="regla822411" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:PaisEmpresaDeudora) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:ObligacionesEmisionesDeudaMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400b','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21220"/>
+    <msg:message xlink:type="resource" id="id10632" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21223">Rol[822400b] Regla822411: Informa País de la empresa deudora OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21220" xlink:to="lbl21223"/>
+    <va:valueAssertion xlink:type="resource" id="regla822412" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:NumeroInscripcion) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:ObligacionesEmisionesDeudaMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400b','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21225"/>
+    <msg:message xlink:type="resource" id="id10635" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21229">Rol[822400b] Regla822412: Informa Número de inscripción OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21225" xlink:to="lbl21229"/>
+    <va:valueAssertion xlink:type="resource" id="regla822413" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:Series) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:ObligacionesEmisionesDeudaMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400b','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21231"/>
+    <msg:message xlink:type="resource" id="id10638" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21235">Rol[822400b] Regla822413: Informa Series OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21231" xlink:to="lbl21235"/>
+    <va:valueAssertion xlink:type="resource" id="regla822414" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:FechaVencimiento) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:ObligacionesEmisionesDeudaMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400b','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21237"/>
+    <msg:message xlink:type="resource" id="id10641" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21241">Rol[822400b] Regla822414: Informa Fecha de vencimiento OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21237" xlink:to="lbl21241"/>
+    <va:valueAssertion xlink:type="resource" id="regla822415" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:MonedaOUnidadReajuste) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:ObligacionesEmisionesDeudaMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400b','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21243"/>
+    <msg:message xlink:type="resource" id="id10644" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21246">Rol[822400b] Regla822415: Informa Moneda o unidad de reajuste OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21243" xlink:to="lbl21246"/>
+    <va:valueAssertion xlink:type="resource" id="regla822416" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:PeriodicidadAmortizacion) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:ObligacionesEmisionesDeudaMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400b','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21248"/>
+    <msg:message xlink:type="resource" id="id10647" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21252">Rol[822400b] Regla822416: Informa Periodicidad de la amortización OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21248" xlink:to="lbl21252"/>
+    <va:valueAssertion xlink:type="resource" id="regla822417" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:TasaEfectiva) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:ObligacionesEmisionesDeudaMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400b','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21254"/>
+    <msg:message xlink:type="resource" id="id10650" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21257">Rol[822400b] Regla822417: Informa Tasa  efectiva OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21254" xlink:to="lbl21257"/>
+    <va:valueAssertion xlink:type="resource" id="regla822418" aspectModel="dimensional" implicitFiltering="true" test="count($cl-ci:TasaNominal) eq count(xfi:concept-relationships(QName('https://www.cmfchile.cl/cl/fr/ci/2026-01-02','cl-ci:ObligacionesEmisionesDeudaMiembro'),'https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400b','http://xbrl.org/int/dim/arcrole/domain-member','child'))" xlink:label="lbl21259"/>
+    <msg:message xlink:type="resource" id="id10653" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21262">Rol[822400b] Regla822418: Informa Tasa nominal OK</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21259" xlink:to="lbl21262"/>
+    <va:valueAssertion xlink:type="resource" id="regla822419" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:MasDe1AñoHasta3AñosPrestamosNominales = sum($cl-ci:MasDe1AñoHasta3AñosPrestamosNominales2)" xlink:label="lbl21264"/>
+    <msg:message xlink:type="resource" id="id10656" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21270">Rol[822400a] Regla822419: Suma dimensiones más de 1 año hasta 3 años OK; contexto  {$cl-ci:MasDe1AñoHasta3AñosPrestamosNominales/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21264" xlink:to="lbl21270"/>
+    <va:valueAssertion xlink:type="resource" id="regla822420" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:MasDe3AñosHasta5AñosPrestamosNominales = sum($cl-ci:MasDe3AñosHasta5AñosPrestamosNominales2)" xlink:label="lbl21272"/>
+    <msg:message xlink:type="resource" id="id10659" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21277">Rol[822400a] Regla822420: Suma dimensiones más de 3 años hasta 5 años OK; contexto  {$cl-ci:MasDe3AñosHasta5AñosPrestamosNominales/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21272" xlink:to="lbl21277"/>
+    <va:valueAssertion xlink:type="resource" id="regla822421" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:MontosNominalesPrestamos = sum($cl-ci:MontosNominalesPrestamos2)" xlink:label="lbl21279"/>
+    <msg:message xlink:type="resource" id="id10662" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21284">Rol[822400a] Regla822421: Suma dimensiones Total montos nominales OK; contexto  {$cl-ci:MontosNominalesPrestamos/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21279" xlink:to="lbl21284"/>
+    <va:valueAssertion xlink:type="resource" id="regla822422" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:PrestamosBancariosCorrientes = sum($cl-ci:PrestamosBancariosCorrientes2)" xlink:label="lbl21286"/>
+    <msg:message xlink:type="resource" id="id10665" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21291">Rol[822400a] Regla822422: Suma dimensiones Préstamos bancarios corrientes OK; contexto  {$cl-ci:PrestamosBancariosCorrientes/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21286" xlink:to="lbl21291"/>
+    <va:valueAssertion xlink:type="resource" id="regla822423" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:PrestamosBancariosNoCorrientes = sum($cl-ci:PrestamosBancariosNoCorrientes2)" xlink:label="lbl21293"/>
+    <msg:message xlink:type="resource" id="id10668" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21298">Rol[822400a] Regla822423: Suma dimensiones Préstamos bancarios no corrientes OK; contexto  {$cl-ci:PrestamosBancariosNoCorrientes/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21293" xlink:to="lbl21298"/>
+    <va:valueAssertion xlink:type="resource" id="regla822424" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:MasDe1AñoHasta3AñosPrestamosContable = sum($cl-ci:MasDe1AñoHasta3AñosPrestamosContable2)" xlink:label="lbl21300"/>
+    <msg:message xlink:type="resource" id="id10671" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21305">Rol[822400a] Regla822424: Suma dimensiones más de 1 año hasta 3 años OK; contexto  {$cl-ci:MasDe1AñoHasta3AñosPrestamosContable/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21300" xlink:to="lbl21305"/>
+    <va:valueAssertion xlink:type="resource" id="regla822425" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:MasDe3AñosHasta5AñosPrestamosContable = sum($cl-ci:MasDe3AñosHasta5AñosPrestamosContable2)" xlink:label="lbl21307"/>
+    <msg:message xlink:type="resource" id="id10674" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21312">Rol[822400a] Regla822425: Suma dimensiones más de 3 años hasta 5 años OK; contexto  {$cl-ci:MasDe3AñosHasta5AñosPrestamosContable/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21307" xlink:to="lbl21312"/>
+    <va:valueAssertion xlink:type="resource" id="regla822426" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:PrestamosBancarios = sum($cl-ci:PrestamosBancarios2)" xlink:label="lbl21314"/>
+    <msg:message xlink:type="resource" id="id10677" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21319">Rol[822400a] Regla822426: Suma dimensiones Préstamos bancarios OK; contexto  {$cl-ci:PrestamosBancarios/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21314" xlink:to="lbl21319"/>
+    <va:valueAssertion xlink:type="resource" id="regla822427" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:MasDe1AñoHasta3AñosObligacionesPublicoNominales = sum($cl-ci:MasDe1AñoHasta3AñosObligacionesPublicoNominales2)" xlink:label="lbl21321"/>
+    <msg:message xlink:type="resource" id="id10680" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21327">Rol[822400b] Regla822427: Suma dimensiones más de 1 año hasta 3 años OK; contexto  {$cl-ci:MasDe1AñoHasta3AñosObligacionesPublicoNominales/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21321" xlink:to="lbl21327"/>
+    <va:valueAssertion xlink:type="resource" id="regla822428" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:MasDe3AñosHasta5AñosObligacionesPublicoNominales = sum($cl-ci:MasDe3AñosHasta5AñosObligacionesPublicoNominales2)" xlink:label="lbl21329"/>
+    <msg:message xlink:type="resource" id="id10683" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21334">Rol[822400b] Regla822428: Suma dimensiones más de 3 años hasta 5 años OK; contexto  {$cl-ci:MasDe3AñosHasta5AñosObligacionesPublicoNominales/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21329" xlink:to="lbl21334"/>
+    <va:valueAssertion xlink:type="resource" id="regla822429" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:MontosNominalesObligacionesPublico = sum($cl-ci:MontosNominalesObligacionesPublico2)" xlink:label="lbl21336"/>
+    <msg:message xlink:type="resource" id="id10686" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21341">Rol[822400b] Regla822429: Suma dimensiones Total montos nominales OK; contexto  {$cl-ci:MontosNominalesObligacionesPublico/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21336" xlink:to="lbl21341"/>
+    <va:valueAssertion xlink:type="resource" id="regla822430" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:ObligacionesConPublicoCorrientes = sum($cl-ci:ObligacionesConPublicoCorrientes2)" xlink:label="lbl21343"/>
+    <msg:message xlink:type="resource" id="id10689" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21348">Rol[822400b] Regla822430: Suma dimensiones Obligaciones con el público corrientes OK; contexto  {$cl-ci:ObligacionesConPublicoCorrientes/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21343" xlink:to="lbl21348"/>
+    <va:valueAssertion xlink:type="resource" id="regla822431" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:ObligacionesConPublicoNoCorrientes = sum($cl-ci:ObligacionesConPublicoNoCorrientes2)" xlink:label="lbl21350"/>
+    <msg:message xlink:type="resource" id="id10692" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21355">Rol[822400b] Regla822431: Suma dimensiones Obligaciones con el público no corrientes OK; contexto  {$cl-ci:ObligacionesConPublicoNoCorrientes/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21350" xlink:to="lbl21355"/>
+    <va:valueAssertion xlink:type="resource" id="regla822432" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:MasDe1AñoHasta3AñosObligacionesPublicoContable = sum($cl-ci:MasDe1AñoHasta3AñosObligacionesPublicoContable2)" xlink:label="lbl21357"/>
+    <msg:message xlink:type="resource" id="id10695" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21362">Rol[822400b] Regla822432: Suma dimensiones más de 1 año hasta 3 años OK; contexto  {$cl-ci:MasDe1AñoHasta3AñosObligacionesPublicoContable/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21357" xlink:to="lbl21362"/>
+    <va:valueAssertion xlink:type="resource" id="regla822433" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:MasDe3AñosHasta5AñosObligacionesPublicoContable = sum($cl-ci:MasDe3AñosHasta5AñosObligacionesPublicoContable2)" xlink:label="lbl21364"/>
+    <msg:message xlink:type="resource" id="id10698" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21369">Rol[822400b] Regla822433: Suma dimensiones más de 3 años hasta 5 años OK; contexto  {$cl-ci:MasDe3AñosHasta5AñosObligacionesPublicoContable/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21364" xlink:to="lbl21369"/>
+    <va:valueAssertion xlink:type="resource" id="regla822434" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:MasDe5AñosObligacionesPublicoContable = sum($cl-ci:MasDe5AñosObligacionesPublicoContable2)" xlink:label="lbl21371"/>
+    <msg:message xlink:type="resource" id="id10701" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21376">Rol[822400b] Regla822434: Suma dimensiones más de 5 años OK; contexto  {$cl-ci:MasDe5AñosObligacionesPublicoContable/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21371" xlink:to="lbl21376"/>
+    <va:valueAssertion xlink:type="resource" id="regla822435" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:ObligacionesConPublico = sum($cl-ci:ObligacionesConPublico2)" xlink:label="lbl21378"/>
+    <msg:message xlink:type="resource" id="id10704" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21383">Rol[822400b] Regla822435: Suma dimensiones Obligaciones con el público OK; contexto  {$cl-ci:ObligacionesConPublico/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21378" xlink:to="lbl21383"/>
+    <va:valueAssertion xlink:type="resource" id="regla822436" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:TradeAndOtherCurrentReceivables = $ifrs-full:TradeAndOtherCurrentReceivables2  - $ifrs-full:TradeAndOtherCurrentReceivables3" xlink:label="lbl21385"/>
+    <msg:message xlink:type="resource" id="id10707" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21395">Rol[822400d] Regla822436: Suma dimensiones Deudores comerciales y otras cuentas por cobrar corrientes OK; contexto  {$ifrs-full:TradeAndOtherCurrentReceivables/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21385" xlink:to="lbl21395"/>
+    <va:valueAssertion xlink:type="resource" id="regla822437" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:CurrentTradeReceivables = $ifrs-full:CurrentTradeReceivables2  - $ifrs-full:CurrentTradeReceivables3" xlink:label="lbl21397"/>
+    <msg:message xlink:type="resource" id="id10710" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21404">Rol[822400d] Regla822437: Suma dimensiones Deudores comerciales corrientes OK; contexto  {$ifrs-full:CurrentTradeReceivables/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21397" xlink:to="lbl21404"/>
+    <va:valueAssertion xlink:type="resource" id="regla822438" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:NoncurrentReceivables = $ifrs-full:NoncurrentReceivables2  - $ifrs-full:NoncurrentReceivables3" xlink:label="lbl21406"/>
+    <msg:message xlink:type="resource" id="id10713" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21413">Rol[822400d] Regla822438: Suma dimensiones Cuentas por cobrar no corrientes OK; contexto  {$ifrs-full:NoncurrentReceivables/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21406" xlink:to="lbl21413"/>
+    <va:valueAssertion xlink:type="resource" id="regla822439" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:NoncurrentTradeReceivables = $ifrs-full:NoncurrentTradeReceivables2  - $ifrs-full:NoncurrentTradeReceivables3" xlink:label="lbl21415"/>
+    <msg:message xlink:type="resource" id="id10716" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21422">Rol[822400d] Regla822439: Suma dimensiones Deudores comerciales no corrientes OK; contexto  {$ifrs-full:NoncurrentTradeReceivables/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21415" xlink:to="lbl21422"/>
+    <va:valueAssertion xlink:type="resource" id="regla822440" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:TradeAndOtherReceivables = $ifrs-full:TradeAndOtherReceivables2  - $ifrs-full:TradeAndOtherReceivables3" xlink:label="lbl21424"/>
+    <msg:message xlink:type="resource" id="id10719" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21431">Rol[822400d] Regla822440: Suma dimensiones Total deudores comerciales y otras cuentas por cobrar OK; contexto  {$ifrs-full:TradeAndOtherReceivables/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21424" xlink:to="lbl21431"/>
+    <va:valueAssertion xlink:type="resource" id="regla822441" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:CarteraNoRepactadaBruta = $cl-ci:CarteraNoRepactadaBruta2 + $cl-ci:CarteraNoRepactadaBruta3" xlink:label="lbl21433"/>
+    <msg:message xlink:type="resource" id="id10722" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21444">Rol[822400e] Regla822441: Suma dimensiones Cartera no repactada bruta OK; contexto  {$cl-ci:CarteraNoRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21433" xlink:to="lbl21444"/>
+    <va:valueAssertion xlink:type="resource" id="regla822442" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:CarteraRepactadaBruta = $cl-ci:CarteraRepactadaBruta2 + $cl-ci:CarteraRepactadaBruta3" xlink:label="lbl21446"/>
+    <msg:message xlink:type="resource" id="id10725" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21453">Rol[822400e] Regla822442: Suma dimensiones Cartera repactada bruta OK; contexto  {$cl-ci:CarteraRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21446" xlink:to="lbl21453"/>
+    <va:valueAssertion xlink:type="resource" id="regla822443" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:CarteraBruta = $cl-ci:CarteraBruta2 + $cl-ci:CarteraBruta3" xlink:label="lbl21455"/>
+    <msg:message xlink:type="resource" id="id10728" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21462">Rol[822400e] Regla822443: Suma dimensiones Total cartera bruta OK; contexto  {$cl-ci:CarteraBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21455" xlink:to="lbl21462"/>
+    <va:valueAssertion xlink:type="resource" id="regla822444" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:CarteraNoRepactadaBruta = sum($cl-ci:CarteraNoRepactadaBruta2)" xlink:label="lbl21464"/>
+    <msg:message xlink:type="resource" id="id10731" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21469">Rol[822400e] Regla822444: Suma dimensiones Cartera no repactada bruta OK; contexto  {$cl-ci:CarteraNoRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21464" xlink:to="lbl21469"/>
+    <va:valueAssertion xlink:type="resource" id="regla822445" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:CarteraRepactadaBruta = sum($cl-ci:CarteraRepactadaBruta2)" xlink:label="lbl21471"/>
+    <msg:message xlink:type="resource" id="id10734" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21475">Rol[822400e] Regla822445: Suma dimensiones Cartera repactada bruta OK; contexto  {$cl-ci:CarteraRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21471" xlink:to="lbl21475"/>
+    <va:valueAssertion xlink:type="resource" id="regla822446" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:CarteraBruta = sum($cl-ci:CarteraBruta2)" xlink:label="lbl21477"/>
+    <msg:message xlink:type="resource" id="id10737" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21481">Rol[822400e] Regla822446: Suma dimensiones Total cartera bruta OK; contexto  {$cl-ci:CarteraBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21477" xlink:to="lbl21481"/>
+    <va:valueAssertion xlink:type="resource" id="regla822447" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:CarteraNoRepactadaBruta = sum($cl-ci:CarteraNoRepactadaBruta2)" xlink:label="lbl21483"/>
+    <msg:message xlink:type="resource" id="id10740" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21487">Rol[822400e] Regla822447: Suma dimensiones Cartera no repactada bruta OK; contexto  {$cl-ci:CarteraNoRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21483" xlink:to="lbl21487"/>
+    <va:valueAssertion xlink:type="resource" id="regla822448" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:CarteraRepactadaBruta = sum($cl-ci:CarteraRepactadaBruta2)" xlink:label="lbl21489"/>
+    <msg:message xlink:type="resource" id="id10743" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21493">Rol[822400e] Regla822448: Suma dimensiones Cartera repactada bruta OK; contexto  {$cl-ci:CarteraRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21489" xlink:to="lbl21493"/>
+    <va:valueAssertion xlink:type="resource" id="regla822449" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:CarteraBruta = sum($cl-ci:CarteraBruta2)" xlink:label="lbl21495"/>
+    <msg:message xlink:type="resource" id="id10746" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21499">Rol[822400e] Regla822449: Suma dimensiones Total cartera bruta OK; contexto  {$cl-ci:CarteraBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21495" xlink:to="lbl21499"/>
+    <va:valueAssertion xlink:type="resource" id="regla822450" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:CarteraNoRepactadaBruta = sum($cl-ci:CarteraNoRepactadaBruta2)" xlink:label="lbl21501"/>
+    <msg:message xlink:type="resource" id="id10749" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21505">Rol[822400e] Regla822450: Suma dimensiones Cartera no repactada bruta OK; contexto  {$cl-ci:CarteraNoRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21501" xlink:to="lbl21505"/>
+    <va:valueAssertion xlink:type="resource" id="regla822451" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:CarteraRepactadaBruta = sum($cl-ci:CarteraRepactadaBruta2)" xlink:label="lbl21507"/>
+    <msg:message xlink:type="resource" id="id10752" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21511">Rol[822400e] Regla822451: Suma dimensiones Cartera repactada bruta OK; contexto  {$cl-ci:CarteraRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21507" xlink:to="lbl21511"/>
+    <va:valueAssertion xlink:type="resource" id="regla822452" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:CarteraBruta = sum($cl-ci:CarteraBruta2)" xlink:label="lbl21513"/>
+    <msg:message xlink:type="resource" id="id10755" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21517">Rol[822400e] Regla822452: Suma dimensiones Total cartera bruta OK; contexto  {$cl-ci:CarteraBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21513" xlink:to="lbl21517"/>
+    <va:valueAssertion xlink:type="resource" id="regla822453" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:NumeroOperaciones = sum($cl-ci:NumeroOperaciones2)" xlink:label="lbl21519"/>
+    <msg:message xlink:type="resource" id="id10758" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21527">Rol[822400g] Regla822453: Suma dimensiones Número de operaciones OK; contexto  {$cl-ci:NumeroOperaciones/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21519" xlink:to="lbl21527"/>
+    <va:valueAssertion xlink:type="resource" id="regla822454" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:MontoOperaciones = sum($cl-ci:MontoOperaciones2)" xlink:label="lbl21529"/>
+    <msg:message xlink:type="resource" id="id10761" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21534">Rol[822400g] Regla822454: Suma dimensiones Monto de las operaciones OK; contexto  {$cl-ci:MontoOperaciones/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21529" xlink:to="lbl21534"/>
+    <va:valueAssertion xlink:type="resource" id="regla822455" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:NumeroOperaciones = sum($cl-ci:NumeroOperaciones2)" xlink:label="lbl21536"/>
+    <msg:message xlink:type="resource" id="id10764" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21541">Rol[822400g] Regla822455: Suma dimensiones Número de operaciones OK; contexto  {$cl-ci:NumeroOperaciones/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21536" xlink:to="lbl21541"/>
+    <va:valueAssertion xlink:type="resource" id="regla822456" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:MontoOperaciones = sum($cl-ci:MontoOperaciones2)" xlink:label="lbl21543"/>
+    <msg:message xlink:type="resource" id="id10767" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21547">Rol[822400g] Regla822456: Suma dimensiones Monto de las operaciones OK; contexto  {$cl-ci:MontoOperaciones/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21543" xlink:to="lbl21547"/>
+    <msg:message xlink:type="resource" id="id10603" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21166">Rol[822400a] Regla822401: Error RUT entidad deudora, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21160" xlink:to="lbl21166"/>
+    <msg:message xlink:type="resource" id="id10606" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21172">Rol[822400a] Regla822402: Error Nombre entidad deudora, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21167" xlink:to="lbl21172"/>
+    <msg:message xlink:type="resource" id="id10609" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21178">Rol[822400a] Regla822403: Error País de la empresa deudora, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21173" xlink:to="lbl21178"/>
+    <msg:message xlink:type="resource" id="id10612" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21184">Rol[822400a] Regla822404: Error Nombre entidad acreedora, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21179" xlink:to="lbl21184"/>
+    <msg:message xlink:type="resource" id="id10615" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21190">Rol[822400a] Regla822405: Error Moneda o unidad de reajuste, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21185" xlink:to="lbl21190"/>
+    <msg:message xlink:type="resource" id="id10618" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21196">Rol[822400a] Regla822406: Error Tipo de amortización, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21191" xlink:to="lbl21196"/>
+    <msg:message xlink:type="resource" id="id10621" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21202">Rol[822400a] Regla822407: Error Tasa  efectiva, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21197" xlink:to="lbl21202"/>
+    <msg:message xlink:type="resource" id="id10624" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21208">Rol[822400a] Regla822408: Error Tasa nominal, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21203" xlink:to="lbl21208"/>
+    <msg:message xlink:type="resource" id="id10627" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21214">Rol[822400b] Regla822409: Error RUT entidad deudora, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21209" xlink:to="lbl21214"/>
+    <msg:message xlink:type="resource" id="id10630" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21219">Rol[822400b] Regla822410: Error Nombre entidad deudora, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21215" xlink:to="lbl21219"/>
+    <msg:message xlink:type="resource" id="id10633" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21224">Rol[822400b] Regla822411: Error País de la empresa deudora, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21220" xlink:to="lbl21224"/>
+    <msg:message xlink:type="resource" id="id10636" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21230">Rol[822400b] Regla822412: Error Número de inscripción, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21225" xlink:to="lbl21230"/>
+    <msg:message xlink:type="resource" id="id10639" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21236">Rol[822400b] Regla822413: Error Series, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21231" xlink:to="lbl21236"/>
+    <msg:message xlink:type="resource" id="id10642" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21242">Rol[822400b] Regla822414: Error Fecha de vencimiento, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21237" xlink:to="lbl21242"/>
+    <msg:message xlink:type="resource" id="id10645" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21247">Rol[822400b] Regla822415: Error Moneda o unidad de reajuste, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21243" xlink:to="lbl21247"/>
+    <msg:message xlink:type="resource" id="id10648" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21253">Rol[822400b] Regla822416: Error Periodicidad de la amortización, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21248" xlink:to="lbl21253"/>
+    <msg:message xlink:type="resource" id="id10651" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21258">Rol[822400b] Regla822417: Error Tasa  efectiva, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21254" xlink:to="lbl21258"/>
+    <msg:message xlink:type="resource" id="id10654" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21263">Rol[822400b] Regla822418: Error Tasa nominal, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21259" xlink:to="lbl21263"/>
+    <msg:message xlink:type="resource" id="id10657" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21271">Rol[822400a] Regla822419: Error en suma dimensiones más de 1 año hasta 3 años; contexto  {$cl-ci:MasDe1AñoHasta3AñosPrestamosNominales/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21264" xlink:to="lbl21271"/>
+    <msg:message xlink:type="resource" id="id10660" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21278">Rol[822400a] Regla822420: Error en suma dimensiones más de 3 años hasta 5 años; contexto  {$cl-ci:MasDe3AñosHasta5AñosPrestamosNominales/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21272" xlink:to="lbl21278"/>
+    <msg:message xlink:type="resource" id="id10663" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21285">Rol[822400a] Regla822421: Error en suma dimensiones Total montos nominales; contexto  {$cl-ci:MontosNominalesPrestamos/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21279" xlink:to="lbl21285"/>
+    <msg:message xlink:type="resource" id="id10666" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21292">Rol[822400a] Regla822422: Error en suma dimensiones Préstamos bancarios corrientes; contexto  {$cl-ci:PrestamosBancariosCorrientes/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21286" xlink:to="lbl21292"/>
+    <msg:message xlink:type="resource" id="id10669" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21299">Rol[822400a] Regla822423: Error en suma dimensiones Préstamos bancarios no corrientes; contexto  {$cl-ci:PrestamosBancariosNoCorrientes/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21293" xlink:to="lbl21299"/>
+    <msg:message xlink:type="resource" id="id10672" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21306">Rol[822400a] Regla822424: Error en suma dimensiones más de 1 año hasta 3 años; contexto  {$cl-ci:MasDe1AñoHasta3AñosPrestamosContable/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21300" xlink:to="lbl21306"/>
+    <msg:message xlink:type="resource" id="id10675" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21313">Rol[822400a] Regla822425: Error en suma dimensiones más de 3 años hasta 5 años; contexto  {$cl-ci:MasDe3AñosHasta5AñosPrestamosContable/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21307" xlink:to="lbl21313"/>
+    <msg:message xlink:type="resource" id="id10678" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21320">Rol[822400a] Regla822426: Error en suma dimensiones Préstamos bancarios; contexto  {$cl-ci:PrestamosBancarios/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21314" xlink:to="lbl21320"/>
+    <msg:message xlink:type="resource" id="id10681" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21328">Rol[822400b] Regla822427: Error en suma dimensiones más de 1 año hasta 3 años; contexto  {$cl-ci:MasDe1AñoHasta3AñosObligacionesPublicoNominales/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21321" xlink:to="lbl21328"/>
+    <msg:message xlink:type="resource" id="id10684" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21335">Rol[822400b] Regla822428: Error en suma dimensiones más de 3 años hasta 5 años; contexto  {$cl-ci:MasDe3AñosHasta5AñosObligacionesPublicoNominales/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21329" xlink:to="lbl21335"/>
+    <msg:message xlink:type="resource" id="id10687" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21342">Rol[822400b] Regla822429: Error en suma dimensiones Total montos nominales; contexto  {$cl-ci:MontosNominalesObligacionesPublico/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21336" xlink:to="lbl21342"/>
+    <msg:message xlink:type="resource" id="id10690" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21349">Rol[822400b] Regla822430: Error en suma dimensiones Obligaciones con el público corrientes; contexto  {$cl-ci:ObligacionesConPublicoCorrientes/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21343" xlink:to="lbl21349"/>
+    <msg:message xlink:type="resource" id="id10693" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21356">Rol[822400b] Regla822431: Error en suma dimensiones Obligaciones con el público no corrientes; contexto  {$cl-ci:ObligacionesConPublicoNoCorrientes/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21350" xlink:to="lbl21356"/>
+    <msg:message xlink:type="resource" id="id10696" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21363">Rol[822400b] Regla822432: Error en suma dimensiones más de 1 año hasta 3 años; contexto  {$cl-ci:MasDe1AñoHasta3AñosObligacionesPublicoContable/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21357" xlink:to="lbl21363"/>
+    <msg:message xlink:type="resource" id="id10699" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21370">Rol[822400b] Regla822433: Error en suma dimensiones más de 3 años hasta 5 años; contexto  {$cl-ci:MasDe3AñosHasta5AñosObligacionesPublicoContable/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21364" xlink:to="lbl21370"/>
+    <msg:message xlink:type="resource" id="id10702" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21377">Rol[822400b] Regla822434: Error en suma dimensiones más de 5 años; contexto  {$cl-ci:MasDe5AñosObligacionesPublicoContable/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21371" xlink:to="lbl21377"/>
+    <msg:message xlink:type="resource" id="id10705" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21384">Rol[822400b] Regla822435: Error en suma dimensiones Obligaciones con el público; contexto  {$cl-ci:ObligacionesConPublico/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21378" xlink:to="lbl21384"/>
+    <msg:message xlink:type="resource" id="id10708" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21396">Rol[822400d] Regla822436: Error en suma dimensiones Deudores comerciales y otras cuentas por cobrar corrientes; contexto  {$ifrs-full:TradeAndOtherCurrentReceivables/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21385" xlink:to="lbl21396"/>
+    <msg:message xlink:type="resource" id="id10711" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21405">Rol[822400d] Regla822437: Error en suma dimensiones Deudores comerciales corrientes; contexto  {$ifrs-full:CurrentTradeReceivables/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21397" xlink:to="lbl21405"/>
+    <msg:message xlink:type="resource" id="id10714" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21414">Rol[822400d] Regla822438: Error en suma dimensiones Cuentas por cobrar no corrientes; contexto  {$ifrs-full:NoncurrentReceivables/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21406" xlink:to="lbl21414"/>
+    <msg:message xlink:type="resource" id="id10717" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21423">Rol[822400d] Regla822439: Error en suma dimensiones Deudores comerciales no corrientes; contexto  {$ifrs-full:NoncurrentTradeReceivables/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21415" xlink:to="lbl21423"/>
+    <msg:message xlink:type="resource" id="id10720" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21432">Rol[822400d] Regla822440: Error en suma dimensiones Total deudores comerciales y otras cuentas por cobrar; contexto  {$ifrs-full:TradeAndOtherReceivables/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21424" xlink:to="lbl21432"/>
+    <msg:message xlink:type="resource" id="id10723" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21445">Rol[822400e] Regla822441: Error en suma dimensiones Cartera no repactada bruta; contexto  {$cl-ci:CarteraNoRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21433" xlink:to="lbl21445"/>
+    <msg:message xlink:type="resource" id="id10726" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21454">Rol[822400e] Regla822442: Error en suma dimensiones Cartera repactada bruta; contexto  {$cl-ci:CarteraRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21446" xlink:to="lbl21454"/>
+    <msg:message xlink:type="resource" id="id10729" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21463">Rol[822400e] Regla822443: Error en suma dimensiones Total cartera bruta; contexto  {$cl-ci:CarteraBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21455" xlink:to="lbl21463"/>
+    <msg:message xlink:type="resource" id="id10732" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21470">Rol[822400e] Regla822444: Error en suma dimensiones Cartera no repactada bruta; contexto  {$cl-ci:CarteraNoRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21464" xlink:to="lbl21470"/>
+    <msg:message xlink:type="resource" id="id10735" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21476">Rol[822400e] Regla822445: Error en suma dimensiones Cartera repactada bruta; contexto  {$cl-ci:CarteraRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21471" xlink:to="lbl21476"/>
+    <msg:message xlink:type="resource" id="id10738" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21482">Rol[822400e] Regla822446: Error en suma dimensiones Total cartera bruta; contexto  {$cl-ci:CarteraBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21477" xlink:to="lbl21482"/>
+    <msg:message xlink:type="resource" id="id10741" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21488">Rol[822400e] Regla822447: Error en suma dimensiones Cartera no repactada bruta; contexto  {$cl-ci:CarteraNoRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21483" xlink:to="lbl21488"/>
+    <msg:message xlink:type="resource" id="id10744" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21494">Rol[822400e] Regla822448: Error en suma dimensiones Cartera repactada bruta; contexto  {$cl-ci:CarteraRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21489" xlink:to="lbl21494"/>
+    <msg:message xlink:type="resource" id="id10747" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21500">Rol[822400e] Regla822449: Error en suma dimensiones Total cartera bruta; contexto  {$cl-ci:CarteraBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21495" xlink:to="lbl21500"/>
+    <msg:message xlink:type="resource" id="id10750" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21506">Rol[822400e] Regla822450: Error en suma dimensiones Cartera no repactada bruta; contexto  {$cl-ci:CarteraNoRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21501" xlink:to="lbl21506"/>
+    <msg:message xlink:type="resource" id="id10753" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21512">Rol[822400e] Regla822451: Error en suma dimensiones Cartera repactada bruta; contexto  {$cl-ci:CarteraRepactadaBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21507" xlink:to="lbl21512"/>
+    <msg:message xlink:type="resource" id="id10756" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21518">Rol[822400e] Regla822452: Error en suma dimensiones Total cartera bruta; contexto  {$cl-ci:CarteraBruta/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21513" xlink:to="lbl21518"/>
+    <msg:message xlink:type="resource" id="id10759" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21528">Rol[822400g] Regla822453: Error en suma dimensiones Número de operaciones; contexto  {$cl-ci:NumeroOperaciones/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21519" xlink:to="lbl21528"/>
+    <msg:message xlink:type="resource" id="id10762" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21535">Rol[822400g] Regla822454: Error en suma dimensiones Monto de las operaciones; contexto  {$cl-ci:MontoOperaciones/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21529" xlink:to="lbl21535"/>
+    <msg:message xlink:type="resource" id="id10765" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21542">Rol[822400g] Regla822455: Error en suma dimensiones Número de operaciones; contexto  {$cl-ci:NumeroOperaciones/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21536" xlink:to="lbl21542"/>
+    <msg:message xlink:type="resource" id="id10768" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21548">Rol[822400g] Regla822456: Error en suma dimensiones Monto de las operaciones; contexto  {$cl-ci:MontoOperaciones/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21543" xlink:to="lbl21548"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10601" xlink:label="lbl21164">822401</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21160" xlink:to="lbl21164"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10604" xlink:label="lbl21170">822402</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21167" xlink:to="lbl21170"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10607" xlink:label="lbl21176">822403</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21173" xlink:to="lbl21176"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10610" xlink:label="lbl21182">822404</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21179" xlink:to="lbl21182"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10613" xlink:label="lbl21188">822405</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21185" xlink:to="lbl21188"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10616" xlink:label="lbl21194">822406</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21191" xlink:to="lbl21194"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10619" xlink:label="lbl21200">822407</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21197" xlink:to="lbl21200"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10622" xlink:label="lbl21206">822408</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21203" xlink:to="lbl21206"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10625" xlink:label="lbl21212">822409</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21209" xlink:to="lbl21212"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10628" xlink:label="lbl21217">822410</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21215" xlink:to="lbl21217"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10631" xlink:label="lbl21222">822411</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21220" xlink:to="lbl21222"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10634" xlink:label="lbl21228">822412</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21225" xlink:to="lbl21228"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10637" xlink:label="lbl21234">822413</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21231" xlink:to="lbl21234"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10640" xlink:label="lbl21240">822414</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21237" xlink:to="lbl21240"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10643" xlink:label="lbl21245">822415</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21243" xlink:to="lbl21245"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10646" xlink:label="lbl21251">822416</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21248" xlink:to="lbl21251"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10649" xlink:label="lbl21256">822417</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21254" xlink:to="lbl21256"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10652" xlink:label="lbl21261">822418</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21259" xlink:to="lbl21261"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10655" xlink:label="lbl21269">822419</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21264" xlink:to="lbl21269"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10658" xlink:label="lbl21276">822420</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21272" xlink:to="lbl21276"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10661" xlink:label="lbl21283">822421</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21279" xlink:to="lbl21283"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10664" xlink:label="lbl21290">822422</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21286" xlink:to="lbl21290"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10667" xlink:label="lbl21297">822423</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21293" xlink:to="lbl21297"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10670" xlink:label="lbl21304">822424</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21300" xlink:to="lbl21304"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10673" xlink:label="lbl21311">822425</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21307" xlink:to="lbl21311"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10676" xlink:label="lbl21318">822426</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21314" xlink:to="lbl21318"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10679" xlink:label="lbl21326">822427</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21321" xlink:to="lbl21326"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10682" xlink:label="lbl21333">822428</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21329" xlink:to="lbl21333"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10685" xlink:label="lbl21340">822429</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21336" xlink:to="lbl21340"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10688" xlink:label="lbl21347">822430</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21343" xlink:to="lbl21347"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10691" xlink:label="lbl21354">822431</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21350" xlink:to="lbl21354"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10694" xlink:label="lbl21361">822432</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21357" xlink:to="lbl21361"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10697" xlink:label="lbl21368">822433</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21364" xlink:to="lbl21368"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10700" xlink:label="lbl21375">822434</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21371" xlink:to="lbl21375"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10703" xlink:label="lbl21382">822435</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21378" xlink:to="lbl21382"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10706" xlink:label="lbl21394">822436</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21385" xlink:to="lbl21394"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10709" xlink:label="lbl21403">822437</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21397" xlink:to="lbl21403"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10712" xlink:label="lbl21412">822438</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21406" xlink:to="lbl21412"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10715" xlink:label="lbl21421">822439</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21415" xlink:to="lbl21421"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10718" xlink:label="lbl21430">822440</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21424" xlink:to="lbl21430"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10721" xlink:label="lbl21443">822441</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21433" xlink:to="lbl21443"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10724" xlink:label="lbl21452">822442</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21446" xlink:to="lbl21452"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10727" xlink:label="lbl21461">822443</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21455" xlink:to="lbl21461"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10730" xlink:label="lbl21468">822444</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21464" xlink:to="lbl21468"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10733" xlink:label="lbl21474">822445</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21471" xlink:to="lbl21474"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10736" xlink:label="lbl21480">822446</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21477" xlink:to="lbl21480"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10739" xlink:label="lbl21486">822447</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21483" xlink:to="lbl21486"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10742" xlink:label="lbl21492">822448</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21489" xlink:to="lbl21492"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10745" xlink:label="lbl21498">822449</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21495" xlink:to="lbl21498"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10748" xlink:label="lbl21504">822450</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21501" xlink:to="lbl21504"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10751" xlink:label="lbl21510">822451</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21507" xlink:to="lbl21510"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10754" xlink:label="lbl21516">822452</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21513" xlink:to="lbl21516"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10757" xlink:label="lbl21526">822453</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21519" xlink:to="lbl21526"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10760" xlink:label="lbl21533">822454</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21529" xlink:to="lbl21533"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10763" xlink:label="lbl21540">822455</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21536" xlink:to="lbl21540"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10766" xlink:label="lbl21546">822456</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21543" xlink:to="lbl21546"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21161" id="id10769"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:RUTEntidadDeudora" xlink:from="lbl21160" xlink:to="lbl21161"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21168" id="id10770"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:NombreEntidadDeudora" xlink:from="lbl21167" xlink:to="lbl21168"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21174" id="id10771"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PaisEmpresaDeudora" xlink:from="lbl21173" xlink:to="lbl21174"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21180" id="id10772"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:NombreEntidadAcreedora" xlink:from="lbl21179" xlink:to="lbl21180"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21186" id="id10773"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MonedaOUnidadReajuste" xlink:from="lbl21185" xlink:to="lbl21186"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21192" id="id10774"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:TipoAmortizacion" xlink:from="lbl21191" xlink:to="lbl21192"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21198" id="id10775"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:TasaEfectiva" xlink:from="lbl21197" xlink:to="lbl21198"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21204" id="id10776"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:TasaNominal" xlink:from="lbl21203" xlink:to="lbl21204"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21210" id="id10777"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:RUTEntidadDeudora" xlink:from="lbl21209" xlink:to="lbl21210"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21216" id="id10778"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:NombreEntidadDeudora" xlink:from="lbl21215" xlink:to="lbl21216"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21221" id="id10779"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PaisEmpresaDeudora" xlink:from="lbl21220" xlink:to="lbl21221"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21226" id="id10780"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:NumeroInscripcion" xlink:from="lbl21225" xlink:to="lbl21226"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21232" id="id10781"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:Series" xlink:from="lbl21231" xlink:to="lbl21232"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21238" id="id10782"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:FechaVencimiento" xlink:from="lbl21237" xlink:to="lbl21238"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21244" id="id10783"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MonedaOUnidadReajuste" xlink:from="lbl21243" xlink:to="lbl21244"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21249" id="id10784"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PeriodicidadAmortizacion" xlink:from="lbl21248" xlink:to="lbl21249"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21255" id="id10785"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:TasaEfectiva" xlink:from="lbl21254" xlink:to="lbl21255"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21260" id="id10786"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:TasaNominal" xlink:from="lbl21259" xlink:to="lbl21260"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21265" id="id10787"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe1AñoHasta3AñosPrestamosNominales" xlink:from="lbl21264" xlink:to="lbl21265"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21268" id="id10788"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe1AñoHasta3AñosPrestamosNominales2" xlink:from="lbl21264" xlink:to="lbl21268"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21273" id="id10789"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe3AñosHasta5AñosPrestamosNominales" xlink:from="lbl21272" xlink:to="lbl21273"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21275" id="id10790"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe3AñosHasta5AñosPrestamosNominales2" xlink:from="lbl21272" xlink:to="lbl21275"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21280" id="id10791"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MontosNominalesPrestamos" xlink:from="lbl21279" xlink:to="lbl21280"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21282" id="id10792"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MontosNominalesPrestamos2" xlink:from="lbl21279" xlink:to="lbl21282"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21287" id="id10793"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PrestamosBancariosCorrientes" xlink:from="lbl21286" xlink:to="lbl21287"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21289" id="id10794"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PrestamosBancariosCorrientes2" xlink:from="lbl21286" xlink:to="lbl21289"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21294" id="id10795"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PrestamosBancariosNoCorrientes" xlink:from="lbl21293" xlink:to="lbl21294"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21296" id="id10796"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PrestamosBancariosNoCorrientes2" xlink:from="lbl21293" xlink:to="lbl21296"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21301" id="id10797"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe1AñoHasta3AñosPrestamosContable" xlink:from="lbl21300" xlink:to="lbl21301"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21303" id="id10798"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe1AñoHasta3AñosPrestamosContable2" xlink:from="lbl21300" xlink:to="lbl21303"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21308" id="id10799"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe3AñosHasta5AñosPrestamosContable" xlink:from="lbl21307" xlink:to="lbl21308"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21310" id="id10800"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe3AñosHasta5AñosPrestamosContable2" xlink:from="lbl21307" xlink:to="lbl21310"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21315" id="id10801"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PrestamosBancarios" xlink:from="lbl21314" xlink:to="lbl21315"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21317" id="id10802"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:PrestamosBancarios2" xlink:from="lbl21314" xlink:to="lbl21317"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21322" id="id10803"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe1AñoHasta3AñosObligacionesPublicoNominales" xlink:from="lbl21321" xlink:to="lbl21322"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21325" id="id10804"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe1AñoHasta3AñosObligacionesPublicoNominales2" xlink:from="lbl21321" xlink:to="lbl21325"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21330" id="id10805"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe3AñosHasta5AñosObligacionesPublicoNominales" xlink:from="lbl21329" xlink:to="lbl21330"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21332" id="id10806"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe3AñosHasta5AñosObligacionesPublicoNominales2" xlink:from="lbl21329" xlink:to="lbl21332"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21337" id="id10807"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MontosNominalesObligacionesPublico" xlink:from="lbl21336" xlink:to="lbl21337"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21339" id="id10808"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MontosNominalesObligacionesPublico2" xlink:from="lbl21336" xlink:to="lbl21339"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21344" id="id10809"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:ObligacionesConPublicoCorrientes" xlink:from="lbl21343" xlink:to="lbl21344"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21346" id="id10810"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:ObligacionesConPublicoCorrientes2" xlink:from="lbl21343" xlink:to="lbl21346"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21351" id="id10811"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:ObligacionesConPublicoNoCorrientes" xlink:from="lbl21350" xlink:to="lbl21351"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21353" id="id10812"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:ObligacionesConPublicoNoCorrientes2" xlink:from="lbl21350" xlink:to="lbl21353"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21358" id="id10813"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe1AñoHasta3AñosObligacionesPublicoContable" xlink:from="lbl21357" xlink:to="lbl21358"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21360" id="id10814"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe1AñoHasta3AñosObligacionesPublicoContable2" xlink:from="lbl21357" xlink:to="lbl21360"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21365" id="id10815"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe3AñosHasta5AñosObligacionesPublicoContable" xlink:from="lbl21364" xlink:to="lbl21365"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21367" id="id10816"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe3AñosHasta5AñosObligacionesPublicoContable2" xlink:from="lbl21364" xlink:to="lbl21367"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21372" id="id10817"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe5AñosObligacionesPublicoContable" xlink:from="lbl21371" xlink:to="lbl21372"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21374" id="id10818"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MasDe5AñosObligacionesPublicoContable2" xlink:from="lbl21371" xlink:to="lbl21374"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21379" id="id10819"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:ObligacionesConPublico" xlink:from="lbl21378" xlink:to="lbl21379"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21381" id="id10820"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:ObligacionesConPublico2" xlink:from="lbl21378" xlink:to="lbl21381"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21386" id="id10821"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:TradeAndOtherCurrentReceivables" xlink:from="lbl21385" xlink:to="lbl21386"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21389" id="id10822"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:TradeAndOtherCurrentReceivables2" xlink:from="lbl21385" xlink:to="lbl21389"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21392" id="id10823"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:TradeAndOtherCurrentReceivables3" xlink:from="lbl21385" xlink:to="lbl21392"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21398" id="id10824"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:CurrentTradeReceivables" xlink:from="lbl21397" xlink:to="lbl21398"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21400" id="id10825"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:CurrentTradeReceivables2" xlink:from="lbl21397" xlink:to="lbl21400"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21402" id="id10826"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:CurrentTradeReceivables3" xlink:from="lbl21397" xlink:to="lbl21402"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21407" id="id10827"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NoncurrentReceivables" xlink:from="lbl21406" xlink:to="lbl21407"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21409" id="id10828"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NoncurrentReceivables2" xlink:from="lbl21406" xlink:to="lbl21409"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21411" id="id10829"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NoncurrentReceivables3" xlink:from="lbl21406" xlink:to="lbl21411"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21416" id="id10830"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NoncurrentTradeReceivables" xlink:from="lbl21415" xlink:to="lbl21416"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21418" id="id10831"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NoncurrentTradeReceivables2" xlink:from="lbl21415" xlink:to="lbl21418"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21420" id="id10832"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NoncurrentTradeReceivables3" xlink:from="lbl21415" xlink:to="lbl21420"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21425" id="id10833"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:TradeAndOtherReceivables" xlink:from="lbl21424" xlink:to="lbl21425"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21427" id="id10834"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:TradeAndOtherReceivables2" xlink:from="lbl21424" xlink:to="lbl21427"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21429" id="id10835"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:TradeAndOtherReceivables3" xlink:from="lbl21424" xlink:to="lbl21429"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21434" id="id10836"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraNoRepactadaBruta" xlink:from="lbl21433" xlink:to="lbl21434"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21438" id="id10837"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraNoRepactadaBruta2" xlink:from="lbl21433" xlink:to="lbl21438"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21441" id="id10838"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraNoRepactadaBruta3" xlink:from="lbl21433" xlink:to="lbl21441"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21447" id="id10839"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraRepactadaBruta" xlink:from="lbl21446" xlink:to="lbl21447"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21449" id="id10840"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraRepactadaBruta2" xlink:from="lbl21446" xlink:to="lbl21449"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21451" id="id10841"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraRepactadaBruta3" xlink:from="lbl21446" xlink:to="lbl21451"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21456" id="id10842"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraBruta" xlink:from="lbl21455" xlink:to="lbl21456"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21458" id="id10843"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraBruta2" xlink:from="lbl21455" xlink:to="lbl21458"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl21460" id="id10844"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraBruta3" xlink:from="lbl21455" xlink:to="lbl21460"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21465" id="id10845"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraNoRepactadaBruta" xlink:from="lbl21464" xlink:to="lbl21465"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21466" id="id10846"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraNoRepactadaBruta2" xlink:from="lbl21464" xlink:to="lbl21466"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21472" id="id10847"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraRepactadaBruta" xlink:from="lbl21471" xlink:to="lbl21472"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21473" id="id10848"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraRepactadaBruta2" xlink:from="lbl21471" xlink:to="lbl21473"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21478" id="id10849"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraBruta" xlink:from="lbl21477" xlink:to="lbl21478"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21479" id="id10850"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraBruta2" xlink:from="lbl21477" xlink:to="lbl21479"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21484" id="id10851"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraNoRepactadaBruta" xlink:from="lbl21483" xlink:to="lbl21484"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21485" id="id10852"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraNoRepactadaBruta2" xlink:from="lbl21483" xlink:to="lbl21485"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21490" id="id10853"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraRepactadaBruta" xlink:from="lbl21489" xlink:to="lbl21490"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21491" id="id10854"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraRepactadaBruta2" xlink:from="lbl21489" xlink:to="lbl21491"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21496" id="id10855"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraBruta" xlink:from="lbl21495" xlink:to="lbl21496"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21497" id="id10856"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraBruta2" xlink:from="lbl21495" xlink:to="lbl21497"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21502" id="id10857"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraNoRepactadaBruta" xlink:from="lbl21501" xlink:to="lbl21502"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21503" id="id10858"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraNoRepactadaBruta2" xlink:from="lbl21501" xlink:to="lbl21503"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21508" id="id10859"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraRepactadaBruta" xlink:from="lbl21507" xlink:to="lbl21508"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21509" id="id10860"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraRepactadaBruta2" xlink:from="lbl21507" xlink:to="lbl21509"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21514" id="id10861"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraBruta" xlink:from="lbl21513" xlink:to="lbl21514"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21515" id="id10862"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraBruta2" xlink:from="lbl21513" xlink:to="lbl21515"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21520" id="id10863"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:NumeroOperaciones" xlink:from="lbl21519" xlink:to="lbl21520"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21524" id="id10864"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:NumeroOperaciones2" xlink:from="lbl21519" xlink:to="lbl21524"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21530" id="id10865"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MontoOperaciones" xlink:from="lbl21529" xlink:to="lbl21530"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21532" id="id10866"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MontoOperaciones2" xlink:from="lbl21529" xlink:to="lbl21532"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21537" id="id10867"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:NumeroOperaciones" xlink:from="lbl21536" xlink:to="lbl21537"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21539" id="id10868"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:NumeroOperaciones2" xlink:from="lbl21536" xlink:to="lbl21539"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21544" id="id10869"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MontoOperaciones" xlink:from="lbl21543" xlink:to="lbl21544"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21545" id="id10870"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:MontoOperaciones2" xlink:from="lbl21543" xlink:to="lbl21545"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21162" id="id10871">
+      <cf:concept>
+        <cf:qname>cl-ci:RUTEntidadDeudora</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21161" xlink:to="lbl21162"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21163" id="id10872">
+      <df:dimension>
+        <df:qname>cl-ci:PrestamosEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:PrestamosMiembro</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400a</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21161" xlink:to="lbl21163"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21169" id="id10873">
+      <cf:concept>
+        <cf:qname>cl-ci:NombreEntidadDeudora</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21168" xlink:to="lbl21169"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21168" xlink:to="lbl21163"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21175" id="id10874">
+      <cf:concept>
+        <cf:qname>cl-ci:PaisEmpresaDeudora</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21174" xlink:to="lbl21175"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21174" xlink:to="lbl21163"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21181" id="id10875">
+      <cf:concept>
+        <cf:qname>cl-ci:NombreEntidadAcreedora</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21180" xlink:to="lbl21181"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21180" xlink:to="lbl21163"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21187" id="id10876">
+      <cf:concept>
+        <cf:qname>cl-ci:MonedaOUnidadReajuste</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21186" xlink:to="lbl21187"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21186" xlink:to="lbl21163"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21193" id="id10877">
+      <cf:concept>
+        <cf:qname>cl-ci:TipoAmortizacion</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21192" xlink:to="lbl21193"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21192" xlink:to="lbl21163"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21199" id="id10878">
+      <cf:concept>
+        <cf:qname>cl-ci:TasaEfectiva</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21198" xlink:to="lbl21199"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21198" xlink:to="lbl21163"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21205" id="id10879">
+      <cf:concept>
+        <cf:qname>cl-ci:TasaNominal</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21204" xlink:to="lbl21205"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21204" xlink:to="lbl21163"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21210" xlink:to="lbl21162"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21211" id="id10880">
+      <df:dimension>
+        <df:qname>cl-ci:EmisionesDeudaEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:ObligacionesEmisionesDeudaMiembro</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400b</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21210" xlink:to="lbl21211"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21216" xlink:to="lbl21169"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21216" xlink:to="lbl21211"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21221" xlink:to="lbl21175"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21221" xlink:to="lbl21211"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21227" id="id10881">
+      <cf:concept>
+        <cf:qname>cl-ci:NumeroInscripcion</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21226" xlink:to="lbl21227"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21226" xlink:to="lbl21211"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21233" id="id10882">
+      <cf:concept>
+        <cf:qname>cl-ci:Series</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21232" xlink:to="lbl21233"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21232" xlink:to="lbl21211"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21239" id="id10883">
+      <cf:concept>
+        <cf:qname>cl-ci:FechaVencimiento</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21238" xlink:to="lbl21239"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21238" xlink:to="lbl21211"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21244" xlink:to="lbl21187"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21244" xlink:to="lbl21211"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21250" id="id10884">
+      <cf:concept>
+        <cf:qname>cl-ci:PeriodicidadAmortizacion</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21249" xlink:to="lbl21250"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21249" xlink:to="lbl21211"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21255" xlink:to="lbl21199"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21255" xlink:to="lbl21211"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21260" xlink:to="lbl21205"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21260" xlink:to="lbl21211"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21266" id="id10885">
+      <cf:concept>
+        <cf:qname>cl-ci:MasDe1AñoHasta3AñosPrestamosNominales</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21265" xlink:to="lbl21266"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21267" id="id10886">
+      <df:dimension>
+        <df:qname>cl-ci:PrestamosEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:PrestamosMiembro</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21265" xlink:to="lbl21267"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21268" xlink:to="lbl21266"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21268" xlink:to="lbl21163"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21274" id="id10887">
+      <cf:concept>
+        <cf:qname>cl-ci:MasDe3AñosHasta5AñosPrestamosNominales</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21273" xlink:to="lbl21274"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21273" xlink:to="lbl21267"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21275" xlink:to="lbl21274"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21275" xlink:to="lbl21163"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21281" id="id10888">
+      <cf:concept>
+        <cf:qname>cl-ci:MontosNominalesPrestamos</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21280" xlink:to="lbl21281"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21280" xlink:to="lbl21267"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21282" xlink:to="lbl21281"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21282" xlink:to="lbl21163"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21288" id="id10889">
+      <cf:concept>
+        <cf:qname>cl-ci:PrestamosBancariosCorrientes</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21287" xlink:to="lbl21288"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21287" xlink:to="lbl21267"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21289" xlink:to="lbl21288"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21289" xlink:to="lbl21163"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21295" id="id10890">
+      <cf:concept>
+        <cf:qname>cl-ci:PrestamosBancariosNoCorrientes</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21294" xlink:to="lbl21295"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21294" xlink:to="lbl21267"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21296" xlink:to="lbl21295"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21296" xlink:to="lbl21163"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21302" id="id10891">
+      <cf:concept>
+        <cf:qname>cl-ci:MasDe1AñoHasta3AñosPrestamosContable</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21301" xlink:to="lbl21302"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21301" xlink:to="lbl21267"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21303" xlink:to="lbl21302"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21303" xlink:to="lbl21163"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21309" id="id10892">
+      <cf:concept>
+        <cf:qname>cl-ci:MasDe3AñosHasta5AñosPrestamosContable</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21308" xlink:to="lbl21309"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21308" xlink:to="lbl21267"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21310" xlink:to="lbl21309"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21310" xlink:to="lbl21163"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21316" id="id10893">
+      <cf:concept>
+        <cf:qname>cl-ci:PrestamosBancarios</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21315" xlink:to="lbl21316"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21315" xlink:to="lbl21267"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21317" xlink:to="lbl21316"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21317" xlink:to="lbl21163"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21323" id="id10894">
+      <cf:concept>
+        <cf:qname>cl-ci:MasDe1AñoHasta3AñosObligacionesPublicoNominales</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21322" xlink:to="lbl21323"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21324" id="id10895">
+      <df:dimension>
+        <df:qname>cl-ci:EmisionesDeudaEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:ObligacionesEmisionesDeudaMiembro</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21322" xlink:to="lbl21324"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21325" xlink:to="lbl21323"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21325" xlink:to="lbl21211"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21331" id="id10896">
+      <cf:concept>
+        <cf:qname>cl-ci:MasDe3AñosHasta5AñosObligacionesPublicoNominales</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21330" xlink:to="lbl21331"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21330" xlink:to="lbl21324"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21332" xlink:to="lbl21331"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21332" xlink:to="lbl21211"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21338" id="id10897">
+      <cf:concept>
+        <cf:qname>cl-ci:MontosNominalesObligacionesPublico</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21337" xlink:to="lbl21338"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21337" xlink:to="lbl21324"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21339" xlink:to="lbl21338"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21339" xlink:to="lbl21211"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21345" id="id10898">
+      <cf:concept>
+        <cf:qname>cl-ci:ObligacionesConPublicoCorrientes</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21344" xlink:to="lbl21345"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21344" xlink:to="lbl21324"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21346" xlink:to="lbl21345"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21346" xlink:to="lbl21211"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21352" id="id10899">
+      <cf:concept>
+        <cf:qname>cl-ci:ObligacionesConPublicoNoCorrientes</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21351" xlink:to="lbl21352"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21351" xlink:to="lbl21324"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21353" xlink:to="lbl21352"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21353" xlink:to="lbl21211"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21359" id="id10900">
+      <cf:concept>
+        <cf:qname>cl-ci:MasDe1AñoHasta3AñosObligacionesPublicoContable</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21358" xlink:to="lbl21359"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21358" xlink:to="lbl21324"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21360" xlink:to="lbl21359"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21360" xlink:to="lbl21211"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21366" id="id10901">
+      <cf:concept>
+        <cf:qname>cl-ci:MasDe3AñosHasta5AñosObligacionesPublicoContable</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21365" xlink:to="lbl21366"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21365" xlink:to="lbl21324"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21367" xlink:to="lbl21366"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21367" xlink:to="lbl21211"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21373" id="id10902">
+      <cf:concept>
+        <cf:qname>cl-ci:MasDe5AñosObligacionesPublicoContable</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21372" xlink:to="lbl21373"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21372" xlink:to="lbl21324"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21374" xlink:to="lbl21373"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21374" xlink:to="lbl21211"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21380" id="id10903">
+      <cf:concept>
+        <cf:qname>cl-ci:ObligacionesConPublico</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21379" xlink:to="lbl21380"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21379" xlink:to="lbl21324"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21381" xlink:to="lbl21380"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21381" xlink:to="lbl21211"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21387" id="id10904">
+      <cf:concept>
+        <cf:qname>ifrs-full:TradeAndOtherCurrentReceivables</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21386" xlink:to="lbl21387"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21388" id="id10905">
+      <df:dimension>
+        <df:qname>cl-ci:ActivosPorDeudoresComercialesEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:ActivosPorDeudoresComercialesNetosMiembro</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21386" xlink:to="lbl21388"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21389" xlink:to="lbl21387"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21390" id="id10906">
+      <df:dimension>
+        <df:qname>cl-ci:ActivosPorDeudoresComercialesEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:ActivosAntesProvisionesMiembro</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21389" xlink:to="lbl21390"/>
+    <mf:matchPeriod xlink:type="resource" variable="ifrs-full:TradeAndOtherCurrentReceivables" xlink:label="lbl21391" id="id10907"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21389" xlink:to="lbl21391"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21392" xlink:to="lbl21387"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21393" id="id10908">
+      <df:dimension>
+        <df:qname>cl-ci:ActivosPorDeudoresComercialesEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:ProvisionesDeudoresComercialesMiembro</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21392" xlink:to="lbl21393"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21392" xlink:to="lbl21391"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21399" id="id10909">
+      <cf:concept>
+        <cf:qname>ifrs-full:CurrentTradeReceivables</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21398" xlink:to="lbl21399"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21398" xlink:to="lbl21388"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21400" xlink:to="lbl21399"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21400" xlink:to="lbl21390"/>
+    <mf:matchPeriod xlink:type="resource" variable="ifrs-full:CurrentTradeReceivables" xlink:label="lbl21401" id="id10910"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21400" xlink:to="lbl21401"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21402" xlink:to="lbl21399"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21402" xlink:to="lbl21393"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21402" xlink:to="lbl21401"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21408" id="id10911">
+      <cf:concept>
+        <cf:qname>ifrs-full:NoncurrentReceivables</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21407" xlink:to="lbl21408"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21407" xlink:to="lbl21388"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21409" xlink:to="lbl21408"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21409" xlink:to="lbl21390"/>
+    <mf:matchPeriod xlink:type="resource" variable="ifrs-full:NoncurrentReceivables" xlink:label="lbl21410" id="id10912"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21409" xlink:to="lbl21410"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21411" xlink:to="lbl21408"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21411" xlink:to="lbl21393"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21411" xlink:to="lbl21410"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21417" id="id10913">
+      <cf:concept>
+        <cf:qname>ifrs-full:NoncurrentTradeReceivables</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21416" xlink:to="lbl21417"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21416" xlink:to="lbl21388"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21418" xlink:to="lbl21417"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21418" xlink:to="lbl21390"/>
+    <mf:matchPeriod xlink:type="resource" variable="ifrs-full:NoncurrentTradeReceivables" xlink:label="lbl21419" id="id10914"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21418" xlink:to="lbl21419"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21420" xlink:to="lbl21417"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21420" xlink:to="lbl21393"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21420" xlink:to="lbl21419"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21426" id="id10915">
+      <cf:concept>
+        <cf:qname>ifrs-full:TradeAndOtherReceivables</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21425" xlink:to="lbl21426"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21425" xlink:to="lbl21388"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21427" xlink:to="lbl21426"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21427" xlink:to="lbl21390"/>
+    <mf:matchPeriod xlink:type="resource" variable="ifrs-full:TradeAndOtherReceivables" xlink:label="lbl21428" id="id10916"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21427" xlink:to="lbl21428"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21429" xlink:to="lbl21426"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21429" xlink:to="lbl21393"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21429" xlink:to="lbl21428"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21435" id="id10917">
+      <cf:concept>
+        <cf:qname>cl-ci:CarteraNoRepactadaBruta</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21434" xlink:to="lbl21435"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21436" id="id10918">
+      <df:dimension>
+        <df:qname>cl-ci:TramosMorosidadEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:CarteraPorTramoMiembro</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21434" xlink:to="lbl21436"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21437" id="id10919">
+      <df:dimension>
+        <df:qname>cl-ci:CarteraSecuritizadaYNoSecuritizadaEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:TotalCarteraMiembro</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21434" xlink:to="lbl21437"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21438" xlink:to="lbl21435"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21439" id="id10920">
+      <df:dimension>
+        <df:qname>cl-ci:CarteraSecuritizadaYNoSecuritizadaEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:CarteraNoSecuritizadaMiembro</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21438" xlink:to="lbl21439"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21438" xlink:to="lbl21436"/>
+    <mf:matchPeriod xlink:type="resource" variable="cl-ci:CarteraNoRepactadaBruta" xlink:label="lbl21440" id="id10921"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21438" xlink:to="lbl21440"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21441" xlink:to="lbl21435"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21442" id="id10922">
+      <df:dimension>
+        <df:qname>cl-ci:CarteraSecuritizadaYNoSecuritizadaEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:CarteraSecuritizadaMiembro</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21441" xlink:to="lbl21442"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21441" xlink:to="lbl21436"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21441" xlink:to="lbl21440"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21448" id="id10923">
+      <cf:concept>
+        <cf:qname>cl-ci:CarteraRepactadaBruta</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21447" xlink:to="lbl21448"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21447" xlink:to="lbl21436"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21447" xlink:to="lbl21437"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21449" xlink:to="lbl21448"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21449" xlink:to="lbl21439"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21449" xlink:to="lbl21436"/>
+    <mf:matchPeriod xlink:type="resource" variable="cl-ci:CarteraRepactadaBruta" xlink:label="lbl21450" id="id10924"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21449" xlink:to="lbl21450"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21451" xlink:to="lbl21448"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21451" xlink:to="lbl21442"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21451" xlink:to="lbl21436"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21451" xlink:to="lbl21450"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21457" id="id10925">
+      <cf:concept>
+        <cf:qname>cl-ci:CarteraBruta</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21456" xlink:to="lbl21457"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21456" xlink:to="lbl21436"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21456" xlink:to="lbl21437"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21458" xlink:to="lbl21457"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21458" xlink:to="lbl21439"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21458" xlink:to="lbl21436"/>
+    <mf:matchPeriod xlink:type="resource" variable="cl-ci:CarteraBruta" xlink:label="lbl21459" id="id10926"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21458" xlink:to="lbl21459"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21460" xlink:to="lbl21457"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21460" xlink:to="lbl21442"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21460" xlink:to="lbl21436"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21460" xlink:to="lbl21459"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21465" xlink:to="lbl21435"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21465" xlink:to="lbl21436"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21465" xlink:to="lbl21437"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21466" xlink:to="lbl21435"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21467" id="id10927">
+      <df:dimension>
+        <df:qname>cl-ci:TramosMorosidadEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:CarteraPorTramoMiembro</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400e</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21466" xlink:to="lbl21467"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21466" xlink:to="lbl21437"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21472" xlink:to="lbl21448"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21472" xlink:to="lbl21436"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21472" xlink:to="lbl21437"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21473" xlink:to="lbl21448"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21473" xlink:to="lbl21467"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21473" xlink:to="lbl21437"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21478" xlink:to="lbl21457"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21478" xlink:to="lbl21436"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21478" xlink:to="lbl21437"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21479" xlink:to="lbl21457"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21479" xlink:to="lbl21467"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21479" xlink:to="lbl21437"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21484" xlink:to="lbl21435"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21484" xlink:to="lbl21436"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21484" xlink:to="lbl21439"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21485" xlink:to="lbl21435"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21485" xlink:to="lbl21467"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21485" xlink:to="lbl21439"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21490" xlink:to="lbl21448"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21490" xlink:to="lbl21436"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21490" xlink:to="lbl21439"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21491" xlink:to="lbl21448"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21491" xlink:to="lbl21467"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21491" xlink:to="lbl21439"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21496" xlink:to="lbl21457"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21496" xlink:to="lbl21436"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21496" xlink:to="lbl21439"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21497" xlink:to="lbl21457"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21497" xlink:to="lbl21467"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21497" xlink:to="lbl21439"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21502" xlink:to="lbl21435"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21502" xlink:to="lbl21436"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21502" xlink:to="lbl21442"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21503" xlink:to="lbl21435"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21503" xlink:to="lbl21467"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21503" xlink:to="lbl21442"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21508" xlink:to="lbl21448"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21508" xlink:to="lbl21436"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21508" xlink:to="lbl21442"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21509" xlink:to="lbl21448"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21509" xlink:to="lbl21467"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21509" xlink:to="lbl21442"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21514" xlink:to="lbl21457"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21514" xlink:to="lbl21436"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21514" xlink:to="lbl21442"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21515" xlink:to="lbl21457"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21515" xlink:to="lbl21467"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21515" xlink:to="lbl21442"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21521" id="id10928">
+      <cf:concept>
+        <cf:qname>cl-ci:NumeroOperaciones</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21520" xlink:to="lbl21521"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21522" id="id10929">
+      <df:dimension>
+        <df:qname>cl-ci:DetalleOperacionesEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:DetallePorTipoOperacionesMiembro</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21520" xlink:to="lbl21522"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21523" id="id10930">
+      <df:dimension>
+        <df:qname>cl-ci:PeriodoOperacionesEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:AcumuladoAnualMiembro</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21520" xlink:to="lbl21523"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21524" xlink:to="lbl21521"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21525" id="id10931">
+      <df:dimension>
+        <df:qname>cl-ci:DetalleOperacionesEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:DetallePorTipoOperacionesMiembro</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822400g</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21524" xlink:to="lbl21525"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21524" xlink:to="lbl21523"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21531" id="id10932">
+      <cf:concept>
+        <cf:qname>cl-ci:MontoOperaciones</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21530" xlink:to="lbl21531"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21530" xlink:to="lbl21522"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21530" xlink:to="lbl21523"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21532" xlink:to="lbl21531"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21532" xlink:to="lbl21525"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21532" xlink:to="lbl21523"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21537" xlink:to="lbl21521"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21537" xlink:to="lbl21522"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21538" id="id10933">
+      <df:dimension>
+        <df:qname>cl-ci:PeriodoOperacionesEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:UltimoTrimestreMiembro</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21537" xlink:to="lbl21538"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21539" xlink:to="lbl21521"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21539" xlink:to="lbl21525"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21539" xlink:to="lbl21538"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21544" xlink:to="lbl21531"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21544" xlink:to="lbl21522"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21544" xlink:to="lbl21538"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21545" xlink:to="lbl21531"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21545" xlink:to="lbl21525"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21545" xlink:to="lbl21538"/>
+  </gen:link>
+</link:linkbase>

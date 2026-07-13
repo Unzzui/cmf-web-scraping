@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xs="https://www.w3.org/2001/XMLSchema"
+               xmlns:xbrli="http://www.xbrl.org/2003/instance"
+               xmlns:xfi="http://www.xbrl.org/2008/function/instance"
+               xmlns:gen="http://xbrl.org/2008/generic"
+               xmlns:xlink="http://www.w3.org/1999/xlink"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:ea="http://xbrl.org/2008/assertion/existence"
+               xmlns:variable="http://xbrl.org/2008/variable"
+               xmlns:cf="http://xbrl.org/2008/filter/concept"
+               xmlns:label="http://xbrl.org/2008/label"
+               xmlns:msg="http://xbrl.org/2010/message"
+               xmlns:ifrs-full="https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full"
+               xmlns:cl-ci="https://www.cmfchile.cl/cl/fr/ci/2026-01-02"
+               xsi:schemaLocation="http://xbrl.org/2008/assertion/existence http://www.xbrl.org/2008/existence-assertion.xsd http://xbrl.org/2008/variable http://www.xbrl.org/2008/variable.xsd http://xbrl.org/2008/filter/concept http://www.xbrl.org/2008/concept-filter.xsd http://xbrl.org/2008/label http://www.xbrl.org/2008/generic-label.xsd http://xbrl.org/2010/message http://www.xbrl.org/2010/generic-message.xsd http://xbrl.org/2008/generic http://www.xbrl.org/2008/generic-link.xsd https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd https://www.cmfchile.cl/cl/fr/ci/2026-01-02 ../../cl-ci_cor_2026-01-02.xsd">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/ias-1_2025-03-27_role-110000" xlink:href="../cl-ci_ias-1_2025-03-27_role-110000.xsd#ias-1_2025-03-27_role-110000"/>
+  <link:roleRef xlink:type="simple" roleURI="http://www.xbrl.org/2010/role/message" xlink:href="http://www.xbrl.org/2010/generic-message.xsd#standard-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-satisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-unsatisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/element-label" xlink:href="http://www.xbrl.org/2008/generic-label.xsd#element-label"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-set" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-set"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-filter" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-filter"/>
+  <gen:link xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/ias-1_2025-03-27_role-110000">
+    <ea:existenceAssertion xlink:type="resource" id="regla110001" aspectModel="dimensional" implicitFiltering="true" test=". ge 1" xlink:label="lbl13399"/>
+    <msg:message xlink:type="resource" id="id7357" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13403">Rol[110000] Regla110001:  Información a revelar sobre información general sobre los estados financieros [bloque de texto], está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl13399" xlink:to="lbl13403"/>
+    <ea:existenceAssertion xlink:type="resource" id="regla110002" aspectModel="dimensional" implicitFiltering="true" test=". ge 1" xlink:label="lbl13405"/>
+    <msg:message xlink:type="resource" id="id7360" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13409">Rol[110000] Regla110002:  Nombre de la entidad que informa u otras formas de identificación , está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl13405" xlink:to="lbl13409"/>
+    <ea:existenceAssertion xlink:type="resource" id="regla110003" aspectModel="dimensional" implicitFiltering="true" test=". ge 1" xlink:label="lbl13411"/>
+    <msg:message xlink:type="resource" id="id7363" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13415">Rol[110000] Regla110003:  RUT de entidad que Informa, está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl13411" xlink:to="lbl13415"/>
+    <ea:existenceAssertion xlink:type="resource" id="regla110004" aspectModel="dimensional" implicitFiltering="true" test=". ge 1" xlink:label="lbl13417"/>
+    <msg:message xlink:type="resource" id="id7366" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13421">Rol[110000] Regla110004:  Tipo de estados financieros, está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl13417" xlink:to="lbl13421"/>
+    <ea:existenceAssertion xlink:type="resource" id="regla110005" aspectModel="dimensional" implicitFiltering="true" test=". eq 1" xlink:label="lbl13423"/>
+    <msg:message xlink:type="resource" id="id7369" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13427">Rol[110000] Regla110005:  Fecha de cierre del periodo sobre el que se informa, está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl13423" xlink:to="lbl13427"/>
+    <ea:existenceAssertion xlink:type="resource" id="regla110006" aspectModel="dimensional" implicitFiltering="true" test=". ge 1" xlink:label="lbl13429"/>
+    <msg:message xlink:type="resource" id="id7372" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13433">Rol[110000] Regla110006:  Periodo cubierto por los estados financieros, está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl13429" xlink:to="lbl13433"/>
+    <ea:existenceAssertion xlink:type="resource" id="regla110007" aspectModel="dimensional" implicitFiltering="true" test=". ge 1" xlink:label="lbl13435"/>
+    <msg:message xlink:type="resource" id="id7375" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13439">Rol[110000] Regla110007:  Descripción de la moneda de presentación, está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl13435" xlink:to="lbl13439"/>
+    <ea:existenceAssertion xlink:type="resource" id="regla110008" aspectModel="dimensional" implicitFiltering="true" test=". ge 1" xlink:label="lbl13441"/>
+    <msg:message xlink:type="resource" id="id7378" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13445">Rol[110000] Regla110008:  Grado de redondeo utilizado en los estados financieros, está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl13441" xlink:to="lbl13445"/>
+    <ea:existenceAssertion xlink:type="resource" id="regla110009" aspectModel="dimensional" implicitFiltering="true" test=". ge 1" xlink:label="lbl13447"/>
+    <msg:message xlink:type="resource" id="id7381" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13451">Rol[110000] Regla110009:  Código de actividad principal, está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl13447" xlink:to="lbl13451"/>
+    <ea:existenceAssertion xlink:type="resource" id="regla110010" aspectModel="dimensional" implicitFiltering="true" test=". ge 1" xlink:label="lbl13453"/>
+    <msg:message xlink:type="resource" id="id7384" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13457">Rol[110000] Regla110010:  Fecha Sesión Directorio en que se aprobaron los estados  financieros, está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl13453" xlink:to="lbl13457"/>
+    <msg:message xlink:type="resource" id="id7358" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13404">Rol[110000] Regla110001: Error Información a revelar sobre información general sobre los estados financieros [bloque de texto], no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl13399" xlink:to="lbl13404"/>
+    <msg:message xlink:type="resource" id="id7361" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13410">Rol[110000] Regla110002: Error Nombre de la entidad que informa u otras formas de identificación , no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl13405" xlink:to="lbl13410"/>
+    <msg:message xlink:type="resource" id="id7364" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13416">Rol[110000] Regla110003: Error RUT de entidad que Informa, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl13411" xlink:to="lbl13416"/>
+    <msg:message xlink:type="resource" id="id7367" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13422">Rol[110000] Regla110004: Error Tipo de estados financieros, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl13417" xlink:to="lbl13422"/>
+    <msg:message xlink:type="resource" id="id7370" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13428">Rol[110000] Regla110005: Error Fecha de cierre del periodo sobre el que se informa, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl13423" xlink:to="lbl13428"/>
+    <msg:message xlink:type="resource" id="id7373" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13434">Rol[110000] Regla110006: Error Periodo cubierto por los estados financieros, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl13429" xlink:to="lbl13434"/>
+    <msg:message xlink:type="resource" id="id7376" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13440">Rol[110000] Regla110007: Error Descripción de la moneda de presentación, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl13435" xlink:to="lbl13440"/>
+    <msg:message xlink:type="resource" id="id7379" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13446">Rol[110000] Regla110008: Error Grado de redondeo utilizado en los estados financieros, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl13441" xlink:to="lbl13446"/>
+    <msg:message xlink:type="resource" id="id7382" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13452">Rol[110000] Regla110009: Error Código de actividad principal, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl13447" xlink:to="lbl13452"/>
+    <msg:message xlink:type="resource" id="id7385" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13458">Rol[110000] Regla110010: Error Fecha Sesión Directorio en que se aprobaron los estados  financieros, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl13453" xlink:to="lbl13458"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id7356" xlink:label="lbl13402">110001</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl13399" xlink:to="lbl13402"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id7359" xlink:label="lbl13408">110002</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl13405" xlink:to="lbl13408"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id7362" xlink:label="lbl13414">110003</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl13411" xlink:to="lbl13414"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id7365" xlink:label="lbl13420">110004</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl13417" xlink:to="lbl13420"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id7368" xlink:label="lbl13426">110005</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl13423" xlink:to="lbl13426"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id7371" xlink:label="lbl13432">110006</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl13429" xlink:to="lbl13432"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id7374" xlink:label="lbl13438">110007</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl13435" xlink:to="lbl13438"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id7377" xlink:label="lbl13444">110008</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl13441" xlink:to="lbl13444"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id7380" xlink:label="lbl13450">110009</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl13447" xlink:to="lbl13450"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id7383" xlink:label="lbl13456">110010</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl13453" xlink:to="lbl13456"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl13400" id="id7386"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="acum_regla110001" xlink:from="lbl13399" xlink:to="lbl13400"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl13406" id="id7387"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="acum_regla110002" xlink:from="lbl13405" xlink:to="lbl13406"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl13412" id="id7388"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="acum_regla110003" xlink:from="lbl13411" xlink:to="lbl13412"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl13418" id="id7389"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="acum_regla110004" xlink:from="lbl13417" xlink:to="lbl13418"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl13424" id="id7390"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="acum_regla110005" xlink:from="lbl13423" xlink:to="lbl13424"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl13430" id="id7391"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="acum_regla110006" xlink:from="lbl13429" xlink:to="lbl13430"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl13436" id="id7392"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="acum_regla110007" xlink:from="lbl13435" xlink:to="lbl13436"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl13442" id="id7393"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="acum_regla110008" xlink:from="lbl13441" xlink:to="lbl13442"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl13448" id="id7394"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="acum_regla110009" xlink:from="lbl13447" xlink:to="lbl13448"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl13454" id="id7395"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="acum_regla110010" xlink:from="lbl13453" xlink:to="lbl13454"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl13401" id="id7396">
+      <cf:concept>
+        <cf:qname>ifrs-full:DisclosureOfGeneralInformationAboutFinancialStatementsExplanatory</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl13400" xlink:to="lbl13401"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl13407" id="id7397">
+      <cf:concept>
+        <cf:qname>ifrs-full:NameOfReportingEntityOrOtherMeansOfIdentification</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl13406" xlink:to="lbl13407"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl13413" id="id7398">
+      <cf:concept>
+        <cf:qname>cl-ci:RUTEntidadInforma</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl13412" xlink:to="lbl13413"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl13419" id="id7399">
+      <cf:concept>
+        <cf:qname>cl-ci:TipoEEFF</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl13418" xlink:to="lbl13419"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl13425" id="id7400">
+      <cf:concept>
+        <cf:qname>cl-ci:DateOfEndOfReportingPeriod</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl13424" xlink:to="lbl13425"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl13431" id="id7401">
+      <cf:concept>
+        <cf:qname>ifrs-full:PeriodCoveredByFinancialStatements</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl13430" xlink:to="lbl13431"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl13437" id="id7402">
+      <cf:concept>
+        <cf:qname>cl-ci:DescriptionOfPresentationCurrency</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl13436" xlink:to="lbl13437"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl13443" id="id7403">
+      <cf:concept>
+        <cf:qname>ifrs-full:LevelOfRoundingUsedInFinancialStatements</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl13442" xlink:to="lbl13443"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl13449" id="id7404">
+      <cf:concept>
+        <cf:qname>cl-ci:CodigoActividadPrincipal</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl13448" xlink:to="lbl13449"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl13455" id="id7405">
+      <cf:concept>
+        <cf:qname>cl-ci:FechaSesionDirectorioAprobaronEstadosFinancieros</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl13454" xlink:to="lbl13455"/>
+  </gen:link>
+</link:linkbase>

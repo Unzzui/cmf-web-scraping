@@ -155,3 +155,25 @@ def test_los_segmentos_tienen_nombre_humano():
     assert etiquetas, "no se leyó el linkbase de etiquetas"
     assert "CELULOSA" in etiquetas.values()
     assert "MADERAS" in etiquetas.values()
+
+
+def test_la_taxonomia_de_la_cmf_esta_en_el_repo():
+    """El paquete oficial NO es documentación: es una dependencia del código.
+
+    `cmf_taxonomia` lee de él la jerarquía de miembros de cada eje. Sin el paquete, el
+    módulo se degrada a una lista escrita a mano — la que daba 4.448 millones de ingresos
+    donde Arauco tiene 1.482, porque sumaba los totales junto con los segmentos.
+
+    La degradación es SILENCIOSA: los números salen, y salen mal. Por eso esto es un test
+    y no un aviso en el log.
+    """
+    from cmf_extract import cmf_taxonomia
+
+    assert cmf_taxonomia.disponible(), (
+        "falta docs/CMF_CLCI_2026 — sin la taxonomía, la detección de segmentos "
+        "vuelve a una heurística que ya demostró estar mal"
+    )
+    assert len(cmf_taxonomia.miembros_agregados()) > 300
+    assert len(cmf_taxonomia.etiquetas()) > 4000
+    # La raíz del eje de segmentos: si esto falla, sumar segmentos duplica el total.
+    assert "OperatingSegmentsMember" in cmf_taxonomia.miembros_agregados()

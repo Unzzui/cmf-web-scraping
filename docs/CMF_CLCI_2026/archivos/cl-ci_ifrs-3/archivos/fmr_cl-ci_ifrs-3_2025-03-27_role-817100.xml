@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xs="https://www.w3.org/2001/XMLSchema"
+               xmlns:xbrli="http://www.xbrl.org/2003/instance"
+               xmlns:xfi="http://www.xbrl.org/2008/function/instance"
+               xmlns:gen="http://xbrl.org/2008/generic"
+               xmlns:xlink="http://www.w3.org/1999/xlink"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:va="http://xbrl.org/2008/assertion/value"
+               xmlns:variable="http://xbrl.org/2008/variable"
+               xmlns:cf="http://xbrl.org/2008/filter/concept"
+               xmlns:pf="http://xbrl.org/2008/filter/period"
+               xmlns:ifrs-full="https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full"
+               xmlns:label="http://xbrl.org/2008/label"
+               xmlns:msg="http://xbrl.org/2010/message"
+               xmlns:df="http://xbrl.org/2008/filter/dimension"
+               xmlns:mf="http://xbrl.org/2008/filter/match"
+               xsi:schemaLocation="http://xbrl.org/2008/assertion/value http://www.xbrl.org/2008/value-assertion.xsd http://xbrl.org/2008/variable http://www.xbrl.org/2008/variable.xsd http://xbrl.org/2008/filter/concept http://www.xbrl.org/2008/concept-filter.xsd http://xbrl.org/2008/filter/period http://www.xbrl.org/2008/period-filter.xsd http://xbrl.org/2008/label http://www.xbrl.org/2008/generic-label.xsd http://xbrl.org/2010/message http://www.xbrl.org/2010/generic-message.xsd http://xbrl.org/2008/filter/dimension http://www.xbrl.org/2008/dimension-filter.xsd http://xbrl.org/2008/filter/match http://www.xbrl.org/2013/match-filter.xsd http://xbrl.org/2008/generic http://www.xbrl.org/2008/generic-link.xsd https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/ifrs-3_2025-03-27_role-817100" xlink:href="../cl-ci_ifrs-3_2025-03-27_role-817100.xsd#ifrs-3_2025-03-27_role-817100"/>
+  <link:roleRef xlink:type="simple" roleURI="http://www.xbrl.org/2010/role/message" xlink:href="http://www.xbrl.org/2010/generic-message.xsd#standard-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-satisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-unsatisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/element-label" xlink:href="http://www.xbrl.org/2008/generic-label.xsd#element-label"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-set" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-set"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-filter" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-filter"/>
+  <gen:link xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/ifrs-3_2025-03-27_role-817100">
+    <va:valueAssertion xlink:type="resource" id="regla817110" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:Goodwill eq $ifrs-full:Goodwill2  + $ifrs-full:ChangesInGoodwill" xlink:label="lbl17573"/>
+    <msg:message xlink:type="resource" id="id8556" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17582">Rol[817100] Regla817110: Informa Plusvalía al final del periodo OK; contexto  {$ifrs-full:ChangesInGoodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl17573" xlink:to="lbl17582"/>
+    <va:valueAssertion xlink:type="resource" id="regla817111" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:ChangesInGoodwill = sum($ifrs-full:ChangesInGoodwill2)" xlink:label="lbl17584"/>
+    <msg:message xlink:type="resource" id="id8559" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17591">Rol[817100] Regla817111: Suma dimensiones Total incremento (disminución) en la plusvalía OK; contexto  {$ifrs-full:ChangesInGoodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl17584" xlink:to="lbl17591"/>
+    <va:valueAssertion xlink:type="resource" id="regla817112" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:Goodwill = sum($ifrs-full:Goodwill2)" xlink:label="lbl17593"/>
+    <msg:message xlink:type="resource" id="id8562" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17598">Rol[817100] Regla817112: Suma dimensiones Plusvalía OK; contexto  {$ifrs-full:Goodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl17593" xlink:to="lbl17598"/>
+    <va:valueAssertion xlink:type="resource" id="regla817113" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:ChangesInGoodwill = $ifrs-full:ChangesInGoodwill2 - $ifrs-full:ChangesInGoodwill3" xlink:label="lbl17600"/>
+    <msg:message xlink:type="resource" id="id8565" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17608">Rol[817100] Regla817113: Suma dimensiones Total incremento (disminución) en la plusvalía OK; contexto  {$ifrs-full:ChangesInGoodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl17600" xlink:to="lbl17608"/>
+    <va:valueAssertion xlink:type="resource" id="regla817114" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:Goodwill = $ifrs-full:Goodwill2 - $ifrs-full:Goodwill3" xlink:label="lbl17610"/>
+    <msg:message xlink:type="resource" id="id8568" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17616">Rol[817100] Regla817114: Suma dimensiones Plusvalía OK; contexto  {$ifrs-full:Goodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl17610" xlink:to="lbl17616"/>
+    <va:valueAssertion xlink:type="resource" id="regla817115" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:ChangesInGoodwill = sum($ifrs-full:ChangesInGoodwill2)" xlink:label="lbl17618"/>
+    <msg:message xlink:type="resource" id="id8571" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17622">Rol[817100] Regla817115: Suma dimensiones Total incremento (disminución) en la plusvalía OK; contexto  {$ifrs-full:ChangesInGoodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl17618" xlink:to="lbl17622"/>
+    <va:valueAssertion xlink:type="resource" id="regla817116" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:Goodwill = sum($ifrs-full:Goodwill2)" xlink:label="lbl17624"/>
+    <msg:message xlink:type="resource" id="id8574" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17628">Rol[817100] Regla817116: Suma dimensiones Plusvalía OK; contexto  {$ifrs-full:Goodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl17624" xlink:to="lbl17628"/>
+    <va:valueAssertion xlink:type="resource" id="regla817117" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:ChangesInGoodwill = sum($ifrs-full:ChangesInGoodwill2)" xlink:label="lbl17630"/>
+    <msg:message xlink:type="resource" id="id8577" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17634">Rol[817100] Regla817117: Suma dimensiones Total incremento (disminución) en la plusvalía OK; contexto  {$ifrs-full:ChangesInGoodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl17630" xlink:to="lbl17634"/>
+    <va:valueAssertion xlink:type="resource" id="regla817118" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:Goodwill = sum($ifrs-full:Goodwill2)" xlink:label="lbl17636"/>
+    <msg:message xlink:type="resource" id="id8580" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17640">Rol[817100] Regla817118: Suma dimensiones Plusvalía OK; contexto  {$ifrs-full:Goodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl17636" xlink:to="lbl17640"/>
+    <msg:message xlink:type="resource" id="id8557" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17583">Rol[817100] Regla817110: Error Plusvalía al final del periodo; contexto  {$ifrs-full:ChangesInGoodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl17573" xlink:to="lbl17583"/>
+    <msg:message xlink:type="resource" id="id8560" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17592">Rol[817100] Regla817111: Error en suma dimensiones Total incremento (disminución) en la plusvalía; contexto  {$ifrs-full:ChangesInGoodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl17584" xlink:to="lbl17592"/>
+    <msg:message xlink:type="resource" id="id8563" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17599">Rol[817100] Regla817112: Error en suma dimensiones Plusvalía; contexto  {$ifrs-full:Goodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl17593" xlink:to="lbl17599"/>
+    <msg:message xlink:type="resource" id="id8566" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17609">Rol[817100] Regla817113: Error en suma dimensiones Total incremento (disminución) en la plusvalía; contexto  {$ifrs-full:ChangesInGoodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl17600" xlink:to="lbl17609"/>
+    <msg:message xlink:type="resource" id="id8569" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17617">Rol[817100] Regla817114: Error en suma dimensiones Plusvalía; contexto  {$ifrs-full:Goodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl17610" xlink:to="lbl17617"/>
+    <msg:message xlink:type="resource" id="id8572" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17623">Rol[817100] Regla817115: Error en suma dimensiones Total incremento (disminución) en la plusvalía; contexto  {$ifrs-full:ChangesInGoodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl17618" xlink:to="lbl17623"/>
+    <msg:message xlink:type="resource" id="id8575" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17629">Rol[817100] Regla817116: Error en suma dimensiones Plusvalía; contexto  {$ifrs-full:Goodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl17624" xlink:to="lbl17629"/>
+    <msg:message xlink:type="resource" id="id8578" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17635">Rol[817100] Regla817117: Error en suma dimensiones Total incremento (disminución) en la plusvalía; contexto  {$ifrs-full:ChangesInGoodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl17630" xlink:to="lbl17635"/>
+    <msg:message xlink:type="resource" id="id8581" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl17641">Rol[817100] Regla817118: Error en suma dimensiones Plusvalía; contexto  {$ifrs-full:Goodwill/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl17636" xlink:to="lbl17641"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id8555" xlink:label="lbl17581">817110</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl17573" xlink:to="lbl17581"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id8558" xlink:label="lbl17590">817111</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl17584" xlink:to="lbl17590"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id8561" xlink:label="lbl17597">817112</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl17593" xlink:to="lbl17597"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id8564" xlink:label="lbl17607">817113</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl17600" xlink:to="lbl17607"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id8567" xlink:label="lbl17615">817114</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl17610" xlink:to="lbl17615"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id8570" xlink:label="lbl17621">817115</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl17618" xlink:to="lbl17621"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id8573" xlink:label="lbl17627">817116</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl17624" xlink:to="lbl17627"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id8576" xlink:label="lbl17633">817117</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl17630" xlink:to="lbl17633"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id8579" xlink:label="lbl17639">817118</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl17636" xlink:to="lbl17639"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl17574" id="id8582"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:Goodwill" xlink:from="lbl17573" xlink:to="lbl17574"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl17577" id="id8583"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:Goodwill2" xlink:from="lbl17573" xlink:to="lbl17577"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl17579" id="id8584"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ChangesInGoodwill" xlink:from="lbl17573" xlink:to="lbl17579"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl17585" id="id8585"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ChangesInGoodwill" xlink:from="lbl17584" xlink:to="lbl17585"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl17588" id="id8586"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ChangesInGoodwill2" xlink:from="lbl17584" xlink:to="lbl17588"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl17594" id="id8587"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:Goodwill" xlink:from="lbl17593" xlink:to="lbl17594"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl17596" id="id8588"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:Goodwill2" xlink:from="lbl17593" xlink:to="lbl17596"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl17601" id="id8589"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ChangesInGoodwill" xlink:from="lbl17600" xlink:to="lbl17601"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl17602" id="id8590"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ChangesInGoodwill2" xlink:from="lbl17600" xlink:to="lbl17602"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl17605" id="id8591"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ChangesInGoodwill3" xlink:from="lbl17600" xlink:to="lbl17605"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl17611" id="id8592"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:Goodwill" xlink:from="lbl17610" xlink:to="lbl17611"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl17612" id="id8593"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:Goodwill2" xlink:from="lbl17610" xlink:to="lbl17612"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl17614" id="id8594"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:Goodwill3" xlink:from="lbl17610" xlink:to="lbl17614"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl17619" id="id8595"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ChangesInGoodwill" xlink:from="lbl17618" xlink:to="lbl17619"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl17620" id="id8596"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ChangesInGoodwill2" xlink:from="lbl17618" xlink:to="lbl17620"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl17625" id="id8597"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:Goodwill" xlink:from="lbl17624" xlink:to="lbl17625"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl17626" id="id8598"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:Goodwill2" xlink:from="lbl17624" xlink:to="lbl17626"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl17631" id="id8599"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ChangesInGoodwill" xlink:from="lbl17630" xlink:to="lbl17631"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl17632" id="id8600"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ChangesInGoodwill2" xlink:from="lbl17630" xlink:to="lbl17632"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl17637" id="id8601"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:Goodwill" xlink:from="lbl17636" xlink:to="lbl17637"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl17638" id="id8602"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:Goodwill2" xlink:from="lbl17636" xlink:to="lbl17638"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl17575" id="id8603">
+      <cf:concept>
+        <cf:qname>ifrs-full:Goodwill</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17574" xlink:to="lbl17575"/>
+    <pf:instantDuration xlink:type="resource" boundary="end" variable="ifrs-full:ChangesInGoodwill" xlink:label="lbl17576" id="id8604"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17574" xlink:to="lbl17576"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17577" xlink:to="lbl17575"/>
+    <pf:instantDuration xlink:type="resource" boundary="start" variable="ifrs-full:ChangesInGoodwill" xlink:label="lbl17578" id="id8605"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17577" xlink:to="lbl17578"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl17580" id="id8606">
+      <cf:concept>
+        <cf:qname>ifrs-full:ChangesInGoodwill</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17579" xlink:to="lbl17580"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17585" xlink:to="lbl17580"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl17586" id="id8607">
+      <df:dimension>
+        <df:qname>ifrs-full:BusinessCombinationsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:BusinessCombinationsDomain</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17585" xlink:to="lbl17586"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl17587" id="id8608">
+      <df:dimension>
+        <df:qname>ifrs-full:CarryingAmountAccumulatedDepreciationAmortisationAndImpairmentAndGrossCarryingAmountAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:CarryingAmountMember</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17585" xlink:to="lbl17587"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17588" xlink:to="lbl17580"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl17589" id="id8609">
+      <df:dimension>
+        <df:qname>ifrs-full:BusinessCombinationsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:BusinessCombinationsDomain</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/ifrs-3_2025-03-27_role-817100</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17588" xlink:to="lbl17589"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17588" xlink:to="lbl17587"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17594" xlink:to="lbl17575"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17594" xlink:to="lbl17586"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17594" xlink:to="lbl17587"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl17595" id="id8610">
+      <df:dimension>
+        <df:qname>ifrs-full:IndividualAssetsOrCashgeneratingUnitsWithSignificantAmountOfGoodwillOrIntangibleAssetsWithIndefiniteUsefulLivesAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:IndividualAssetsOrCashgeneratingUnitsWithSignificantAmountOfGoodwillOrIntangibleAssetsWithIndefiniteUsefulLivesDomain</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17594" xlink:to="lbl17595"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17596" xlink:to="lbl17575"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17596" xlink:to="lbl17589"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17596" xlink:to="lbl17587"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17601" xlink:to="lbl17580"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17601" xlink:to="lbl17586"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17601" xlink:to="lbl17587"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17602" xlink:to="lbl17580"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl17603" id="id8611">
+      <df:dimension>
+        <df:qname>ifrs-full:CarryingAmountAccumulatedDepreciationAmortisationAndImpairmentAndGrossCarryingAmountAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:GrossCarryingAmountMember</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17602" xlink:to="lbl17603"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17602" xlink:to="lbl17586"/>
+    <mf:matchPeriod xlink:type="resource" variable="ifrs-full:ChangesInGoodwill" xlink:label="lbl17604" id="id8612"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17602" xlink:to="lbl17604"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17605" xlink:to="lbl17580"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl17606" id="id8613">
+      <df:dimension>
+        <df:qname>ifrs-full:CarryingAmountAccumulatedDepreciationAmortisationAndImpairmentAndGrossCarryingAmountAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:AccumulatedImpairmentMember</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17605" xlink:to="lbl17606"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17605" xlink:to="lbl17586"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17605" xlink:to="lbl17604"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17611" xlink:to="lbl17575"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17611" xlink:to="lbl17586"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17611" xlink:to="lbl17587"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17612" xlink:to="lbl17575"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17612" xlink:to="lbl17603"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17612" xlink:to="lbl17586"/>
+    <mf:matchPeriod xlink:type="resource" variable="ifrs-full:Goodwill" xlink:label="lbl17613" id="id8614"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17612" xlink:to="lbl17613"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17614" xlink:to="lbl17575"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17614" xlink:to="lbl17606"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17614" xlink:to="lbl17586"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17614" xlink:to="lbl17613"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17619" xlink:to="lbl17580"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17619" xlink:to="lbl17586"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17619" xlink:to="lbl17603"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17620" xlink:to="lbl17580"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17620" xlink:to="lbl17589"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17620" xlink:to="lbl17603"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17625" xlink:to="lbl17575"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17625" xlink:to="lbl17586"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17625" xlink:to="lbl17603"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17626" xlink:to="lbl17575"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17626" xlink:to="lbl17589"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17626" xlink:to="lbl17603"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17631" xlink:to="lbl17580"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17631" xlink:to="lbl17586"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17631" xlink:to="lbl17606"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17632" xlink:to="lbl17580"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17632" xlink:to="lbl17589"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17632" xlink:to="lbl17606"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17637" xlink:to="lbl17575"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17637" xlink:to="lbl17586"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17637" xlink:to="lbl17606"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17638" xlink:to="lbl17575"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17638" xlink:to="lbl17589"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl17638" xlink:to="lbl17606"/>
+  </gen:link>
+</link:linkbase>

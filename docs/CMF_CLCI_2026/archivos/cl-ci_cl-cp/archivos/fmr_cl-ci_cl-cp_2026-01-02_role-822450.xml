@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xs="https://www.w3.org/2001/XMLSchema"
+               xmlns:xbrli="http://www.xbrl.org/2003/instance"
+               xmlns:xfi="http://www.xbrl.org/2008/function/instance"
+               xmlns:gen="http://xbrl.org/2008/generic"
+               xmlns:xlink="http://www.w3.org/1999/xlink"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:va="http://xbrl.org/2008/assertion/value"
+               xmlns:variable="http://xbrl.org/2008/variable"
+               xmlns:cf="http://xbrl.org/2008/filter/concept"
+               xmlns:df="http://xbrl.org/2008/filter/dimension"
+               xmlns:label="http://xbrl.org/2008/label"
+               xmlns:msg="http://xbrl.org/2010/message"
+               xmlns:cl-ci="https://www.cmfchile.cl/cl/fr/ci/2026-01-02"
+               xsi:schemaLocation="http://xbrl.org/2008/assertion/value http://www.xbrl.org/2008/value-assertion.xsd http://xbrl.org/2008/variable http://www.xbrl.org/2008/variable.xsd http://xbrl.org/2008/filter/concept http://www.xbrl.org/2008/concept-filter.xsd http://xbrl.org/2008/filter/dimension http://www.xbrl.org/2008/dimension-filter.xsd http://xbrl.org/2008/label http://www.xbrl.org/2008/generic-label.xsd http://xbrl.org/2010/message http://www.xbrl.org/2010/generic-message.xsd http://xbrl.org/2008/generic http://www.xbrl.org/2008/generic-link.xsd https://www.cmfchile.cl/cl/fr/ci/2026-01-02 ../../cl-ci_cor_2026-01-02.xsd">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822450" xlink:href="../cl-ci_cl-cp_2026-01-02_role-822450.xsd#cl-cp_2026-01-02_role-822450"/>
+  <link:roleRef xlink:type="simple" roleURI="http://www.xbrl.org/2010/role/message" xlink:href="http://www.xbrl.org/2010/generic-message.xsd#standard-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-satisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-unsatisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/element-label" xlink:href="http://www.xbrl.org/2008/generic-label.xsd#element-label"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-set" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-set"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-filter" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-filter"/>
+  <gen:link xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822450">
+    <va:valueAssertion xlink:type="resource" id="regla822491" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:CuentasComercialesAlDia = sum($cl-ci:CuentasComercialesAlDia2)" xlink:label="lbl21698"/>
+    <msg:message xlink:type="resource" id="id10943" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21705">Rol[822450] Regla822491: Suma dimensiones Total OK; contexto  {$cl-ci:CuentasComercialesAlDia/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21698" xlink:to="lbl21705"/>
+    <va:valueAssertion xlink:type="resource" id="regla822492" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:CuentasComercialesVencidas = sum($cl-ci:CuentasComercialesVencidas2)" xlink:label="lbl21707"/>
+    <msg:message xlink:type="resource" id="id10946" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21714">Rol[822450a] Regla822492: Suma dimensiones Total OK; contexto  {$cl-ci:CuentasComercialesVencidas/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl21707" xlink:to="lbl21714"/>
+    <msg:message xlink:type="resource" id="id10944" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21706">Rol[822450] Regla822491: Error en suma dimensiones Total; contexto  {$cl-ci:CuentasComercialesAlDia/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21698" xlink:to="lbl21706"/>
+    <msg:message xlink:type="resource" id="id10947" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl21715">Rol[822450a] Regla822492: Error en suma dimensiones Total; contexto  {$cl-ci:CuentasComercialesVencidas/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl21707" xlink:to="lbl21715"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10942" xlink:label="lbl21704">822491</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21698" xlink:to="lbl21704"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id10945" xlink:label="lbl21713">822492</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl21707" xlink:to="lbl21713"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21699" id="id10948"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CuentasComercialesAlDia" xlink:from="lbl21698" xlink:to="lbl21699"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21702" id="id10949"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CuentasComercialesAlDia2" xlink:from="lbl21698" xlink:to="lbl21702"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21708" id="id10950"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CuentasComercialesVencidas" xlink:from="lbl21707" xlink:to="lbl21708"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl21711" id="id10951"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CuentasComercialesVencidas2" xlink:from="lbl21707" xlink:to="lbl21711"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21700" id="id10952">
+      <cf:concept>
+        <cf:qname>cl-ci:CuentasComercialesAlDia</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21699" xlink:to="lbl21700"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21701" id="id10953">
+      <df:dimension>
+        <df:qname>cl-ci:CuentasAlDiaPorTipoProveedorEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:CuentasComercialesAlDiaMiembro</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21699" xlink:to="lbl21701"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21702" xlink:to="lbl21700"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21703" id="id10954">
+      <df:dimension>
+        <df:qname>cl-ci:CuentasAlDiaPorTipoProveedorEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:CuentasComercialesAlDiaMiembro</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822450</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21702" xlink:to="lbl21703"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl21709" id="id10955">
+      <cf:concept>
+        <cf:qname>cl-ci:CuentasComercialesVencidas</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21708" xlink:to="lbl21709"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21710" id="id10956">
+      <df:dimension>
+        <df:qname>cl-ci:CuentasPlazosVencidosPorTipoProveedorEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:CuentasComercialesVencidasMiembro</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21708" xlink:to="lbl21710"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21711" xlink:to="lbl21709"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl21712" id="id10957">
+      <df:dimension>
+        <df:qname>cl-ci:CuentasPlazosVencidosPorTipoProveedorEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:CuentasComercialesVencidasMiembro</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/cl-cp_2026-01-02_role-822450a</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl21711" xlink:to="lbl21712"/>
+  </gen:link>
+</link:linkbase>

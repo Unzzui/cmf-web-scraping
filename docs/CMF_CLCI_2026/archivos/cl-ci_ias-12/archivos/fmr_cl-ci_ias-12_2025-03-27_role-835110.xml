@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xs="https://www.w3.org/2001/XMLSchema"
+               xmlns:xbrli="http://www.xbrl.org/2003/instance"
+               xmlns:xfi="http://www.xbrl.org/2008/function/instance"
+               xmlns:gen="http://xbrl.org/2008/generic"
+               xmlns:xlink="http://www.w3.org/1999/xlink"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:va="http://xbrl.org/2008/assertion/value"
+               xmlns:variable="http://xbrl.org/2008/variable"
+               xmlns:cf="http://xbrl.org/2008/filter/concept"
+               xmlns:pf="http://xbrl.org/2008/filter/period"
+               xmlns:ifrs-full="https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full"
+               xmlns:label="http://xbrl.org/2008/label"
+               xmlns:msg="http://xbrl.org/2010/message"
+               xmlns:df="http://xbrl.org/2008/filter/dimension"
+               xsi:schemaLocation="http://xbrl.org/2008/assertion/value http://www.xbrl.org/2008/value-assertion.xsd http://xbrl.org/2008/variable http://www.xbrl.org/2008/variable.xsd http://xbrl.org/2008/filter/concept http://www.xbrl.org/2008/concept-filter.xsd http://xbrl.org/2008/filter/period http://www.xbrl.org/2008/period-filter.xsd http://xbrl.org/2008/label http://www.xbrl.org/2008/generic-label.xsd http://xbrl.org/2010/message http://www.xbrl.org/2010/generic-message.xsd http://xbrl.org/2008/filter/dimension http://www.xbrl.org/2008/dimension-filter.xsd http://xbrl.org/2008/generic http://www.xbrl.org/2008/generic-link.xsd https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/ias-12_2025-03-27_role-835110" xlink:href="../cl-ci_ias-12_2025-03-27_role-835110.xsd#ias-12_2025-03-27_role-835110"/>
+  <link:roleRef xlink:type="simple" roleURI="http://www.xbrl.org/2010/role/message" xlink:href="http://www.xbrl.org/2010/generic-message.xsd#standard-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-satisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-unsatisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/element-label" xlink:href="http://www.xbrl.org/2008/generic-label.xsd#element-label"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-set" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-set"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-filter" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-filter"/>
+  <gen:link xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/ias-12_2025-03-27_role-835110">
+    <va:valueAssertion xlink:type="resource" id="regla835111" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:DeferredTaxLiabilityAsset eq $ifrs-full:DeferredTaxLiabilityAsset2  + $ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset" xlink:label="lbl26488"/>
+    <msg:message xlink:type="resource" id="id12979" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26497">Rol[835110d] Regla835111: Informa Pasivos (activos) por impuestos diferidos al final del periodo OK; contexto  {$ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26488" xlink:to="lbl26497"/>
+    <va:valueAssertion xlink:type="resource" id="regla835112" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:DeferredTaxLiabilityAsset = sum($ifrs-full:DeferredTaxLiabilityAsset2)" xlink:label="lbl26499"/>
+    <msg:message xlink:type="resource" id="id12982" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26505">Rol[835110d] Regla835112: Suma dimensiones Pasivo (activo) por impuestos diferidos neto OK; contexto  {$ifrs-full:DeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26499" xlink:to="lbl26505"/>
+    <va:valueAssertion xlink:type="resource" id="regla835113" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:NetDeferredTaxAssets = sum($ifrs-full:NetDeferredTaxAssets2)" xlink:label="lbl26507"/>
+    <msg:message xlink:type="resource" id="id12985" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26512">Rol[835110d] Regla835113: Suma dimensiones Activos por impuestos diferidos netos OK; contexto  {$ifrs-full:NetDeferredTaxAssets/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26507" xlink:to="lbl26512"/>
+    <va:valueAssertion xlink:type="resource" id="regla835114" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:NetDeferredTaxLiabilities = sum($ifrs-full:NetDeferredTaxLiabilities2)" xlink:label="lbl26514"/>
+    <msg:message xlink:type="resource" id="id12988" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26519">Rol[835110d] Regla835114: Suma dimensiones Pasivos por impuestos diferidos netos OK; contexto  {$ifrs-full:NetDeferredTaxLiabilities/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26514" xlink:to="lbl26519"/>
+    <va:valueAssertion xlink:type="resource" id="regla835115" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:DeferredTaxExpenseIncome = sum($ifrs-full:DeferredTaxExpenseIncome2)" xlink:label="lbl26521"/>
+    <msg:message xlink:type="resource" id="id12991" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26526">Rol[835110d] Regla835115: Suma dimensiones Gasto (ingreso) por impuestos diferidos OK; contexto  {$ifrs-full:DeferredTaxExpenseIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26521" xlink:to="lbl26526"/>
+    <va:valueAssertion xlink:type="resource" id="regla835116" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss = sum($ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss2)" xlink:label="lbl26528"/>
+    <msg:message xlink:type="resource" id="id12994" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26533">Rol[835110d] Regla835116: Suma dimensiones Gasto (ingreso) por impuestos diferidos reconocidos como resultados OK; contexto  {$ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26528" xlink:to="lbl26533"/>
+    <va:valueAssertion xlink:type="resource" id="regla835117" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset = sum($ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset2)" xlink:label="lbl26535"/>
+    <msg:message xlink:type="resource" id="id12997" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26539">Rol[835110d] Regla835117: Suma dimensiones Total incrementos (disminuciones) de pasivos (activos) por impuestos diferidos OK; contexto  {$ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26535" xlink:to="lbl26539"/>
+    <va:valueAssertion xlink:type="resource" id="regla835118" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:DeferredTaxLiabilityAsset = sum($ifrs-full:DeferredTaxLiabilityAsset2)" xlink:label="lbl26541"/>
+    <msg:message xlink:type="resource" id="id13000" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26547">Rol[835110d] Regla835118: Suma dimensiones Pasivo (activo) por impuestos diferidos neto OK; contexto  {$ifrs-full:DeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26541" xlink:to="lbl26547"/>
+    <va:valueAssertion xlink:type="resource" id="regla835119" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:NetDeferredTaxAssets = sum($ifrs-full:NetDeferredTaxAssets2)" xlink:label="lbl26549"/>
+    <msg:message xlink:type="resource" id="id13003" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26553">Rol[835110d] Regla835119: Suma dimensiones Activos por impuestos diferidos netos OK; contexto  {$ifrs-full:NetDeferredTaxAssets/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26549" xlink:to="lbl26553"/>
+    <va:valueAssertion xlink:type="resource" id="regla835120" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:NetDeferredTaxLiabilities = sum($ifrs-full:NetDeferredTaxLiabilities2)" xlink:label="lbl26555"/>
+    <msg:message xlink:type="resource" id="id13006" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26559">Rol[835110d] Regla835120: Suma dimensiones Pasivos por impuestos diferidos netos OK; contexto  {$ifrs-full:NetDeferredTaxLiabilities/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26555" xlink:to="lbl26559"/>
+    <va:valueAssertion xlink:type="resource" id="regla835121" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:DeferredTaxExpenseIncome = sum($ifrs-full:DeferredTaxExpenseIncome2)" xlink:label="lbl26561"/>
+    <msg:message xlink:type="resource" id="id13009" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26565">Rol[835110d] Regla835121: Suma dimensiones Gasto (ingreso) por impuestos diferidos OK; contexto  {$ifrs-full:DeferredTaxExpenseIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26561" xlink:to="lbl26565"/>
+    <va:valueAssertion xlink:type="resource" id="regla835122" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss = sum($ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss2)" xlink:label="lbl26567"/>
+    <msg:message xlink:type="resource" id="id13012" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26571">Rol[835110d] Regla835122: Suma dimensiones Gasto (ingreso) por impuestos diferidos reconocidos como resultados OK; contexto  {$ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26567" xlink:to="lbl26571"/>
+    <va:valueAssertion xlink:type="resource" id="regla835123" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset = sum($ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset2)" xlink:label="lbl26573"/>
+    <msg:message xlink:type="resource" id="id13015" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26577">Rol[835110d] Regla835123: Suma dimensiones Total incrementos (disminuciones) de pasivos (activos) por impuestos diferidos OK; contexto  {$ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26573" xlink:to="lbl26577"/>
+    <va:valueAssertion xlink:type="resource" id="regla835124" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:DeferredTaxLiabilityAsset = sum($ifrs-full:DeferredTaxLiabilityAsset2)" xlink:label="lbl26579"/>
+    <msg:message xlink:type="resource" id="id13018" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26585">Rol[835110d] Regla835124: Suma dimensiones Pasivo (activo) por impuestos diferidos neto OK; contexto  {$ifrs-full:DeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26579" xlink:to="lbl26585"/>
+    <va:valueAssertion xlink:type="resource" id="regla835125" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:NetDeferredTaxAssets = sum($ifrs-full:NetDeferredTaxAssets2)" xlink:label="lbl26587"/>
+    <msg:message xlink:type="resource" id="id13021" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26591">Rol[835110d] Regla835125: Suma dimensiones Activos por impuestos diferidos netos OK; contexto  {$ifrs-full:NetDeferredTaxAssets/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26587" xlink:to="lbl26591"/>
+    <va:valueAssertion xlink:type="resource" id="regla835126" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:NetDeferredTaxLiabilities = sum($ifrs-full:NetDeferredTaxLiabilities2)" xlink:label="lbl26593"/>
+    <msg:message xlink:type="resource" id="id13024" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26597">Rol[835110d] Regla835126: Suma dimensiones Pasivos por impuestos diferidos netos OK; contexto  {$ifrs-full:NetDeferredTaxLiabilities/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26593" xlink:to="lbl26597"/>
+    <va:valueAssertion xlink:type="resource" id="regla835127" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:DeferredTaxExpenseIncome = sum($ifrs-full:DeferredTaxExpenseIncome2)" xlink:label="lbl26599"/>
+    <msg:message xlink:type="resource" id="id13027" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26603">Rol[835110d] Regla835127: Suma dimensiones Gasto (ingreso) por impuestos diferidos OK; contexto  {$ifrs-full:DeferredTaxExpenseIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26599" xlink:to="lbl26603"/>
+    <va:valueAssertion xlink:type="resource" id="regla835128" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss = sum($ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss2)" xlink:label="lbl26605"/>
+    <msg:message xlink:type="resource" id="id13030" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26609">Rol[835110d] Regla835128: Suma dimensiones Gasto (ingreso) por impuestos diferidos reconocidos como resultados OK; contexto  {$ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26605" xlink:to="lbl26609"/>
+    <va:valueAssertion xlink:type="resource" id="regla835129" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset = sum($ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset2)" xlink:label="lbl26611"/>
+    <msg:message xlink:type="resource" id="id13033" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26615">Rol[835110d] Regla835129: Suma dimensiones Total incrementos (disminuciones) de pasivos (activos) por impuestos diferidos OK; contexto  {$ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26611" xlink:to="lbl26615"/>
+    <va:valueAssertion xlink:type="resource" id="regla835130" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:DeferredTaxLiabilityAsset = sum($ifrs-full:DeferredTaxLiabilityAsset2)" xlink:label="lbl26617"/>
+    <msg:message xlink:type="resource" id="id13036" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26623">Rol[835110d] Regla835130: Suma dimensiones Pasivo (activo) por impuestos diferidos neto OK; contexto  {$ifrs-full:DeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26617" xlink:to="lbl26623"/>
+    <va:valueAssertion xlink:type="resource" id="regla835131" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:NetDeferredTaxAssets = sum($ifrs-full:NetDeferredTaxAssets2)" xlink:label="lbl26625"/>
+    <msg:message xlink:type="resource" id="id13039" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26629">Rol[835110d] Regla835131: Suma dimensiones Activos por impuestos diferidos netos OK; contexto  {$ifrs-full:NetDeferredTaxAssets/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26625" xlink:to="lbl26629"/>
+    <va:valueAssertion xlink:type="resource" id="regla835132" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:NetDeferredTaxLiabilities = sum($ifrs-full:NetDeferredTaxLiabilities2)" xlink:label="lbl26631"/>
+    <msg:message xlink:type="resource" id="id13042" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26635">Rol[835110d] Regla835132: Suma dimensiones Pasivos por impuestos diferidos netos OK; contexto  {$ifrs-full:NetDeferredTaxLiabilities/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26631" xlink:to="lbl26635"/>
+    <va:valueAssertion xlink:type="resource" id="regla835133" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:DeferredTaxExpenseIncome = sum($ifrs-full:DeferredTaxExpenseIncome2)" xlink:label="lbl26637"/>
+    <msg:message xlink:type="resource" id="id13045" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26641">Rol[835110d] Regla835133: Suma dimensiones Gasto (ingreso) por impuestos diferidos OK; contexto  {$ifrs-full:DeferredTaxExpenseIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26637" xlink:to="lbl26641"/>
+    <va:valueAssertion xlink:type="resource" id="regla835134" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss = sum($ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss2)" xlink:label="lbl26643"/>
+    <msg:message xlink:type="resource" id="id13048" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26647">Rol[835110d] Regla835134: Suma dimensiones Gasto (ingreso) por impuestos diferidos reconocidos como resultados OK; contexto  {$ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26643" xlink:to="lbl26647"/>
+    <va:valueAssertion xlink:type="resource" id="regla835135" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset = sum($ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset2)" xlink:label="lbl26649"/>
+    <msg:message xlink:type="resource" id="id13051" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26653">Rol[835110d] Regla835135: Suma dimensiones Total incrementos (disminuciones) de pasivos (activos) por impuestos diferidos OK; contexto  {$ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl26649" xlink:to="lbl26653"/>
+    <msg:message xlink:type="resource" id="id12980" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26498">Rol[835110d] Regla835111: Error Pasivos (activos) por impuestos diferidos al final del periodo; contexto  {$ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26488" xlink:to="lbl26498"/>
+    <msg:message xlink:type="resource" id="id12983" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26506">Rol[835110d] Regla835112: Error en suma dimensiones Pasivo (activo) por impuestos diferidos neto; contexto  {$ifrs-full:DeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26499" xlink:to="lbl26506"/>
+    <msg:message xlink:type="resource" id="id12986" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26513">Rol[835110d] Regla835113: Error en suma dimensiones Activos por impuestos diferidos netos; contexto  {$ifrs-full:NetDeferredTaxAssets/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26507" xlink:to="lbl26513"/>
+    <msg:message xlink:type="resource" id="id12989" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26520">Rol[835110d] Regla835114: Error en suma dimensiones Pasivos por impuestos diferidos netos; contexto  {$ifrs-full:NetDeferredTaxLiabilities/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26514" xlink:to="lbl26520"/>
+    <msg:message xlink:type="resource" id="id12992" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26527">Rol[835110d] Regla835115: Error en suma dimensiones Gasto (ingreso) por impuestos diferidos; contexto  {$ifrs-full:DeferredTaxExpenseIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26521" xlink:to="lbl26527"/>
+    <msg:message xlink:type="resource" id="id12995" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26534">Rol[835110d] Regla835116: Error en suma dimensiones Gasto (ingreso) por impuestos diferidos reconocidos como resultados; contexto  {$ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26528" xlink:to="lbl26534"/>
+    <msg:message xlink:type="resource" id="id12998" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26540">Rol[835110d] Regla835117: Error en suma dimensiones Total incrementos (disminuciones) de pasivos (activos) por impuestos diferidos; contexto  {$ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26535" xlink:to="lbl26540"/>
+    <msg:message xlink:type="resource" id="id13001" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26548">Rol[835110d] Regla835118: Error en suma dimensiones Pasivo (activo) por impuestos diferidos neto; contexto  {$ifrs-full:DeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26541" xlink:to="lbl26548"/>
+    <msg:message xlink:type="resource" id="id13004" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26554">Rol[835110d] Regla835119: Error en suma dimensiones Activos por impuestos diferidos netos; contexto  {$ifrs-full:NetDeferredTaxAssets/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26549" xlink:to="lbl26554"/>
+    <msg:message xlink:type="resource" id="id13007" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26560">Rol[835110d] Regla835120: Error en suma dimensiones Pasivos por impuestos diferidos netos; contexto  {$ifrs-full:NetDeferredTaxLiabilities/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26555" xlink:to="lbl26560"/>
+    <msg:message xlink:type="resource" id="id13010" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26566">Rol[835110d] Regla835121: Error en suma dimensiones Gasto (ingreso) por impuestos diferidos; contexto  {$ifrs-full:DeferredTaxExpenseIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26561" xlink:to="lbl26566"/>
+    <msg:message xlink:type="resource" id="id13013" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26572">Rol[835110d] Regla835122: Error en suma dimensiones Gasto (ingreso) por impuestos diferidos reconocidos como resultados; contexto  {$ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26567" xlink:to="lbl26572"/>
+    <msg:message xlink:type="resource" id="id13016" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26578">Rol[835110d] Regla835123: Error en suma dimensiones Total incrementos (disminuciones) de pasivos (activos) por impuestos diferidos; contexto  {$ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26573" xlink:to="lbl26578"/>
+    <msg:message xlink:type="resource" id="id13019" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26586">Rol[835110d] Regla835124: Error en suma dimensiones Pasivo (activo) por impuestos diferidos neto; contexto  {$ifrs-full:DeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26579" xlink:to="lbl26586"/>
+    <msg:message xlink:type="resource" id="id13022" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26592">Rol[835110d] Regla835125: Error en suma dimensiones Activos por impuestos diferidos netos; contexto  {$ifrs-full:NetDeferredTaxAssets/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26587" xlink:to="lbl26592"/>
+    <msg:message xlink:type="resource" id="id13025" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26598">Rol[835110d] Regla835126: Error en suma dimensiones Pasivos por impuestos diferidos netos; contexto  {$ifrs-full:NetDeferredTaxLiabilities/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26593" xlink:to="lbl26598"/>
+    <msg:message xlink:type="resource" id="id13028" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26604">Rol[835110d] Regla835127: Error en suma dimensiones Gasto (ingreso) por impuestos diferidos; contexto  {$ifrs-full:DeferredTaxExpenseIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26599" xlink:to="lbl26604"/>
+    <msg:message xlink:type="resource" id="id13031" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26610">Rol[835110d] Regla835128: Error en suma dimensiones Gasto (ingreso) por impuestos diferidos reconocidos como resultados; contexto  {$ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26605" xlink:to="lbl26610"/>
+    <msg:message xlink:type="resource" id="id13034" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26616">Rol[835110d] Regla835129: Error en suma dimensiones Total incrementos (disminuciones) de pasivos (activos) por impuestos diferidos; contexto  {$ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26611" xlink:to="lbl26616"/>
+    <msg:message xlink:type="resource" id="id13037" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26624">Rol[835110d] Regla835130: Error en suma dimensiones Pasivo (activo) por impuestos diferidos neto; contexto  {$ifrs-full:DeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26617" xlink:to="lbl26624"/>
+    <msg:message xlink:type="resource" id="id13040" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26630">Rol[835110d] Regla835131: Error en suma dimensiones Activos por impuestos diferidos netos; contexto  {$ifrs-full:NetDeferredTaxAssets/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26625" xlink:to="lbl26630"/>
+    <msg:message xlink:type="resource" id="id13043" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26636">Rol[835110d] Regla835132: Error en suma dimensiones Pasivos por impuestos diferidos netos; contexto  {$ifrs-full:NetDeferredTaxLiabilities/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26631" xlink:to="lbl26636"/>
+    <msg:message xlink:type="resource" id="id13046" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26642">Rol[835110d] Regla835133: Error en suma dimensiones Gasto (ingreso) por impuestos diferidos; contexto  {$ifrs-full:DeferredTaxExpenseIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26637" xlink:to="lbl26642"/>
+    <msg:message xlink:type="resource" id="id13049" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26648">Rol[835110d] Regla835134: Error en suma dimensiones Gasto (ingreso) por impuestos diferidos reconocidos como resultados; contexto  {$ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26643" xlink:to="lbl26648"/>
+    <msg:message xlink:type="resource" id="id13052" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl26654">Rol[835110d] Regla835135: Error en suma dimensiones Total incrementos (disminuciones) de pasivos (activos) por impuestos diferidos; contexto  {$ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl26649" xlink:to="lbl26654"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id12978" xlink:label="lbl26496">835111</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26488" xlink:to="lbl26496"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id12981" xlink:label="lbl26504">835112</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26499" xlink:to="lbl26504"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id12984" xlink:label="lbl26511">835113</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26507" xlink:to="lbl26511"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id12987" xlink:label="lbl26518">835114</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26514" xlink:to="lbl26518"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id12990" xlink:label="lbl26525">835115</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26521" xlink:to="lbl26525"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id12993" xlink:label="lbl26532">835116</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26528" xlink:to="lbl26532"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id12996" xlink:label="lbl26538">835117</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26535" xlink:to="lbl26538"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id12999" xlink:label="lbl26546">835118</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26541" xlink:to="lbl26546"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13002" xlink:label="lbl26552">835119</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26549" xlink:to="lbl26552"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13005" xlink:label="lbl26558">835120</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26555" xlink:to="lbl26558"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13008" xlink:label="lbl26564">835121</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26561" xlink:to="lbl26564"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13011" xlink:label="lbl26570">835122</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26567" xlink:to="lbl26570"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13014" xlink:label="lbl26576">835123</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26573" xlink:to="lbl26576"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13017" xlink:label="lbl26584">835124</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26579" xlink:to="lbl26584"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13020" xlink:label="lbl26590">835125</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26587" xlink:to="lbl26590"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13023" xlink:label="lbl26596">835126</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26593" xlink:to="lbl26596"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13026" xlink:label="lbl26602">835127</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26599" xlink:to="lbl26602"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13029" xlink:label="lbl26608">835128</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26605" xlink:to="lbl26608"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13032" xlink:label="lbl26614">835129</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26611" xlink:to="lbl26614"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13035" xlink:label="lbl26622">835130</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26617" xlink:to="lbl26622"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13038" xlink:label="lbl26628">835131</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26625" xlink:to="lbl26628"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13041" xlink:label="lbl26634">835132</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26631" xlink:to="lbl26634"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13044" xlink:label="lbl26640">835133</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26637" xlink:to="lbl26640"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13047" xlink:label="lbl26646">835134</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26643" xlink:to="lbl26646"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id13050" xlink:label="lbl26652">835135</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl26649" xlink:to="lbl26652"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl26489" id="id13053"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxLiabilityAsset" xlink:from="lbl26488" xlink:to="lbl26489"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" fallbackValue="0" xlink:label="lbl26492" id="id13054"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxLiabilityAsset2" xlink:from="lbl26488" xlink:to="lbl26492"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl26494" id="id13055"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset" xlink:from="lbl26488" xlink:to="lbl26494"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26500" id="id13056"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxLiabilityAsset" xlink:from="lbl26499" xlink:to="lbl26500"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26502" id="id13057"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxLiabilityAsset2" xlink:from="lbl26499" xlink:to="lbl26502"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26508" id="id13058"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxAssets" xlink:from="lbl26507" xlink:to="lbl26508"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26510" id="id13059"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxAssets2" xlink:from="lbl26507" xlink:to="lbl26510"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26515" id="id13060"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxLiabilities" xlink:from="lbl26514" xlink:to="lbl26515"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26517" id="id13061"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxLiabilities2" xlink:from="lbl26514" xlink:to="lbl26517"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26522" id="id13062"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncome" xlink:from="lbl26521" xlink:to="lbl26522"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26524" id="id13063"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncome2" xlink:from="lbl26521" xlink:to="lbl26524"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26529" id="id13064"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss" xlink:from="lbl26528" xlink:to="lbl26529"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26531" id="id13065"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss2" xlink:from="lbl26528" xlink:to="lbl26531"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26536" id="id13066"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset" xlink:from="lbl26535" xlink:to="lbl26536"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26537" id="id13067"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset2" xlink:from="lbl26535" xlink:to="lbl26537"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26542" id="id13068"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxLiabilityAsset" xlink:from="lbl26541" xlink:to="lbl26542"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26544" id="id13069"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxLiabilityAsset2" xlink:from="lbl26541" xlink:to="lbl26544"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26550" id="id13070"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxAssets" xlink:from="lbl26549" xlink:to="lbl26550"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26551" id="id13071"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxAssets2" xlink:from="lbl26549" xlink:to="lbl26551"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26556" id="id13072"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxLiabilities" xlink:from="lbl26555" xlink:to="lbl26556"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26557" id="id13073"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxLiabilities2" xlink:from="lbl26555" xlink:to="lbl26557"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26562" id="id13074"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncome" xlink:from="lbl26561" xlink:to="lbl26562"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26563" id="id13075"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncome2" xlink:from="lbl26561" xlink:to="lbl26563"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26568" id="id13076"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss" xlink:from="lbl26567" xlink:to="lbl26568"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26569" id="id13077"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss2" xlink:from="lbl26567" xlink:to="lbl26569"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26574" id="id13078"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset" xlink:from="lbl26573" xlink:to="lbl26574"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26575" id="id13079"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset2" xlink:from="lbl26573" xlink:to="lbl26575"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26580" id="id13080"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxLiabilityAsset" xlink:from="lbl26579" xlink:to="lbl26580"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26582" id="id13081"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxLiabilityAsset2" xlink:from="lbl26579" xlink:to="lbl26582"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26588" id="id13082"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxAssets" xlink:from="lbl26587" xlink:to="lbl26588"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26589" id="id13083"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxAssets2" xlink:from="lbl26587" xlink:to="lbl26589"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26594" id="id13084"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxLiabilities" xlink:from="lbl26593" xlink:to="lbl26594"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26595" id="id13085"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxLiabilities2" xlink:from="lbl26593" xlink:to="lbl26595"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26600" id="id13086"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncome" xlink:from="lbl26599" xlink:to="lbl26600"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26601" id="id13087"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncome2" xlink:from="lbl26599" xlink:to="lbl26601"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26606" id="id13088"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss" xlink:from="lbl26605" xlink:to="lbl26606"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26607" id="id13089"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss2" xlink:from="lbl26605" xlink:to="lbl26607"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26612" id="id13090"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset" xlink:from="lbl26611" xlink:to="lbl26612"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26613" id="id13091"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset2" xlink:from="lbl26611" xlink:to="lbl26613"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26618" id="id13092"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxLiabilityAsset" xlink:from="lbl26617" xlink:to="lbl26618"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26620" id="id13093"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxLiabilityAsset2" xlink:from="lbl26617" xlink:to="lbl26620"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26626" id="id13094"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxAssets" xlink:from="lbl26625" xlink:to="lbl26626"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26627" id="id13095"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxAssets2" xlink:from="lbl26625" xlink:to="lbl26627"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26632" id="id13096"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxLiabilities" xlink:from="lbl26631" xlink:to="lbl26632"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26633" id="id13097"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NetDeferredTaxLiabilities2" xlink:from="lbl26631" xlink:to="lbl26633"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26638" id="id13098"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncome" xlink:from="lbl26637" xlink:to="lbl26638"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26639" id="id13099"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncome2" xlink:from="lbl26637" xlink:to="lbl26639"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26644" id="id13100"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss" xlink:from="lbl26643" xlink:to="lbl26644"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" xlink:label="lbl26645" id="id13101"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss2" xlink:from="lbl26643" xlink:to="lbl26645"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26650" id="id13102"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset" xlink:from="lbl26649" xlink:to="lbl26650"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="true" fallbackValue="0" xlink:label="lbl26651" id="id13103"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset2" xlink:from="lbl26649" xlink:to="lbl26651"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl26490" id="id13104">
+      <cf:concept>
+        <cf:qname>ifrs-full:DeferredTaxLiabilityAsset</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26489" xlink:to="lbl26490"/>
+    <pf:instantDuration xlink:type="resource" boundary="end" variable="ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset" xlink:label="lbl26491" id="id13105"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26489" xlink:to="lbl26491"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26492" xlink:to="lbl26490"/>
+    <pf:instantDuration xlink:type="resource" boundary="start" variable="ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset" xlink:label="lbl26493" id="id13106"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26492" xlink:to="lbl26493"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl26495" id="id13107">
+      <cf:concept>
+        <cf:qname>ifrs-full:IncreaseDecreaseInDeferredTaxLiabilityAsset</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26494" xlink:to="lbl26495"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26500" xlink:to="lbl26490"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl26501" id="id13108">
+      <df:dimension>
+        <df:qname>ifrs-full:TemporaryDifferenceUnusedTaxLossesAndUnusedTaxCreditsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:TemporaryDifferenceUnusedTaxLossesAndUnusedTaxCreditsDomain</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26500" xlink:to="lbl26501"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26502" xlink:to="lbl26490"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl26503" id="id13109">
+      <df:dimension>
+        <df:qname>ifrs-full:TemporaryDifferenceUnusedTaxLossesAndUnusedTaxCreditsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:TemporaryDifferenceUnusedTaxLossesAndUnusedTaxCreditsDomain</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/ias-12_2025-03-27_role-835110d</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26502" xlink:to="lbl26503"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl26509" id="id13110">
+      <cf:concept>
+        <cf:qname>ifrs-full:NetDeferredTaxAssets</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26508" xlink:to="lbl26509"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26508" xlink:to="lbl26501"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26510" xlink:to="lbl26509"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26510" xlink:to="lbl26503"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl26516" id="id13111">
+      <cf:concept>
+        <cf:qname>ifrs-full:NetDeferredTaxLiabilities</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26515" xlink:to="lbl26516"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26515" xlink:to="lbl26501"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26517" xlink:to="lbl26516"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26517" xlink:to="lbl26503"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl26523" id="id13112">
+      <cf:concept>
+        <cf:qname>ifrs-full:DeferredTaxExpenseIncome</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26522" xlink:to="lbl26523"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26522" xlink:to="lbl26501"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26524" xlink:to="lbl26523"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26524" xlink:to="lbl26503"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl26530" id="id13113">
+      <cf:concept>
+        <cf:qname>ifrs-full:DeferredTaxExpenseIncomeRecognisedInProfitOrLoss</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26529" xlink:to="lbl26530"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26529" xlink:to="lbl26501"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26531" xlink:to="lbl26530"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26531" xlink:to="lbl26503"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26536" xlink:to="lbl26495"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26536" xlink:to="lbl26501"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26537" xlink:to="lbl26495"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26537" xlink:to="lbl26503"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26542" xlink:to="lbl26490"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl26543" id="id13114">
+      <df:dimension>
+        <df:qname>ifrs-full:TemporaryDifferenceUnusedTaxLossesAndUnusedTaxCreditsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:TemporaryDifferenceMember</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26542" xlink:to="lbl26543"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26544" xlink:to="lbl26490"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl26545" id="id13115">
+      <df:dimension>
+        <df:qname>ifrs-full:TemporaryDifferenceUnusedTaxLossesAndUnusedTaxCreditsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:TemporaryDifferenceMember</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/ias-12_2025-03-27_role-835110d</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26544" xlink:to="lbl26545"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26550" xlink:to="lbl26509"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26550" xlink:to="lbl26543"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26551" xlink:to="lbl26509"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26551" xlink:to="lbl26545"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26556" xlink:to="lbl26516"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26556" xlink:to="lbl26543"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26557" xlink:to="lbl26516"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26557" xlink:to="lbl26545"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26562" xlink:to="lbl26523"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26562" xlink:to="lbl26543"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26563" xlink:to="lbl26523"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26563" xlink:to="lbl26545"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26568" xlink:to="lbl26530"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26568" xlink:to="lbl26543"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26569" xlink:to="lbl26530"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26569" xlink:to="lbl26545"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26574" xlink:to="lbl26495"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26574" xlink:to="lbl26543"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26575" xlink:to="lbl26495"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26575" xlink:to="lbl26545"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26580" xlink:to="lbl26490"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl26581" id="id13116">
+      <df:dimension>
+        <df:qname>ifrs-full:TemporaryDifferenceUnusedTaxLossesAndUnusedTaxCreditsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:UnusedTaxLossesMember</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26580" xlink:to="lbl26581"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26582" xlink:to="lbl26490"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl26583" id="id13117">
+      <df:dimension>
+        <df:qname>ifrs-full:TemporaryDifferenceUnusedTaxLossesAndUnusedTaxCreditsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:UnusedTaxLossesMember</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/ias-12_2025-03-27_role-835110d</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26582" xlink:to="lbl26583"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26588" xlink:to="lbl26509"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26588" xlink:to="lbl26581"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26589" xlink:to="lbl26509"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26589" xlink:to="lbl26583"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26594" xlink:to="lbl26516"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26594" xlink:to="lbl26581"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26595" xlink:to="lbl26516"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26595" xlink:to="lbl26583"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26600" xlink:to="lbl26523"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26600" xlink:to="lbl26581"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26601" xlink:to="lbl26523"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26601" xlink:to="lbl26583"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26606" xlink:to="lbl26530"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26606" xlink:to="lbl26581"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26607" xlink:to="lbl26530"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26607" xlink:to="lbl26583"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26612" xlink:to="lbl26495"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26612" xlink:to="lbl26581"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26613" xlink:to="lbl26495"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26613" xlink:to="lbl26583"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26618" xlink:to="lbl26490"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl26619" id="id13118">
+      <df:dimension>
+        <df:qname>ifrs-full:TemporaryDifferenceUnusedTaxLossesAndUnusedTaxCreditsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:UnusedTaxCreditsMember</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26618" xlink:to="lbl26619"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26620" xlink:to="lbl26490"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl26621" id="id13119">
+      <df:dimension>
+        <df:qname>ifrs-full:TemporaryDifferenceUnusedTaxLossesAndUnusedTaxCreditsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:UnusedTaxCreditsMember</df:qname>
+        <df:linkrole>https://www.cmfchile.cl/cl/fr/ci/role/ias-12_2025-03-27_role-835110d</df:linkrole>
+        <df:arcrole>http://xbrl.org/int/dim/arcrole/domain-member</df:arcrole>
+        <df:axis>child</df:axis>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26620" xlink:to="lbl26621"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26626" xlink:to="lbl26509"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26626" xlink:to="lbl26619"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26627" xlink:to="lbl26509"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26627" xlink:to="lbl26621"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26632" xlink:to="lbl26516"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26632" xlink:to="lbl26619"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26633" xlink:to="lbl26516"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26633" xlink:to="lbl26621"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26638" xlink:to="lbl26523"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26638" xlink:to="lbl26619"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26639" xlink:to="lbl26523"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26639" xlink:to="lbl26621"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26644" xlink:to="lbl26530"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26644" xlink:to="lbl26619"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26645" xlink:to="lbl26530"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26645" xlink:to="lbl26621"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26650" xlink:to="lbl26495"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26650" xlink:to="lbl26619"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26651" xlink:to="lbl26495"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl26651" xlink:to="lbl26621"/>
+  </gen:link>
+</link:linkbase>

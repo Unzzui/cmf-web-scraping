@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xs="https://www.w3.org/2001/XMLSchema"
+               xmlns:xbrli="http://www.xbrl.org/2003/instance"
+               xmlns:xfi="http://www.xbrl.org/2008/function/instance"
+               xmlns:gen="http://xbrl.org/2008/generic"
+               xmlns:xlink="http://www.w3.org/1999/xlink"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:va="http://xbrl.org/2008/assertion/value"
+               xmlns:variable="http://xbrl.org/2008/variable"
+               xmlns:cf="http://xbrl.org/2008/filter/concept"
+               xmlns:df="http://xbrl.org/2008/filter/dimension"
+               xmlns:label="http://xbrl.org/2008/label"
+               xmlns:msg="http://xbrl.org/2010/message"
+               xmlns:pf="http://xbrl.org/2008/filter/period"
+               xmlns:cl-ci="https://www.cmfchile.cl/cl/fr/ci/2026-01-02"
+               xmlns:mf="http://xbrl.org/2008/filter/match"
+               xmlns:ifrs-full="https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full"
+               xsi:schemaLocation="http://xbrl.org/2008/assertion/value http://www.xbrl.org/2008/value-assertion.xsd http://xbrl.org/2008/variable http://www.xbrl.org/2008/variable.xsd http://xbrl.org/2008/filter/concept http://www.xbrl.org/2008/concept-filter.xsd http://xbrl.org/2008/filter/dimension http://www.xbrl.org/2008/dimension-filter.xsd http://xbrl.org/2008/label http://www.xbrl.org/2008/generic-label.xsd http://xbrl.org/2010/message http://www.xbrl.org/2010/generic-message.xsd http://xbrl.org/2008/filter/period http://www.xbrl.org/2008/period-filter.xsd http://xbrl.org/2008/filter/match http://www.xbrl.org/2013/match-filter.xsd http://xbrl.org/2008/generic http://www.xbrl.org/2008/generic-link.xsd https://www.cmfchile.cl/cl/fr/ci/2026-01-02 cl-ci_cor_2026-01-02.xsd https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/formulasC_2026-01-02" xlink:href="cl-ci_cor_2026-01-02.xsd#FormulasC_2026-01-02"/>
+  <link:roleRef xlink:type="simple" roleURI="http://www.xbrl.org/2010/role/message" xlink:href="http://www.xbrl.org/2010/generic-message.xsd#standard-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-satisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-unsatisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/element-label" xlink:href="http://www.xbrl.org/2008/generic-label.xsd#element-label"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-set" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-set"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-filter" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-filter"/>
+  <gen:link xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/formulasC_2026-01-02">
+    <va:valueAssertion xlink:type="resource" id="regla100001" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:ImpairmentLossRecognisedInProfitOrLoss eq $ifrs-full:ImpairmentLossRecognisedInProfitOrLossPropertyPlantAndEquipment" xlink:label="lbl29785"/>
+    <msg:message xlink:type="resource" id="id15148" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29792">Regla100001 [rol 832410a]:  Pérdidas por deterioro de valor reconocidas en el resultado del periodo es igual a lo reportado en rol 822100 OK; contexto  {$ifrs-full:ImpairmentLossRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29785" xlink:to="lbl29792"/>
+    <va:valueAssertion xlink:type="resource" id="regla100002" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:ImpairmentLossRecognisedInProfitOrLoss eq $ifrs-full:ImpairmentLossRecognisedInProfitOrLossIntangibleAssetsOtherThanGoodwill" xlink:label="lbl29794"/>
+    <msg:message xlink:type="resource" id="id15151" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29800">Regla100002 [rol 832410a]: Pérdidas por deterioro de valor reconocidas en el resultado del periodo es igual a lo reportado en rol 823180 OK; contexto  {$ifrs-full:ImpairmentLossRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29794" xlink:to="lbl29800"/>
+    <va:valueAssertion xlink:type="resource" id="regla100003" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:ImpairmentLossRecognisedInProfitOrLoss eq $ifrs-full:ImpairmentLossRecognisedInProfitOrLossGoodwill" xlink:label="lbl29802"/>
+    <msg:message xlink:type="resource" id="id15154" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29808">Regla100003 [rol 832410a]: Pérdidas por deterioro de valor reconocidas en el resultado del periodo es igual a lo reportado en rol 817100 OK; contexto  {$ifrs-full:ImpairmentLossRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29802" xlink:to="lbl29808"/>
+    <va:valueAssertion xlink:type="resource" id="regla100004" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLoss eq $ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLossPropertyPlantAndEquipment" xlink:label="lbl29810"/>
+    <msg:message xlink:type="resource" id="id15157" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29816">Regla100004 [rol 832410a]: Reversión de pérdidas por deterioro de valor reconocidas en el resultado del periodo es igual a lo reportado en rol 822100 OK; contexto  {$ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29810" xlink:to="lbl29816"/>
+    <va:valueAssertion xlink:type="resource" id="regla100005" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLoss eq $ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLossIntangibleAssetsOtherThanGoodwill" xlink:label="lbl29818"/>
+    <msg:message xlink:type="resource" id="id15160" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29823">Regla100005 [rol 832410a]: Reversión de pérdidas por deterioro de valor reconocidas en el resultado del periodo es igual a lo reportado en rol 823180 OK; contexto  {$ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29818" xlink:to="lbl29823"/>
+    <va:valueAssertion xlink:type="resource" id="regla100006" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:ImpairmentLossRecognisedInOtherComprehensiveIncome eq $ifrs-full:ImpairmentLossRecognisedInOtherComprehensiveIncomePropertyPlantAndEquipment" xlink:label="lbl29825"/>
+    <msg:message xlink:type="resource" id="id15163" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29831">Regla100006 [rol 832410a]: Pérdidas por deterioro de valor reconocidas en otro resultado integral es igual a lo reportado en rol 822100 OK; contexto  {$ifrs-full:ImpairmentLossRecognisedInOtherComprehensiveIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29825" xlink:to="lbl29831"/>
+    <va:valueAssertion xlink:type="resource" id="regla100007" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:ImpairmentLossRecognisedInOtherComprehensiveIncome eq $ifrs-full:ImpairmentLossRecognisedInOtherComprehensiveIncomeIntangibleAssetsOtherThanGoodwill" xlink:label="lbl29833"/>
+    <msg:message xlink:type="resource" id="id15166" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29838">Regla100007 [rol 832410a]: Pérdidas por deterioro de valor reconocidas en otro resultado integral es igual a lo reportado en rol 823180 OK; contexto  {$ifrs-full:ImpairmentLossRecognisedInOtherComprehensiveIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29833" xlink:to="lbl29838"/>
+    <va:valueAssertion xlink:type="resource" id="regla100008" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncome eq $ifrs-full:ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncomePropertyPlantAndEquipment" xlink:label="lbl29840"/>
+    <msg:message xlink:type="resource" id="id15169" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29846">Regla100008 [rol 832410a]: Reversión de pérdidas por deterioro de valor reconocidas en otro resultado integral es igual a lo reportado en rol 822100 OK; contexto  {$ifrs-full:ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29840" xlink:to="lbl29846"/>
+    <va:valueAssertion xlink:type="resource" id="regla100009" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncome eq $ifrs-full:ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncomeIntangibleAssetsOtherThanGoodwill" xlink:label="lbl29848"/>
+    <msg:message xlink:type="resource" id="id15172" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29853">Regla100009 [rol 832410a]: Reversión de pérdidas por deterioro de valor reconocidas en otro resultado integral es igual a lo reportado en rol 823180 OK; contexto  {$ifrs-full:ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29848" xlink:to="lbl29853"/>
+    <va:valueAssertion xlink:type="resource" id="regla100010" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:ImpairmentLossReversalOfImpairmentLossRecognisedInProfitOrLoss = $ifrs-full:ImpairmentLossRecognisedInProfitOrLoss - $ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLoss" xlink:label="lbl29855"/>
+    <msg:message xlink:type="resource" id="id15175" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29861">Regla100010: Pérdidas por deterioro de valor (reversiones de pérdidas por deterioro de valor) reconocidas en el resultado del periodo [rol 320000] es igual a lo reportado en [rol 832410a] OK; contexto {$ifrs-full:ImpairmentLossReversalOfImpairmentLossRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29855" xlink:to="lbl29861"/>
+    <va:valueAssertion xlink:type="resource" id="regla100011" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:ProfitLossAttributableToNoncontrollingInterests = $ifrs-full:ProfitLossFromContinuingOperationsAttributableToNoncontrollingInterests + $ifrs-full:ProfitLossFromDiscontinuedOperationsAttributableToNoncontrollingInterests" xlink:label="lbl29863"/>
+    <msg:message xlink:type="resource" id="id15178" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29871">Regla100011: Ganancia (pérdida), atribuible a participaciones no controladoras [rol 310000 o 320000] es igual a lo reportado en [rol 825900] OK; contexto {$ifrs-full:ProfitLossAttributableToNoncontrollingInterests/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29863" xlink:to="lbl29871"/>
+    <va:valueAssertion xlink:type="resource" id="regla100012" aspectModel="dimensional" implicitFiltering="true" test="$cl-ci:CarteraBruta eq $ifrs-full:CurrentTradeReceivables + $ifrs-full:NoncurrentTradeReceivables" xlink:label="lbl29873"/>
+    <msg:message xlink:type="resource" id="id15181" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29884">Regla100012: Total cartera bruta [rol 822400d] es igual a lo reportado en rol 822400c OK; contextos { string-join((if ($ifrs-full:CurrentTradeReceivables instance of node()) then $ifrs-full:CurrentTradeReceivables/@contextRef else (),if ($ifrs-full:NoncurrentTradeReceivables instance of node()) then $ifrs-full:NoncurrentTradeReceivables/@contextRef else (), if ($cl-ci:CarteraBruta instance of node()) then $cl-ci:CarteraBruta/@contextRef else ()),',') }</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29873" xlink:to="lbl29884"/>
+    <va:valueAssertion xlink:type="resource" id="regla100013" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:CurrentBiologicalAssets eq $ifrs-full:BiologicalAssets" xlink:label="lbl29886"/>
+    <msg:message xlink:type="resource" id="id15184" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29894">Regla100013: Activos biológicos corrientes [rol 210000] es igual a lo reportado en rol 824180c OK; contexto {ifrs-full:CurrentBiologicalAssets /@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29886" xlink:to="lbl29894"/>
+    <va:valueAssertion xlink:type="resource" id="regla100014" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:NoncurrentBiologicalAssets eq $ifrs-full:BiologicalAssets" xlink:label="lbl29896"/>
+    <msg:message xlink:type="resource" id="id15187" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29903">Regla100014: Activos biológicos no corrientes [rol 210000] es igual a lo reportado en rol 824180c OK; contexto {ifrs-full:NoncurrentBiologicalAssets /@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29896" xlink:to="lbl29903"/>
+    <va:valueAssertion xlink:type="resource" id="regla100015" aspectModel="dimensional" implicitFiltering="true" test="if (count(//cl-ci:CuentasCobrarEntidadesRelacionadasCorrientes) eq 1) then (count(//cl-ci:CuentasCobrarEntidadesRelacionadas eq 1)) else true()" xlink:label="lbl29905"/>
+    <msg:message xlink:type="resource" id="id15190" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29907">Rol[818000] Regla100015: OK, valida si se debe informar Cuentas por cobrar a entidades relacionadas</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29905" xlink:to="lbl29907"/>
+    <va:valueAssertion xlink:type="resource" id="regla100016" aspectModel="dimensional" implicitFiltering="true" test="if (count(//cl-ci:CuentasCobrarEntidadesRelacionadasNoCorrientes) eq 1) then (count(//cl-ci:CuentasCobrarEntidadesRelacionadas eq 1)) else true()" xlink:label="lbl29909"/>
+    <msg:message xlink:type="resource" id="id15193" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29911">Rol[818000] Regla100016: OK, valida si se debe informar Cuentas por cobrar a entidades relacionadas</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29909" xlink:to="lbl29911"/>
+    <va:valueAssertion xlink:type="resource" id="regla100017" aspectModel="dimensional" implicitFiltering="true" test="if (count(//cl-ci:CuentasCobrarEntidadesRelacionadas) eq 1) then (count(//cl-ci:CuentasCobrarEntidadesRelacionadasNoCorrientes eq 1) or count(//cl-ci:CuentasCobrarEntidadesRelacionadasCorrientes eq 1)) else true()" xlink:label="lbl29913"/>
+    <msg:message xlink:type="resource" id="id15196" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29915">Rol[818000] Regla100017: OK, valida si se debe informar Cuentas por cobrar a entidades relacionadas, corrientes o Cuentas por cobrar a entidades relacionadas, no corrientes</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29913" xlink:to="lbl29915"/>
+    <va:valueAssertion xlink:type="resource" id="regla100018" aspectModel="dimensional" implicitFiltering="true" test="if (count(//cl-ci:CuentasPagarEntidadesRelacionadasCorrientes) eq 1) then (count(//cl-ci:CuentasPagarEntidadesRelacionadas eq 1)) else true()" xlink:label="lbl29917"/>
+    <msg:message xlink:type="resource" id="id15199" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29919">Rol[818000] Regla100018: OK, valida si se debe informar Cuentas por pagar a entidades relacionadas</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29917" xlink:to="lbl29919"/>
+    <va:valueAssertion xlink:type="resource" id="regla100019" aspectModel="dimensional" implicitFiltering="true" test="if (count(//cl-ci:CuentasPagarEntidadesRelacionadasNoCorrientes) eq 1) then (count(//cl-ci:CuentasPagarEntidadesRelacionadas eq 1)) else true()" xlink:label="lbl29921"/>
+    <msg:message xlink:type="resource" id="id15202" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29923">Rol[818000] Regla100019: OK, valida si se debe informar Cuentas por pagar a entidades relacionadas</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29921" xlink:to="lbl29923"/>
+    <va:valueAssertion xlink:type="resource" id="regla100020" aspectModel="dimensional" implicitFiltering="true" test="if (count(//cl-ci:CuentasPagarEntidadesRelacionadas) eq 1) then (count(//cl-ci:CuentasPagarEntidadesRelacionadasNoCorrientes eq 1) or count(//cl-ci:CuentasPagarEntidadesRelacionadasCorrientes eq 1)) else true()" xlink:label="lbl29925"/>
+    <msg:message xlink:type="resource" id="id15205" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29927">Rol[818000] Regla100020: OK, valida si se debe informar Cuentas por pagar a entidades relacionadas, corrientes o Cuentas por pagar a entidades relacionadas, no corrientes</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl29925" xlink:to="lbl29927"/>
+    <msg:message xlink:type="resource" id="id15149" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29793">Regla100001 [rol 832410a]: Error información Pérdidas por deterioro de valor reconocidas en el resultado del periodo no es igual a lo reportado en rol 822100; contexto  {$ifrs-full:ImpairmentLossRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29785" xlink:to="lbl29793"/>
+    <msg:message xlink:type="resource" id="id15152" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29801">Regla100002 [rol 832410a]: Error información Pérdidas por deterioro de valor reconocidas en el resultado del periodo no es igual a lo reportado en rol 823180; contexto  {$ifrs-full:ImpairmentLossRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29794" xlink:to="lbl29801"/>
+    <msg:message xlink:type="resource" id="id15155" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29809">Regla100003 [rol 832410a]: Error información Pérdidas por deterioro de valor reconocidas en el resultado del periodo no es igual a lo reportado en rol 817100; contexto  {$ifrs-full:ImpairmentLossRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29802" xlink:to="lbl29809"/>
+    <msg:message xlink:type="resource" id="id15158" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29817">Regla100004 [rol 832410a]: Error información Reversión de pérdidas por deterioro de valor reconocidas en el resultado del periodo no es igual a lo reportado en rol 822100; contexto  {$ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29810" xlink:to="lbl29817"/>
+    <msg:message xlink:type="resource" id="id15161" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29824">Regla100005 [rol 832410a]: Error información Reversión de pérdidas por deterioro de valor reconocidas en el resultado del periodo no es igual a lo reportado en rol 823180; contexto  {$ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29818" xlink:to="lbl29824"/>
+    <msg:message xlink:type="resource" id="id15164" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29832">Regla100006 [rol 832410a]: Error información Pérdidas por deterioro de valor reconocidas en otro resultado integral no es igual a lo reportado en rol 822100; contexto  {$ifrs-full:ImpairmentLossRecognisedInOtherComprehensiveIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29825" xlink:to="lbl29832"/>
+    <msg:message xlink:type="resource" id="id15167" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29839">Regla100007 [rol 832410a]: Error información Pérdidas por deterioro de valor reconocidas en otro resultado integral no es igual a lo reportado en rol 823180; contexto  {$ifrs-full:ImpairmentLossRecognisedInOtherComprehensiveIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29833" xlink:to="lbl29839"/>
+    <msg:message xlink:type="resource" id="id15170" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29847">Regla100008 [rol 832410a]: Error información Reversión de pérdidas por deterioro de valor reconocidas en otro resultado integral no es igual a lo reportado en rol 822100; contexto  {$ifrs-full:ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29840" xlink:to="lbl29847"/>
+    <msg:message xlink:type="resource" id="id15173" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29854">Regla100009 [rol 832410a]: Error información Reversión de pérdidas por deterioro de valor reconocidas en otro resultado integral no es igual a lo reportado en rol 823180; contexto  {$ifrs-full:ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncome/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29848" xlink:to="lbl29854"/>
+    <msg:message xlink:type="resource" id="id15176" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29862">Regla100010: Error información Pérdidas por deterioro de valor (reversiones de pérdidas por deterioro de valor) reconocidas en el resultado del periodo [rol 320000] no es igual a lo reportado en [rol 832410a] ; contexto {$ifrs-full:ImpairmentLossReversalOfImpairmentLossRecognisedInProfitOrLoss/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29855" xlink:to="lbl29862"/>
+    <msg:message xlink:type="resource" id="id15179" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29872">Regla100011: Error información Ganancia (pérdida), atribuible a participaciones no controladoras rol [ 310000 o 320000] no es igual a Ganancia (pérdida) por operaciones continuadas atribuible a participaciones no controladoras + Ganancia (pérdida) por operaciones discontinuadas atribuible a participaciones no controladoras reportado en [rol 825900] ; contexto {$ifrs-full:ProfitLossAttributableToNoncontrollingInterests/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29863" xlink:to="lbl29872"/>
+    <msg:message xlink:type="resource" id="id15182" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29885">Regla100012: Error información Total cartera bruta [rol 822400d] no es igual a lo reportado en rol [822400c] ; no se cumple: {if ($cl-ci:CarteraBruta instance of node()) then concat($cl-ci:CarteraBruta,'[',$cl-ci:CarteraBruta/@contextRef,']') else ('nada')} = {if ($ifrs-full:CurrentTradeReceivables instance of node()) then concat($ifrs-full:CurrentTradeReceivables,'[',$ifrs-full:CurrentTradeReceivables/@contextRef,']') else ('nada')} + {if ($ifrs-full:NoncurrentTradeReceivables instance of node()) then concat($ifrs-full:NoncurrentTradeReceivables,'[',$ifrs-full:NoncurrentTradeReceivables/@contextRef,']') else ('nada')}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29873" xlink:to="lbl29885"/>
+    <msg:message xlink:type="resource" id="id15185" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29895">Regla100013: Activos biológicos corrientes [rol 210000] no es igual a lo reportado en rol 824180c OK; contexto {ifrs-full:CurrentBiologicalAssets /@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29886" xlink:to="lbl29895"/>
+    <msg:message xlink:type="resource" id="id15188" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29904">Regla100014: Activos biológicos no corrientes [rol 210000] no es igual a lo reportado en rol 824180c OK; contexto {ifrs-full:NoncurrentBiologicalAssets /@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29896" xlink:to="lbl29904"/>
+    <msg:message xlink:type="resource" id="id15191" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29908">Rol[818000] Regla100015: Error Cuentas por cobrar a entidades relacionadas, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29905" xlink:to="lbl29908"/>
+    <msg:message xlink:type="resource" id="id15194" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29912">Rol[818000] Regla100016: Error Cuentas por cobrar a entidades relacionadas, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29909" xlink:to="lbl29912"/>
+    <msg:message xlink:type="resource" id="id15197" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29916">Rol[818000] Regla100017: Error Cuentas por cobrar a entidades relacionadas, corrientes o Cuentas por cobrar a entidades relacionadas, no corrientes, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29913" xlink:to="lbl29916"/>
+    <msg:message xlink:type="resource" id="id15200" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29920">Rol[818000] Regla100018: Error Cuentas por pagar a entidades relacionadas, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29917" xlink:to="lbl29920"/>
+    <msg:message xlink:type="resource" id="id15203" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29924">Rol[818000] Regla100019: Error Cuentas por pagar a entidades relacionadas, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29921" xlink:to="lbl29924"/>
+    <msg:message xlink:type="resource" id="id15206" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl29928">Rol[818000] Regla100020: Error Cuentas por pagar a entidades relacionadas, corrientes o Cuentas por pagar a entidades relacionadas, no corrientes, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl29925" xlink:to="lbl29928"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15147" xlink:label="lbl29791">100001</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29785" xlink:to="lbl29791"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15150" xlink:label="lbl29799">100002</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29794" xlink:to="lbl29799"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15153" xlink:label="lbl29807">100003</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29802" xlink:to="lbl29807"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15156" xlink:label="lbl29815">100004</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29810" xlink:to="lbl29815"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15159" xlink:label="lbl29822">100005</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29818" xlink:to="lbl29822"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15162" xlink:label="lbl29830">100006</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29825" xlink:to="lbl29830"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15165" xlink:label="lbl29837">100007</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29833" xlink:to="lbl29837"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15168" xlink:label="lbl29845">100008</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29840" xlink:to="lbl29845"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15171" xlink:label="lbl29852">100009</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29848" xlink:to="lbl29852"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15174" xlink:label="lbl29860">100010</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29855" xlink:to="lbl29860"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15177" xlink:label="lbl29870">100011</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29863" xlink:to="lbl29870"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15180" xlink:label="lbl29883">100012</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29873" xlink:to="lbl29883"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15183" xlink:label="lbl29893">100013</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29886" xlink:to="lbl29893"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15186" xlink:label="lbl29902">100014</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29896" xlink:to="lbl29902"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15189" xlink:label="lbl29906">100015</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29905" xlink:to="lbl29906"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15192" xlink:label="lbl29910">100016</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29909" xlink:to="lbl29910"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15195" xlink:label="lbl29914">100017</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29913" xlink:to="lbl29914"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15198" xlink:label="lbl29918">100018</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29917" xlink:to="lbl29918"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15201" xlink:label="lbl29922">100019</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29921" xlink:to="lbl29922"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id15204" xlink:label="lbl29926">100020</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl29925" xlink:to="lbl29926"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29786" id="id15207"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ImpairmentLossRecognisedInProfitOrLoss" xlink:from="lbl29785" xlink:to="lbl29786"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29789" id="id15208"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ImpairmentLossRecognisedInProfitOrLossPropertyPlantAndEquipment" xlink:from="lbl29785" xlink:to="lbl29789"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29795" id="id15209"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ImpairmentLossRecognisedInProfitOrLoss" xlink:from="lbl29794" xlink:to="lbl29795"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29797" id="id15210"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ImpairmentLossRecognisedInProfitOrLossIntangibleAssetsOtherThanGoodwill" xlink:from="lbl29794" xlink:to="lbl29797"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29803" id="id15211"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ImpairmentLossRecognisedInProfitOrLoss" xlink:from="lbl29802" xlink:to="lbl29803"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29805" id="id15212"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ImpairmentLossRecognisedInProfitOrLossGoodwill" xlink:from="lbl29802" xlink:to="lbl29805"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29811" id="id15213"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLoss" xlink:from="lbl29810" xlink:to="lbl29811"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29813" id="id15214"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLossPropertyPlantAndEquipment" xlink:from="lbl29810" xlink:to="lbl29813"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29819" id="id15215"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLoss" xlink:from="lbl29818" xlink:to="lbl29819"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29820" id="id15216"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLossIntangibleAssetsOtherThanGoodwill" xlink:from="lbl29818" xlink:to="lbl29820"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29826" id="id15217"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ImpairmentLossRecognisedInOtherComprehensiveIncome" xlink:from="lbl29825" xlink:to="lbl29826"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29828" id="id15218"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ImpairmentLossRecognisedInOtherComprehensiveIncomePropertyPlantAndEquipment" xlink:from="lbl29825" xlink:to="lbl29828"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29834" id="id15219"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ImpairmentLossRecognisedInOtherComprehensiveIncome" xlink:from="lbl29833" xlink:to="lbl29834"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29835" id="id15220"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ImpairmentLossRecognisedInOtherComprehensiveIncomeIntangibleAssetsOtherThanGoodwill" xlink:from="lbl29833" xlink:to="lbl29835"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29841" id="id15221"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncome" xlink:from="lbl29840" xlink:to="lbl29841"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29843" id="id15222"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncomePropertyPlantAndEquipment" xlink:from="lbl29840" xlink:to="lbl29843"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29849" id="id15223"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncome" xlink:from="lbl29848" xlink:to="lbl29849"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29850" id="id15224"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncomeIntangibleAssetsOtherThanGoodwill" xlink:from="lbl29848" xlink:to="lbl29850"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29856" id="id15225"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ImpairmentLossReversalOfImpairmentLossRecognisedInProfitOrLoss" xlink:from="lbl29855" xlink:to="lbl29856"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29858" id="id15226"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ImpairmentLossRecognisedInProfitOrLoss" xlink:from="lbl29855" xlink:to="lbl29858"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29859" id="id15227"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLoss" xlink:from="lbl29855" xlink:to="lbl29859"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29864" id="id15228"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ProfitLossAttributableToNoncontrollingInterests" xlink:from="lbl29863" xlink:to="lbl29864"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29866" id="id15229"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ProfitLossFromContinuingOperationsAttributableToNoncontrollingInterests" xlink:from="lbl29863" xlink:to="lbl29866"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29868" id="id15230"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:ProfitLossFromDiscontinuedOperationsAttributableToNoncontrollingInterests" xlink:from="lbl29863" xlink:to="lbl29868"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29874" id="id15231"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="cl-ci:CarteraBruta" xlink:from="lbl29873" xlink:to="lbl29874"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29876" id="id15232"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:CurrentTradeReceivables" xlink:from="lbl29873" xlink:to="lbl29876"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29880" id="id15233"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NoncurrentTradeReceivables" xlink:from="lbl29873" xlink:to="lbl29880"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29887" id="id15234"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:CurrentBiologicalAssets" xlink:from="lbl29886" xlink:to="lbl29887"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29889" id="id15235"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:BiologicalAssets" xlink:from="lbl29886" xlink:to="lbl29889"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29897" id="id15236"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:NoncurrentBiologicalAssets" xlink:from="lbl29896" xlink:to="lbl29897"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl29899" id="id15237"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:BiologicalAssets" xlink:from="lbl29896" xlink:to="lbl29899"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29787" id="id15238">
+      <cf:concept>
+        <cf:qname>ifrs-full:ImpairmentLossRecognisedInProfitOrLoss</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29786" xlink:to="lbl29787"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl29788" id="id15239">
+      <df:dimension>
+        <df:qname>ifrs-full:ClassesOfAssetsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:PropertyPlantAndEquipmentMember</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29786" xlink:to="lbl29788"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29790" id="id15240">
+      <cf:concept>
+        <cf:qname>ifrs-full:ImpairmentLossRecognisedInProfitOrLossPropertyPlantAndEquipment</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29789" xlink:to="lbl29790"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29795" xlink:to="lbl29787"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl29796" id="id15241">
+      <df:dimension>
+        <df:qname>ifrs-full:ClassesOfAssetsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:ClassesOfIntangibleAssetsOtherThanGoodwillDomain</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29795" xlink:to="lbl29796"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29798" id="id15242">
+      <cf:concept>
+        <cf:qname>ifrs-full:ImpairmentLossRecognisedInProfitOrLossIntangibleAssetsOtherThanGoodwill</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29797" xlink:to="lbl29798"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29803" xlink:to="lbl29787"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl29804" id="id15243">
+      <df:dimension>
+        <df:qname>ifrs-full:ClassesOfAssetsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:GoodwillMember</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29803" xlink:to="lbl29804"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29806" id="id15244">
+      <cf:concept>
+        <cf:qname>ifrs-full:ImpairmentLossRecognisedInProfitOrLossGoodwill</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29805" xlink:to="lbl29806"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29812" id="id15245">
+      <cf:concept>
+        <cf:qname>ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLoss</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29811" xlink:to="lbl29812"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29811" xlink:to="lbl29788"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29814" id="id15246">
+      <cf:concept>
+        <cf:qname>ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLossPropertyPlantAndEquipment</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29813" xlink:to="lbl29814"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29819" xlink:to="lbl29812"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29819" xlink:to="lbl29796"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29821" id="id15247">
+      <cf:concept>
+        <cf:qname>ifrs-full:ReversalOfImpairmentLossRecognisedInProfitOrLossIntangibleAssetsOtherThanGoodwill</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29820" xlink:to="lbl29821"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29827" id="id15248">
+      <cf:concept>
+        <cf:qname>ifrs-full:ImpairmentLossRecognisedInOtherComprehensiveIncome</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29826" xlink:to="lbl29827"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29826" xlink:to="lbl29788"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29829" id="id15249">
+      <cf:concept>
+        <cf:qname>ifrs-full:ImpairmentLossRecognisedInOtherComprehensiveIncomePropertyPlantAndEquipment</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29828" xlink:to="lbl29829"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29834" xlink:to="lbl29827"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29834" xlink:to="lbl29796"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29836" id="id15250">
+      <cf:concept>
+        <cf:qname>ifrs-full:ImpairmentLossRecognisedInOtherComprehensiveIncomeIntangibleAssetsOtherThanGoodwill</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29835" xlink:to="lbl29836"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29842" id="id15251">
+      <cf:concept>
+        <cf:qname>ifrs-full:ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncome</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29841" xlink:to="lbl29842"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29841" xlink:to="lbl29788"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29844" id="id15252">
+      <cf:concept>
+        <cf:qname>ifrs-full:ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncomePropertyPlantAndEquipment</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29843" xlink:to="lbl29844"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29849" xlink:to="lbl29842"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29849" xlink:to="lbl29796"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29851" id="id15253">
+      <cf:concept>
+        <cf:qname>ifrs-full:ReversalOfImpairmentLossRecognisedInOtherComprehensiveIncomeIntangibleAssetsOtherThanGoodwill</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29850" xlink:to="lbl29851"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29857" id="id15254">
+      <cf:concept>
+        <cf:qname>ifrs-full:ImpairmentLossReversalOfImpairmentLossRecognisedInProfitOrLoss</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29856" xlink:to="lbl29857"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29858" xlink:to="lbl29787"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29859" xlink:to="lbl29812"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29865" id="id15255">
+      <cf:concept>
+        <cf:qname>ifrs-full:ProfitLossAttributableToNoncontrollingInterests</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29864" xlink:to="lbl29865"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29867" id="id15256">
+      <cf:concept>
+        <cf:qname>ifrs-full:ProfitLossFromContinuingOperationsAttributableToNoncontrollingInterests</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29866" xlink:to="lbl29867"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29869" id="id15257">
+      <cf:concept>
+        <cf:qname>ifrs-full:ProfitLossFromDiscontinuedOperationsAttributableToNoncontrollingInterests</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29868" xlink:to="lbl29869"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29875" id="id15258">
+      <cf:concept>
+        <cf:qname>cl-ci:CarteraBruta</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29874" xlink:to="lbl29875"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29877" id="id15259">
+      <cf:concept>
+        <cf:qname>ifrs-full:CurrentTradeReceivables</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29876" xlink:to="lbl29877"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl29878" id="id15260">
+      <df:dimension>
+        <df:qname>cl-ci:ActivosPorDeudoresComercialesEje</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>cl-ci:ActivosAntesProvisionesMiembro</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29876" xlink:to="lbl29878"/>
+    <pf:instantDuration xlink:type="resource" boundary="end" variable="cl-ci:CarteraBruta" xlink:label="lbl29879" id="id15261"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29876" xlink:to="lbl29879"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29881" id="id15262">
+      <cf:concept>
+        <cf:qname>ifrs-full:NoncurrentTradeReceivables</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29880" xlink:to="lbl29881"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29880" xlink:to="lbl29878"/>
+    <mf:matchPeriod xlink:type="resource" variable="ifrs-full:CurrentTradeReceivables" xlink:label="lbl29882" id="id15263"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29880" xlink:to="lbl29882"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29888" id="id15264">
+      <cf:concept>
+        <cf:qname>ifrs-full:CurrentBiologicalAssets</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29887" xlink:to="lbl29888"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29890" id="id15265">
+      <cf:concept>
+        <cf:qname>ifrs-full:BiologicalAssets</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29889" xlink:to="lbl29890"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl29891" id="id15266">
+      <df:dimension>
+        <df:qname>ifrs-full:BiologicalAssetsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:CurrentBiologicalAssetsMember</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29889" xlink:to="lbl29891"/>
+    <mf:matchPeriod xlink:type="resource" variable="ifrs-full:CurrentBiologicalAssets" xlink:label="lbl29892" id="id15267"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29889" xlink:to="lbl29892"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl29898" id="id15268">
+      <cf:concept>
+        <cf:qname>ifrs-full:NoncurrentBiologicalAssets</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29897" xlink:to="lbl29898"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29899" xlink:to="lbl29890"/>
+    <df:explicitDimension xlink:type="resource" xlink:label="lbl29900" id="id15269">
+      <df:dimension>
+        <df:qname>ifrs-full:BiologicalAssetsAxis</df:qname>
+      </df:dimension>
+      <df:member>
+        <df:qname>ifrs-full:NoncurrentBiologicalAssetsMember</df:qname>
+      </df:member>
+    </df:explicitDimension>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29899" xlink:to="lbl29900"/>
+    <mf:matchPeriod xlink:type="resource" variable="ifrs-full:NoncurrentBiologicalAssets" xlink:label="lbl29901" id="id15270"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl29899" xlink:to="lbl29901"/>
+  </gen:link>
+</link:linkbase>

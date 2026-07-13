@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+*******************************************************************************************
+Copyright © 2023 Comisión para el Mercado Financiero de Chile (CMF) 
+This material is copyright of the CMF Chile and all rights are reserved. 
+No part of this material may be translated, reprinted, reproduced or utilised in 
+any form or manner that is not expressly permitted by the CMF Chile. 
+*******************************************************************************************
+-->
+<!-- Generated with Reporting Standard S.L. XBRL Taxonomy builder version 3.12.1.1462 - http://www.reportingstandard.com -->
+<link:linkbase xmlns:link="http://www.xbrl.org/2003/linkbase"
+               xmlns:xs="https://www.w3.org/2001/XMLSchema"
+               xmlns:xbrli="http://www.xbrl.org/2003/instance"
+               xmlns:xfi="http://www.xbrl.org/2008/function/instance"
+               xmlns:gen="http://xbrl.org/2008/generic"
+               xmlns:xlink="http://www.w3.org/1999/xlink"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:ea="http://xbrl.org/2008/assertion/existence"
+               xmlns:variable="http://xbrl.org/2008/variable"
+               xmlns:cf="http://xbrl.org/2008/filter/concept"
+               xmlns:label="http://xbrl.org/2008/label"
+               xmlns:msg="http://xbrl.org/2010/message"
+               xmlns:va="http://xbrl.org/2008/assertion/value"
+               xmlns:ifrs-full="https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full"
+               xsi:schemaLocation="http://xbrl.org/2008/assertion/existence http://www.xbrl.org/2008/existence-assertion.xsd http://xbrl.org/2008/variable http://www.xbrl.org/2008/variable.xsd http://xbrl.org/2008/filter/concept http://www.xbrl.org/2008/concept-filter.xsd http://xbrl.org/2008/label http://www.xbrl.org/2008/generic-label.xsd http://xbrl.org/2010/message http://www.xbrl.org/2010/generic-message.xsd http://xbrl.org/2008/assertion/value http://www.xbrl.org/2008/value-assertion.xsd http://xbrl.org/2008/generic http://www.xbrl.org/2008/generic-link.xsd https://xbrl.ifrs.org/taxonomy/2025-03-27/ifrs-full http://xbrl.ifrs.org/taxonomy/2025-03-27/full_ifrs/full_ifrs-cor_2025-03-27.xsd">
+  <link:roleRef xlink:type="simple" roleURI="https://www.cmfchile.cl/cl/fr/ci/role/ias-1_2025-03-27_role-210000" xlink:href="../cl-ci_ias-1_2025-03-27_role-210000.xsd#ias-1_2025-03-27_role-210000"/>
+  <link:roleRef xlink:type="simple" roleURI="http://www.xbrl.org/2010/role/message" xlink:href="http://www.xbrl.org/2010/generic-message.xsd#standard-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-satisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:href="http://www.xbrl.org/2010/validation-message.xsd#assertion-unsatisfied-message"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/element-label" xlink:href="http://www.xbrl.org/2008/generic-label.xsd#element-label"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-set" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-set"/>
+  <link:arcroleRef xlink:type="simple" arcroleURI="http://xbrl.org/arcrole/2008/variable-filter" xlink:href="http://www.xbrl.org/2008/variable.xsd#variable-filter"/>
+  <gen:link xlink:type="extended" xlink:role="https://www.cmfchile.cl/cl/fr/ci/role/ias-1_2025-03-27_role-210000">
+    <ea:existenceAssertion xlink:type="resource" id="regla210001" aspectModel="dimensional" implicitFiltering="true" test=". ge 2" xlink:label="lbl13586"/>
+    <msg:message xlink:type="resource" id="id7407" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13590">Rol[210000] Regla210001:  Total de activos, está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl13586" xlink:to="lbl13590"/>
+    <va:valueAssertion xlink:type="resource" id="regla210002" aspectModel="dimensional" implicitFiltering="true" test="$ifrs-full:Assets eq $ifrs-full:EquityAndLiabilities" xlink:label="lbl13592"/>
+    <msg:message xlink:type="resource" id="id7410" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13597">Rol[210000] Regla210002:  Total de activos es igual a Total de patrimonio y pasivos OK; contexto  {$ifrs-full:Assets/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl13592" xlink:to="lbl13597"/>
+    <ea:existenceAssertion xlink:type="resource" id="regla210003" aspectModel="dimensional" implicitFiltering="true" test=". ge 2" xlink:label="lbl13599"/>
+    <msg:message xlink:type="resource" id="id7413" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13602">Rol[210000] Regla210003:  Total de patrimonio y pasivos, está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-satisfied-message" xlink:from="lbl13599" xlink:to="lbl13602"/>
+    <msg:message xlink:type="resource" id="id7408" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13591">Rol[210000] Regla210001: Error Total de activos, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl13586" xlink:to="lbl13591"/>
+    <msg:message xlink:type="resource" id="id7411" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13598">Rol[210000] Regla210002: Error información Total de activos no es igual a Total de patrimonio y pasivos; contexto  {$ifrs-full:Assets/@contextRef}</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl13592" xlink:to="lbl13598"/>
+    <msg:message xlink:type="resource" id="id7414" xml:lang="es" xlink:role="http://www.xbrl.org/2010/role/message" xlink:label="lbl13603">Rol[210000] Regla210003: Error Total de patrimonio y pasivos, no está informado</msg:message>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2010/assertion-unsatisfied-message" xlink:from="lbl13599" xlink:to="lbl13603"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id7406" xlink:label="lbl13589">210001</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl13586" xlink:to="lbl13589"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id7409" xlink:label="lbl13596">210002</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl13592" xlink:to="lbl13596"/>
+    <label:label xlink:type="resource" xml:lang="es" id="id7412" xlink:label="lbl13601">210003</label:label>
+    <gen:arc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/element-label" xlink:from="lbl13599" xlink:to="lbl13601"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl13587" id="id7415"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="acum_regla210001" xlink:from="lbl13586" xlink:to="lbl13587"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl13593" id="id7416"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:Assets" xlink:from="lbl13592" xlink:to="lbl13593"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl13594" id="id7417"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="ifrs-full:EquityAndLiabilities" xlink:from="lbl13592" xlink:to="lbl13594"/>
+    <variable:factVariable xlink:type="resource" bindAsSequence="false" xlink:label="lbl13600" id="id7418"/>
+    <variable:variableArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-set" name="acum_regla210003" xlink:from="lbl13599" xlink:to="lbl13600"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl13588" id="id7419">
+      <cf:concept>
+        <cf:qname>ifrs-full:Assets</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl13587" xlink:to="lbl13588"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl13593" xlink:to="lbl13588"/>
+    <cf:conceptName xlink:type="resource" xlink:label="lbl13595" id="id7420">
+      <cf:concept>
+        <cf:qname>ifrs-full:EquityAndLiabilities</cf:qname>
+      </cf:concept>
+    </cf:conceptName>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl13594" xlink:to="lbl13595"/>
+    <variable:variableFilterArc xlink:type="arc" xlink:arcrole="http://xbrl.org/arcrole/2008/variable-filter" complement="false" cover="true" xlink:from="lbl13600" xlink:to="lbl13595"/>
+  </gen:link>
+</link:linkbase>
