@@ -24,6 +24,7 @@ tenga que acordarse de una excepción. Es la misma convención del resto del pip
 from __future__ import annotations
 
 import argparse
+import collections
 import os
 import sys
 from pathlib import Path
@@ -70,7 +71,8 @@ CONCEPTOS_SEGMENTO = (
 )
 
 # La deuda financiera del balance, para medir cuánto de ella cubre la nota de créditos.
-DEUDA_BALANCE = ("OtherCurrentFinancialLiabilities", "OtherNoncurrentFinancialLiabilities")
+DEUDA_BALANCE = ("OtherCurrentFinancialLiabilities", "OtherNoncurrentFinancialLiabilities",
+                 "CurrentLeaseLiabilities", "NoncurrentLeaseLiabilities")
 
 # Metadatos que hoy adivinamos o no tenemos. Ver migración 028.
 #
@@ -206,6 +208,121 @@ def _segmentos(ruta: Path, doc: xf.Documento, fecha_fin: str) -> list[dict]:
     return filas
 
 
+def _por_miembro(doc: xf.Documento, eje: str, fecha_fin: str) -> dict[str, dict[str, str]]:
+    """Junta los hechos de cada miembro de un eje, en UNA fecha.
+
+    Es el mismo patrón que la deuda: los hechos de una filial (o de una parte relacionada,
+    o de un proyecto) están repartidos en varios contextos que sólo comparten el miembro y
+    la fecha. Agrupar sólo por miembro mezclaría el saldo del período con el comparativo
+    del año anterior.
+    """
+    grupos: dict[str, dict[str, str]] = collections.defaultdict(dict)
+    for h in doc.hechos:
+        m = dict(h.contexto.ejes).get(eje)
+        if m and h.contexto.fin == fecha_fin:
+            grupos[m][h.concepto] = h.valor
+    return grupos
+
+
+def _num(campos: dict, clave: str, escalar: bool = True) -> float | None:
+    v = campos.get(clave)
+    if v is None:
+        return None
+    try:
+        n = float(str(v).replace(",", "").strip())
+    except ValueError:
+        return None
+    return n / ESCALA if escalar else n
+
+
+def _filiales(doc: xf.Documento, fecha_fin: str) -> list[dict]:
+    """Las sociedades que la empresa controla, con su RUT y su porcentaje.
+
+    Arauco declara 110. Con esto y `xbrl_matriz_ultima` se puede reconstruir el mapa de
+    propiedad de las sociedades chilenas — que hoy no existe en ninguna parte, y menos
+    para las 176 empresas que no cotizan.
+    """
+    filas = []
+    for miembro, c in _por_miembro(doc, "SignificantInvestmentsInSubsidiariesAxis", fecha_fin).items():
+        part = _num(c, "ProportionOfOwnershipInterestInSubsidiary", escalar=False)
+        # Una participación fuera de [0,1] no es una participación: es una lectura mala.
+        if part is not None and not (0 <= part <= 1):
+            part = None
+        filas.append({
+            "miembro": miembro,
+            "rut": c.get("RutSubsidiaria") or c.get("RUTSubsidiaria"),
+            "nombre": c.get("NameOfSubsidiary"),
+            "pais": _limpiar_codigo(c.get("CountryOfIncorporationOrResidenceOfSubsidiary")),
+            "moneda_funcional": _limpiar_codigo(c.get("MonedaFuncionalSubsidiaria")),
+            "participacion": part,
+            "domicilio": c.get("PrincipalPlaceOfBusinessOfSubsidiary"),
+        })
+    return filas
+
+
+def _partes_relacionadas(doc: xf.Documento, fecha_fin: str) -> list[dict]:
+    """Con quién opera la empresa dentro de su propio grupo, y cuánto se deben.
+
+    Es una señal de gobierno corporativo: una empresa cuyas cuentas por cobrar son
+    mayormente con relacionadas carga un riesgo que el balance consolidado no muestra.
+    """
+    filas = []
+    for miembro, c in _por_miembro(doc, "CategoriesOfRelatedPartiesAxis", fecha_fin).items():
+        filas.append({
+            "miembro": miembro,
+            "rut": c.get("RUTParteRelacionada"),
+            "nombre": c.get("NombreParteRelacionada"),
+            "pais": _limpiar_codigo(c.get("PaisOrigen")),
+            "relacion": c.get("DescriptionOfNatureOfRelatedPartyRelationship"),
+            "transaccion": c.get("DescriptionOfTransactionsWithRelatedParty"),
+            "moneda": _limpiar_codigo(c.get("TipoMonedaOUnidadReajuste")),
+            "por_cobrar": _num(c, "CuentasCobrarEntidadesRelacionadas"),
+            "por_pagar": _num(c, "CuentasPagarEntidadesRelacionadas"),
+        })
+    return filas
+
+
+def _exposicion_moneda(doc: xf.Documento, fecha_fin: str) -> list[dict]:
+    """Activos y pasivos POR MONEDA.
+
+    Una empresa que reporta en pesos con la mitad de su deuda en dólares carga un riesgo
+    cambiario que su estado consolidado NO muestra. Sólo aparece si alguien lee esta nota.
+    """
+    filas = []
+    for miembro, c in _por_miembro(doc, "MonedaExtranjeraEje", fecha_fin).items():
+        moneda = _limpiar_codigo(c.get("MonedaExtranjera"))
+        if not moneda:
+            continue
+        filas.append({
+            "moneda": moneda,
+            "activos": _num(c, "ActivosME"),
+            "pasivos": _num(c, "PasivosME"),
+        })
+    return filas
+
+
+def _ambientales(doc: xf.Documento, fecha_fin: str) -> list[dict]:
+    """Proyectos de protección medioambiental: nombre, estado, monto, fecha.
+
+    La CMF los obliga a declararlos. Es el único dato ESG verificable y estructurado que
+    existe para el mercado chileno, y hoy no lo publica nadie.
+    """
+    filas = []
+    for miembro, c in _por_miembro(doc, "ProyectosProteccionMedioAmbienteEje", fecha_fin).items():
+        filas.append({
+            "miembro": miembro,
+            "nombre": c.get("NombreProyecto"),
+            "estado": c.get("EstadoDelProyecto"),
+            "concepto": c.get("Concepto"),
+            "monto": _num(c, "MontoDesembolsosAlPeriodoActual"),
+            "activo_o_gasto": c.get("ActivoGasto"),
+            # Texto libre: las empresas escriben "2027", "2do sem 2026", "En ejecución"…
+            # No se fuerza a DATE, porque forzarlo significa inventar un día.
+            "fecha_estimada": c.get("FechaEstimadaDesembolso"),
+        })
+    return filas
+
+
 def _deuda(ruta: Path, doc: xf.Documento, fecha_fin: str) -> tuple[list[dict], dict | None]:
     """Los créditos y el Kd ponderado, con su cobertura sobre la deuda del balance."""
     creditos = xd.creditos(ruta, fecha_fin)
@@ -215,7 +332,7 @@ def _deuda(ruta: Path, doc: xf.Documento, fecha_fin: str) -> tuple[list[dict], d
     filas = []
     for c in creditos:
         filas.append({
-            "instrumento": "bono" if c.serie else "prestamo",
+            "instrumento": c.instrumento,
             "miembro": c.miembro,
             "acreedor": c.acreedor,
             "serie": c.serie,
@@ -271,6 +388,7 @@ def main() -> None:
     por_rut = _empresas_de_la_base(cur)
 
     n_id = n_seg = n_deuda = n_kd = 0
+    n_extra: dict[str, int] = collections.Counter()
     sin_empresa = []
 
     for carpeta in sorted(RAIZ_XBRL.iterdir()):
@@ -353,6 +471,44 @@ def main() -> None:
                      tipo[0].valor.strip() if tipo else None,
                      doc.moneda()))
 
+            # ── las cuatro tablas nuevas (migración 029) ──────────────────────
+            for tabla, filas, cols in (
+                ("xbrl_filiales", _filiales(doc, fecha),
+                 ("miembro", "rut", "nombre", "pais", "moneda_funcional", "participacion", "domicilio")),
+                ("xbrl_partes_relacionadas", _partes_relacionadas(doc, fecha),
+                 ("miembro", "rut", "nombre", "pais", "relacion", "transaccion", "moneda",
+                  "por_cobrar", "por_pagar")),
+                ("xbrl_proyectos_ambientales", _ambientales(doc, fecha),
+                 ("miembro", "nombre", "estado", "concepto", "monto", "activo_o_gasto",
+                  "fecha_estimada")),
+            ):
+                n_extra[tabla] += len(filas)
+                if args.apply and filas:
+                    campos = ("company_id", "period_year", "period_quarter") + cols
+                    marcas = ", ".join(f"%({c})s" for c in campos)
+                    actualiza = ", ".join(f"{c} = EXCLUDED.{c}" for c in cols if c != "miembro")
+                    psycopg2.extras.execute_batch(cur,
+                        f"""INSERT INTO {tabla} ({', '.join(campos)}) VALUES ({marcas})
+                            ON CONFLICT (company_id, period_year, period_quarter, miembro)
+                            DO UPDATE SET {actualiza}""",
+                        [{**f, "company_id": company_id, "period_year": anio,
+                          "period_quarter": trimestre} for f in filas],
+                        page_size=200)
+
+            fx = _exposicion_moneda(doc, fecha)
+            n_extra["xbrl_exposicion_moneda"] += len(fx)
+            if args.apply and fx:
+                psycopg2.extras.execute_batch(cur,
+                    """INSERT INTO xbrl_exposicion_moneda
+                         (company_id, period_year, period_quarter, moneda, activos, pasivos)
+                       VALUES (%(company_id)s, %(period_year)s, %(period_quarter)s,
+                               %(moneda)s, %(activos)s, %(pasivos)s)
+                       ON CONFLICT (company_id, period_year, period_quarter, moneda)
+                       DO UPDATE SET activos = EXCLUDED.activos, pasivos = EXCLUDED.pasivos""",
+                    [{**f, "company_id": company_id, "period_year": anio,
+                      "period_quarter": trimestre} for f in fx],
+                    page_size=100)
+
             creditos, resumen = _deuda(ruta, doc, fecha)
             n_deuda += len(creditos)
             if args.apply and creditos:
@@ -400,7 +556,9 @@ def main() -> None:
     print()
     print(f"identidad:  {n_id} empresas")
     print(f"segmentos:  {n_seg} filas")
-    print(f"deuda:      {n_deuda} créditos  ·  {n_kd} períodos con Kd")
+    print(f"deuda:      {n_deuda} créditos (préstamos + bonos + ARRIENDOS)  ·  {n_kd} períodos con Kd")
+    for tabla, n in sorted(n_extra.items()):
+        print(f"{tabla.replace('xbrl_', ''):26} {n} filas")
     if sin_empresa:
         print(f"\n⚠️  {len(sin_empresa)} carpetas de XBRL sin empresa en la base: {', '.join(sin_empresa[:4])}…")
     if not args.apply:

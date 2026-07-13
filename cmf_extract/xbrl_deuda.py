@@ -49,6 +49,12 @@ from . import xbrl_facts as xf
 # taxonomía IFRS internacional, y por eso ninguna herramienta genérica las lee.
 EJE_PRESTAMOS = "PrestamosEje"
 EJE_EMISIONES = "EmisionesDeudaEje"
+# BAJO IFRS 16 UN ARRIENDO ES DEUDA, y el XBRL lo trata así: `LeasingEje` declara cada
+# contrato con acreedor, moneda y TASA EFECTIVA — la misma estructura que un préstamo.
+# Dejarlo fuera del Kd no es una omisión menor: en SMU los arriendos son el 58,6% de su
+# deuda total, en Tricot el 54,2%, en Falabella el 28,9%. Un costo de deuda que ignora la
+# mitad de la deuda no es el costo de deuda de esa empresa.
+EJE_ARRIENDOS = "LeasingEje"
 
 # Los montos tienen NOMBRES DISTINTOS según el instrumento, y no es un detalle: la deuda
 # de Aguas Andinas es casi toda BONOS, así que leer sólo los conceptos de préstamos
@@ -56,10 +62,13 @@ EJE_EMISIONES = "EmisionesDeudaEje"
 #
 #   préstamo bancario  ->  PrestamosBancarios{,Corrientes,NoCorrientes}
 #   emisión de deuda   ->  ObligacionesConPublico{,Corrientes,NoCorrientes}
-_CONTABLE_TOTAL = ("PrestamosBancarios", "ObligacionesConPublico")
-_CONTABLE_CORRIENTE = ("PrestamosBancariosCorrientes", "ObligacionesConPublicoCorrientes")
-_CONTABLE_NO_CORRIENTE = ("PrestamosBancariosNoCorrientes", "ObligacionesConPublicoNoCorrientes")
-_NOMINAL = ("MontosNominalesPrestamos", "MontosNominalesObligacionesPublico")
+_CONTABLE_TOTAL = ("PrestamosBancarios", "ObligacionesConPublico", "LeaseLiabilities")
+_CONTABLE_CORRIENTE = ("PrestamosBancariosCorrientes", "ObligacionesConPublicoCorrientes",
+                       "CurrentLeaseLiabilities")
+_CONTABLE_NO_CORRIENTE = ("PrestamosBancariosNoCorrientes", "ObligacionesConPublicoNoCorrientes",
+                          "NoncurrentLeaseLiabilities")
+_NOMINAL = ("MontosNominalesPrestamos", "MontosNominalesObligacionesPublico",
+            "MontosNominalesLeasing")
 
 
 def _primero(campos: dict[str, str], claves: tuple[str, ...]) -> float | None:
@@ -97,9 +106,10 @@ def _tasa(valor: str | None) -> float | None:
 
 @dataclass
 class Credito:
-    """Un préstamo o una emisión de deuda, tal como la empresa lo declara."""
+    """Un préstamo, una emisión de deuda o un arriendo, tal como la empresa lo declara."""
     miembro: str                    # id del ítem en el XBRL (Item182)
     fecha: str                      # el cierre al que corresponde el saldo
+    instrumento: str = "prestamo"   # 'prestamo' | 'bono' | 'arriendo'
     acreedor: str | None = None
     moneda: str | None = None       # 'EUR: Euro' → 'EUR'
     amortizacion: str | None = None
@@ -142,6 +152,13 @@ def _numero(valor: str | None) -> float | None:
         return None
 
 
+_INSTRUMENTO = {
+    EJE_PRESTAMOS: "prestamo",
+    EJE_EMISIONES: "bono",
+    EJE_ARRIENDOS: "arriendo",
+}
+
+
 def _creditos_de_eje(doc: xf.Documento, eje: str) -> list[Credito]:
     """Reconstruye cada crédito juntando sus hechos.
 
@@ -165,6 +182,7 @@ def _creditos_de_eje(doc: xf.Documento, eje: str) -> list[Credito]:
             contable = (corr + nocorr) or None
 
         creditos.append(Credito(
+            instrumento=_INSTRUMENTO.get(eje, "prestamo"),
             miembro=miembro,
             fecha=fecha,
             acreedor=c.get("NombreEntidadAcreedora"),
@@ -187,7 +205,9 @@ def creditos(xbrl_path: Path | str, fecha: str | None = None) -> list[Credito]:
     comparativo, que son otro saldo y no deben mezclarse.
     """
     doc = xf.leer(xbrl_path)
-    todos = _creditos_de_eje(doc, EJE_PRESTAMOS) + _creditos_de_eje(doc, EJE_EMISIONES)
+    todos = (_creditos_de_eje(doc, EJE_PRESTAMOS)
+             + _creditos_de_eje(doc, EJE_EMISIONES)
+             + _creditos_de_eje(doc, EJE_ARRIENDOS))
     if fecha:
         todos = [c for c in todos if c.fecha == fecha]
     return todos
