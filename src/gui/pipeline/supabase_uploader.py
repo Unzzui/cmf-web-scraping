@@ -369,6 +369,78 @@ class Database:
                 mapping[int(row[1])] = int(row[0])
         return mapping
 
+    # -- Moneda de reporte, leida del XBRL --
+    def set_currency_from_xbrl(self, company_id: int, rut: str) -> int:
+        """Escribe financial_data.currency con la moneda que declara el XBRL.
+
+        POR QUE ESTO ES NECESARIO: el INSERT de upsert_financial_data no manda `currency`,
+        asi que la columna toma el DEFAULT del esquema ('CLP'). En produccion quedaron
+        837.905 filas etiquetadas como pesos, pero 17 empresas reportan en DOLARES.
+
+        Lo que eso rompio en la web:
+          - Los multiplos dividian market cap en PESOS por utilidad en DOLARES. El P/U de
+            SQM daba 30.987; la guarda de cordura lo anulaba, asi que SQM, COPEC y CMPC
+            simplemente NO mostraban multiplos y nadie sabia por que.
+          - El screener por flujo de caja libre ponia a COPEC ULTIMO, cuando genera 2,6
+            veces mas caja que Falabella, que aparecia primera.
+
+        Y el dato SIEMPRE estuvo en el archivo: el XBRL declara la moneda explicita.
+
+        La moneda es un atributo del PERIODO, no de la empresa: Enel Chile y Enel
+        Generacion pasaron de CLP a USD en 2025, Agrosuper en 2021. Por eso se escribe
+        periodo por periodo.
+        """
+        try:
+            from cmf_extract.currency_detect import monedas_por_periodo
+        except ImportError:
+            return 0
+
+        from pathlib import Path as _Path
+        raiz = _Path(__file__).resolve().parents[3] / "data" / "XBRL" / "Total"
+        if not raiz.is_dir():
+            return 0
+
+        rut_norm = str(rut or "").replace(".", "").strip().upper()
+        carpeta = next(
+            (d for d in raiz.iterdir() if d.is_dir() and d.name.upper().startswith(rut_norm + "_")),
+            None,
+        )
+        if carpeta is None:
+            return 0
+
+        monedas = monedas_por_periodo(carpeta)
+        if not monedas:
+            return 0
+
+        filas = 0
+        with self.conn.cursor() as cur:
+            for (anio, trimestre), moneda in monedas.items():
+                cur.execute(
+                    "UPDATE financial_data SET currency = %s "
+                    "WHERE company_id = %s AND period_year = %s AND period_quarter = %s "
+                    "AND currency IS DISTINCT FROM %s",
+                    (moneda, company_id, anio, trimestre, moneda),
+                )
+                filas += cur.rowcount
+                # El periodo "anual" (quarter=0) es el mismo estado de cierre que Q4.
+                if trimestre == 4:
+                    cur.execute(
+                        "UPDATE financial_data SET currency = %s "
+                        "WHERE company_id = %s AND period_year = %s AND period_quarter = 0 "
+                        "AND currency IS DISTINCT FROM %s",
+                        (moneda, company_id, anio, moneda),
+                    )
+                    filas += cur.rowcount
+
+            # La moneda "de la empresa" es la de su periodo mas reciente: es la que
+            # corresponde a la ficha y al Excel, que muestran el estado actual.
+            ultimo = max(monedas)
+            cur.execute(
+                "UPDATE companies SET financial_statements_currency = %s WHERE id = %s",
+                (monedas[ultimo], company_id),
+            )
+        return filas
+
     # -- Financial data en lotes --
     def upsert_financial_data(self,
                               records: Iterable[tuple[int, int, int, int, float]],
@@ -679,6 +751,18 @@ def upload_company(db: Database, csv_data: CompanyCSV, override: bool,
         n = db.upsert_financial_data(records)
         stats.data_points = n
         log(f"   financial_data upserts: {n}")
+
+        # La moneda NO se asume: se lee del XBRL. Sin esto, la columna toma el default
+        # 'CLP' del esquema y las 17 empresas que reportan en dolares quedan mal
+        # etiquetadas — con multiplos y rankings equivocados por un factor de ~900.
+        try:
+            n_cur = db.set_currency_from_xbrl(company_id, csv_data.rut)
+            if n_cur:
+                log(f"   moneda (desde XBRL): {n_cur} filas actualizadas")
+            else:
+                log("   moneda: sin XBRL local; queda el default del esquema (CLP) — VERIFICAR")
+        except Exception as exc:  # noqa: BLE001
+            log(f"   moneda: fallo la deteccion ({exc}) — VERIFICAR")
 
         db.conn.commit()
         db.finish_import(import_id, stats.rows_total, stats.rows_total, 0,

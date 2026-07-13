@@ -98,7 +98,7 @@ def set_cell_with_merge(sheet, start_cell, end_cell, value, font=None, alignment
     if start_cell != end_cell:
         sheet.merge_cells(f'{start_cell}:{end_cell}')
 
-def create_professional_dashboard(workbook, company_name, rut, period):
+def create_professional_dashboard(workbook, company_name, rut, period, currency="", currency_changes=None):
     """
     Crea dashboard profesional con diseño superior y técnica robusta.
     """
@@ -196,12 +196,25 @@ def create_professional_dashboard(workbook, company_name, rut, period):
     row += 1
     
     # Contenido de los cards
+    # La moneda sale del XBRL, NO se asume.
+    #
+    # Antes esto decía "Moneda: CLP" fijo. Diecisiete empresas del catálogo reportan en
+    # DÓLARES (SQM, COPEC, CMPC, LATAM, Colbún, Enel Américas, Engie, CAP, Vapores,
+    # Blumar, Cintac, Iansa, Inversiones CMPC, Agrosuper, Enel Chile, Enel Generación y
+    # Eléctrica Pehuenche). Para todas ellas, la portada del Excel que el cliente PAGA
+    # afirmaba algo falso — y no es un detalle de formato: es un error de un factor de
+    # 900 que el analista sólo descubre después de haber tomado una decisión.
+    moneda_txt = f"Moneda: {currency}" if currency else "Moneda: (no determinada)"
     info_content = [
         f"Empresa: {company_name}",
         f"RUT: {rut}",
         "Mercado: Chile",
-        "Moneda: CLP"
+        moneda_txt,
     ]
+    # Si la empresa CAMBIÓ de moneda a mitad de la serie, hay que decirlo: los años no
+    # son comparables entre sí sin convertir. Enel Chile pasó de pesos a dólares en 2025.
+    if currency_changes:
+        info_content.append("Cambio de moneda: " + " · ".join(currency_changes))
     
     period_content = [
         f"Período: {period}",
@@ -350,6 +363,37 @@ def create_professional_dashboard(workbook, company_name, rut, period):
     
     return start_sheet
 
+def detect_currency(rut_formateado):
+    """Moneda de reporte de la empresa, leída de su XBRL.
+
+    `rut_formateado` viene de la portada como "76.129.263-3". Las carpetas de XBRL usan
+    "76129263-3", sin puntos.
+
+    Si no se puede determinar, se devuelve vacío y la portada lo DICE. Preferimos "(no
+    determinada)" a un "CLP" inventado: un dato ausente se nota; uno falso, no.
+    """
+    try:
+        from currency_detect import resumen_moneda
+    except ImportError:
+        try:
+            from cmf_extract.currency_detect import resumen_moneda
+        except ImportError:
+            return "", []
+
+    rut = str(rut_formateado or "").replace(".", "").strip().upper()
+    if not rut or "-" not in rut:
+        return "", []
+
+    raiz = Path(__file__).resolve().parent.parent / "data" / "XBRL" / "Total"
+    if not raiz.is_dir():
+        return "", []
+
+    for carpeta in raiz.iterdir():
+        if carpeta.is_dir() and carpeta.name.upper().startswith(rut + "_"):
+            return resumen_moneda(carpeta)
+    return "", []
+
+
 def process_excel_file(file_path):
     """Procesa un archivo Excel individual."""
     try:
@@ -357,11 +401,17 @@ def process_excel_file(file_path):
         
         filename = os.path.basename(file_path)
         company_name, rut, period = extract_company_info(filename)
-        
+
+        currency, currency_changes = detect_currency(rut)
+        if not currency:
+            print(f"  ⚠️  No pude leer la moneda del XBRL de {rut}. La portada lo dirá en vez de asumir CLP.")
+
         workbook = load_workbook(file_path)
-        
+
         # Crear nuevo dashboard profesional
-        dashboard_sheet = create_professional_dashboard(workbook, company_name, rut, period)
+        dashboard_sheet = create_professional_dashboard(
+            workbook, company_name, rut, period, currency, currency_changes
+        )
         
         workbook.save(file_path)
         print(f"  ✅ Hoja de inicio profesional creada exitosamente")
