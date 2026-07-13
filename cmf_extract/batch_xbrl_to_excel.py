@@ -619,6 +619,28 @@ def _build_presentation_context_map(pres_file: Path) -> dict[str, list[str]]:
     
     return context_map
 
+_ULTIMO_DIA_MES = {3: 31, 6: 30, 9: 30, 12: 31}
+
+
+def _fecha_cierre_del_dataset(yyyyymm: str) -> str | None:
+    """Fecha de cierre del estado, a partir de su YYYYMM. '202003' -> '2020-03-31'.
+
+    Es la clave para resolver los conflictos de columna: el estado del Q1-2020 es la
+    AUTORIDAD sobre la columna 2020-03-31. Cualquier otro estado que traiga un valor
+    bajo esa columna lo hace como COMPARATIVO, y un comparativo puede estar mal
+    contextualizado (ver _aggregate_facts_for_company).
+    """
+    try:
+        anio = int(str(yyyyymm)[:4])
+        mes = int(str(yyyyymm)[4:6])
+    except (TypeError, ValueError):
+        return None
+    dia = _ULTIMO_DIA_MES.get(mes)
+    if dia is None:
+        return None
+    return f"{anio:04d}-{mes:02d}-{dia:02d}"
+
+
 def _aggregate_facts_for_company(company_datasets: List[DatasetInfo], lang: str, cmf_dir: Path):
     """
     Combina facts normalizados de múltiples períodos en un único DataFrame ancho (Label + fechas).
@@ -973,43 +995,75 @@ def _aggregate_facts_for_company(company_datasets: List[DatasetInfo], lang: str,
                         if is_total_account and _os.getenv('X2E_DEBUG') == '1':
                             print(f"        🔍 Procesando cuenta total: {normalized_label} (período {ds.stem})")
                         
-                        # comparar solo intersección; manejar conflictos eligiendo el valor más alto
+                        # Resolución de conflictos de columna.
+                        #
+                        # ANTES: "SIEMPRE preferir el valor más alto (en valor absoluto)".
+                        # Esa regla no tiene ninguna justificación contable y CORROMPÍA
+                        # el balance. Mecánica del bug, reproducida en Aguas Andinas y
+                        # Celulosa Arauco:
+                        #
+                        #   1. Los estados se recorren del más nuevo al más viejo.
+                        #   2. El estado de 2021Q1 trae, bajo la columna 2020-03-31, el
+                        #      comparativo de CIERRE (31-dic-2020) mal contextualizado:
+                        #      2.144e12 en vez de los 2.090e12 reales del trimestre.
+                        #   3. Cuando después entra el estado de 2020Q1 —que es el dueño
+                        #      legítimo de esa columna— con el valor correcto, éste es
+                        #      MENOR, así que "el más alto" lo descartaba.
+                        #   4. "Total de patrimonio y pasivos" no venía contaminado, así
+                        #      que sobrevivía correcto → el balance dejaba de cuadrar.
+                        #      Ese es el origen de los 18 períodos rotos de Arauco.
+                        #
+                        # AHORA: manda la AUTORIDAD. El estado cuyo propio cierre es esa
+                        # fecha es el dueño de la columna; cualquier otro la trae como
+                        # comparativo y no puede pisarlo. La magnitud sólo desempata
+                        # cuando ninguno de los dos es autoridad.
                         conflict = False
-                        conflict_resolutions = {}  # Para almacenar resoluciones de conflictos
-                        
+                        conflict_resolutions = {}
+                        auth = b.setdefault('__auth__', {})   # columna -> ¿el valor guardado es del dueño?
+                        fecha_propia = _fecha_cierre_del_dataset(ds.yyyyymm)
+
                         for dc, vv in current_map.items():
-                            if dc in b:
-                                bv = b.get(dc)
-                                if bv is not None and vv is not None and bv != vv:
-                                    # Intentar resolver el conflicto eligiendo el valor más alto
-                                    try:
-                                        # Convertir strings con formato 69,069,688,917,000 a números
-                                        bv_num = float(str(bv).replace(',', ''))
-                                        vv_num = float(str(vv).replace(',', ''))
-                                        
-                                        # Para diferencias muy pequeñas, no considerar conflicto
-                                        if abs(bv_num) > 0:
-                                            rel_diff = abs((vv_num - bv_num) / bv_num)
-                                            if rel_diff < 0.0001:  # Diferencia menor al 0.01%
-                                                continue  # No es conflicto real
-                                        
-                                        # SIEMPRE preferir el valor más alto (en valor absoluto)
-                                        if abs(vv_num) > abs(bv_num):
-                                            conflict_resolutions[dc] = vv  # Marcar para actualizar con el valor más alto
-                                        # Si el valor existente es más alto, mantenerlo (no hacer nada)
-                                        
-                                    except:
-                                        # Si no se puede comparar numéricamente, considerar conflicto real
-                                        if not is_total_account:
-                                            conflict = True
-                                            break
-                        
+                            if dc not in b:
+                                continue
+                            bv = b.get(dc)
+                            if bv is None or vv is None or bv == vv:
+                                continue
+
+                            entrante_es_autoridad = (fecha_propia is not None and dc == fecha_propia)
+                            guardado_es_autoridad = bool(auth.get(dc))
+
+                            # El dueño de la columna gana, sin mirar la magnitud.
+                            if entrante_es_autoridad and not guardado_es_autoridad:
+                                conflict_resolutions[dc] = vv
+                                continue
+                            if guardado_es_autoridad and not entrante_es_autoridad:
+                                continue  # un comparativo no pisa al dueño
+
+                            # Ninguno (o ambos) es autoridad: se conserva el desempate
+                            # anterior por magnitud, que para comparativos entre sí es
+                            # tan bueno como cualquiera.
+                            try:
+                                bv_num = float(str(bv).replace(',', ''))
+                                vv_num = float(str(vv).replace(',', ''))
+                                if abs(bv_num) > 0:
+                                    rel_diff = abs((vv_num - bv_num) / bv_num)
+                                    if rel_diff < 0.0001:   # ruido de redondeo, no es conflicto
+                                        continue
+                                if abs(vv_num) > abs(bv_num):
+                                    conflict_resolutions[dc] = vv
+                            except (TypeError, ValueError):
+                                if not is_total_account:
+                                    conflict = True
+                                    break
+
                         if conflict:
                             continue  # Solo continuar si hay un conflicto no resuelto
                         
-                        # Aplicar resoluciones de conflictos (valores más altos)
+                        # Aplicar resoluciones y registrar quién quedó como dueño de cada columna.
                         for dc, resolved_value in conflict_resolutions.items():
                             b[dc] = resolved_value
+                            if fecha_propia is not None and dc == fecha_propia:
+                                auth[dc] = True
                             if _os.getenv('X2E_DEBUG') == '1':
                                 print(f"          🔄 Resolviendo conflicto en {normalized_label} para {dc}: usando valor más alto {resolved_value}")
                         
@@ -1017,6 +1071,8 @@ def _aggregate_facts_for_company(company_datasets: List[DatasetInfo], lang: str,
                         for dc, vv in current_map.items():
                             if dc not in b or b.get(dc) is None or str(b.get(dc)).strip() == '':
                                 b[dc] = vv
+                                if fecha_propia is not None and dc == fecha_propia:
+                                    auth[dc] = True
                                 all_dates.add(dc)
                                 ym = str(dc)[:7]
                                 min_ym = ym if (min_ym is None or ym < min_ym) else min_ym
@@ -1027,9 +1083,17 @@ def _aggregate_facts_for_company(company_datasets: List[DatasetInfo], lang: str,
                     if not placed:
                         # Solo crear bucket nuevo si realmente tiene datos
                         if current_data_count > 0:
-                            b_new: dict[str, object] = {'__section__': context_section, '__qname__': qname_val}
+                            _fecha_propia_new = _fecha_cierre_del_dataset(ds.yyyyymm)
+                            _auth_new: dict[str, bool] = {}
+                            b_new: dict[str, object] = {
+                                '__section__': context_section,
+                                '__qname__': qname_val,
+                                '__auth__': _auth_new,
+                            }
                             for dc, vv in current_map.items():
                                 b_new[dc] = vv
+                                if _fecha_propia_new is not None and dc == _fecha_propia_new:
+                                    _auth_new[dc] = True
                                 all_dates.add(dc)
                                 ym = str(dc)[:7]
                                 min_ym = ym if (min_ym is None or ym < min_ym) else min_ym
