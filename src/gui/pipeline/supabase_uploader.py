@@ -441,6 +441,71 @@ class Database:
             )
         return filas
 
+    # -- Numero de acciones, leido del XBRL --
+    def set_shares_from_xbrl(self, company_id: int, rut: str) -> float | None:
+        """Escribe companies.shares_outstanding con las acciones que declara el XBRL.
+
+        POR QUE: el "Total de acciones" que llega desde los estados tiene la escala rota
+        —a veces en unidades, a veces en miles— y ese error se propaga al market cap, a
+        TODOS los multiplos, y en el DCF al PRECIO OBJETIVO: si viene en miles, el precio
+        objetivo sale 1.000 veces mas alto. Ese es el numero sobre el que un analista
+        decide comprar o vender.
+
+        La web lo sabia y lo tapaba: anulaba el market cap entero cuando salia implausible,
+        asi que esas empresas simplemente no mostraban multiplos y nadie sabia por que.
+
+        POR QUE NO SIRVE YAHOO: solo 42 de las 218 empresas cotizan. Celulosa Arauco no
+        tiene ticker (es filial de Copec), y como ella hay 175 mas.
+
+        LA FUENTE ES EL XBRL: la unidad `xbrli:shares` es un CONTEO por definicion, no
+        admite "miles". Verificado contra valores reales, desvio 0,0%:
+            AGUAS ANDINAS   6.118.965.160
+            FALABELLA       2.508.844.629
+            SQM               285.637.808
+            ARAUCO            131.893.786   <- sin ticker
+        """
+        try:
+            from cmf_extract.shares_detect import acciones_por_periodo
+        except ImportError:
+            return None
+
+        from pathlib import Path as _Path
+        raiz = _Path(__file__).resolve().parents[3] / "data" / "XBRL" / "Total"
+        if not raiz.is_dir():
+            return None
+
+        rut_norm = str(rut or "").replace(".", "").strip().upper()
+        carpeta = next(
+            (d for d in raiz.iterdir() if d.is_dir() and d.name.upper().startswith(rut_norm + "_")),
+            None,
+        )
+        if carpeta is None:
+            return None
+
+        por_periodo = acciones_por_periodo(carpeta)
+        if not por_periodo:
+            return None
+
+        ultimo = max(por_periodo)           # el periodo mas reciente manda
+        acciones = por_periodo[ultimo]
+
+        # Ninguna empresa listada tiene menos de 100.000 acciones. Si sale menos, la
+        # lectura esta mal y NO se escribe: preferimos un hueco a un DCF 1000x equivocado.
+        if acciones < 100_000:
+            return None
+
+        anio, trimestre = ultimo
+        mes = {1: 3, 2: 6, 3: 9, 4: 12}[trimestre]
+        dia = {3: 31, 6: 30, 9: 30, 12: 31}[mes]
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "UPDATE companies SET shares_outstanding = %s, "
+                "shares_source = 'xbrl:NumberOfSharesOutstanding', shares_as_of = %s "
+                "WHERE id = %s",
+                (int(acciones), f"{anio:04d}-{mes:02d}-{dia:02d}", company_id),
+            )
+        return acciones
+
     # -- Financial data en lotes --
     def upsert_financial_data(self,
                               records: Iterable[tuple[int, int, int, int, float]],
@@ -763,6 +828,18 @@ def upload_company(db: Database, csv_data: CompanyCSV, override: bool,
                 log("   moneda: sin XBRL local; queda el default del esquema (CLP) — VERIFICAR")
         except Exception as exc:  # noqa: BLE001
             log(f"   moneda: fallo la deteccion ({exc}) — VERIFICAR")
+
+        # Las acciones tampoco se asumen: se leen del XBRL, en unidades exactas. Sin esto,
+        # la escala rota del "Total de acciones" se lleva por delante el market cap, los
+        # multiplos y el precio objetivo del DCF.
+        try:
+            n_acc = db.set_shares_from_xbrl(company_id, csv_data.rut)
+            if n_acc:
+                log(f"   acciones (desde XBRL): {int(n_acc):,}".replace(",", "."))
+            else:
+                log("   acciones: sin XBRL local o lectura implausible — VERIFICAR")
+        except Exception as exc:  # noqa: BLE001
+            log(f"   acciones: fallo la deteccion ({exc}) — VERIFICAR")
 
         db.conn.commit()
         db.finish_import(import_id, stats.rows_total, stats.rows_total, 0,
