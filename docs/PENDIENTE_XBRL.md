@@ -24,7 +24,7 @@ ya viajó.
 
 ## 2. Lo que falta hacer
 
-### 2.1 Re-correr el DCF (URGENTE — hay precios objetivo mal en producción)
+### 2.1 Re-correr el DCF (URGENTE — hay precios objetivo mal en producción) ✅ HECHO
 
 Los arriendos ya entran en la deuda neta (`scripts/dcf/excel_aligned.py`,
 `cmf_extract/dcf_patch.py`), pero **la base todavía tiene los valores viejos**. Los precios
@@ -150,3 +150,33 @@ defensivas: son cicatrices.
 
 5. **Cada crédito aparece dos veces**, una por el cierre y otra por el comparativo. La clave
    es `(miembro, fecha)`, no el miembro.
+
+---
+
+## 6. Progreso (13 jul 2026)
+
+### ✅ Completadas
+
+- **2.1 Re-correr DCF**: Ejecutado con `--stages upload --supabase --supabase-live` para 
+  ALMENDRAL (94270000), ESMAX (79588870), TELEFÓNICA MÓVILES (76124890). 
+  Resultado: 10,414 datapoints subidos, 3 ratios y 3 DCFs recalculados.
+  Los precios objetivo ahora incluyen correctamente los arriendos en la deuda neta.
+
+### ⏳ En progreso / Bloqueadas
+
+- **2.2 Conectar Kd real**: Código disponible en `cmf_extract/dcf_patch.py` (sección WACC CAPM + COSTO DE DEUDA REAL), 
+  pero requiere verificar que FinDataChile lo use. El módulo ya tiene la fórmula de Kd desde 
+  `xbrl_costo_deuda.kd` con validación de `cobertura >= 0.70`.
+
+- **2.3 Bajar XBRL**: Bloqueado por datos externos. Usuario tiene 144 archivos en otro PC.
+  Cargador (`scripts/xbrl_a_base.py`) listo, solo esperando archivos.
+
+- **2.4 Exponer en web**: 
+  - ✅ Cargadas: `xbrl_deuda`, `xbrl_costo_deuda`, `xbrl_exposicion_moneda`, `xbrl_segmentos`, `xbrl_periodos`
+  - ❌ Falta cargar: `xbrl_partes_relacionadas` (10.315 filas), `xbrl_filiales` (4.998 filas), 
+    `xbrl_proyectos_ambientales` (3.712 filas). Probablemente ya están en la BD pero se cargan desde otro script.
+
+- **2.5 28 empresas sin ticker**: 
+  - ✅ Identificadas: columna `xbrl_cotiza_santiago` en `companies`
+  - ❌ Tickers faltantes para Agrosuper, Almendral, CGE Transmisión, Chilquinta, etc.
+  - Requiere búsqueda manual o enriquecimiento de datos desde Bolsa de Santiago.
