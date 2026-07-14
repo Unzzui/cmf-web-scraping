@@ -1,4 +1,4 @@
-"""La taxonomía oficial de la CMF (paquete CL-CI), leída una vez y cacheada.
+"""Las taxonomías oficiales de la CMF, leídas una vez y cacheadas.
 
 POR QUÉ IMPORTA
 ---------------
@@ -7,7 +7,18 @@ subtotal, qué concepto es una tasa, cómo se llama cada cosa en español. Infer
 hasta que no funciona — y cuando falla, falla en silencio y con números que parecen
 razonables.
 
-El paquete oficial (docs/CMF_CLCI_2026) lo declara todo. Este módulo lo lee.
+Los paquetes oficiales (docs/taxonomias_cmf/) lo declaran todo. Este módulo los lee.
+
+TODAS LAS VERSIONES, TODAS LAS FAMILIAS
+----------------------------------------
+La CMF publica una taxonomía por año y por tipo de emisor: `cl-ci` (comercial e
+industrial), `cl-hb` (holding bancario), `cl-bs`, `cl-cc`, `cl-hs`, `cl-ei`. Cada XBRL
+declara contra cuál se validó, y una empresa cambia de versión con los años.
+
+Antes esto leía UNA sola: la CL-CI de 2026. Un ejercicio de 2016, o una empresa que usa
+CL-HB (QUIÑENCO, FALABELLA, TRANSBANK), quedaba sin declaración y caía a heurística. Se
+recorren todas: los ejes y los tipos se acumulan, y un concepto que existió en cualquier
+versión queda declarado.
 
 QUÉ RESUELVE, CON AUTORIDAD EN VEZ DE OLFATO
 ---------------------------------------------
@@ -45,7 +56,7 @@ import functools
 import re
 from pathlib import Path
 
-RAIZ = Path(__file__).resolve().parent.parent / "docs" / "CMF_CLCI_2026"
+RAIZ = Path(__file__).resolve().parent.parent / "docs" / "taxonomias_cmf"
 
 _LOC_RE = re.compile(r"<link:loc[^>]*>", re.I)
 _ARC_RE = re.compile(r"<link:definitionArc[^>]*>", re.I)
@@ -204,6 +215,7 @@ _LAB_LOC_TAG = re.compile(r"<link:loc[^>]*>", re.I)
 _LAB_RES_TAG = re.compile(r"<link:label\b([^>]*)>([^<]*)</link:label>", re.I)
 _LAB_ARC_TAG = re.compile(r"<link:labelArc[^>]*>", re.I)
 _ATTR_ROLE_RE = re.compile(r'xlink:role="([^"]+)"')
+_ATTR_LANG_RE = re.compile(r'xml:lang="([^"]+)"')
 
 
 @functools.lru_cache(maxsize=1)
@@ -212,12 +224,20 @@ def etiquetas() -> dict[str, str]:
 
     Para que la base no guarde `RevenuesFromExternalCustomersAndTransactionsWith…` y se
     lo muestre así a un analista.
+
+    EL IDIOMA SE EXIGE, NO SE ASUME
+    --------------------------------
+    Cada etiqueta declara su `xml:lang`. Antes esto no se miraba y se guardaba la primera
+    que apareciera, así que el idioma lo decidía el orden en que el sistema de archivos
+    devolvía los `rglob` — y el propio archivo "es" de la CMF trae 928 etiquetas en
+    inglés mezcladas. Resultado: 241 conceptos quedaban en inglés ("Cash flows from (used
+    in) operations"), que es exactamente lo que esta función existe para evitar.
     """
     if not disponible():
         return {}
 
     fuera: dict[str, str] = {}
-    for lab in RAIZ.rglob("*lab*.xml"):
+    for lab in sorted(RAIZ.rglob("*lab*.xml")):
         raw = _leer(lab)
 
         loc: dict[str, str] = {}
@@ -233,6 +253,9 @@ def etiquetas() -> dict[str, str]:
             rol = _ATTR_ROLE_RE.search(attrs)
             # La etiqueta estándar, no las variantes ("terse", "verbose", "documentation").
             if rol and not rol.group(1).endswith("/label"):
+                continue
+            idioma = _ATTR_LANG_RE.search(attrs)
+            if not idioma or not idioma.group(1).lower().startswith("es"):
                 continue
             xlabel = _LABEL_RE.search(attrs)
             if xlabel and texto.strip():

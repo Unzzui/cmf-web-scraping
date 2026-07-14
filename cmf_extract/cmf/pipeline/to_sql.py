@@ -82,7 +82,6 @@ def run(
 
     # Resolve paths
     input_dir = str(config.product_v1_dir)
-    json_path = str(config.repo_root / "new_eeff_estructura.json")
     output_dir = str(config.product_v1_dir / "TO_SQL")
 
     # Validate inputs
@@ -90,13 +89,6 @@ def run(
         return PipelineResult(
             success=[],
             errors={"input_dir": f"Input directory does not exist: {input_dir}"},
-            elapsed=time.time() - start,
-        )
-
-    if not Path(json_path).is_file():
-        return PipelineResult(
-            success=[],
-            errors={"json_path": f"Structure JSON not found: {json_path}"},
             elapsed=time.time() - start,
         )
 
@@ -123,7 +115,6 @@ def run(
     try:
         files_processed, records = process_excel_files(
             input_dir=input_dir,
-            json_path=json_path,
             output_dir=output_dir,
             progress_callback=cb,
             filter_ruts=filter_ruts if filter_ruts else None,

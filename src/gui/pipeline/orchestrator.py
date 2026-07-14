@@ -122,16 +122,6 @@ class PipelineOrchestrator:
 
         product_v1 = _Path(self.settings.product_v1_dir)
         to_sql_dir = product_v1 / "TO_SQL"
-        json_path = product_v1.parent.parent / "new_eeff_estructura.json"
-        if not json_path.is_file():
-            # Buscarlo hacia arriba: la raíz del repo cambia según desde dónde se corra.
-            for padre in product_v1.parents:
-                cand = padre / "new_eeff_estructura.json"
-                if cand.is_file():
-                    json_path = cand
-                    break
-        if not json_path.is_file():
-            return False, "no encuentro new_eeff_estructura.json"
 
         try:
             from excel_to_csv_mapping import process_excel_files
@@ -147,14 +137,13 @@ class PipelineOrchestrator:
         to_sql_dir.mkdir(parents=True, exist_ok=True)
         process_excel_files(
             input_dir=str(product_v1),
-            json_path=str(json_path),
             output_dir=str(to_sql_dir),
             filter_ruts={rut},
         )
 
         escritos = list(to_sql_dir.glob(f"*{rut.split('-')[0]}*financial_data.csv"))
         if not escritos:
-            return False, f"no se escribió el CSV de {rut} (¿RUT sin plantilla en el JSON?)"
+            return False, f"no se escribió el CSV de {rut}"
 
         # Que el CSV sea NUEVO, no el de la corrida pasada.
         mas_nuevo = max(escritos, key=lambda f: f.stat().st_mtime)

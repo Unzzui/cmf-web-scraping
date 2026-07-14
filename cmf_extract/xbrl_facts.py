@@ -340,7 +340,13 @@ def miembros_agregados(xbrl_path: Path | str) -> set[str]:
       · el linkbase de definiciones de la EMPRESA — dice qué miembro tiene hijos en SU
         desglose (`AllOtherSegmentsMember` es un subtotal en Arauco y una hoja en otras).
     """
-    from . import cmf_taxonomia
+    # Igual que en xbrl_deuda: el pipeline importa este modulo suelto (cwd=cmf_extract),
+    # sin paquete padre, y el import relativo revienta. Sin la taxonomia oficial la
+    # deteccion de segmentos cae a una lista escrita a mano.
+    try:
+        from . import cmf_taxonomia
+    except ImportError:
+        import cmf_taxonomia
 
     agregados = set(cmf_taxonomia.miembros_agregados()) or set(_FALLBACK_SIN_TAXONOMIA)
 
@@ -359,7 +365,13 @@ def arbol(xbrl_path: Path | str) -> dict[str, set[str]]:
     ReportableSegmentsMember) y el archivo de la empresa trae la suya
     (ReportableSegmentsMember → Item804 "CELULOSA"). Ninguna de las dos basta sola.
     """
-    from . import cmf_taxonomia
+    # Igual que en xbrl_deuda: el pipeline importa este modulo suelto (cwd=cmf_extract),
+    # sin paquete padre, y el import relativo revienta. Sin la taxonomia oficial la
+    # deteccion de segmentos cae a una lista escrita a mano.
+    try:
+        from . import cmf_taxonomia
+    except ImportError:
+        import cmf_taxonomia
 
     hijos: dict[str, set[str]] = {}
     for padre, hijo in cmf_taxonomia.arcos_padre_hijo():

@@ -56,6 +56,42 @@ except ImportError:
 
 
 class FormulaProcessorMixin:
+
+    def _deuda_declarada(self, file_path: Path) -> dict | None:
+        """La deuda financiera de la empresa, préstamo por préstamo, o None.
+
+        La mina la fase 2 desde la nota del XBRL y la deja en
+        `out_consolidated_*/deuda.json`. Trae la TASA EFECTIVA que la empresa declaró para
+        cada crédito -- que es de donde sale el Kd real del WACC.
+
+        Devuelve None si la empresa no declara tasas (69 de 232). Un hueco es preferible a
+        un Kd inventado: el DCF cae entonces a la estimación, y lo dice.
+        """
+        m = re.search(r"(\d{7,8}-[\dkK])", Path(file_path).name)
+        if not m:
+            return None
+        rut = m.group(1).upper()
+
+        raiz = _xbrl_search_root()
+        if not raiz or not raiz.is_dir():
+            return None
+
+        for frecuencia in ("Total", "Anual", "Trimestral", ""):
+            base = raiz / frecuencia if frecuencia else raiz
+            if not base.is_dir():
+                continue
+            carpeta = next((d for d in base.iterdir()
+                            if d.is_dir() and d.name.upper().startswith(rut)), None)
+            if carpeta is None:
+                continue
+            try:
+                from cmf.pipeline.deuda import leer_deuda
+            except ImportError:
+                return None
+            return leer_deuda(carpeta)
+
+        return None
+
     """Mixin that adds ``_process_with_formulas`` to BulkProcessor."""
 
     def _process_with_formulas(self, file_path: Path, financial_data: Dict, 
@@ -492,6 +528,15 @@ class FormulaProcessorMixin:
                 financial_data['reporting_currency'] = moneda_actual
         except Exception:
             pass
+
+        # La deuda financiera declarada, préstamo por préstamo (la mina la fase 2 en
+        # `out_consolidated_*/deuda.json`). De ahí sale el Kd REAL del WACC -- la tasa que
+        # la empresa firmó -- en vez de estimarlo como costos_financieros/deuda, un
+        # cociente que en FORUS daba 958% y hacía que el WACC no significara nada.
+        try:
+            financial_data['deuda'] = self._deuda_declarada(file_path)
+        except Exception:
+            financial_data['deuda'] = None
         header_row = self.formatter.setup_worksheet_structure(ws, period_vector, sheet_name, lang=lang, unit_text=unit_text)
 
         # Nota metodológica compacta (siempre en combinado)

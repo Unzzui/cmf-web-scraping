@@ -10,11 +10,18 @@ data/
 # Herramientas externas grandes (Arelle se clona con setup.sh)
 tools/Arelle/
 
-# Salidas generadas por la consolidación (se regeneran)
+# Las taxonomías oficiales de la CMF: 180 MB en 5.940 archivos. Son un INSUMO que se
+# descarga del sitio de la CMF, no código nuestro. Ver el README para obtenerlas.
+# Los catálogos que Arelle necesita los genera scripts/build_taxonomy_catalogs.py.
+docs/taxonomias_cmf/
+
+# Salidas generadas por el pipeline (se regeneran; no se versionan)
 cmf_extract/Products/
 cmf_extract/Product_v1/
 Products/
 Product_v1/
+output/
+test_output_*/
 
 # Config con rutas/credenciales locales de la máquina
 config/pipeline_settings.json
@@ -23,6 +30,14 @@ config/pipeline_settings.json
 __pycache__/
 *.pyc
 *.pyo
+.pytest_cache/
+.ruff_cache/
 
 # Metadatos que Windows le pega a los archivos descargados. No son parte de nada.
 *:Zone.Identifier
+.DS_Store
+
+# Logs y temporales de corridas
+*.log
+cmf_scraper_log_*.txt
+.tmp_*

@@ -151,107 +151,23 @@ def extract_company_rut(stem: str) -> str | None:
     return None
 
 
-def load_company_specific_structure(company_rut: str, lang: str = "es") -> dict[str, list[tuple[str, str]]]:
-    """
-    Carga estructura específica por empresa desde estructura_eeff_empresas.json
-    Retorna dict con estructura: {role_id: [(qname, label)]} para preservar orden
-    """
-    current_dir = Path(__file__).parent
-    structure_path = current_dir / "analisis_excel" / "estructura_eeff_empresas.json"
-    
-    if not structure_path.exists():
-        if os.getenv('X2E_DEBUG') == '1':
-            print(f"DEBUG: No se encontró estructura_eeff_empresas.json en {structure_path}")
-        return {}
-    
-    try:
-        with open(structure_path, 'r', encoding='utf-8') as f:
-            estructura = json.load(f)
-        
-        # Buscar la empresa específica
-        empresa_data = None
-        for empresa in estructura.get('empresas', []):
-            if empresa.get('empresa', {}).get('rut') == company_rut:
-                empresa_data = empresa
-                break
-        
-        if not empresa_data:
-            if os.getenv('X2E_DEBUG') == '1':
-                print(f"DEBUG: No se encontró estructura específica para empresa {company_rut}")
-            return {}
-        
-        # Verificar idioma
-        if empresa_data.get('lang') != lang:
-            if os.getenv('X2E_DEBUG') == '1':
-                print(f"DEBUG: Idioma de estructura ({empresa_data.get('lang')}) no coincide con solicitado ({lang})")
-            return {}
-        
-        # Construir mapeo
-        mapping = {}
-        for role in empresa_data.get('roles', []):
-            role_id = role.get('id', '')
-            if not role_id:
-                continue
-                
-            role_items = []
-            for line in role.get('lineas', []):
-                if line:
-                    # Usar la línea como qname y label (estructura simplificada)
-                    role_items.append((f"custom:{line}", line))
-            
-            if role_items:
-                mapping[role_id] = role_items
-        
-        if os.getenv('X2E_DEBUG') == '1':
-            total_items = sum(len(items) for items in mapping.values())
-            print(f"DEBUG: Estructura específica cargada para {company_rut}. Total elementos: {total_items}")
-            for role_id, role_items in mapping.items():
-                print(f"DEBUG: Role {role_id}: {len(role_items)} elementos")
-        
-        return mapping
-        
-    except Exception as e:
-        if os.getenv('X2E_DEBUG') == '1':
-            print(f"DEBUG: Error cargando estructura específica: {e}")
-        return {}
-
-
 def build_complete_mapping(lang: str = "es", company_rut: str = None) -> dict[str, list[tuple[str, str]]]:
+    """El mapeo IFRS {role_id: [(qname, label)]}, en orden, desde `taxonomia_ilustrada.json`.
+
+    `company_rut` se conserva en la firma por compatibilidad con los tres call sites, pero
+    ya no se usa: antes se buscaba una estructura por empresa en
+    `estructura_eeff_empresas.json`, una lista a mano que cubria 34 de 231 empresas. El
+    orden y la jerarquia por empresa ahora salen del linkbase de presentacion de su propio
+    XBRL (ver `presentation_order`), que es la fuente de verdad de la fase 2.
     """
-    Construye mapeo completo con prioridad:
-    1. Estructura específica por empresa (si existe)
-    2. Fallback a taxonomia_ilustrada.json
-    Retorna dict con estructura: {role_id: [(qname, label)]} para preservar orden
-    """
-    # Intentar primero estructura específica por empresa
-    if company_rut:
-        company_mapping = load_company_specific_structure(company_rut, lang)
-        if company_mapping:
-            if os.getenv('X2E_DEBUG') == '1':
-                print(f"DEBUG: Usando estructura específica para empresa {company_rut}")
-            return company_mapping
-    
-    # Fallback a taxonomía general
-    # Buscar el archivo de taxonomía
     current_dir = Path(__file__).parent
-    taxonomia_path = current_dir / "analisis_excel" / "utils" / "testeo_pdf" / "taxonomia" / "taxonomia_ilustrada.json"
-    
+    taxonomia_path = current_dir / "taxonomia" / "taxonomia_ilustrada.json"
+
     if not taxonomia_path.exists():
-        # Fallback a buscar en otros directorios
-        alt_paths = [
-            current_dir / "taxonomia_ilustrada.json",
-            current_dir / "analisis_excel" / "taxonomia_ilustrada.json",
-            current_dir.parent / "taxonomia_ilustrada.json"
-        ]
-        for alt_path in alt_paths:
-            if alt_path.exists():
-                taxonomia_path = alt_path
-                break
-        else:
-            if os.getenv('X2E_DEBUG') == '1':
-                print(f"DEBUG: No se encontró taxonomia_ilustrada.json. Usando mapeo básico.")
-            return {}
-    
+        if os.getenv('X2E_DEBUG') == '1':
+            print(f"DEBUG: No se encontró {taxonomia_path}. Usando mapeo básico.")
+        return {}
+
     try:
         # Cache por idioma para evitar reparsear la taxonomía en la misma corrida
         cache_key = lang or "es"
@@ -835,19 +751,6 @@ def build_hybrid_mapping(presentation_data: pd.DataFrame, lang: str = "es", comp
     NUEVA ESTRATEGIA: Si tenemos presentation restructured, lo usamos como base.
     AHORA: Siempre prioriza estructura específica de empresa cuando está disponible.
     """
-    # PRIMERO: Intentar cargar estructura específica por empresa
-    company_mapping = None
-    if company_rut:
-        company_mapping = load_company_specific_structure(company_rut, lang)
-        if company_mapping:
-            if os.getenv('X2E_DEBUG') == '1':
-                print(f"DEBUG: Estructura específica encontrada para empresa {company_rut}")
-                total_items = sum(len(items) for items in company_mapping.values())
-                print(f"DEBUG: Usando estructura específica. Total elementos: {total_items}")
-                for role_id, items in company_mapping.items():
-                    print(f"DEBUG: Role {role_id}: {len(items)} elementos")
-            return company_mapping
-    
     if presentation_data is not None and not presentation_data.empty:
         # Detectar si es presentation restructured (solo tiene columna 'Cuenta')
         is_restructured = len(presentation_data.columns) == 1 and 'Cuenta' in presentation_data.columns
@@ -1893,17 +1796,11 @@ def build_complete_statement_structure(
     # Obtener mapeo híbrido para el tipo de estado
     complete_mapping = build_hybrid_mapping(presentation_tree, lang, company_rut) if presentation_tree is not None else build_complete_mapping(lang, company_rut)
     
-    # Verificar si tenemos estructura específica de empresa
-    has_company_structure = False
-    if company_rut:
-        company_mapping = load_company_specific_structure(company_rut, lang)
-        has_company_structure = bool(company_mapping)
-        if has_company_structure and os.getenv('X2E_DEBUG') == '1':
-            print(f"DEBUG: Estructura específica detectada para {company_rut} - NO agregando cuentas adicionales de facts")
-    
-    # NUEVA ESTRATEGIA: Si tenemos presentation restructured, agregamos cuentas faltantes de facts
-    # PERO SOLO si NO tenemos estructura específica de empresa
-    if facts_df is not None and presentation_tree is not None and not has_company_structure:
+    # Las cuentas que la empresa reporta pero el presentation no trae se agregan desde los
+    # facts. Antes esto se saltaba para las 34 empresas que tenian entrada en
+    # `estructura_eeff_empresas.json`; ese archivo ya no existe y todas siguen el mismo
+    # camino.
+    if facts_df is not None and presentation_tree is not None:
         # Detectar si el presentation es restructured (tiene solo columna 'Cuenta')
         is_restructured = len(presentation_tree.columns) == 1 and 'Cuenta' in presentation_tree.columns
         
@@ -1931,8 +1828,7 @@ def build_complete_statement_structure(
             except Exception as e:
                 if os.getenv('X2E_DEBUG') == '1':
                     print(f"DEBUG: Error reforzando mapeo desde presentation actual: {e}")
-    elif has_company_structure and os.getenv('X2E_DEBUG') == '1':
-        print(f"DEBUG: Saltando agregado de cuentas faltantes - usando estructura específica de empresa")
+
     # Sistema de fallback: usar role primario, si no hay datos usar alternativo
     role_fallbacks = {
         "BALANCE": ["210000", "220000"],      # Primero corriente/no corriente, luego orden liquidez

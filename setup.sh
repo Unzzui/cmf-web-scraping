@@ -3,9 +3,11 @@
 # Setup portable del Pipeline CMF en CUALQUIER PC.
 # Deja listo todo lo necesario para: python run_pipeline_gui.py
 #
-#   1. .venv               -> GUI + descarga (tkinter, selenium, pandas...)
-#   2. cmf_extract/.venv   -> consolidacion CMF_EXTRACT (pandas 2.3.x, etc.)
-#   3. tools/Arelle        -> motor XBRL (se clona y se le crea su .venv)
+#   1. .venv               -> todo el proyecto (pipeline, GUI, descarga)
+#   2. tools/Arelle        -> motor XBRL (se clona y se le crea su .venv)
+#
+# Arelle mantiene su propio venv a proposito: es un proyecto externo con sus
+# dependencias, y mezclarlo con las nuestras es pedir un conflicto de versiones.
 #
 # Uso:  ./setup.sh
 #
@@ -43,24 +45,16 @@ done
   Instala tkinter (ej: 'sudo apt install python3-tk') o pyenv 3.12 y reintenta."
 echo "Usando: $PYBASE ($($PYBASE --version 2>&1))"
 
-mkvenv() {  # $1=dir  $2=requirements
-  local dir="$1" req="$2"
-  if [ ! -x "$dir/bin/python" ]; then
-    "$PYBASE" -m venv "$dir"
-  fi
-  "$dir/bin/python" -m pip install --upgrade pip -q
-  if [ -f "$req" ]; then
-    "$dir/bin/python" -m pip install -r "$req" -q
-  fi
-}
-
-# --- 2. venv de la GUI ------------------------------------------------------
-say "Creando .venv (GUI + descarga)"
-mkvenv ".venv" "src/config/requirements_pipeline.txt"
-
-# --- 3. venv de CMF_EXTRACT -------------------------------------------------
-say "Creando cmf_extract/.venv (consolidacion)"
-mkvenv "cmf_extract/.venv" "cmf_extract/requirements.txt"
+# --- 2. venv unico ----------------------------------------------------------
+# Antes se creaban DOS venvs (raiz y cmf_extract/) con listas de dependencias
+# distintas: 580 MB en disco para instalar casi lo mismo dos veces, y dos versiones
+# de pandas capaces de divergir. Uno solo, con las dependencias del pyproject.
+say "Creando .venv (pipeline + GUI + descarga)"
+if [ ! -x ".venv/bin/python" ]; then
+  "$PYBASE" -m venv ".venv"
+fi
+.venv/bin/python -m pip install --upgrade pip -q
+.venv/bin/python -m pip install -e ".[scraping]" -q
 
 # --- 4. Arelle (clon + su venv) ---------------------------------------------
 say "Preparando Arelle en tools/Arelle"

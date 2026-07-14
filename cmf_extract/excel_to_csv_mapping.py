@@ -17,48 +17,6 @@ def extract_rut_from_filename(filename):
     rut_match = re.search(r'(\d{8,9}-[\dkK])', filename)
     return rut_match.group(1) if rut_match else None
 
-def load_estructura_json(json_path):
-    """Cargar el archivo de estructura y crear un diccionario de mapeo RUT -> roles."""
-    with open(json_path, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    
-    rut_to_roles = {}
-    for empresa_data in data['empresas']:
-        rut = empresa_data['empresa']['rut']
-        roles = {}
-        for role in empresa_data['roles']:
-            role_id = role['id']
-            titulo = role['titulo']
-            lineas = role['lineas']
-            roles[role_id] = {
-                'titulo': titulo,
-                'lineas': set(lineas)  # Usar set para búsqueda rápida
-            }
-        rut_to_roles[rut] = roles
-    
-    return rut_to_roles
-
-def map_sheet_to_role_id(sheet_name, roles_data):
-    """Mapear nombre de hoja a role_id basado en el título."""
-    sheet_mappings = {
-        'Balance General': ['situación financiera'],
-        'Estado de Resultados': ['resultado', 'estado del resultado'],
-        'Flujo Efectivo': ['flujos de efectivo', 'flujo de efectivo']
-    }
-
-    search_terms = sheet_mappings.get(sheet_name, [])
-    if not search_terms:
-        return None
-
-    for role_id, role_info in roles_data.items():
-        titulo_lower = role_info['titulo'].lower()
-        for search_term in search_terms:
-            if search_term in titulo_lower:
-                return role_id
-
-    return None
-
-
 # Marcadores para distinguir el estado de resultados por FUNCIÓN (310000) del
 # estado por NATURALEZA (320000) leyendo las propias cuentas de la hoja.
 _ER_FUNCION_MARKERS = ('costo de ventas', 'ganancia bruta')
@@ -92,7 +50,7 @@ def derive_role_id(sheet_name, labels):
         return '320000'
     return '310000'  # mismo default que detect_income_statement_role_from_facts
 
-def extract_data_from_excel(excel_path, sheet_name, rut_to_roles, rut):
+def extract_data_from_excel(excel_path, sheet_name, rut):
     """Extraer labels y datos de todas las fechas de una hoja específica del Excel."""
     try:
         # Leer el archivo Excel sin header
@@ -109,14 +67,11 @@ def extract_data_from_excel(excel_path, sheet_name, rut_to_roles, rut):
             print(f"  ⚠️  No se encontró fila 'Cuenta' en {sheet_name}")
             return [], []
         
-        # Obtener role_id para esta hoja. Si la empresa no está en la plantilla
-        # JSON (o la plantilla no cubre su rol), se deduce de las propias cuentas.
-        roles_data = rut_to_roles.get(rut, {})
-        role_id = map_sheet_to_role_id(sheet_name, roles_data)
-
-        if not role_id:
-            sheet_labels = df.iloc[cuenta_row + 1:, 0].tolist()
-            role_id = derive_role_id(sheet_name, sheet_labels)
+        # El role_id se deduce de las propias cuentas de la hoja. Antes salia de
+        # `new_eeff_estructura.json`, una lista a mano con 53 de las 145 empresas: al
+        # resto se le caia igual a este mismo `derive_role_id`.
+        sheet_labels = df.iloc[cuenta_row + 1:, 0].tolist()
+        role_id = derive_role_id(sheet_name, sheet_labels)
 
         if not role_id:
             print(f"  ⚠️  No se encontró role_id para {sheet_name} (RUT: {rut})")
@@ -268,7 +223,7 @@ def extract_ratios_kpis_data(excel_path, rut):
         print(f"  ❌ Error procesando RATIOS & KPIs: {str(e)}")
         return [], []
 
-def process_excel_files(input_dir, json_path, output_dir, progress_callback=None,
+def process_excel_files(input_dir, output_dir, progress_callback=None,
                         filter_ruts=None):
     """Procesar todos los archivos Excel y generar CSV por empresa.
 
@@ -276,8 +231,6 @@ def process_excel_files(input_dir, json_path, output_dir, progress_callback=None
     ----------
     input_dir : str or Path
         Directory containing analysis Excel files.
-    json_path : str or Path
-        Path to the ``new_eeff_estructura.json`` role structure file.
     output_dir : str or Path
         Directory where CSV files will be written.
     progress_callback : callable, optional
@@ -292,10 +245,6 @@ def process_excel_files(input_dir, json_path, output_dir, progress_callback=None
         else:
             print(msg)
 
-    # Cargar estructura de roles
-    _log("Cargando estructura de roles...")
-    rut_to_roles = load_estructura_json(json_path)
-    _log(f"  {len(rut_to_roles)} empresas cargadas")
 
     # Crear directorio de salida
     os.makedirs(output_dir, exist_ok=True)
@@ -335,13 +284,6 @@ def process_excel_files(input_dir, json_path, output_dir, progress_callback=None
 
         _log(f"  RUT: {rut} | Empresa: {company_name}")
 
-        # La plantilla JSON sólo cubre 53 empresas. Antes, las demás se
-        # descartaban aquí en silencio (y la fase reportaba "ok"), así que nunca
-        # podían llegar a la BD. Ahora se procesan igual: el RoleCode de cada
-        # hoja se deduce de las cuentas (ver derive_role_id).
-        if rut not in rut_to_roles:
-            _log(f"  RUT {rut} sin plantilla JSON; se deduce el rol de cada hoja")
-
         excel_path = os.path.join(input_dir, excel_file)
         
         # Recopilar todas las fechas únicas de todas las hojas
@@ -351,7 +293,7 @@ def process_excel_files(input_dir, json_path, output_dir, progress_callback=None
         # Procesar cada hoja para recopilar datos y fechas
         for sheet_name in sheets_to_process:
             try:
-                sheet_data, date_names = extract_data_from_excel(excel_path, sheet_name, rut_to_roles, rut)
+                sheet_data, date_names = extract_data_from_excel(excel_path, sheet_name, rut)
                 company_data.extend(sheet_data)
                 all_date_columns.update(date_names)
             except Exception as e:
@@ -452,33 +394,8 @@ def process_excel_files(input_dir, json_path, output_dir, progress_callback=None
     _log(f"Proceso completado: {total_files_processed} empresas, {total_records} registros")
     return total_files_processed, total_records
 
-def main():
-    """Función principal."""
-    
-    # Rutas
-    base_dir = "/home/unzzui/Documents/coding/CMF_extract"
-    input_dir = os.path.join(base_dir, "Product_v1", "Total")
-    json_path = os.path.join(base_dir, "new_eeff_estructura.json")
-    output_dir = os.path.join(base_dir, "Product_v1", "TO_SQL")
-    
-    print("🚀 Iniciando extracción de Labels y RoleCodes")
-    print(f"📂 Input: {input_dir}")
-    print(f"📋 JSON: {json_path}")
-    print(f"💾 Output: {output_dir}")
-    
-    # Verificar que existan los archivos/directorios necesarios
-    if not os.path.exists(input_dir):
-        print(f"❌ No existe directorio: {input_dir}")
-        return
-    
-    if not os.path.exists(json_path):
-        print(f"❌ No existe archivo JSON: {json_path}")
-        return
-    
-    # Procesar archivos
-    process_excel_files(input_dir, json_path, output_dir)
-    
-    print("\n🎉 Proceso completado!")
-
 if __name__ == "__main__":
-    main()
+    raise SystemExit(
+        "Este modulo se usa desde el pipeline (fase 4, cmf/pipeline/to_sql.py), "
+        "no directamente."
+    )

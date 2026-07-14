@@ -77,7 +77,6 @@ from src.gui.pipeline.supabase_uploader import (  # noqa: E402
 # Defaults razonables; sobrescribibles por CLI
 DEFAULT_INPUT_DIR = CMF_EXTRACT / "Product_v1" / "Total"
 DEFAULT_TO_SQL_DIR = DEFAULT_INPUT_DIR / "TO_SQL"
-DEFAULT_STRUCTURE_JSON = CMF_EXTRACT / "new_eeff_estructura.json"
 DEFAULT_ENV_FILE = Path.home() / "Proyectos" / "FinDataChile" / ".env"
 DEFAULT_FINDATACHILE = Path.home() / "Proyectos" / "FinDataChile"
 
@@ -181,7 +180,7 @@ def run_full_pipeline(filter_ruts: set[str] | None,
 # Generacion de CSVs desde Excels (opcional)
 # ---------------------------------------------------------------------------
 
-def regenerate_csvs(input_dir: Path, json_path: Path, output_dir: Path,
+def regenerate_csvs(input_dir: Path, output_dir: Path,
                    filter_ruts: set[str] | None) -> None:
     sys.path.insert(0, str(CMF_EXTRACT))
     try:
@@ -201,7 +200,6 @@ def regenerate_csvs(input_dir: Path, json_path: Path, output_dir: Path,
 
     process_excel_files(
         input_dir=str(input_dir),
-        json_path=str(json_path),
         output_dir=str(output_dir),
         progress_callback=_cb,
         filter_ruts=filter_ruts,
@@ -226,8 +224,6 @@ def parse_args() -> argparse.Namespace:
                    help="Carpeta de Excels finales (Product_v1/Total)")
     p.add_argument("--to-sql-dir", type=Path, default=DEFAULT_TO_SQL_DIR,
                    help="Carpeta donde estan / se generan los CSV (TO_SQL)")
-    p.add_argument("--structure-json", type=Path, default=DEFAULT_STRUCTURE_JSON,
-                   help="JSON de estructura de roles (new_eeff_estructura.json)")
     p.add_argument("--regenerate-csv", action="store_true",
                    help="Regenerar los CSVs en TO_SQL antes de subir "
                         "(solo fase 4 del pipeline). Util si los Excels "
@@ -345,11 +341,7 @@ def main() -> int:
         if not args.input_dir.is_dir():
             log(f"[error] No existe input dir: {args.input_dir}")
             return 2
-        if not args.structure_json.is_file():
-            log(f"[error] No existe structure JSON: {args.structure_json}")
-            return 2
-        regenerate_csvs(args.input_dir, args.structure_json, args.to_sql_dir,
-                        only_ruts)
+        regenerate_csvs(args.input_dir, args.to_sql_dir, only_ruts)
 
     # 2. Listar CSVs
     if not args.to_sql_dir.is_dir():

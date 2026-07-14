@@ -64,27 +64,6 @@ def extract_company_info(filename):
     except Exception as e:
         print(f"Error extrayendo información: {e}")
         return filename.replace('.xlsx', ''), "N/A", "N/A"
-def get_existing_sheets(workbook):
-    """Mapea hojas existentes para navegación."""
-    sheet_mapping = {
-        'Balance General': ['Balance', 'Balance General', 'BS', 'Statement of Financial Position'],
-        'Estado de Resultados': ['Estado de Resultados', 'PyG', 'P&L', 'Income Statement', 'IS'],
-        'Flujo de Efectivo': ['Flujo de Efectivo', 'Cash Flow', 'CF', 'Flujo Efectivo'],
-        'Ratios & KPIs': ['Ratios', 'KPIs', 'Ratios & KPIs', 'Indicators'],
-        'Resumen Comparativo': ['Resumen', 'Summary', 'Comparativo', 'Resumen Comparativo']
-    }
-    
-    available_sheets = []
-    sheet_names = [sheet.title for sheet in workbook.worksheets]
-    
-    for display_name, possible_names in sheet_mapping.items():
-        for sheet_name in sheet_names:
-            if any(possible.lower() in sheet_name.lower() for possible in possible_names):
-                available_sheets.append((display_name, sheet_name))
-                break
-    
-    return available_sheets
-
 def set_cell_with_merge(sheet, start_cell, end_cell, value, font=None, alignment=None, fill=None, border=None):
     """Función auxiliar para establecer valor y luego fusionar celdas de manera segura."""
     # Primero establecer el valor y formato en la celda inicial
@@ -268,42 +247,63 @@ def create_professional_dashboard(workbook, company_name, rut, period, currency=
     
     row += 1
     
-    # Obtener hojas disponibles
-    available_sheets = get_existing_sheets(workbook)
-    
-    # Navegación en grid profesional 2x4
-    nav_items = [
-        ("Balance General", nav_fill),
-        ("Estado de Resultados", nav_fill),
-        ("Flujo de Efectivo", nav_fill),
-        ("Ratios & KPIs", nav_fill),
-        ("Resumen Comparativo", nav_fill),
+    # LA NAVEGACIÓN SE ARMA CON LAS HOJAS QUE EXISTEN, NO CON UNA LISTA ESCRITA A MANO.
+    #
+    # Antes era una lista fija de cinco botones, y uno de ellos apuntaba a "Resumen
+    # Comparativo" -- una hoja que NO EXISTE en el archivo. El botón se dibujaba igual;
+    # simplemente se quedaba sin hipervínculo. Un botón muerto.
+    #
+    # Y al revés: el DCF, los Escenarios, las NOTAS y la DEUDA FINANCIERA no estaban en la
+    # lista, así que las hojas más importantes del archivo no aparecían en la navegación.
+    # Cada hoja nueva había que acordarse de agregarla acá, y nadie se acuerda.
+    #
+    # Derivándola del workbook, una hoja nueva aparece sola y una que no se generó no deja
+    # un botón muerto.
+    orden_preferido = [
+        "Balance General", "Estado de Resultados", "Flujo Efectivo",
+        "RATIOS & KPIs", "NOTAS", "DRIVERS WC", "DEUDA FINANCIERA",
+        "Escenarios", "Ficha Técnica", "METODOLOGÍA",
     ]
-    
-    # Navegación
-    for i, (sheet_label, color) in enumerate(nav_items):
+
+    hojas = [h.title for h in workbook.worksheets if h.title != "Inicio"]
+
+    # Las hojas DCF llevan el período en el nombre ("DCF 2026Q1"), así que no se pueden
+    # listar por nombre fijo: se buscan por prefijo y van justo después de los estados.
+    dcf = [h for h in hojas if h.upper().startswith("DCF")]
+
+    nav_labels = []
+    for nombre in orden_preferido:
+        if nombre in hojas:
+            nav_labels.append(nombre)
+        if nombre == "RATIOS & KPIs":
+            nav_labels.extend(dcf)
+
+    # Cualquier hoja que no esté en el orden preferido igual va: es preferible un botón de
+    # más que una hoja invisible.
+    nav_labels += [h for h in hojas if h not in nav_labels]
+
+    filas_nav = 0
+    for i, sheet_label in enumerate(nav_labels):
         row_offset = i // 3
+        filas_nav = max(filas_nav, row_offset + 1)
         col_idx = i % 3
         col_start = col_idx * 4 + 2  # Columnas B, F, J
-        col_end = col_start + 3  # 4 columnas por botón
+        col_end = col_start + 3      # 4 columnas por botón
 
         nav_cell = start_sheet[f'{get_column_letter(col_start)}{row + row_offset}']
         nav_cell.value = sheet_label
         nav_cell.font = nav_font
         nav_cell.alignment = center
-        nav_cell.fill = color
+        nav_cell.fill = nav_fill
         nav_cell.border = thin_border
+        # El hipervínculo apunta a la hoja REAL: si está en la lista, existe.
+        nav_cell.hyperlink = f"#'{sheet_label}'!A1"
 
-        for display_name, actual_name in available_sheets:
-            if display_name == sheet_label:
-                nav_cell.hyperlink = f"#'{actual_name}'!A1"
-                break
+        start_sheet.merge_cells(
+            f'{get_column_letter(col_start)}{row + row_offset}:'
+            f'{get_column_letter(col_end)}{row + row_offset}')
 
-        start_sheet.merge_cells(f'{get_column_letter(col_start)}{row + row_offset}:{get_column_letter(col_end)}{row + row_offset}')
-
-    row += 2  # Two rows used for nav
-    
-    row += 3
+    row += filas_nav + 3
     
     # === DESCRIPCIÓN EJECUTIVA ===
     set_cell_with_merge(start_sheet, f'B{row}', f'M{row}',

@@ -28,58 +28,35 @@ from typing import List
 import pandas as pd
 try:
     from cmf_extract import excel_style as est
+    from cmf_extract import presentation_order as po
 except ImportError:  # ejecutado desde dentro de cmf_extract/
     import excel_style as est
+    import presentation_order as po
 
 
 
-def detect_income_statement_role_from_primary(df: pd.DataFrame, company_rut: str = None) -> str:
+def detect_income_statement_role_from_primary(df: pd.DataFrame, orden: dict = None) -> str:
+    """310000 (por funcion) o 320000 (por naturaleza) para el estado de resultados.
+
+    Se toma de lo que la empresa DECLARA en su linkbase de presentacion (`orden`).
+    Antes se buscaba el RUT en `new_eeff_estructura.json`, y una empresa fuera de esa
+    lista caia a 310000 por defecto -- forzando un estado por funcion a quien reporta
+    por naturaleza.
+
+    Si no hay presentacion en disco, se cae a los RoleCode presentes en los datos.
     """
-    Detecta automáticamente si usar rol 310000 (función) o 320000 (naturaleza)
-    para el estado de resultados basado en estructura JSON específica por empresa.
-    
-    Prioridad de detección:
-    1. Estructura específica en new_eeff_estructura.json por RUT
-    2. RoleCode en DataFrame de primary_roles
-    3. Default: 310000 (función)
-    
-    Returns:
-        str: "310000" o "320000"
-    """
-    # PRIORIDAD 1: Buscar en estructura JSON específica por empresa
-    if company_rut:
-        try:
-            import json
-            from pathlib import Path
-            
-            estructura_file = Path(__file__).parent / "new_eeff_estructura.json"
-            if estructura_file.exists():
-                with open(estructura_file, 'r', encoding='utf-8') as f:
-                    data = json.load(f)
-                
-                for empresa in data.get('empresas', []):
-                    if empresa.get('empresa', {}).get('rut') == company_rut:
-                        for rol in empresa.get('roles', []):
-                            role_id = rol.get('id')
-                            if role_id in ['310000', '320000']:
-                                titulo = rol.get('titulo', '')
-                                print(f"📋 [primary-csv] Estructura JSON empresa {company_rut}: usando rol {role_id}")
-                                if 'naturaleza' in titulo.lower():
-                                    print(f"🎯 [primary-csv] Confirmado rol naturaleza: {titulo[:60]}...")
-                                return role_id
-                        break
-        except Exception as e:
-            print(f"⚠ [primary-csv] Error leyendo estructura JSON: {e}")
-    
-    # PRIORIDAD 2: Buscar códigos de rol únicos en el DataFrame
+    if orden:
+        rol = po.rol_estado_resultados(orden)
+        if rol:
+            return rol
+
     if df is not None and not df.empty and 'RoleCode' in df.columns:
         role_codes = df['RoleCode'].astype(str).unique()
         if '320000' in role_codes:
             return "320000"
-        elif '310000' in role_codes:
+        if '310000' in role_codes:
             return "310000"
-    
-    # Default fallback: función (310000)
+
     return "310000"
 
 
@@ -184,98 +161,34 @@ def load_and_combine_primary_roles(primary_files: List[Path]) -> pd.DataFrame:
     return combined
 
 
-def sort_by_hierarchical_keys(df: pd.DataFrame, company_rut: str = None) -> pd.DataFrame:
-    """
+def sort_by_hierarchical_keys(df: pd.DataFrame, orden: dict = None) -> pd.DataFrame:
+    """Ordena las filas segun el linkbase de presentacion de la propia empresa.
+
     FLUJO SECUENCIAL DE 3 PASOS:
-    1. Crear estructura base del Excel usando "lineas" del JSON
-    2. Llenar datos por mapeo exacto de Label (excluir conflictivas y [sinopsis])  
+    1. Crear la estructura base con el orden que la empresa declara en su XBRL
+    2. Llenar datos por mapeo exacto de Label (excluir conflictivas y [sinopsis])
     3. Llenar cuentas conflictivas por LabelKeyIdExt (aunque no tengan valores)
-    
+
+    El orden salia antes de `new_eeff_estructura.json`, una lista a mano con 53 de las
+    75 empresas; quien no estaba heredaba la plantilla de QUINENCO -- un holding CON
+    NEGOCIO BANCARIO. SONDA terminaba con 120 filas (64 propias), 67 vacias y 12 cuentas
+    de banco que no tiene. Ahora el orden lo da `presentation_order`, leido del XBRL de
+    cada empresa.
+
     Args:
-        df: DataFrame con los datos a ordenar
-        company_rut: RUT de la empresa para buscar su estructura específica
+        df: DataFrame con los datos a ordenar (un solo rol)
+        orden: {rol: [cuentas en orden]} de `presentation_order.orden_empresa`
     """
     if df.empty or 'Label' not in df.columns:
         return df
-    
-    # Iniciando procesamiento secuencial
-    
-    # PASO 1: CREAR ESTRUCTURA BASE DEL EXCEL usando "lineas" del JSON
-    json_structure_by_role = {}
-    try:
-        import json
-        from pathlib import Path
-        estructura_file = Path(__file__).parent / "new_eeff_estructura.json"
-        
-        with open(estructura_file, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        
-        # Buscar la empresa específica por RUT
-        estructura_encontrada = False
-        for empresa in data.get('empresas', []):
-            if empresa.get('empresa', {}).get('rut') == company_rut:
-                for rol in empresa.get('roles', []):
-                    role_id = rol.get('id')
-                    if role_id in ['210000', '310000', '320000', '510000']:
-                        lineas = rol.get('lineas', [])
-                        json_structure_by_role[role_id] = lineas
-                        # Estructura específica cargada para RUT: company_rut
-                estructura_encontrada = True
-                break
-        
-        # Si no se encuentra estructura específica, usar QUIÑENCO como fallback
-        if not estructura_encontrada:
-            # No se encontró estructura para RUT, usando QUIÑENCO como fallback
-            for empresa in data.get('empresas', []):
-                if empresa.get('empresa', {}).get('rut') == '91705000-7':
-                    for rol in empresa.get('roles', []):
-                        role_id = rol.get('id')
-                        if role_id in ['210000', '310000', '320000', '510000']:
-                            lineas = rol.get('lineas', [])
-                            json_structure_by_role[role_id] = lineas
-                            # Usando estructura de QUIÑENCO como fallback
-                    break
 
-        # Completar los roles que el fallback no cubre. QUIÑENCO reporta el ER
-        # por función (310000) y no define 320000, así que una empresa que
-        # reporta el ER por naturaleza (Bolsa de Comercio, entre otras) se
-        # quedaba sin plantilla: la hoja salía en orden alfabético crudo, con el
-        # bloque "Ganancia (pérdida)…" arriba y los ingresos enterrados, dando la
-        # impresión de un estado de resultados sin ingresos.
-        for role_id in ('210000', '310000', '320000', '510000'):
-            if json_structure_by_role.get(role_id):
-                continue
-            for empresa in data.get('empresas', []):
-                lineas = next((r.get('lineas') for r in empresa.get('roles', [])
-                               if r.get('id') == role_id and r.get('lineas')), None)
-                if lineas:
-                    json_structure_by_role[role_id] = lineas
-                    break
-
-    except Exception as e:
-        # Error cargando estructura
-        return df
-    
-    # Detectar el role actual para esta función
-    if df.empty:
-        return df
-    
     role_code = str(df.iloc[0].get('RoleCode', '')).strip()
-    json_structure = json_structure_by_role.get(role_code, [])
+    json_structure = list((orden or {}).get(role_code, []))
 
     if not json_structure:
-        # No se encontró estructura para role
+        # Sin presentacion para este rol no se inventa un orden: se devuelven las filas
+        # tal como vienen. Es preferible a imponerles la estructura de otra empresa.
         return df
-
-    # Canonicalizar los labels del template a la forma más reciente de la
-    # taxonomía CMF, para que la fila unificada (con label canónico) matchee.
-    try:
-        from label_rename import load_rename_map, canonicalize_label
-        _rmap = load_rename_map()
-        if _rmap:
-            json_structure = [canonicalize_label(role_code, str(l), _rmap) for l in json_structure]
-    except Exception:
-        pass
 
     # PASO 1: Crear DataFrame base con estructura de las "lineas"
     # PASO 1: Creando estructura base
@@ -666,39 +579,37 @@ def remove_subcategory_duplicates(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-def split_by_role(df: pd.DataFrame, company_rut: str = None) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+def split_by_role(df: pd.DataFrame, orden: dict = None) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Separa el DataFrame por roles en las 3 hojas principales
-    
+
     Args:
         df: DataFrame con todos los datos
-        company_rut: RUT de la empresa para buscar su estructura específica
+        orden: {rol: [cuentas en orden]} de `presentation_order.orden_empresa`
     """
-    
-    # Definir los roles principales con autodetección para income
-    balance_role = "210000"  # Balance Sheet / Estado de Situación Financiera
-    income_role = detect_income_statement_role_from_primary(df, company_rut)  # Autodetectar 310000 o 320000
-    cashflow_role = "510000" # Cash Flow / Estado de Flujos de Efectivo
-    
-    # Log si se detectó 320000
+
+    # Definir los roles principales; el del ER lo declara la propia empresa
+    balance_role = "210000"  # Estado de Situación Financiera
+    income_role = detect_income_statement_role_from_primary(df, orden)  # 310000 o 320000
+    cashflow_role = "510000" # Estado de Flujos de Efectivo
+
     if income_role == "320000":
-        print(f"🎯 [primary-csv] Detectado rol 320000 (naturaleza) para estado de resultados")
-    
+        print("[primary-csv] Estado de resultados por naturaleza (rol 320000)")
+
     # Filtrar por roles (usar RoleCode que es la columna real), ser robusto con valores
-    # ✨ CRUCIAL: Mantener el orden original del DataFrame usando .loc para preservar secuencia
+    # CRUCIAL: Mantener el orden original del DataFrame usando .loc para preservar secuencia
     balance_mask = df['RoleCode'].astype(str).str.strip() == balance_role
     income_mask = df['RoleCode'].astype(str).str.strip() == income_role
     cashflow_mask = df['RoleCode'].astype(str).str.strip() == cashflow_role
-    
+
     balance_df = df.loc[balance_mask].copy()
     income_df = df.loc[income_mask].copy()
     cashflow_df = df.loc[cashflow_mask].copy()
-    
-    # ✅ ORDENAR USANDO CLAVES JERÁRQUICAS DEL CSV PARA TODAS LAS HOJAS
-    # Usar las claves jerárquicas (LabelKeyId, LabelKeyIdExt, SectionKey) para crear orden perfecto
-    balance_df = sort_by_hierarchical_keys(balance_df, company_rut)    # Balance ordenado jerárquicamente
-    income_df = sort_by_hierarchical_keys(income_df, company_rut)      # Income ordenado jerárquicamente  
-    cashflow_df = sort_by_hierarchical_keys(cashflow_df, company_rut)  # Cash Flow ordenado jerárquicamente
-    
+
+    # Ordenar cada hoja segun el linkbase de presentacion de la empresa
+    balance_df = sort_by_hierarchical_keys(balance_df, orden)
+    income_df = sort_by_hierarchical_keys(income_df, orden)
+    cashflow_df = sort_by_hierarchical_keys(cashflow_df, orden)
+
     # Preparar DataFrames para Excel: 'Label' como primera columna, luego fechas
     # FILTRAR cuentas intermedias que son solo estructura organizacional
     def prepare_for_excel(sheet_df):
@@ -1692,22 +1603,18 @@ def generate_excel_from_primary_csv(company_dir: Path, lang: str = 'es',
     # Modo combinado habilitado
     # Configuración de trimestres
     
-    # Extraer RUT del nombre del directorio
-    # Formato esperado: RUT_NOMBRE_EMPRESA (ej: 91705000-7_QUIÑENCO_SA)
-    company_rut = None
-    try:
-        dir_name = company_dir.name
-        if '_' in dir_name:
-            company_rut = dir_name.split('_')[0]
-            # RUT extraído del directorio
-    except Exception:
-        company_rut = None
-    
+    # El orden de las cuentas: del linkbase de presentacion de la propia empresa,
+    # fusionando todos sus periodos. Es la fuente de verdad de la estructura.
+    orden = po.orden_empresa(company_dir)
+    if not orden:
+        print(f"[primary-csv] AVISO: sin linkbase de presentacion en {company_dir.name}; "
+              f"las hojas saldran en el orden crudo del CSV")
+
     # 1. Encontrar archivos primary_roles CSV
     primary_files = find_primary_roles_files(company_dir, lang)
     if not primary_files:
         raise ValueError(f"No se encontraron archivos primary_roles_{lang}.csv en {company_dir}")
-    
+
     # 2. Cargar y combinar datos
     combined_df = load_and_combine_primary_roles(primary_files)
 
@@ -1719,10 +1626,10 @@ def generate_excel_from_primary_csv(company_dir: Path, lang: str = 'es',
         combined_df = unify_renamed_accounts(combined_df)
     except Exception as _e:
         if os.getenv('X2E_DEBUG') == '1':
-            print(f"⚠️  unify_renamed_accounts no aplicado: {_e}")
+            print(f"[primary-csv] unify_renamed_accounts no aplicado: {_e}")
 
-    # 3. Separar por roles (3 hojas) - pasar el RUT para usar estructura específica
-    balance_df, income_df, cashflow_df = split_by_role(combined_df, company_rut)
+    # 3. Separar por roles (3 hojas), ordenando cada una segun la presentacion
+    balance_df, income_df, cashflow_df = split_by_role(combined_df, orden)
     
     # 4. Normalizar encabezados de fechas YYYY-MM-DD a formato YYYYQX (como xbrl_to_excel.py)
     # Normalizando encabezados de fecha

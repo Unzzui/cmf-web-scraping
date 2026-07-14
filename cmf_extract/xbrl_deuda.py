@@ -40,10 +40,16 @@ LAS TRAMPAS DE ESTA NOTA (verificadas contra Arauco)
 from __future__ import annotations
 
 import collections
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
-from . import xbrl_facts as xf
+# El pipeline corre con cwd=cmf_extract y este módulo entra como `import xbrl_deuda`, sin
+# paquete padre: el import relativo revienta con "attempted relative import with no known
+# parent package" y la deuda se pierde en silencio (el llamador sólo ve un AVISO).
+try:
+    from . import xbrl_facts as xf
+except ImportError:
+    import xbrl_facts as xf
 
 # Los ejes donde vive el detalle de la deuda. Son extensiones de la CMF: no existen en la
 # taxonomía IFRS internacional, y por eso ninguna herramienta genérica las lee.
@@ -69,6 +75,42 @@ _CONTABLE_NO_CORRIENTE = ("PrestamosBancariosNoCorrientes", "ObligacionesConPubl
                           "NoncurrentLeaseLiabilities")
 _NOMINAL = ("MontosNominalesPrestamos", "MontosNominalesObligacionesPublico",
             "MontosNominalesLeasing")
+
+# EL PERFIL DE VENCIMIENTOS: cuánto vence en cada tramo.
+#
+# Es lo que dice si la empresa tiene un muro de deuda el año que viene o si lo tiene
+# repartido a diez años. Dos empresas con la misma deuda total y el mismo Kd pueden ser
+# riesgos completamente distintos, y eso no se ve en ningún ratio del balance.
+#
+# LA TRAMPA: LOS TRAMOS ESTÁN ANIDADOS.
+#
+#     MasDe1AñoHasta3Años   141.255      <- agregado
+#       MasDe1AñoHasta2Años  69.066      <- hoja
+#       MasDe2AñosHasta3Años 72.189      <- hoja      (69.066 + 72.189 = 141.255)
+#
+# Sumar todos los tramos duplica la deuda. Sólo se usan las HOJAS.
+#
+# Y la taxonomía escribe "Masde90Dias..." (d minúscula) en el concepto Contable y
+# "MasDe90Dias..." (D mayúscula) en el Nominal. Es una errata de la CMF, no del lector:
+# hay que aceptar las dos o se pierde el tramo de 90 días a 1 año entero.
+_TRAMOS = (
+    ("Hasta 90 días",        ("Hasta90Dias{}Contable",)),
+    ("90 días a 1 año",      ("Masde90DiasHasta1Año{}Contable",
+                              "MasDe90DiasHasta1Año{}Contable")),
+    ("1 a 2 años",           ("MasDe1AñoHasta2Años{}Contable",)),
+    ("2 a 3 años",           ("MasDe2AñosHasta3Años{}Contable",)),
+    ("3 a 4 años",           ("MasDe3AñosHasta4Años{}Contable",)),
+    ("4 a 5 años",           ("MasDe4AñosHasta5Años{}Contable",)),
+    ("Más de 5 años",        ("MasDe5Años{}Contable",)),
+)
+
+# El sufijo del concepto según el instrumento: el mismo tramo se llama distinto en un
+# préstamo, un bono y un arriendo.
+_SUFIJO = {
+    "prestamo": "Prestamos",
+    "bono": "ObligacionesPublico",
+    "arriendo": "Leasing",
+}
 
 
 def _primero(campos: dict[str, str], claves: tuple[str, ...]) -> float | None:
@@ -119,6 +161,22 @@ class Credito:
     monto_contable: float | None = None
     monto_nominal: float | None = None
     serie: str | None = None        # sólo en emisiones (bonos)
+
+    # QUIÉN se endeudó. En un grupo como Arauco o Enel no es la matriz la que toma cada
+    # crédito, sino una filial, y a veces en otro país. Esa es la diferencia entre una
+    # deuda con recurso a la matriz y una que no.
+    deudor: str | None = None
+    pais_deudor: str | None = None
+
+    # CORRIENTE vs NO CORRIENTE. Antes esto se leía sólo para sumarlo y se perdía el
+    # desglose. Pero es exactamente lo que dice cuánta deuda hay que refinanciar dentro de
+    # los próximos doce meses: la diferencia entre una empresa cómoda y una apretada.
+    monto_corriente: float | None = None
+    monto_no_corriente: float | None = None
+
+    # EL PERFIL DE VENCIMIENTOS: {tramo -> monto}. Sólo los tramos HOJA, nunca los
+    # agregados (ver `_TRAMOS`), o la deuda se contaría dos veces.
+    vencimientos: dict[str, float] = field(default_factory=dict)
 
     @property
     def utilizable(self) -> bool:
@@ -181,18 +239,35 @@ def _creditos_de_eje(doc: xf.Documento, eje: str) -> list[Credito]:
             nocorr = _primero(c, _CONTABLE_NO_CORRIENTE) or 0.0
             contable = (corr + nocorr) or None
 
+        instrumento = _INSTRUMENTO.get(eje, "prestamo")
+
+        # El perfil de vencimientos: sólo los tramos HOJA. Los agregados
+        # (MasDe1AñoHasta3Años, MasDe3AñosHasta5Años) contienen a los otros y sumarlos
+        # duplicaría la deuda.
+        sufijo = _SUFIJO.get(instrumento, "Prestamos")
+        venc: dict[str, float] = {}
+        for etiqueta, plantillas in _TRAMOS:
+            monto = _primero(c, tuple(p.format(sufijo) for p in plantillas))
+            if monto:
+                venc[etiqueta] = monto
+
         creditos.append(Credito(
-            instrumento=_INSTRUMENTO.get(eje, "prestamo"),
+            instrumento=instrumento,
             miembro=miembro,
             fecha=fecha,
             acreedor=c.get("NombreEntidadAcreedora"),
+            deudor=c.get("NombreEntidadDeudora"),
+            pais_deudor=_limpiar_codigo(c.get("PaisEmpresaDeudora")),
             moneda=_limpiar_codigo(c.get("MonedaOUnidadReajuste")),
             amortizacion=c.get("TipoAmortizacion") or c.get("PeriodicidadAmortizacion"),
             vencimiento=c.get("FechaVencimiento"),
             tasa_efectiva=_tasa(c.get("TasaEfectiva")),
             tasa_nominal=_tasa(c.get("TasaNominal")),
             monto_contable=contable,
+            monto_corriente=_primero(c, _CONTABLE_CORRIENTE),
+            monto_no_corriente=_primero(c, _CONTABLE_NO_CORRIENTE),
             monto_nominal=_primero(c, _NOMINAL),
+            vencimientos=venc,
             serie=c.get("Series"),
         ))
     return creditos
@@ -220,6 +295,20 @@ class CostoDeuda:
     n_creditos: int
     por_moneda: dict[str, float]    # moneda → monto. La exposición cambiaria de la deuda.
 
+    # Cuánto hay que refinanciar dentro de los próximos doce meses. Es la diferencia entre
+    # una empresa cómoda y una apretada, y no se ve en el Kd.
+    corriente: float = 0.0
+    no_corriente: float = 0.0
+
+    # El perfil de vencimientos consolidado: {tramo -> monto}. Dice si la empresa tiene un
+    # muro de deuda el año que viene o si lo tiene repartido a diez años. Dos empresas con
+    # la misma deuda y el mismo Kd pueden ser riesgos completamente distintos.
+    vencimientos: dict[str, float] = field(default_factory=dict)
+
+    # Por instrumento: cuánto es préstamo bancario, cuánto bono y cuánto arriendo. Bajo
+    # IFRS 16 un arriendo es deuda, y en SMU son el 58,6% del total.
+    por_instrumento: dict[str, float] = field(default_factory=dict)
+
 
 def costo_de_deuda(xbrl_path: Path | str, fecha: str | None = None) -> CostoDeuda | None:
     """Kd: el promedio de las tasas efectivas declaradas, ponderado por monto.
@@ -238,12 +327,30 @@ def costo_de_deuda(xbrl_path: Path | str, fecha: str | None = None) -> CostoDeud
     kd = sum(c.tasa_efectiva * c.monto_contable for c in utiles) / total
 
     por_moneda: dict[str, float] = collections.defaultdict(float)
+    por_instrumento: dict[str, float] = collections.defaultdict(float)
+    vencimientos: dict[str, float] = collections.defaultdict(float)
+    corriente = no_corriente = 0.0
+
     for c in utiles:
         por_moneda[c.moneda or "?"] += c.monto_contable
+        por_instrumento[c.instrumento] += c.monto_contable
+        corriente += c.monto_corriente or 0.0
+        no_corriente += c.monto_no_corriente or 0.0
+        for tramo, monto in c.vencimientos.items():
+            vencimientos[tramo] += monto
+
+    # Los tramos salen en ORDEN CRONOLÓGICO, no alfabético: "Hasta 90 días" antes que
+    # "1 a 2 años". Un perfil de vencimientos ordenado al azar no es un perfil.
+    orden = [etiqueta for etiqueta, _ in _TRAMOS]
+    vencimientos_ordenados = {t: vencimientos[t] for t in orden if vencimientos.get(t)}
 
     return CostoDeuda(
         kd=kd,
         deuda_cubierta=total,
         n_creditos=len(utiles),
         por_moneda=dict(por_moneda),
+        corriente=corriente,
+        no_corriente=no_corriente,
+        vencimientos=vencimientos_ordenados,
+        por_instrumento=dict(por_instrumento),
     )

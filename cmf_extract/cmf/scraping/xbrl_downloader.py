@@ -997,11 +997,6 @@ def download_cmf_xbrl(
                             return None
                         os.replace(tmp_path, final_path)
                         logger.info(f"✅ Descargado (direct): {os.path.basename(final_path)}")
-                        try:
-                            # Actualizar dashboard diag
-                            from gui.main_window import CMFScraperGUI  # evitar import global
-                        except Exception:
-                            pass
                         return final_path
                 except Exception as e:
                     logger.warning(f"Fallo descarga directa: {e}")
@@ -1392,12 +1387,6 @@ def download_cmf_xbrl(
                     try:
                         if callable(progress_hook):
                             progress_hook(rut, current_operation, total_periods, year, month, estimated_remaining_time, 'in_progress')
-                    except Exception:
-                        pass
-                    # Notificación opcional para dashboard de consola vía callback global si existe
-                    try:
-                        from gui.main_window import CMFScraperGUI  # evita import top-level
-                        pass
                     except Exception:
                         pass
                     # Verificar que estamos en la página correcta

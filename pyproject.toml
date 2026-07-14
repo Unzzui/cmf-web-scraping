@@ -1,0 +1,53 @@
+[project]
+name = "cmf-extract"
+version = "0.1.0"
+description = "Pipeline de extraccion y analisis de estados financieros XBRL de la CMF (Chile)"
+requires-python = ">=3.12"
+
+# Las dependencias reales, derivadas de los imports del codigo -- no del `pip freeze`,
+# que arrastraba jupyter, ipykernel y ~200 paquetes transitivos.
+dependencies = [
+    "pandas>=2.3",
+    "numpy>=2.3",
+    "openpyxl>=3.1",
+    "requests>=2.32",
+    "psycopg2-binary>=2.9",   # carga a Supabase/PostgreSQL
+    "rich>=13.0",             # dashboards de progreso en consola
+    "beautifulsoup4>=4.12",   # scraping del sitio de la CMF
+    "lxml>=5.0",
+]
+
+[project.optional-dependencies]
+# El scraper de la CMF; no hace falta para procesar XBRL ya descargado.
+scraping = [
+    "selenium>=4.20",
+    "webdriver-manager>=4.0",
+    "urllib3>=2.0",
+]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+# El codigo todavia vive en cmf_extract/ y src/. Moverlo a un paquete unico bajo src/cmf/
+# es el siguiente paso de la reestructuracion.
+packages = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "cmf_extract/tests"]
+# La raiz del repo en el path: los tests importan `src.scrapers...`, y sin esto solo
+# funcionaban corriendo pytest desde la raiz con los tests sueltos en la raiz.
+pythonpath = ["."]
+markers = [
+    "validation: valida archivos Excel ya generados; requiere una corrida previa del pipeline",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+exclude = [".venv", "tools", "data", "docs", "output"]

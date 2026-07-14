@@ -35,7 +35,6 @@ import pandas as pd
 
 
 _DATE_COL_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-_ESTRUCTURA_JSON_NAME = "new_eeff_estructura.json"
 
 # RoleCodes que NO consideramos notes (son los estados financieros primarios).
 # Cualquier otro RoleCode es una "note" y se escanea por labels Balance.
@@ -96,27 +95,6 @@ def _normalize_label(lbl) -> str:
     s = re.sub(r"^total\s+", "", s)
     s = re.sub(r"\s+totales?$", "", s)
     return s.strip()
-
-
-def _load_balance_template(rut_with_dv: str,
-                           estructura_dir: Path) -> list[str]:
-    """Carga las ``lineas`` del rol 210000 para esta empresa desde el JSON."""
-    if not rut_with_dv:
-        return []
-    estructura_file = estructura_dir / _ESTRUCTURA_JSON_NAME
-    if not estructura_file.exists():
-        return []
-    try:
-        data = json.loads(estructura_file.read_text(encoding="utf-8"))
-    except Exception:
-        return []
-    for emp in data.get("empresas", []):
-        if emp.get("empresa", {}).get("rut") != rut_with_dv:
-            continue
-        for rol in emp.get("roles", []):
-            if rol.get("id") == "210000":
-                return [str(l).strip() for l in rol.get("lineas", []) if l]
-    return []
 
 
 def _empty(v) -> bool:
@@ -269,8 +247,7 @@ def _derive_balance_subtotals(df: pd.DataFrame,
 
 def apply_balance_fallback(df: pd.DataFrame,
                            df_facts: pd.DataFrame,
-                           rut_with_dv: str,
-                           estructura_dir: Path,
+                           template_labels: list[str],
                            enable_log: bool = False) -> pd.DataFrame:
     """Aplica el fallback Balance a ``df`` in-place y lo retorna.
 
@@ -281,17 +258,17 @@ def apply_balance_fallback(df: pd.DataFrame,
     df_facts:
         DataFrame consolidado completo (con todas las RoleCodes), del que se
         leen las notes [800100]/[610000].
-    rut_with_dv:
-        RUT con dígito verificador (ej. ``93007000-9``).
-    estructura_dir:
-        Directorio que contiene ``new_eeff_estructura.json``.
+    template_labels:
+        Las cuentas del rol 210000 de esta empresa, en orden, tal como las declara su
+        linkbase de presentacion (`presentation_order.orden_empresa`). Antes se leian de
+        `new_eeff_estructura.json`, que solo cubria 53 de 145 empresas: al resto no se le
+        aplicaba el fallback.
     enable_log:
         Si True, imprime resumen del fallback aplicado.
     """
     if "RoleCode" not in df_facts.columns:
         return df
 
-    template_labels = _load_balance_template(rut_with_dv, estructura_dir)
     if not template_labels:
         return df
 

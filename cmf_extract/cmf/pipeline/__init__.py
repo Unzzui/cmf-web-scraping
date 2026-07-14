@@ -12,7 +12,6 @@ excel_gen       Phase 2 - Facts CSV -> primary Excel workbook.
 analysis        Phase 3 - Primary Excel -> financial analysis workbook + start sheet.
 to_sql          Phase 4 - Export analysis workbooks to CSV for database import.
 download        Download raw XBRL files from CMF website.
-polish          (deprecated) Merged into Phase 3 analysis.
 """
 
 from __future__ import annotations

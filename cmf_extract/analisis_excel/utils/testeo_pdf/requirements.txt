@@ -1,3 +1,0 @@
-PyMuPDF>=1.26.0
-pandas>=2.0.0
-xlsxwriter>=3.0.0

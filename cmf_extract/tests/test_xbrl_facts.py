@@ -169,10 +169,20 @@ def test_la_taxonomia_de_la_cmf_esta_en_el_repo():
     """
     from cmf_extract import cmf_taxonomia
 
-    assert cmf_taxonomia.disponible(), (
-        "falta docs/CMF_CLCI_2026 — sin la taxonomía, la detección de segmentos "
-        "vuelve a una heurística que ya demostró estar mal"
-    )
+    # Las taxonomías son un INSUMO de 180 MB que se descarga del sitio de la CMF; no van
+    # versionadas (ver .gitignore y el README). En un clon recién hecho todavía no están,
+    # y este test no tiene nada que verificar: se salta.
+    #
+    # Lo que NO hace es pasar en silencio. Si la carpeta existe pero está incompleta o mal
+    # armada, las aserciones de abajo fallan -- que es exactamente el punto: sin la
+    # taxonomía, la detección de segmentos vuelve a una heurística que ya demostró estar
+    # mal, y la degradación es invisible (los números salen, y salen mal).
+    if not cmf_taxonomia.disponible():
+        pytest.skip(
+            f"falta {cmf_taxonomia.RAIZ} — descarga las taxonomías de la CMF "
+            f"(ver README) y corre scripts/build_taxonomy_catalogs.py"
+        )
+
     assert len(cmf_taxonomia.miembros_agregados()) > 300
     assert len(cmf_taxonomia.etiquetas()) > 4000
     # La raíz del eje de segmentos: si esto falla, sumar segmentos duplica el total.

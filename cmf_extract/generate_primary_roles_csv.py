@@ -31,6 +31,11 @@ from dataclasses import dataclass
 import pandas as pd
 import calendar
 
+try:
+    from cmf_extract import presentation_order as po
+except ImportError:  # ejecutado desde dentro de cmf_extract/
+    import presentation_order as po
+
 
 def _normalize_synopsis_name(name: str) -> str:
     """
@@ -95,73 +100,20 @@ def _normalize_synopsis_name(name: str) -> str:
     return name
 
 
-def _load_hierarchical_structure(company_rut: str) -> Dict[str, any]:
-    """
-    Carga la estructura jerárquica desde new_eeff_estructura.json para una empresa específica
-    Retorna un diccionario con la estructura por rol
+def _load_hierarchical_structure(company_dir: Path) -> Dict[str, any]:
+    """rol -> {'account_paths': {cuenta: [ancestros..., cuenta]}} de la propia empresa.
+
+    El path jerarquico sale del linkbase de presentacion del XBRL (via
+    `presentation_order.arbol_empresa`). Antes salia del campo `tree` de
+    `new_eeff_estructura.json`, una lista a mano que cubria 53 de 145 empresas: al resto
+    no se le reconstruia el LabelKeyIdExt.
     """
     try:
-        estructura_file = Path(__file__).parent / "new_eeff_estructura.json"
-        if not estructura_file.exists():
-            print(f"⚠️ No se encontró new_eeff_estructura.json en {estructura_file}")
-            return {}
-        
-        with open(estructura_file, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        
-        # Buscar empresa por RUT
-        for empresa in data.get('empresas', []):
-            if empresa.get('empresa', {}).get('rut') == company_rut:
-                print(f"📖 Encontrada estructura para {empresa['empresa']['nombre']} ({company_rut})")
-                
-                # Crear mapa por rol
-                structure_by_role = {}
-                for rol in empresa.get('roles', []):
-                    role_id = rol.get('id')
-                    if role_id in ['210000', '310000', '510000']:
-                        lineas = rol.get('lineas', [])
-                        tree = rol.get('tree', [])
-                        
-                        # Crear mapeo cuenta -> path jerárquico
-                        account_paths = {}
-                        
-                        def _build_paths(node, path=[]):
-                            """Recursivamente construir paths jerárquicos"""
-                            current_path = path + [node['label']]
-                            
-                            # Para cuentas que aparecen en múltiples contextos, crear múltiples entradas
-                            label = node['label']
-                            if label in account_paths:
-                                # Si ya existe, agregar este path como alternativo
-                                # Priorizar paths más específicos (más largos)
-                                if len(current_path) > len(account_paths[label]):
-                                    account_paths[label] = current_path
-                            else:
-                                account_paths[label] = current_path
-                            
-                            for child in node.get('children', []):
-                                _build_paths(child, current_path)
-                        
-                        # Construir paths para todo el tree
-                        for root in tree:
-                            _build_paths(root)
-                        
-                        structure_by_role[role_id] = {
-                            'lineas': lineas,
-                            'tree': tree,
-                            'account_paths': account_paths
-                        }
-                        
-                        print(f"  📋 Rol {role_id}: {len(lineas)} líneas, {len(account_paths)} paths jerárquicos")
-                
-                return structure_by_role
-        
-        print(f"⚠️ No se encontró estructura para empresa {company_rut}")
-        return {}
-        
+        arbol = po.arbol_empresa(company_dir)
     except Exception as e:
-        print(f"❌ Error cargando estructura jerárquica: {e}")
+        print(f"[primary-csv] no se pudo leer la presentacion de {company_dir.name}: {e}")
         return {}
+    return {rol: {'account_paths': paths} for rol, paths in arbol.items()}
 
 
 def _build_hierarchical_label_key(account_label: str, structure: Dict[str, any], role_id: str) -> str:
@@ -348,57 +300,26 @@ def clean_insufficient_date_columns(df: pd.DataFrame, min_threshold_pct: float =
     return df[final_cols].copy()
 
 
-def detect_income_statement_role_from_facts(df_facts: pd.DataFrame, company_rut: str = None) -> str:
+def detect_income_statement_role_from_facts(df_facts: pd.DataFrame,
+                                           orden: Dict[str, list] = None) -> str:
+    """310000 (por funcion) o 320000 (por naturaleza): el que la empresa DECLARA.
+
+    Se toma del linkbase de presentacion. Antes se buscaba el RUT en
+    `new_eeff_estructura.json` y quien no estuviera caia a 310000 por defecto, forzando
+    un estado por funcion a quien reporta por naturaleza.
     """
-    Detecta automáticamente si usar rol 310000 (función) o 320000 (naturaleza)
-    para el estado de resultados basado en estructura JSON específica por empresa.
-    
-    Prioridad de detección:
-    1. Estructura específica en new_eeff_estructura.json por RUT
-    2. RoleCode en facts DataFrame
-    3. Default: 310000 (función)
-    
-    Returns:
-        str: "310000" o "320000"
-    """
-    # PRIORIDAD 1: Buscar en estructura JSON específica por empresa
-    if company_rut:
-        try:
-            import json
-            from pathlib import Path
-            
-            estructura_file = Path(__file__).parent / "new_eeff_estructura.json"
-            if estructura_file.exists():
-                with open(estructura_file, 'r', encoding='utf-8') as f:
-                    data = json.load(f)
-                
-                for empresa in data.get('empresas', []):
-                    if empresa.get('empresa', {}).get('rut') == company_rut:
-                        for rol in empresa.get('roles', []):
-                            role_id = rol.get('id')
-                            if role_id in ['310000', '320000']:
-                                enable_log = os.getenv('CMF_PRIMARY_LOG', '0') == '1'
-                                if enable_log:
-                                    titulo = rol.get('titulo', '')
-                                    print(f"[primary-csv] 📋 Estructura JSON empresa {company_rut}: usando rol {role_id}")
-                                    if 'naturaleza' in titulo.lower():
-                                        print(f"[primary-csv] 🎯 Confirmado rol naturaleza: {titulo[:60]}...")
-                                return role_id
-                        break
-        except Exception as e:
-            enable_log = os.getenv('CMF_PRIMARY_LOG', '0') == '1'
-            if enable_log:
-                print(f"[primary-csv] ⚠ Error leyendo estructura JSON: {e}")
-    
-    # PRIORIDAD 2: Buscar códigos de rol únicos en facts
+    if orden:
+        rol = po.rol_estado_resultados(orden)
+        if rol:
+            return rol
+
     if df_facts is not None and not df_facts.empty and 'RoleCode' in df_facts.columns:
         role_codes = df_facts['RoleCode'].astype(str).unique()
         if '320000' in role_codes:
             return "320000"
-        elif '310000' in role_codes:
+        if '310000' in role_codes:
             return "310000"
-    
-    # Default fallback: función (310000)
+
     return "310000"
 
 
@@ -495,15 +416,15 @@ def _build_primary_roles_csv(company_dir: Path, lang: str = 'es') -> Path | None
 
     enable_log = os.getenv('CMF_PRIMARY_LOG', '0') == '1'
 
-    # 🆕 CARGAR ESTRUCTURA JERÁRQUICA DESDE new_eeff_estructura.json
-    # Extraer RUT del nombre de la carpeta de la empresa. La empresa es
-    # `company_dir` mismo (ej. "93007000-9_SOCIEDAD_QUIMICA..."), no su parent
-    # (que sería "Total"/"Anual"/etc).
-    company_name = company_dir.name  # e.g., "91705000-7_QUIÑENCO_SA"
-    rut_with_dv = company_name.split('_', 1)[0]  # Extraer RUT: "91705000-7"
-    hierarchical_structure = _load_hierarchical_structure(rut_with_dv)
+    rut_with_dv = company_dir.name.split('_', 1)[0]  # "91705000-7_QUIÑENCO_SA" -> "91705000-7"
+
+    # La estructura de la empresa: orden y jerarquia de sus cuentas, leidos de su propio
+    # linkbase de presentacion (fusionando todos sus periodos).
+    orden = po.orden_empresa(company_dir)
+    hierarchical_structure = _load_hierarchical_structure(company_dir)
     if enable_log:
-        print(f"[primary-csv] 📖 Estructura jerárquica cargada: {len(hierarchical_structure)} roles")
+        print(f"[primary-csv] presentacion: {len(orden)} roles, "
+              f"{sum(len(v) for v in orden.values())} cuentas")
 
     # Detectar out_consolidated con el rango de fechas más amplio (end-period más reciente)
     import re as _re_oc
@@ -574,7 +495,7 @@ def _build_primary_roles_csv(company_dir: Path, lang: str = 'es') -> Path | None
         return None
     
     # Detectar automáticamente el rol de estado de resultados (310000 o 320000)
-    income_role = detect_income_statement_role_from_facts(df_facts, rut_with_dv)
+    income_role = detect_income_statement_role_from_facts(df_facts, orden)
     primary_roles = ['210000', income_role, '510000']
 
     if enable_log and income_role == '320000':
@@ -591,8 +512,7 @@ def _build_primary_roles_csv(company_dir: Path, lang: str = 'es') -> Path | None
     try:
         from cmf.pipeline.balance_fallback import apply_balance_fallback
         df = apply_balance_fallback(
-            df, df_facts, rut_with_dv,
-            estructura_dir=Path(__file__).parent,
+            df, df_facts, orden.get('210000', []),
             enable_log=enable_log,
         )
     except Exception as _exc:
@@ -702,49 +622,11 @@ def _build_primary_roles_csv(company_dir: Path, lang: str = 'es') -> Path | None
         if enable_log:
             print(f"[primary-csv] Aviso: consolidación de columnas duplicadas falló: {_e}")
 
-    # Cargar estructura JSON PRIMERO
-    struct_by_role: Dict[str, List[str]] = {}
-    try:
-        struct_path = Path(__file__).resolve().parent / 'analisis_excel' / 'estructura_eeff_empresas.json'
-        if struct_path.exists():
-            j = json.loads(struct_path.read_text(encoding='utf-8'))
-            rut_with_dv = company_dir.name.split('_', 1)[0]
-            emp = None
-            for e in j.get('empresas', []):
-                erut = str(e.get('empresa',{}).get('rut',''))
-                if erut == rut_with_dv and e.get('lang','es') == lang:
-                    emp = e; break
-            if emp is None:
-                for e in j.get('empresas', []):
-                    if e.get('lang','es') == lang:
-                        emp = e; break
-            if emp:
-                if os.getenv('CMF_ORDER_DEBUG'):
-                    company_name = emp.get('empresa', {}).get('nombre', 'Unknown')
-                    company_rut = emp.get('empresa', {}).get('rut', 'Unknown')
-                    print(f"[JSON DEBUG] Loading structure for: {company_name} (RUT: {company_rut})")
-                    print(f"[JSON DEBUG] Requested RUT was: {rut_with_dv}")
-                for r in emp.get('roles', []):
-                    rid = str(r.get('id'))
-                    struct_by_role[rid] = [str(x) for x in (r.get('lineas') or [])]
-                    if os.getenv('CMF_ORDER_DEBUG') and rid == '510000':
-                        cash_flow_lines = struct_by_role[rid]
-                        print(f"[JSON DEBUG] Role 510000 loaded with {len(cash_flow_lines)} lines")
-                        # Show positions of key lines
-                        key_lines = [
-                            'Flujos de efectivo procedentes de (utilizados en) actividades de operación [sinopsis]',
-                            'Flujos de efectivo procedentes de (utilizados en) actividades de inversión [sinopsis]',
-                            'Flujos de efectivo procedentes de (utilizados en) actividades de financiación [sinopsis]'
-                        ]
-                        for key_line in key_lines:
-                            try:
-                                pos = cash_flow_lines.index(key_line)
-                                print(f"[JSON DEBUG]   '{key_line}' at position {pos}")
-                            except ValueError:
-                                print(f"[JSON DEBUG]   '{key_line}' NOT FOUND!")
-    except Exception as e:
-        if enable_log:
-            print(f"[primary-csv] ⚠ No se pudo cargar/parsear estructura JSON: {e}")
+    # El orden de las cuentas: del linkbase de presentacion de la empresa. Antes salia de
+    # `analisis_excel/estructura_eeff_empresas.json`, una lista a mano con 34 de las 145
+    # empresas -- y si la empresa no estaba, tomaba la estructura de la PRIMERA de la
+    # lista, sin avisar.
+    struct_by_role: Dict[str, List[str]] = dict(orden)
 
     # Determinar qué cuentas [sinopsis] incluir - normalizar para comparación correcta
     json_synopsis_accounts = set()
@@ -1093,6 +975,26 @@ def _build_primary_roles_csv(company_dir: Path, lang: str = 'es') -> Path | None
     df['__role_ord'] = df['RoleCode'].map(lambda x: {'210000':1,'310000':2,'320000':2,'510000':3}.get(x,9))
     df.sort_values(['__role_ord', 'LabelKeyIdExt', 'Label'], inplace=True, kind='stable')
     df.drop(columns=['__role_ord'], inplace=True)
+
+    # Dejar toda la serie en UNA sola moneda. Ocho empresas cambiaron su moneda de
+    # presentacion a mitad de la historia y el pipeline no convertia nada: la serie mezclaba
+    # pesos con dolares y el Excel mostraba caidas de 99,9% que nunca ocurrieron.
+    try:
+        from cmf.pipeline.currency_normalize import normalizar_moneda
+        df = normalizar_moneda(df, company_dir, enable_log=enable_log)
+    except Exception as _exc:
+        print(f"[primary-csv] AVISO: no se pudo normalizar la moneda de "
+              f"{company_dir.name}: {_exc}")
+
+    # La deuda financiera, prestamo por prestamo, de la nota del XBRL: acreedor, moneda,
+    # vencimiento y TASA EFECTIVA declarada. De ahi sale el Kd real del WACC, en vez de
+    # estimarlo como costos_financieros/deuda -- un cociente que en FORUS daba 958%.
+    try:
+        from cmf.pipeline.deuda import extraer_deuda
+        extraer_deuda(company_dir, out_dir, enable_log=enable_log)
+    except Exception as _exc:
+        print(f"[primary-csv] AVISO: no se pudo leer la deuda de "
+              f"{company_dir.name}: {_exc}")
 
     # Escribir CSV primario
     # Derivar rango ym del nombre de algún facts en out_consolidated o de fechas

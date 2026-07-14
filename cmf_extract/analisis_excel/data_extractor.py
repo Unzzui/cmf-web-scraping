@@ -156,8 +156,12 @@ class DataExtractor:
         has_rawmat = concepts_lc.str.contains("materias primas|raw material", regex=True, na=False).any()
         has_emp_ben = concepts_lc.str.contains("beneficios a los empleados|employee benefit", regex=True, na=False).any()
         if (has_rawmat or has_emp_ben) and not has_cogs and not has_gross:
+            # Reportar por naturaleza es una opcion valida de la NIC 1, no un defecto de los
+            # datos. Antes esto emitia una ADVERTENCIA ("no COGS or Gross Profit rows") en la
+            # hoja de calidad, como si a la empresa le faltara informacion. Un estado por
+            # naturaleza NO TIENE costo de ventas ni ganancia bruta: no son cuentas que
+            # falten, son cuentas que no existen en ese formato.
             self.income_role = "320000"
-            self.warnings.append("Income Statement by Nature (320000) — no COGS or Gross Profit rows")
         else:
             self.income_role = "310000"
 
@@ -350,10 +354,24 @@ class DataExtractor:
             "Dep": "Depreciación",
             "Amort": "Amortización"
         }
-        
+
+        # Un estado por NATURALEZA (320000) no tiene costo de ventas ni ganancia bruta: la
+        # NIC 1 desagrega los gastos por su naturaleza (materias primas, beneficios a los
+        # empleados, depreciacion) en vez de por su funcion. Exigirle esas dos cuentas es
+        # aplicarle la lista de otro formato.
+        #
+        # Antes se le reclamaban igual, y la hoja de calidad de ENEL CHILE decia
+        # "Cuentas encontradas 26/28  |  Cuentas faltantes: Costo de ventas, Ganancia bruta".
+        # Ninguna de las dos falta: no existen en un estado por naturaleza.
+        por_naturaleza = getattr(self, "income_role", "310000") == "320000"
+        no_aplican = {"COGS", "Bruta"} if por_naturaleza else set()
+
         items = {}
         for key, concept in concepts.items():
             series = self.find_row_series(self.df_pl, concept)
+            if key in no_aplican:
+                items[key] = series          # si por lo que sea existe, se usa igual
+                continue
             if series.empty or series.dropna().empty:
                 self.missing_accounts.append(concept)
             else:

@@ -1,6 +1,6 @@
-"""
-Módulo de ordenamiento jerárquico perfecto basado en estructura JSON
-Usado por generate_primary_roles_csv.py, batch_xbrl_to_excel.py y xbrl_to_excel.py
+"""Ordenamiento jerarquico de cuentas segun el linkbase de presentacion de la empresa.
+
+Usado por generate_primary_roles_csv.py, batch_xbrl_to_excel.py y xbrl_to_excel.py.
 """
 
 import json
@@ -9,44 +9,26 @@ from typing import Dict, List, Set, Tuple
 
 
 def load_json_structure(company_dir: Path, lang: str = 'es') -> Dict[str, List[str]]:
+    """{role_id: [cuentas en orden]} de la empresa, desde su linkbase de presentacion.
+
+    Antes esto leia `estructura_eeff_empresas.json`, una lista a mano con 34 de las 145
+    empresas -- y si la empresa no estaba, devolvia la estructura de la PRIMERA de la
+    lista, en silencio. Ahora el orden lo declara el propio XBRL de cada empresa.
+
+    `lang` se conserva por compatibilidad de firma: el linkbase de presentacion que el
+    pipeline exporta ya viene en el idioma pedido.
     """
-    Carga la estructura JSON de cuentas por empresa y rol
-    
-    Returns:
-        Dict con estructura: {role_id: [list_of_labels_in_order]}
-    """
-    struct_by_role: Dict[str, List[str]] = {}
-    
     try:
-        struct_path = Path(__file__).resolve().parent.parent / 'estructura_eeff_empresas.json'
-        if struct_path.exists():
-            j = json.loads(struct_path.read_text(encoding='utf-8'))
-            rut_with_dv = company_dir.name.split('_', 1)[0]
-            emp = None
-            
-            # Buscar empresa por RUT exacto
-            for e in j.get('empresas', []):
-                erut = str(e.get('empresa',{}).get('rut',''))
-                if erut == rut_with_dv and e.get('lang','es') == lang:
-                    emp = e
-                    break
-                    
-            # Fallback: empresa genérica para el idioma
-            if emp is None:
-                for e in j.get('empresas', []):
-                    if e.get('lang','es') == lang:
-                        emp = e
-                        break
-                        
-            if emp:
-                for r in emp.get('roles', []):
-                    rid = str(r.get('id'))
-                    struct_by_role[rid] = [str(x) for x in (r.get('lineas') or [])]
-                    
+        from cmf_extract import presentation_order as po
+    except ImportError:
+        import sys
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+        import presentation_order as po
+
+    try:
+        return po.orden_empresa(company_dir)
     except Exception:
-        pass  # Sin estructura JSON, usar orden básico
-        
-    return struct_by_role
+        return {}
 
 
 def get_synopsis_accounts_from_json(struct_by_role: Dict[str, List[str]]) -> Set[Tuple[str, str]]:

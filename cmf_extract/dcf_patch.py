@@ -14,6 +14,14 @@ from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.utils.cell import column_index_from_string
 
+# La hoja donde vive el detalle de la deuda y de donde el DCF toma su Kd.
+_HOJA_DEUDA = "DEUDA FINANCIERA"
+
+# El Kd de último recurso: sólo se usa si la empresa no declara créditos Y el cociente
+# costos_financieros/deuda tampoco se puede calcular. No es un supuesto de modelación:
+# es lo que evita que el WACC quede en #DIV/0!.
+_KD_POR_DEFECTO = 0.06
+
 try:
     from cmf_extract import excel_style as est
 except ImportError:  # ejecutado desde dentro de cmf_extract/
@@ -285,6 +293,68 @@ class DCFBuilder:
         valid_periods_sorted = sorted(valid_periods, key=period_to_number, reverse=True)
         return valid_periods_sorted[0]
     
+    def _deuda(self) -> dict | None:
+        """La nota de préstamos de la empresa, si la declara. La inyecta formula_processor."""
+        d = self.financial_data.get("deuda")
+        return d if isinstance(d, dict) and d.get("kd") else None
+
+    def _kd_valor(self, fila_costos_fin: int, fila_deuda: int) -> str:
+        """El Kd: SIEMPRE una fórmula. La tasa declarada si la hay, el cociente si no.
+
+        Cuando la empresa declara sus créditos, esta celda apunta a la hoja DEUDA
+        FINANCIERA, donde el Kd sale de un SUMAPRODUCTO sobre el detalle: tasa x monto
+        dividido por la suma de los montos.
+
+        Es una fórmula y no un número pegado a propósito. Un número obliga a creerle al
+        que lo pegó; una fórmula se audita, y si el analista corrige o filtra un crédito,
+        el Kd y el WACC se recalculan solos.
+
+        La celda del Kd en la hoja de deuda es B6, y es determinista: la sección arranca
+        en la fila 4 y el encabezado ocupa dos filas.
+        """
+        if self._deuda():
+            return f"=IFERROR('{_HOJA_DEUDA}'!B6,{_KD_POR_DEFECTO})"
+        return f"=IFERROR(B{fila_costos_fin}/B{fila_deuda},{_KD_POR_DEFECTO})"
+
+    def _kd_fuente(self) -> str:
+        """De dónde salió el Kd. Un supuesto que no se nombra es un supuesto que se cree."""
+        deuda = self._deuda()
+        if not deuda:
+            return ("ESTIMADO: costos financieros / deuda financiera "
+                    "(la empresa no declara tasas por crédito)")
+        n = deuda.get("n_creditos", 0)
+        monedas = ", ".join(sorted(deuda.get("por_moneda", {})))
+        return (f"DECLARADO por la empresa: promedio de {n} crédito(s) de la nota de "
+                f"préstamos, ponderado por monto. Monedas: {monedas}")
+
+    def _tipo_de_cambio_actual(self) -> float:
+        """El dólar observado más reciente del Banco Central.
+
+        Aquí iba un 950 fijo. Y el número importa: esta celda convierte el valor por acción
+        a pesos para poder compararlo contra el precio de bolsa, así que un tipo de cambio
+        inventado desvía la "Prima/(Descuento)" y la "Recomendación" de COMPRA a VENTA.
+
+        Es el dólar MÁS RECIENTE, no el del período base, porque lo que se compara es el
+        valor intrínseco contra el precio de la acción HOY. Queda editable: el analista
+        puede usar el tipo de cambio que quiera -- pero el valor por defecto ya no es un
+        número escrito a mano.
+        """
+        try:
+            from cmf_extract import fx
+        except ImportError:
+            try:
+                import fx
+            except ImportError:
+                return 950.0
+
+        serie = fx._serie()
+        if serie.empty:
+            print("[dcf] AVISO: sin serie del dólar observado; el tipo de cambio del "
+                  "modelo queda en 950 (un supuesto, no un dato).")
+            return 950.0
+
+        return round(float(serie.iloc[-1]["clp_por_usd"]), 2)
+
     def _find_base_annual_period(self) -> str:
         """
         Encuentra el año base anual más reciente.
@@ -776,55 +846,61 @@ class DCFBuilder:
     # Organización de hojas
     # ----------------------------
     def _organize_worksheets(self):
+        """Ordena las hojas por FUNCIÓN: primero los datos, después el análisis, al final
+        la documentación.
+
+            Inicio
+            Balance General · Estado de Resultados · Flujo Efectivo   <- los estados
+            NOTAS · DEUDA FINANCIERA · DRIVERS WC                     <- el detalle que los respalda
+            RATIOS & KPIs · DCF · Escenarios                          <- el análisis
+            Ficha Técnica · METODOLOGÍA                               <- la documentación
+
+        Antes las categorías estaban escritas a mano y TODO lo que no reconocían se
+        empujaba al final. Así que la DEUDA FINANCIERA -- una hoja de datos, con el detalle
+        que sostiene el Kd del WACC -- terminaba después de METODOLOGÍA, al fondo del
+        archivo, mientras la documentación quedaba en medio del análisis.
+
+        Cada hoja nueva heredaba el mismo destino: al fondo, sin que nadie lo decidiera.
         """
-        Reorganiza las hojas del workbook en el orden profesional especificado:
-        Balance General → Estado de Resultados → Flujo Efectivo → NOTAS → DRIVERS WC → 
-        DCF 2024 → DCF 2025Q2 → RATIOS & KPIs → Resumen Comparativo → Escenarios
-        """
-        # Orden deseado de las hojas (categorías)
-        financial_statements = ["Balance General", "Estado de Resultados", "Estado Resultados (Función)", "Flujo Efectivo", "Cash Flow"]
-        notes = ["NOTAS", "Notas"]
-        drivers = ["DRIVERS WC"]
-        ratios = ["RATIOS & KPIs"]
-        summary_analysis = ["Resumen Comparativo", "Escenarios"]
-        
-        # Obtener hojas existentes
-        existing_sheets = self.wb.sheetnames.copy()
-        
-        # Separar hojas DCF dinámicas
-        dcf_sheets = [sheet for sheet in existing_sheets if sheet.startswith("DCF ")]
-        dcf_sheets.sort()  # Ordenar alfabéticamente (2024, 2025Q1, 2025Q2, etc.)
-        
-        # Crear orden completo
-        desired_order = []
-        
-        # 1. Estados financieros
-        for category in [financial_statements, notes, drivers]:
-            for sheet_name in category:
-                if sheet_name in existing_sheets:
-                    desired_order.append(sheet_name)
-        
-        # 2. Hojas DCF dinámicas (ordenadas)
-        desired_order.extend(dcf_sheets)
-        
-        # 3. Ratios y análisis final
-        for category in [ratios, summary_analysis]:
-            for sheet_name in category:
-                if sheet_name in existing_sheets:
-                    desired_order.append(sheet_name)
-        
-        # Agregar cualquier hoja restante que no esté en las categorías
-        remaining_sheets = [sheet for sheet in existing_sheets if sheet not in desired_order]
-        ordered_sheets = desired_order + remaining_sheets
-        
-        # Reorganizar las hojas en el workbook
-        for i, sheet_name in enumerate(ordered_sheets):
-            if sheet_name in self.wb.sheetnames:
-                sheet = self.wb[sheet_name]
-                # Mover la hoja a la posición correcta
-                self.wb.move_sheet(sheet, offset=i - self.wb.index(sheet))
-        
-        # Hojas reorganizadas en orden profesional
+        # El orden por función. Las hojas DCF llevan el período en el nombre ("DCF 2026Q1")
+        # y no se pueden nombrar aquí: se insertan por prefijo, junto al resto del análisis.
+        ORDEN = [
+            "Inicio",
+            # Los estados financieros.
+            "Balance General", "Balance Sheet",
+            "Estado de Resultados", "Estado Resultados (Función)", "Income Statement",
+            "Flujo Efectivo", "Cash Flow",
+            # El detalle que los respalda. La deuda va aquí, con los datos, no al final:
+            # es lo que sostiene el Kd del WACC.
+            "NOTAS", "Notas", _HOJA_DEUDA, "DRIVERS WC",
+            # El análisis.
+            "RATIOS & KPIs", "__DCF__", "Escenarios",
+            # La documentación, al final.
+            "Ficha Técnica", "METODOLOGÍA",
+        ]
+
+        existentes = self.wb.sheetnames.copy()
+        dcf = sorted(h for h in existentes if h.startswith("DCF "))
+
+        orden_final = []
+        for nombre in ORDEN:
+            if nombre == "__DCF__":
+                orden_final.extend(dcf)
+            elif nombre in existentes and nombre not in orden_final:
+                orden_final.append(nombre)
+
+        # Lo que no esté contemplado va al final, pero ANTES de la documentación: una hoja
+        # nueva es contenido, no un apéndice.
+        docs = [h for h in ("Ficha Técnica", "METODOLOGÍA") if h in orden_final]
+        for h in docs:
+            orden_final.remove(h)
+        orden_final += [h for h in existentes if h not in orden_final and h not in docs]
+        orden_final += docs
+
+        for i, nombre in enumerate(orden_final):
+            if nombre in self.wb.sheetnames:
+                hoja = self.wb[nombre]
+                self.wb.move_sheet(hoja, offset=i - self.wb.index(hoja))
 
     # ----------------------------
     # Formateo de números profesional
@@ -1073,16 +1149,29 @@ class DCFBuilder:
             ("D&A / Ventas (%)", self._get_da_ventas_formula(), "formula"),
             ("CapEx / Ventas (%)", self._get_capex_ventas_formula(), "formula"),
             ("ΔNWC / ΔVentas (%)", f"=IFERROR(MIN(MAX({wc_ref},-0.20),0.20),0.10)", "formula"),
+            # El WACC no es un input: se calcula abajo (CAPM + costo de deuda real) y esta
+            # celda lo referencia. El "0.10" que habia aqui se sobrescribia mas adelante,
+            # pero dejaba la impresion de ser una constante editable.
             ("WACC (%)", "0.10", "input"),
             ("g - Tasa de crecimiento terminal (%)", "0.02", "fixed"),  # Fijo en 2%
             # La moneda viaja PEGADA al modelo, no en una nota al pie.
             ("Moneda de los estados", self.reporting_currency, "input"),
-            # Editable. Si los estados están en pesos vale 1 y no hace nada. Si están en
-            # dólares, es lo que convierte el valor por acción a pesos para poder
-            # compararlo con el precio de bolsa. El analista puede ajustarlo al tipo de
-            # cambio que quiera usar — pero NUNCA se compara sin convertir.
-            ("Tipo de cambio (CLP por 1 %s)" % self.reporting_currency,
-             "1" if self.reporting_currency == "CLP" else "950", "input"),
+        ]
+
+        # El tipo de cambio SOLO tiene sentido si los estados no estan en pesos. Para una
+        # empresa que reporta en CLP la fila decia "Tipo de cambio (CLP por 1 CLP) = 1":
+        # una conversion que no convierte nada, y que ademas rompia el valor por accion
+        # (ver el bloque de VALUACION).
+        if self.reporting_currency != "CLP":
+            inputs.append(
+                # Editable: es lo que convierte el valor por accion a pesos para poder
+                # compararlo con el precio de bolsa. El analista puede ajustarlo al tipo de
+                # cambio que quiera usar -- pero NUNCA se compara sin convertir.
+                ("Tipo de cambio (CLP por 1 %s)" % self.reporting_currency,
+                 self._tipo_de_cambio_actual(), "input")
+            )
+
+        inputs += [
             ("Deuda neta (M$)", self._get_deuda_neta_formula(selected_period), "formula"),
             ("Acciones en circulación (M)", self._get_acciones_formula(), "formula"),
         ]
@@ -1203,25 +1292,42 @@ class DCFBuilder:
         g_row = P["g - Tasa de crecimiento terminal (%)"]
         deuda_row = P["Deuda neta (M$)"]
         acciones_row = P["Acciones en circulación (M)"]
-        fx_row = P[f"Tipo de cambio (CLP por 1 {self.reporting_currency})"]
+        # Solo existe cuando los estados no estan en pesos (ver el bloque de PARAMETROS).
+        fx_row = P.get(f"Tipo de cambio (CLP por 1 {self.reporting_currency})")
 
         # Bloques de valuación. Las filas se resuelven POR ETIQUETA, igual que los
         # parámetros: los offsets numéricos (valuation_row + 8, + 10, + 11…) se desplazan
         # solos en cuanto alguien agrega una fila, y el Excel calcula otra cosa sin dar
         # ningún error.
+        # La fila de conversion a pesos SOLO existe si los estados NO estan en pesos.
+        #
+        # Cuando la empresa reporta en CLP, las etiquetas "Valor por Accion (DCF, {moneda})"
+        # y "Valor por Accion (DCF, CLP)" son la MISMA string. El dict `V` se quedaba con la
+        # ultima, asi que `r_dcf_moneda` apuntaba a la fila de conversion en vez de a la del
+        # calculo, y la formula salia `=IFERROR(B51*$B$26,"")`: una referencia circular a si
+        # misma. Excel la resolvia como vacio y la celda mostraba "$ -", junto a una fila
+        # duplicada con el mismo titulo. Ademas el "tipo de cambio" era "CLP por 1 CLP = 1",
+        # una conversion que no convierte nada.
+        convierte = self.reporting_currency != "CLP"
+
         V = {}
         _labels = [
             "Valor Terminal", "VT Presente", "Suma FCFF PV", "Enterprise Value",
             "(-) Deuda Neta", "Equity Value", "Acciones",
             f"Valor por Acción (DCF, {self.reporting_currency})",
-            "Valor por Acción (DCF, CLP)", "",
-            "Precio Actual Mercado (CLP)", "Prima/(Descuento) %", "Recomendación",
+        ]
+        if convierte:
+            _labels.append("Valor por Acción (DCF, CLP)")
+        _labels += [
+            "", "Precio Actual Mercado (CLP)", "Prima/(Descuento) %", "Recomendación",
         ]
         for i, lbl in enumerate(_labels):
             V[lbl] = valuation_row + 1 + i
 
         r_dcf_moneda = V[f"Valor por Acción (DCF, {self.reporting_currency})"]
-        r_dcf_clp = V["Valor por Acción (DCF, CLP)"]
+        # Contra qué se compara el precio de bolsa: siempre pesos. Si los estados ya están
+        # en pesos, es la misma fila; si no, la convertida.
+        r_dcf_clp = V["Valor por Acción (DCF, CLP)"] if convierte else r_dcf_moneda
         r_precio = V["Precio Actual Mercado (CLP)"]
         r_prima = V["Prima/(Descuento) %"]
 
@@ -1237,14 +1343,21 @@ class DCFBuilder:
             # sale en dólares.
             (f"Valor por Acción (DCF, {self.reporting_currency})",
              f"=IFERROR(IF(B{V['Acciones']}>0,B{V['Equity Value']}/B{V['Acciones']}*1000,\"\"),\"\")"),
-            # Y AQUÍ se convierte a pesos. Éste es el número que se compara contra la bolsa,
-            # porque la acción cotiza en pesos.
-            #
-            # Antes esta fila no existía: el Excel comparaba un valor intrínseco en DÓLARES
-            # contra un precio de mercado en PESOS. Para las 18 empresas que reportan en USD,
-            # la "Prima/(Descuento)" salía desviada ~900x y la "Recomendación" decía siempre
-            # "VENTA FUERTE". Un analista que le creyera vendía justo lo que debía comprar.
-            ("Valor por Acción (DCF, CLP)", f"=IFERROR(B{r_dcf_moneda}*$B${fx_row},\"\")"),
+        ]
+
+        # La conversión a pesos. Éste es el número que se compara contra la bolsa, porque la
+        # acción cotiza en pesos.
+        #
+        # Antes esta fila no existía: el Excel comparaba un valor intrínseco en DÓLARES
+        # contra un precio de mercado en PESOS. Para las empresas que reportan en USD, la
+        # "Prima/(Descuento)" salía desviada ~900x y la "Recomendación" decía siempre
+        # "VENTA FUERTE". Un analista que le creyera vendía justo lo que debía comprar.
+        if convierte:
+            blocks.append(
+                ("Valor por Acción (DCF, CLP)", f"=IFERROR(B{r_dcf_moneda}*$B${fx_row},\"\")")
+            )
+
+        blocks += [
             ("", ""),
             ("Precio Actual Mercado (CLP)", "INPUT_REQUIRED"),
             # La prima compara PESOS CONTRA PESOS.
@@ -1261,7 +1374,12 @@ class DCFBuilder:
              f"IF(B{r_prima}>0.15,\"COMPRA FUERTE\","
              f"IF(B{r_prima}>0.05,\"COMPRA\","
              f"IF(B{r_prima}>-0.05,\"MANTENER\","
-             f"IF(B{r_prima}>-0.15,\"VENTA\",\"VENTA FUERTE\")))))))"),
+             # Ocho IF anidados, ocho paréntesis. Había SIETE: Excel no podía evaluar la
+             # fórmula, la descartaba en silencio, y al abrir el archivo pedía repararlo
+             # ("Registros quitados: Fórmula de /xl/worksheets/sheet7.xml"). La celda
+             # "Recomendación" quedaba vacía en TODAS las empresas -- justo la celda que un
+             # usuario mira primero.
+             f"IF(B{r_prima}>-0.15,\"VENTA\",\"VENTA FUERTE\"))))))))"),
         ]
         for i, (lbl, fx) in enumerate(blocks):
             rr = valuation_row + 1 + i
@@ -1325,6 +1443,183 @@ class DCFBuilder:
             ws.column_dimensions[get_column_letter(i)].width = w
 
         return projection_start_row, valuation_row, row
+
+    def create_deuda_sheet(self):
+        """La deuda financiera, crédito por crédito, tal como la empresa la declara.
+
+        Acreedor, deudor, moneda, corriente/no corriente, vencimiento y TASA EFECTIVA de
+        cada crédito. Arauco declara 98; Aguas Andinas, 59; Sonda, 207. Ninguna API entrega
+        esto: está en la nota de préstamos del XBRL y el pipeline la ignoraba.
+
+        EL Kd ES UNA FÓRMULA, NO UN NÚMERO PEGADO. Sale de un SUMAPRODUCTO sobre el detalle
+        de esta hoja: tasa x monto, dividido por la suma de los montos. Así el analista puede
+        auditarlo -- y si filtra o corrige un crédito, el Kd y el WACC se recalculan solos.
+        Un número pegado obliga a creerle al que lo pegó.
+
+        No se crea si la empresa no declara tasas (69 de las 232): una hoja vacía es peor
+        que ninguna hoja.
+        """
+        deuda = self._deuda()
+        if not deuda:
+            return
+
+        creditos = deuda.get("creditos") or []
+        if not creditos:
+            return
+
+        ws = self.wb.create_sheet(_HOJA_DEUDA)
+        self._apply_sheet_header(ws, "DEUDA FINANCIERA - DETALLE POR CRÉDITO", 10)
+
+        money = '#,##0'
+
+        # ── El detalle va PRIMERO en el layout lógico pero se escribe al final: el Kd de
+        #    arriba necesita saber en qué filas quedó para poder referenciarlas.
+        cols = [("Acreedor / Serie", 40), ("Deudor", 32), ("País", 7), ("Instrumento", 12),
+                ("Moneda", 8), ("Monto contable", 17), ("Corriente", 15),
+                ("No corriente", 15), ("Tasa efectiva", 12), ("Vencimiento", 13)]
+
+        # Encabezado del bloque de créditos, después del resumen. El resumen ocupa:
+        # 4 filas de Kd + 1 + monedas + 1 + instrumentos + 1 + vencimientos + 2 secciones.
+        por_moneda = deuda.get("por_moneda") or {}
+        por_inst = deuda.get("por_instrumento") or {}
+        vencs = deuda.get("vencimientos") or {}
+
+        # ── 1. COSTO DE LA DEUDA ─────────────────────────────────────────────────────
+        r0 = self._create_professional_section(ws, 4, "COSTO DE LA DEUDA (Kd)", "", 10, "inputs")
+
+        # Las cuatro primeras celdas del resumen son fórmulas que apuntan al DETALLE, y el
+        # detalle todavía no está escrito. Se dejan vacías y se rellenan al final, cuando ya
+        # se sabe en qué filas quedó.
+        #
+        # Antes se calculaba la posición del detalle POR ADELANTADO, sumando a mano las
+        # filas de cada bloque intermedio. La cuenta daba 32 cuando el detalle empezaba en la
+        # 38: el SUMAPRODUCTO del Kd terminaba sumando las filas del perfil de vencimientos.
+        # Excel no protesta -- devuelve un número, simplemente es otro número.
+        resumen = [
+            ("Kd - Tasa efectiva ponderada", None, '0.00%', "result"),
+            ("Deuda total (contable)", None, money, "calc"),
+            ("  de la cual, corriente", None, money, "calc"),
+            ("  de la cual, no corriente", None, money, "calc"),
+            ("Créditos declarados", int(deuda["n_creditos"]), '#,##0', "calc"),
+            ("Fuente", f"Nota de préstamos del XBRL ({deuda.get('fuente','')})", '@', "calc"),
+        ]
+        for k, (lbl, val, fmt, kind) in enumerate(resumen):
+            rr = r0 + k
+            ws.cell(row=rr, column=1, value=lbl).font = self.label_font
+            c = ws.cell(row=rr, column=2, value=val)
+            c.number_format = fmt
+            c.border = self.border
+            c.fill = self.key_result_fill if kind == "result" else self.calculated_fill
+            c.font = self.result_font if kind == "result" else self.input_font
+
+        def _bloque(inicio: int, titulo: str, items: dict, fmt_pct: bool = True) -> int:
+            """Un bloque monto + % del total. Devuelve la fila siguiente."""
+            rh = self._create_professional_section(ws, inicio, titulo, "", 10, "valuation")
+            total = sum(items.values()) or 1
+            for k, (nombre, monto) in enumerate(items.items()):
+                rr = rh + k
+                ws.cell(row=rr, column=1, value=nombre).font = self.label_font
+                c = ws.cell(row=rr, column=2, value=float(monto))
+                c.number_format = money
+                c.border = self.border
+                p = ws.cell(row=rr, column=3, value=float(monto) / total)
+                p.number_format = '0.0%'
+                p.border = self.border
+            return rh + len(items) + 1
+
+        # ── 2. EXPOSICIÓN CAMBIARIA ──────────────────────────────────────────────────
+        # Una empresa que factura en pesos y se endeuda en dólares tiene un riesgo que el
+        # balance no muestra.
+        r = _bloque(r0 + len(resumen) + 1, "EXPOSICIÓN CAMBIARIA DE LA DEUDA",
+                    dict(sorted(por_moneda.items(), key=lambda x: -x[1])))
+
+        # ── 3. POR INSTRUMENTO ───────────────────────────────────────────────────────
+        # Bajo IFRS 16 un arriendo ES deuda. En SMU son el 58,6% del total: un Kd que los
+        # ignora no es el costo de deuda de esa empresa.
+        r = _bloque(r, "POR INSTRUMENTO",
+                    dict(sorted(por_inst.items(), key=lambda x: -x[1])))
+
+        # ── 4. PERFIL DE VENCIMIENTOS ────────────────────────────────────────────────
+        # Dice si la empresa tiene un muro de deuda el año que viene o si lo tiene repartido
+        # a diez años. Dos empresas con la misma deuda y el mismo Kd pueden ser riesgos
+        # completamente distintos, y eso no se ve en ningún ratio del balance.
+        #
+        # Los tramos cuadran al peso contra la deuda total (verificado en Arauco y Aguas
+        # Andinas): sólo se suman los tramos hoja, nunca los agregados, que los contienen.
+        r = _bloque(r, "PERFIL DE VENCIMIENTOS", vencs)
+
+        # ── 5. EL DETALLE ────────────────────────────────────────────────────────────
+        rd = self._create_professional_section(ws, r, "CRÉDITOS", "", 10, "inputs")
+        for c, (h, ancho) in enumerate(cols, 1):
+            cell = ws.cell(row=rd, column=c, value=h)
+            cell.font = self.key_metric_font
+            cell.fill = self.subheader_fill
+            cell.alignment = self.center_wrap
+            cell.border = self.border
+            ws.column_dimensions[get_column_letter(c)].width = ancho
+
+        for k, cr in enumerate(creditos):
+            rr = rd + 1 + k
+            # CÓMO SE IDENTIFICA CADA CRÉDITO.
+            #
+            # Un préstamo tiene un acreedor: "BNP Paribas / ECA". Un BONO PÚBLICO NO --
+            # se coloca en el mercado y no hay una contraparte única --, y por eso el XBRL
+            # no le declara `NombreEntidadAcreedora`. Lo que sí declara es la SERIE
+            # ("Barau-F"), que es como el bono se identifica y se transa.
+            #
+            # En Arauco los 58 préstamos traen acreedor y los 40 bonos traen serie, ninguno
+            # las dos cosas. Antes, cuando faltaba el acreedor, la celda mostraba el
+            # identificador interno del XBRL ("Item351"): esconder detrás de un código algo
+            # que la empresa sí declara, sólo que en otro campo.
+            identificador = (cr.get("acreedor")
+                             or cr.get("serie")
+                             or cr.get("miembro") or "")
+            fila = [
+                identificador,
+                cr.get("deudor") or "",
+                cr.get("pais_deudor") or "",
+                cr.get("instrumento") or "",
+                cr.get("moneda") or "",
+                cr.get("monto_contable"),
+                cr.get("monto_corriente"),
+                cr.get("monto_no_corriente"),
+                cr.get("tasa_efectiva"),
+                cr.get("vencimiento") or "",
+            ]
+            for c, v in enumerate(fila, 1):
+                cell = ws.cell(row=rr, column=c, value=v)
+                cell.border = self.border
+                cell.font = self.input_font
+                if c in (6, 7, 8):
+                    cell.number_format = money
+                elif c == 9:
+                    cell.number_format = '0.00%'
+
+        # Ahora sí se sabe dónde quedó el detalle: se escriben las fórmulas del resumen.
+        #
+        # El Kd es SUMAPRODUCTO(monto x tasa) / SUMA(monto): auditable y vivo. Si el
+        # analista filtra o corrige un crédito, el Kd -- y el WACC, que apunta a esta
+        # celda -- se recalculan solos. Un número pegado obliga a creerle al que lo pegó.
+        fila_ini = rd + 1
+        fila_fin = rd + len(creditos)
+        ws.cell(row=r0, column=2).value = (
+            f"=IFERROR(SUMPRODUCT(F{fila_ini}:F{fila_fin},I{fila_ini}:I{fila_fin})"
+            f"/SUM(F{fila_ini}:F{fila_fin}),\"\")"
+        )
+        ws.cell(row=r0 + 1, column=2).value = f"=SUM(F{fila_ini}:F{fila_fin})"
+        ws.cell(row=r0 + 2, column=2).value = f"=SUM(G{fila_ini}:G{fila_fin})"
+        ws.cell(row=r0 + 3, column=2).value = f"=SUM(H{fila_ini}:H{fila_fin})"
+
+        # Un AUTOFILTRO sobre el detalle, no un `freeze_panes`.
+        #
+        # Congelar en la fila del encabezado de créditos (la 37) suena razonable -- deja los
+        # títulos de la tabla a la vista -- pero `freeze_panes` congela TODO lo que está
+        # arriba, y arriba hay 36 filas de resumen: la hoja quedaba pegada, sin poder
+        # desplazarse.
+        #
+        # El autofiltro además sirve para más: deja ordenar los créditos por monto o por
+        # tasa, y filtrar por moneda, acreedor o instrumento.
+        ws.auto_filter.ref = f"A{rd}:{get_column_letter(len(cols))}{fila_fin}"
 
     def create_scenarios_sheet(self):
         """
@@ -1489,8 +1784,14 @@ class DCFBuilder:
         deuda_neta_ref = find_cell_by_content(dcf_base_sheet, "Deuda neta") or f"'{dcf_base_sheet}'!B22"  
         acciones_ref = find_cell_by_content(dcf_base_sheet, "Acciones en circulación") or f"'{dcf_base_sheet}'!B23"
         
-        # Parámetros fijos
-        wacc_base = "0.10"  # WACC fijo para todos los escenarios
+        # El WACC de los escenarios sale del WACC REAL de la hoja DCF (CAPM + costo de deuda
+        # de la propia empresa), no de una constante.
+        #
+        # Antes los tres escenarios escribian los literales 0.12 / 0.10 / 0.08. O sea que
+        # ninguna de las tres valuaciones usaba el WACC calculado: una empresa con WACC 14%
+        # se valuaba igual que una con 7%, y el "rango de valuacion" del resumen ejecutivo
+        # no decia nada sobre la empresa.
+        wacc_ref = find_cell_by_content(dcf_base_sheet, "WACC (%)")
         g_terminal = "0.02"  # Tasa terminal fija en 2%
         
         # Referencias para scenarios encontradas
@@ -1514,15 +1815,21 @@ class DCFBuilder:
             cell.border = self.border
             cell.number_format = '_($* #,##0_);_($* (#,##0);_($* "-"_);_(@_)'
             
-            # Columna 3: WACC (variable según escenario)
-            if scenario_name == "Conservador":
-                wacc_scenario = "0.12"  # Base + 2pp (10% + 2% = 12%)
-            elif scenario_name == "Agresivo":
-                wacc_scenario = "0.08"  # Base - 2pp (10% - 2% = 8%)
-            else:  # Base
-                wacc_scenario = wacc_base  # 10%
-                
-            cell = ws.cell(row=r, column=3, value=float(wacc_scenario))
+            # Columna 3: WACC. El del escenario base ES el WACC calculado de la empresa; el
+            # conservador le suma 2 puntos y el agresivo le resta 2. Si por lo que sea no se
+            # encuentra la celda del WACC, se cae a las constantes de antes -- pero con el
+            # modelo apuntando a una celda real, eso no deberia pasar.
+            if wacc_ref:
+                if scenario_name == "Conservador":
+                    wacc_scenario = f"=MAX({wacc_ref}+0.02,0.03)"
+                elif scenario_name == "Agresivo":
+                    wacc_scenario = f"=MAX({wacc_ref}-0.02,0.03)"
+                else:  # Base
+                    wacc_scenario = f"={wacc_ref}"
+            else:
+                wacc_scenario = {"Conservador": 0.12, "Agresivo": 0.08}.get(scenario_name, 0.10)
+
+            cell = ws.cell(row=r, column=3, value=wacc_scenario)
             cell.border = self.border
             cell.number_format = '0.00%'
 
@@ -1570,9 +1877,15 @@ class DCFBuilder:
             # FCFF = NOPAT + D&A - CapEx - ΔNWC
             fcff_anual = f"({nopat}+{da_amount}-{capex_amount}-{nwc_amount})"
             
-            # Valor terminal usando tasa g fija y WACC específico del escenario
+            # Valor terminal usando tasa g fija y el WACC del escenario.
+            #
+            # Se referencia la CELDA (columna 3 de esta misma fila), no el valor: ahora el
+            # WACC del escenario es una formula que sale del WACC real de la empresa, y
+            # pegar su texto aqui produciria `(1+0.02)/(=MAX(...)-0.02)`, que Excel no puede
+            # evaluar. Referenciar la celda ademas hace que el EV se recalcule solo si el
+            # analista edita el WACC.
             g_terminal = "0.02"  # Tasa terminal fija en 2%
-            wacc = wacc_scenario
+            wacc = f"C{r}"
             valor_terminal_factor = f"(1+{g_terminal})/({wacc}-{g_terminal})"
             
             # Enterprise Value = FCFF_anual × Factor_terminal
@@ -1764,6 +2077,7 @@ class DCFBuilder:
         # de parámetros, por eso WACC = +14 y tasa de impuesto = +10).
         tasa_imp_row = inputs_start_row + 10
         wacc_row = inputs_start_row + 14
+        g_row_wacc = inputs_start_row + 15   # "g - Tasa de crecimiento terminal (%)"
         last_fcff_row = projection_start_row + 6
         ev_row = valuation_row + 4          # "Enterprise Value"
         vtp_row = valuation_row + 2         # "VT Presente"
@@ -1786,18 +2100,66 @@ class DCFBuilder:
         money = '_($* #,##0_);_($* (#,##0);_($* "-"_);_(@_)'
         wacc_hdr = self._create_professional_section(
             ws, start_row, "WACC (CAPM + COSTO DE DEUDA REAL)", "", 6, "inputs")
+        # EL BETA SE RE-APALANCA CON LA ESTRUCTURA DE CAPITAL REAL DE LA EMPRESA (Hamada):
+        #
+        #     Beta_apalancada = Beta_desapalancada x (1 + (1 - t) x D/E)
+        #
+        # Antes el beta era la constante 1,0 para TODAS las empresas. Con Rf y ERP tambien
+        # fijos, eso volvia el CAPM una identidad: Ke = 5,5% + 1 x 5,5% = 11% para todos, y
+        # el unico ingrediente del WACC que variaba era el costo de la deuda. Una electrica
+        # muy apalancada y una empresa sin deuda salian con el mismo costo de patrimonio.
+        #
+        # Con Hamada, el beta -- y por lo tanto el WACC -- pasa a depender del apalancamiento
+        # y de la tasa efectiva de impuestos REALES de cada empresa, que si estan en los
+        # estados. El beta desapalancado queda como input editable.
+        #
+        # LO QUE ESTO NO ES: un beta de regresion. Para eso hace falta la serie de precios de
+        # la accion y del IPSA, que este repo no ingesta (el precio de mercado del modelo es
+        # literalmente una celda vacia que el analista rellena). Mientras no exista esa serie,
+        # el beta desapalancado es un supuesto -- pero uno explicito y editable, no un 1,0
+        # escondido que hacia parecer que el CAPM estaba calculando algo.
         w0 = wacc_hdr + 1
+        r_rf, r_erp = w0, w0 + 1
+        r_d, r_e, r_de, r_t = w0 + 2, w0 + 3, w0 + 4, w0 + 5
+        r_bu, r_bl, r_ke = w0 + 6, w0 + 7, w0 + 8
+        r_fc, r_kd, r_fuente, r_wacc = w0 + 9, w0 + 10, w0 + 11, w0 + 12
+
         wacc_rows = [
             ("Rf - Tasa libre de riesgo (%)", 0.055, "in", '0.00%'),
             ("ERP - Prima de riesgo de mercado (%)", 0.055, "in", '0.00%'),
-            ("Beta (apalancada)", 1.0, "in", '0.00'),
-            ("Ke - Costo de patrimonio (CAPM, %)", f"=B{w0}+B{w0+2}*B{w0+1}", "calc", '0.00%'),
             ("D - Deuda financiera (M$)", f"={d_expr}", "calc", money),
             ("E - Patrimonio (M$)", f"={e_expr}", "calc", money),
-            ("Costos financieros (anual, M$)", f"={fc_expr}", "calc", money),
-            ("Kd - Costo de la deuda (%)", f"=IFERROR(B{w0+6}/B{w0+4},0.06)", "calc", '0.00%'),
+            ("D/E - Apalancamiento", f'=IFERROR(B{r_d}/B{r_e},0)', "calc", '0.00'),
             ("t - Tasa de impuesto (%)", f"=$B${tasa_imp_row}", "calc", '0.00%'),
-            ("WACC (%)", f"=IFERROR(B{w0+5}/(B{w0+4}+B{w0+5})*B{w0+3}+B{w0+4}/(B{w0+4}+B{w0+5})*B{w0+7}*(1-B{w0+8}),0.10)", "result", '0.00%'),
+            ("Beta desapalancada (activos)", 0.8, "in", '0.00'),
+            ("Beta apalancada (Hamada)", f"=IFERROR(B{r_bu}*(1+(1-B{r_t})*B{r_de}),B{r_bu})",
+             "calc", '0.00'),
+            ("Ke - Costo de patrimonio (CAPM, %)", f"=B{r_rf}+B{r_bl}*B{r_erp}", "calc", '0.00%'),
+            ("Costos financieros (anual, M$)", f"={fc_expr}", "calc", money),
+            # EL Kd SALE DE LAS TASAS QUE LA EMPRESA DECLARÓ, NO DE UN COCIENTE.
+            #
+            # Estimarlo como costos_financieros/deuda_financiera es una aproximación cruda
+            # y en muchas empresas simplemente se rompe: cuando hay pocos pasivos
+            # financieros pero sí costos financieros (intereses de arrendamientos, por
+            # ejemplo), el cociente se dispara.
+            #
+            #     FORUS              estimado 958,41%   declarado 0,52%
+            #     SOPROCAL           estimado 198,01%   declarado 0,88%
+            #     SODIMAC            estimado  91,18%   declarado 3,24%
+            #     TELEFÓNICA CHILE   estimado  60,73%   declarado 7,64%
+            #
+            # Con un Kd de 958% el WACC no significa nada y el modelo caía al
+            # IFERROR(...,0.10): un 10% inventado, presentado como el costo de capital.
+            #
+            # La empresa YA declara la tasa de cada crédito en la nota de préstamos del
+            # XBRL. Arauco declara 137; Aguas Andinas, 65. Kd = promedio de las tasas
+            # efectivas ponderado por el monto contable. 163 de 232 empresas la traen; el
+            # resto cae a la estimación, y la celda de al lado dice cuál se usó.
+            ("Kd - Costo de la deuda (%)", self._kd_valor(r_fc, r_d), "calc", '0.00%'),
+            ("Fuente del Kd", self._kd_fuente(), "calc", '@'),
+            ("WACC (%)",
+             f"=IFERROR(B{r_e}/(B{r_d}+B{r_e})*B{r_ke}+B{r_d}/(B{r_d}+B{r_e})*B{r_kd}*(1-B{r_t}),0.10)",
+             "result", '0.00%'),
         ]
         wacc_result_row = w0 + len(wacc_rows) - 1
         for k, (lbl, val, kind, fmt) in enumerate(wacc_rows):
@@ -1823,11 +2185,30 @@ class DCFBuilder:
         xc_hdr = self._create_professional_section(
             ws, wacc_result_row + 2, "CONTRASTE DE VALOR TERMINAL", "", 6, "valuation")
         x0 = xc_hdr + 1
+        # EL MULTIPLO DE SALIDA SE DERIVA DEL PROPIO MODELO, NO ES UN 8x INVENTADO.
+        #
+        # El multiplo implicito que la perpetuidad de Gordon ya esta aplicando es
+        #
+        #     EV_terminal / EBITDA_terminal = (1 + g) / (WACC - g)
+        #
+        # Antes esta celda decia 8,0x fijo para todas las empresas: no salia de la empresa,
+        # ni de sus comparables, ni del modelo. El "contraste" comparaba entonces la
+        # perpetuidad contra un numero arbitrario, asi que no contrastaba nada -- y para una
+        # empresa con WACC alto el 8x podia estar al doble de lo razonable.
+        #
+        # Ahora se muestra el multiplo implicito y se lo compara contra el multiplo del
+        # analista, que queda como input editable. Si los dos se separan mucho, es que la
+        # perpetuidad esta asumiendo algo que el mercado no pagaria.
+        r_ebitda, r_mult_imp, r_mult_in = x0, x0 + 1, x0 + 2
         xchecks = [
             ("EBITDA terminal (Y+5, M$)", f"=C{last_fcff_row}+E{last_fcff_row}", money),
-            ("Múltiplo de salida (EV/EBITDA)", 8.0, '0.0"x"'),
-            ("EV por múltiplo de salida (M$)", f"=B{x0}*B{x0+1}", money),
+            ("Múltiplo implícito de Gordon (EV/EBITDA)",
+             f'=IFERROR((1+$B${g_row_wacc})/($B${wacc_row}-$B${g_row_wacc}),"")', '0.0"x"'),
+            ("Múltiplo de salida del analista (EV/EBITDA)", 8.0, '0.0"x"'),
+            ("EV por múltiplo de salida (M$)", f"=B{r_ebitda}*B{r_mult_in}", money),
             ("EV por perpetuidad (Gordon, M$)", f"=B{ev_row}", money),
+            ("Brecha Gordon vs múltiplo",
+             f'=IFERROR(B{r_mult_imp}/B{r_mult_in}-1,"")', '0.0%'),
             ("Valor terminal como % del EV", f'=IFERROR(B{vtp_row}/B{ev_row},"")', '0.0%'),
             ("Alerta concentración terminal", f'=IF(IFERROR(B{vtp_row}/B{ev_row},0)>0.75,"ALTO: el terminal domina la valuación","OK")', '@'),
         ]
@@ -2193,15 +2574,19 @@ def add_multi_period_dcf_functionality(workbook: Workbook, financial_data: Dict[
             except AttributeError:
                 pass  # Si hay problemas con celdas combinadas, continuar
         
-        # Actualizar el año base en inputs (buscar dinámicamente)
-        try:
-            for row in range(10, 20):  # Buscar en rango probable
-                cell_value = latest_sheet.cell(row=row, column=1).value
-                if cell_value and isinstance(cell_value, str) and "Año base" in cell_value:
-                    latest_sheet.cell(row=row, column=2).value = latest_period
-                    break
-        except AttributeError:
-            pass  # Continuar si hay problemas
+        # El "Año base" NO se toca aquí.
+        #
+        # Este bloque lo sobrescribía con `latest_period` -- el último período disponible,
+        # que es un TRIMESTRE (p. ej. "2026Q1"). Pero el modelo no proyecta desde un
+        # trimestre: `_find_base_annual_period()` elige a propósito el último año COMPLETO
+        # (2025Q4), porque anualizar un trimestre suelto distorsiona a cualquier negocio
+        # estacional -- una viña, un retail, una salmonera.
+        #
+        # O sea que la celda decía "Año base: 2026Q1" mientras la fila de abajo tomaba las
+        # ventas de 2025. El rótulo mentía sobre el propio modelo: quien lo leyera creería
+        # que la proyección arranca de un trimestre anualizado.
+        #
+        # El período seleccionado ya se muestra arriba, en "Período seleccionado".
         
         # Agregar análisis tornado al modelo del período más reciente (después de la valuación)
         tornado_start_row_latest = valuation_row_latest + 15
@@ -2210,6 +2595,9 @@ def add_multi_period_dcf_functionality(workbook: Workbook, financial_data: Dict[
         dcf.create_wacc_terminal_block(f"DCF {latest_period}", tornado_start_row_latest + 14,
                                        inputs_start_row_latest, valuation_row_latest,
                                        projection_start_row_latest)
+
+    # La deuda declarada, crédito por crédito: es lo que respalda el Kd del WACC.
+    dcf.create_deuda_sheet()
 
     # Escenarios
     dcf.create_scenarios_sheet()

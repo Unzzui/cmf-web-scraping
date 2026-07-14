@@ -1,18 +1,11 @@
-"""
-Módulo GUI para CMF Financial Data Scraper
-Interfaz profesional modular para extracción de datos financieros
-"""
+"""GUI del pipeline CMF.
 
-# En servidores headless no hay tkinter; el subpaquete .pipeline debe seguir
-# siendo importable (lo usa run_pipeline_cli.py).
-try:
-    from .main_window import CMFScraperGUI
-    from .components.xbrl_status_panel import XBRLStatusPanel
-except ImportError:
-    CMFScraperGUI = None
-    XBRLStatusPanel = None
+La ventana viva es `unified_window` (la lanza `run_pipeline_gui.py`). Este `__init__` no
+importa nada a proposito: en servidores headless no hay tkinter, y `.pipeline` --que usa
+`run_pipeline_cli.py`-- tiene que seguir siendo importable sin arrastrar la interfaz.
+
+Antes esto importaba la GUI legacy (`main_window`) dentro de un try/except, asi que en
+headless fallaba en silencio y dejaba `CMFScraperGUI = None`.
+"""
 
 __version__ = "1.0.0"
-__author__ = "CMF Scraper Team"
-
-__all__ = ['CMFScraperGUI']
