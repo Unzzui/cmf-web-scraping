@@ -153,30 +153,53 @@ defensivas: son cicatrices.
 
 ---
 
-## 6. Progreso (13 jul 2026)
+## 6. Los Excel de Product_v1 estaban CONGELADOS (13 jul 2026)
 
-### ✅ Completadas
+Los arreglos del DCF (arriendos, tasa de impuestos, CAGR, estilos) estaban **en el código
+pero no en los archivos**. Los 230 Excel de `cmf_extract/Product_v1/Total/` seguían siendo
+los de la corrida vieja, y son los que se venden.
 
-- **2.1 Re-correr DCF**: Ejecutado con `--stages upload --supabase --supabase-live` para 
-  ALMENDRAL (94270000), ESMAX (79588870), TELEFÓNICA MÓVILES (76124890). 
-  Resultado: 10,414 datapoints subidos, 3 ratios y 3 DCFs recalculados.
-  Los precios objetivo ahora incluyen correctamente los arriendos en la deuda neta.
+Abriendo uno de ellos (ABC S.A.) contra uno regenerado hoy (SMU):
 
-### ⏳ En progreso / Bloqueadas
+| celda del DCF | Excel viejo | regenerado |
+|---|---|---|
+| Crecimiento Ventas Y+1 | `0.05` — la constante | fórmula CAGR real |
+| Tasa efectiva de impuestos | `0.27` — la constante | fórmula sobre los estados |
+| Deuda neta | 2 términos, **sin arriendos** | 4 términos, **con arriendos** |
 
-- **2.2 Conectar Kd real**: Código disponible en `cmf_extract/dcf_patch.py` (sección WACC CAPM + COSTO DE DEUDA REAL), 
-  pero requiere verificar que FinDataChile lo use. El módulo ya tiene la fórmula de Kd desde 
-  `xbrl_costo_deuda.kd` con validación de `cobertura >= 0.70`.
+Y el texto invisible que reportó Diego: `DRIVERS WC!A4` ("DEFINICIONES:") es **letra blanca
+sin relleno** — contraste 1,0:1. Enterprise Value, Equity Value y Valor por Acción, blancos
+sobre el amarillo viejo. Diez celdas ilegibles en ese archivo; **cero** en el regenerado.
 
-- **2.3 Bajar XBRL**: Bloqueado por datos externos. Usuario tiene 144 archivos en otro PC.
-  Cargador (`scripts/xbrl_a_base.py`) listo, solo esperando archivos.
+**Por qué no se actualizaban solos.** `skip_existing` está en `True` por defecto, y su
+chequeo de frescura (`_analysis_is_current`) compara **períodos, no versiones del código**:
+si el Excel ya cubre el último trimestre descargado, se salta la empresa. Un arreglo del
+generador no llegaba nunca a un Excel ya escrito. No había forma de forzarlo desde el CLI
+—había que borrar `Product_v1` a mano— así que ahora existe **`--rebuild`**:
 
-- **2.4 Exponer en web**: 
-  - ✅ Cargadas: `xbrl_deuda`, `xbrl_costo_deuda`, `xbrl_exposicion_moneda`, `xbrl_segmentos`, `xbrl_periodos`
-  - ❌ Falta cargar: `xbrl_partes_relacionadas` (10.315 filas), `xbrl_filiales` (4.998 filas), 
-    `xbrl_proyectos_ambientales` (3.712 filas). Probablemente ya están en la BD pero se cargan desde otro script.
+```bash
+python run_pipeline_cli.py --companies <ruts> --stages consolidate --rebuild
+```
 
-- **2.5 28 empresas sin ticker**: 
-  - ✅ Identificadas: columna `xbrl_cotiza_santiago` en `companies`
-  - ❌ Tickers faltantes para Agrosuper, Almendral, CGE Transmisión, Chilquinta, etc.
-  - Requiere búsqueda manual o enriquecimiento de datos desde Bolsa de Santiago.
+**Ojo con `--companies`:** espera el RUT **sin dígito verificador** (`96874030`), que es la
+columna `RUT_Sin_Guión` del CSV. Pasarlo completo (`96874030-K`) no da error: selecciona
+**cero** empresas y el pipeline termina "ok" sin haber hecho nada.
+
+---
+
+## 7. Dos trampas al leer el estado de la base
+
+**El DCF vive en `dcf_analysis`, no en `dcf_valuations`.** `dcf_valuations` existe, está
+**vacía** y no la escribe nadie. Consultarla da 0 y hace concluir que el DCF nunca corrió,
+cuando en realidad hay 277 filas en `dcf_analysis`. Borrarla o documentarla.
+
+**El log de moneda mentía en el caso bueno.** `set_currency_from_xbrl` devolvía el número de
+filas *cambiadas*, y el llamador avisaba `sin XBRL local — VERIFICAR` cuando ese número era
+0. Pero 0 significa las dos cosas: "no encontré el XBRL" (malo) y "ya estaba bien
+etiquetada" (bueno). Toda empresa CLP correcta gritaba igual que una USD rota. Ahora la
+función devuelve `(filas, estado)` y el aviso sólo aparece cuando la lectura falla de
+verdad.
+
+La moneda **sí está bien en la base**, verificado: 24 empresas en USD (86.578 filas) y 204
+en CLP. Agrosuper y Enel Chile aparecen con las dos, y es correcto: cambiaron de moneda a
+mitad de su historia.

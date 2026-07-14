@@ -370,8 +370,16 @@ class Database:
         return mapping
 
     # -- Moneda de reporte, leida del XBRL --
-    def set_currency_from_xbrl(self, company_id: int, rut: str) -> int:
+    def set_currency_from_xbrl(self, company_id: int, rut: str) -> tuple[int, str]:
         """Escribe financial_data.currency con la moneda que declara el XBRL.
+
+        Devuelve ``(filas_cambiadas, estado)``. El estado hace falta porque
+        ``filas_cambiadas == 0`` es AMBIGUO: significa tanto "no encontre el XBRL"
+        (malo, la moneda se queda en el default CLP) como "ya estaba bien etiquetada"
+        (bueno, no habia nada que cambiar). Devolver solo el numero obligaba al
+        llamador a avisar "VERIFICAR" en los dos casos: la empresa CLP correcta
+        gritaba igual que la USD rota, y un aviso que grita cuando todo esta bien es
+        un aviso que nadie mira cuando algo se rompe.
 
         POR QUE ESTO ES NECESARIO: el INSERT de upsert_financial_data no manda `currency`,
         asi que la columna toma el DEFAULT del esquema ('CLP'). En produccion quedaron
@@ -392,13 +400,13 @@ class Database:
         """
         try:
             from cmf_extract.currency_detect import monedas_por_periodo
-        except ImportError:
-            return 0
+        except ImportError as exc:
+            return 0, f"no pude importar el detector de moneda ({exc})"
 
         from pathlib import Path as _Path
         raiz = _Path(__file__).resolve().parents[3] / "data" / "XBRL" / "Total"
         if not raiz.is_dir():
-            return 0
+            return 0, f"no existe la carpeta de XBRL: {raiz}"
 
         rut_norm = str(rut or "").replace(".", "").strip().upper()
         carpeta = next(
@@ -406,11 +414,11 @@ class Database:
             None,
         )
         if carpeta is None:
-            return 0
+            return 0, f"sin carpeta de XBRL para {rut_norm}"
 
         monedas = monedas_por_periodo(carpeta)
         if not monedas:
-            return 0
+            return 0, f"el XBRL de {rut_norm} no declara moneda en ningun periodo"
 
         filas = 0
         with self.conn.cursor() as cur:
@@ -439,7 +447,11 @@ class Database:
                 "UPDATE companies SET financial_statements_currency = %s WHERE id = %s",
                 (monedas[ultimo], company_id),
             )
-        return filas
+
+        distintas = sorted(set(monedas.values()))
+        # Una empresa puede cambiar de moneda a mitad de su historia (Enel Chile pasó a
+        # dólares en 2025; Agrosuper en 2021), así que se informan todas las que declaró.
+        return filas, "+".join(distintas)
 
     # -- Numero de acciones, leido del XBRL --
     def set_shares_from_xbrl(self, company_id: int, rut: str) -> float | None:
@@ -821,11 +833,17 @@ def upload_company(db: Database, csv_data: CompanyCSV, override: bool,
         # 'CLP' del esquema y las 17 empresas que reportan en dolares quedan mal
         # etiquetadas — con multiplos y rankings equivocados por un factor de ~900.
         try:
-            n_cur = db.set_currency_from_xbrl(company_id, csv_data.rut)
-            if n_cur:
-                log(f"   moneda (desde XBRL): {n_cur} filas actualizadas")
+            n_cur, estado = db.set_currency_from_xbrl(company_id, csv_data.rut)
+            if estado in ("CLP", "USD") or "+" in estado:
+                # Leída del XBRL. 0 filas cambiadas NO es un problema: significa que ya
+                # estaba bien etiquetada. Lo único que importa es QUÉ moneda declara.
+                cambios = f"{n_cur} filas actualizadas" if n_cur else "ya estaba correcta"
+                log(f"   moneda (desde XBRL): {estado} — {cambios}")
             else:
-                log("   moneda: sin XBRL local; queda el default del esquema (CLP) — VERIFICAR")
+                # Aquí sí no se pudo leer: la columna se queda con el default 'CLP' del
+                # esquema, que para una empresa que reporta en dólares está MAL.
+                log(f"   moneda: NO se pudo leer del XBRL ({estado}); "
+                    f"queda el default del esquema (CLP) — VERIFICAR")
         except Exception as exc:  # noqa: BLE001
             log(f"   moneda: fallo la deteccion ({exc}) — VERIFICAR")
 

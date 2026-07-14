@@ -191,6 +191,12 @@ def parse_args() -> argparse.Namespace:
                     help="Mostrar el plan y salir sin ejecutar")
     ap.add_argument("--force", action="store_true",
                     help="Ejecutar aunque el preflight detecte problemas")
+    ap.add_argument("--rebuild", action="store_true",
+                    help="Regenerar el consolidado aunque el Excel ya exista y ya "
+                         "cubra el último período descargado. Necesario cuando cambió "
+                         "el CÓDIGO (fórmulas, estilos) y no los datos: el chequeo de "
+                         "frescura compara períodos, no versiones, así que sin esto un "
+                         "arreglo del generador nunca llega a los Excel ya escritos.")
     ap.add_argument("--backup", action="store_true",
                     help="Al terminar, correr scripts/backup_to_drive.sh")
     # --- Publicación (etapa UPLOAD) ---
@@ -249,6 +255,8 @@ def main() -> int:
     }
 
     settings = PipelineSettings.load()
+    if args.rebuild:
+        settings.skip_existing = False
     config["skip_existing"] = settings.skip_existing
     settings.companies_csv = str(Path(args.csv).resolve())
 
