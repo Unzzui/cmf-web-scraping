@@ -185,6 +185,21 @@ python run_pipeline_cli.py --companies <ruts> --stages consolidate --rebuild
 columna `RUT_Sin_Guión` del CSV. Pasarlo completo (`96874030-K`) no da error: selecciona
 **cero** empresas y el pipeline termina "ok" sin haber hecho nada.
 
+**Publicar el Excel a la tienda necesita `--supabase-live`, aunque no toque Supabase.** El
+leg 3A (blob + catálogo) está guardado detrás de `if fdc_enabled and not supabase_dry_run`,
+y `supabase_dry_run` es `not --supabase-live`. Sin ese flag el leg se omite en silencio
+("3A blob omitido (dry-run)") y uno cree que publicó. El comando real es:
+
+```bash
+python run_pipeline_cli.py --companies <ruts> --stages upload \
+    --fdc --fdc-url https://www.findatachile.com --supabase-live
+```
+
+Sin `--supabase` no se escribe nada en la base: sólo sube el Excel. Cada archivo entra como
+una **versión** bajo el producto de la empresa (id = RUT), así que republicar no duplica
+productos, y el `priceOverride` sólo se aplica al CREAR uno nuevo — el precio de un producto
+que ya existe no se toca.
+
 ---
 
 ## 7. Dos trampas al leer el estado de la base
