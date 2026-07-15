@@ -110,7 +110,8 @@ def parse_perfil(payload: dict) -> Profile | None:
         cajeros=_to_int(p.get("cajeros")),
         empleados=_to_int(p.get("empleados")),
         emp_hombres_perm=_to_int(p.get("emp_hombres_perm")),
-        emp_mujeres_perm=_to_int(p.get("emp_mujareres_perm", p.get("emp_mujeres_perm"))),
+        # La API escribe la clave con typo: 'emp_mujereres_perm'.
+        emp_mujeres_perm=_to_int(p.get("emp_mujereres_perm", p.get("emp_mujeres_perm"))),
         emp_hombres_ext=_to_int(p.get("emp_hombres_ext")),
         emp_mujeres_ext=_to_int(p.get("emp_mujeres_ext")),
         fecha_publicacion=(p.get("fechaPublicacion") or "").strip() or None,

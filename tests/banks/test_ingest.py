@@ -99,7 +99,7 @@ def test_parse_perfil():
                     "telefono": "(56-2) 653 11 11",
                     "direccionWeb": "www.bancochile.cl",
                     "sucursales": 222, "oficinas": 227, "cajeros": 1839, "empleados": 9919,
-                    "emp_hombres_perm": 4842, "emp_mujareres_perm": 5077,
+                    "emp_hombres_perm": 4842, "emp_mujereres_perm": 5077,
                     "fechaPublicacion": "2024-12-01",
                 }
             }
