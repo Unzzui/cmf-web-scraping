@@ -1,0 +1,17 @@
+[Unit]
+Description=FindataChile: actualizacion de bancos (API CMF) + regeneracion de Excel
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# Ajustar usuario y ruta a la instalacion real del servidor
+User=findata
+WorkingDirectory=/opt/cmf-web-scraping
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/opt/cmf-web-scraping/scripts/update_banks.sh
+TimeoutStartSec=4h
+Nice=10
+
+[Install]
+WantedBy=multi-user.target

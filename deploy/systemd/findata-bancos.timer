@@ -1,0 +1,14 @@
+[Unit]
+Description=FindataChile: actualizacion mensual de la data de bancos
+
+[Timer]
+# Los bancos publican MENSUAL, con algunas semanas de rezago. Se corre tres veces al
+# mes para capturar la publicacion apenas aparezca; las corridas sin datos nuevos
+# terminan rapido (upsert idempotente, no_data barato). RandomizedDelaySec evita pegarle
+# al API siempre a la misma hora exacta.
+OnCalendar=*-*-06,16,26 07:00
+Persistent=true
+RandomizedDelaySec=20m
+
+[Install]
+WantedBy=timers.target
