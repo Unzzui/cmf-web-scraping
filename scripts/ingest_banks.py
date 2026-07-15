@@ -14,7 +14,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
 from src.banks import runner  # noqa: E402
-from src.banks.api_client import CMFApiClient  # noqa: E402
+from src.banks.api_client import CMFApiClient, NoDataError  # noqa: E402
 from src.banks.loader import BankLoader  # noqa: E402
 
 
@@ -112,15 +112,16 @@ def main(argv: list[str] | None = None) -> int:
     try:
         loader.apply_schema()
         conn.commit()
-        first_y, first_m = meses[0]
-        runner.sync_institutions(client, loader, first_y, first_m)
-        conn.commit()
-        if not codes:
-            with conn.cursor() as cur:
-                cur.execute("SELECT codigo_institucion FROM bank_institutions ORDER BY 1")
-                codes = [r[0] for r in cur.fetchall()]
+        explicit_codes = codes
         for (y, m) in meses:
-            for cod in codes:
+            try:
+                period_codes = runner.sync_institutions(client, loader, y, m)
+                conn.commit()
+            except NoDataError:
+                print(f"{y}-{m:02d}: sin catalogo de instituciones, se omite")
+                continue
+            run_codes = explicit_codes if explicit_codes else period_codes
+            for cod in run_codes:
                 result = runner.ingest_period(client, loader, cod, y, m, reports)
                 conn.commit()
                 done = sum(1 for s in result.values() if s == "completed")

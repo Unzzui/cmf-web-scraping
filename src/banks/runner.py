@@ -10,14 +10,14 @@ REPORTS_DEFAULT = ("balance", "resultado", "adecuacion", "perfil", "accionistas"
 _AGGREGATE_CODES = {"999"}
 
 
-def sync_institutions(client, loader, year: int, month: int) -> int:
+def sync_institutions(client, loader, year: int, month: int) -> list[str]:
     payload = client.get(endpoints.instituciones_path(year, month))
     insts = ingest.parse_instituciones(payload)
     for inst in insts:
         loader.upsert_institution(
             inst, is_aggregate=inst.codigo_institucion in _AGGREGATE_CODES
         )
-    return len(insts)
+    return [inst.codigo_institucion for inst in insts]
 
 
 def _ingest_accounts(client, loader, cod, year, month, statement, path) -> str:

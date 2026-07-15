@@ -30,8 +30,9 @@ def test_sync_institutions(db_conn):
             ]
         }
     })
-    n = runner.sync_institutions(client, loader, 2025, 5)
-    assert n == 2
+    codes = runner.sync_institutions(client, loader, 2025, 5)
+    assert len(codes) == 2
+    assert "001" in codes
     cur = db_conn.cursor()
     cur.execute("select is_aggregate from bank_institutions where codigo_institucion='999'")
     assert cur.fetchone()[0] is True
@@ -41,7 +42,6 @@ def test_ingest_period_mezcla_completed_y_no_data(db_conn):
     from src.banks.loader import BankLoader
     loader = BankLoader(db_conn)
     loader.apply_schema()
-    loader.upsert_institution.__self__  # noop para claridad
     from src.banks.models import Institution
     loader.upsert_institution(Institution("001", "BANCO DE CHILE"))
     client = FakeClient(
