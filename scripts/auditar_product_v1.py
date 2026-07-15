@@ -25,6 +25,7 @@ Salida: 0 si todos los Excel pasan; 1 si alguno falla (y entonces NO se publica)
 """
 from __future__ import annotations
 
+import re
 import sys
 from collections import Counter
 from pathlib import Path
@@ -72,6 +73,38 @@ def celdas_ilegibles(wb) -> list[tuple[str, str, str]]:
     return malas
 
 
+_REF_BALANCE = re.compile(r"Balance General'?!\$?[A-Z]{1,3}\$?(\d+)")
+
+
+def _deuda_neta_incluye_arriendos(wb, formula: str):
+    """¿La fórmula de deuda neta incluye los pasivos por arrendamiento?
+
+    Devuelve True si los incluye, False si el balance TIENE filas de arriendo pero
+    la fórmula no las referencia, y None si no aplica (la empresa no tiene pasivos
+    por arrendamiento — nada que exigir).
+
+    Ojo: desde que la estructura sale del linkbase de presentación del XBRL, la
+    fórmula ya no lleva la palabra "arrendamiento" adentro; referencia la CELDA del
+    balance (`'Balance General'!C39`). Buscar el texto literal daba un falso positivo
+    en las 228. Aquí resolvemos las filas referenciadas y vemos si alguna es un pasivo
+    por arrendamiento — y las filas cambian por empresa (Falabella no las tiene en la
+    misma posición que ALMENDRAL), así que hay que resolverlas, no asumirlas.
+    """
+    if "Balance General" not in wb.sheetnames:
+        return None
+    bg = wb["Balance General"]
+    filas_arriendo = set()
+    for fila in bg.iter_rows(min_col=1, max_col=3):
+        for c in fila:
+            if isinstance(c.value, str) and "pasivos por arrendamiento" in c.value.lower():
+                filas_arriendo.add(c.row)
+                break
+    if not filas_arriendo:
+        return None
+    refs = {int(n) for n in _REF_BALANCE.findall(formula)}
+    return bool(filas_arriendo & refs)
+
+
 def problemas_del_dcf(wb) -> list[str]:
     """Constantes inventadas y deuda neta sin arriendos, en cada hoja DCF."""
     fallas = []
@@ -90,7 +123,7 @@ def problemas_del_dcf(wb) -> list[str]:
             if "Deuda neta" in etiqueta:
                 if not es_formula:
                     fallas.append(f"{nombre}: deuda neta es la constante {valor!r}")
-                elif "rrendamiento" not in valor:
+                elif _deuda_neta_incluye_arriendos(wb, valor) is False:
                     fallas.append(f"{nombre}: la deuda neta NO incluye los arriendos (IFRS 16)")
     return fallas
 
