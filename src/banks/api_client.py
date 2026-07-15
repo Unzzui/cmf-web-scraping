@@ -44,8 +44,12 @@ class CMFApiClient:
         for attempt in range(1, self.max_retries + 1):
             try:
                 response = self.session.get(url, timeout=30)
+                if response.status_code == 404:
+                    raise NoDataError(f"404 sin datos para {path}")
                 response.raise_for_status()
                 data = response.json()
+            except NoDataError:
+                raise
             except Exception as exc:  # noqa: BLE001 - se reintenta cualquier fallo de transporte
                 last_exc = exc
                 if attempt < self.max_retries:

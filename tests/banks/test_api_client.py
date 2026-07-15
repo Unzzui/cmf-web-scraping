@@ -70,3 +70,11 @@ def test_falla_tras_agotar_reintentos():
     client = CMFApiClient("KEY", session=session, max_retries=3)
     with pytest.raises(ApiError):
         client.get("uf")
+
+
+def test_http_404_es_nodataerror_sin_reintentos():
+    session = FakeSession([FakeResponse({}, status_code=404)])
+    client = CMFApiClient("KEY", session=session, max_retries=3)
+    with pytest.raises(NoDataError):
+        client.get("adecuacion/anhos/2024/meses/12/instituciones/001/componentes")
+    assert len(session.calls) == 1  # no reintentos: un 404 es "sin datos", no fallo de transporte
