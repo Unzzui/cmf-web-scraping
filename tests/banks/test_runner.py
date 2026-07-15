@@ -43,10 +43,10 @@ def test_ingest_period_mezcla_completed_y_no_data(db_conn):
     loader = BankLoader(db_conn)
     loader.apply_schema()
     from src.banks.models import Institution
-    loader.upsert_institution(Institution("001", "BANCO DE CHILE"))
+    loader.upsert_institution(Institution("000", "BANCO DE CHILE"))
     client = FakeClient(
         by_key={
-            "balances/2025/5/instituciones/001": {
+            "balances/2025/5/instituciones/000": {
                 "CodigosBalances": [{
                     "CodigoCuenta": "100000000", "DescripcionCuenta": "TOTAL ACTIVOS",
                     "MonedaChilenaNoReajustable": "1,00", "MonedaTotal": "1,00",
@@ -55,11 +55,11 @@ def test_ingest_period_mezcla_completed_y_no_data(db_conn):
         },
         no_data=("resultados", "adecuacion", "perfil", "accionistas", "integrantes"),
     )
-    result = runner.ingest_period(client, loader, "001", 2025, 5)
+    result = runner.ingest_period(client, loader, "000", 2025, 5)
     assert result["balance"] == "completed"
     assert result["resultado"] == "no_data"
     cur = db_conn.cursor()
-    cur.execute("select count(*) from bank_financial_data where codigo_institucion='001'")
+    cur.execute("select count(*) from bank_financial_data where codigo_institucion='000'")
     assert cur.fetchone()[0] == 1
     cur.execute("select count(*) from bank_data_imports where status='no_data'")
     assert cur.fetchone()[0] >= 1

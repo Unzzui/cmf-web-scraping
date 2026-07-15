@@ -35,13 +35,13 @@ def test_upsert_institution_y_financial_row(db_conn):
 def test_upsert_financial_row_es_idempotente(db_conn):
     loader = BankLoader(db_conn)
     loader.apply_schema()
-    loader.upsert_institution(Institution("001", "BANCO DE CHILE"))
+    loader.upsert_institution(Institution("000", "BANCO DE CHILE"))
     account_id = loader.upsert_account("balance", "145400401", "x", "compendio_2022")
-    loader.upsert_financial_row("001", account_id, 2025, 5, _row(), "compendio_2022", "CLP")
-    loader.upsert_financial_row("001", account_id, 2025, 5, _row(), "compendio_2022", "CLP")
+    loader.upsert_financial_row("000", account_id, 2025, 5, _row(), "compendio_2022", "CLP")
+    loader.upsert_financial_row("000", account_id, 2025, 5, _row(), "compendio_2022", "CLP")
     cur = db_conn.cursor()
     cur.execute(
-        "select count(*) from bank_financial_data where codigo_institucion='001' "
+        "select count(*) from bank_financial_data where codigo_institucion='000' "
         "and account_id=%s", (account_id,),
     )
     assert cur.fetchone()[0] == 1
