@@ -77,6 +77,39 @@ def test_ninguna_formula_referencia_none():
                 assert "None" not in celda.value
 
 
+def test_formato_producto_cabecera_bandas_y_resumen():
+    wb = workbook.build_workbook(_sample())
+    ws = wb[workbook.SHEET_RATIOS]
+    # cabecera de tabla en fila 4 con columnas de resumen
+    hdr = [ws.cell(4, c).value for c in range(1, ws.max_column + 1)]
+    assert hdr[0] == "Indicador"
+    assert hdr[-3:] == ["Ultimo", "Promedio", "Tendencia"]
+    # banda de seccion con fill SOFT
+    band = None
+    for r in range(5, 12):
+        if ws.cell(r, 1).value == "RENTABILIDAD":
+            band = ws.cell(r, 1)
+            break
+    assert band is not None
+    assert band.fill.start_color.rgb == est.SOFT
+    # columna Tendencia con formula de flecha
+    last_row = None
+    for r in range(5, 40):
+        if ws.cell(r, 1).value == "ROE (anualizado)":
+            last_row = r
+            break
+    trend = ws.cell(last_row, ws.max_column).value
+    assert isinstance(trend, str) and "IFERROR(IF(" in trend
+
+
+def test_inicio_tiene_hyperlinks_de_navegacion():
+    wb = workbook.build_workbook(_sample())
+    ws = wb[workbook.SHEET_INICIO]
+    destinos = [c.hyperlink.target if c.hyperlink else None
+                for row in ws.iter_rows() for c in row if c.hyperlink]
+    assert any(workbook.SHEET_RATIOS in (d or "") for d in destinos)
+
+
 def test_valuacion_mercado_solo_si_listado():
     wb_no = workbook.build_workbook(_sample())
     labels_no = [wb_no[workbook.SHEET_VALUACION][f"A{r}"].value for r in range(1, 25)]
