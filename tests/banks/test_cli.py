@@ -1,6 +1,15 @@
 import pytest
 
-from scripts.ingest_banks import iter_months, main, parse_period
+from scripts.ingest_banks import build_arg_parser, iter_months, main, parse_period
+
+
+def test_pause_flag_default_y_override():
+    args = build_arg_parser().parse_args(["--from", "01/2015", "--to", "05/2026"])
+    assert args.pause == 0.3
+    args = build_arg_parser().parse_args(
+        ["--from", "01/2015", "--to", "05/2026", "--pause", "0.5"]
+    )
+    assert args.pause == 0.5
 
 
 def test_parse_period_ok():

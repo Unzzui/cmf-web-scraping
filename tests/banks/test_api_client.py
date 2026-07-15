@@ -78,3 +78,25 @@ def test_http_404_es_nodataerror_sin_reintentos():
     with pytest.raises(NoDataError):
         client.get("adecuacion/anhos/2024/meses/12/instituciones/001/componentes")
     assert len(session.calls) == 1  # no reintentos: un 404 es "sin datos", no fallo de transporte
+
+
+def test_throttle_espera_antes_de_cada_llamada(monkeypatch):
+    import src.banks.api_client as mod
+
+    slept: list[float] = []
+    monkeypatch.setattr(mod.time, "sleep", lambda s: slept.append(s))
+    session = FakeSession([FakeResponse({"ok": 1})])
+    client = CMFApiClient("KEY", session=session, pause=0.3)
+    client.get("uf")
+    assert slept == [0.3]  # una espera de throttle antes de la llamada exitosa
+
+
+def test_sin_throttle_cuando_pause_cero(monkeypatch):
+    import src.banks.api_client as mod
+
+    slept: list[float] = []
+    monkeypatch.setattr(mod.time, "sleep", lambda s: slept.append(s))
+    session = FakeSession([FakeResponse({"ok": 1})])
+    client = CMFApiClient("KEY", session=session, pause=0.0)
+    client.get("uf")
+    assert slept == []

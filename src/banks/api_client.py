@@ -39,6 +39,8 @@ class CMFApiClient:
         return f"{self.base_url}/{path}?{query}"
 
     def get(self, path: str) -> dict:
+        if self.pause:
+            time.sleep(self.pause)
         url = self._build_url(path)
         last_exc: Exception | None = None
         for attempt in range(1, self.max_retries + 1):

@@ -62,6 +62,8 @@ def build_arg_parser() -> argparse.ArgumentParser:
     p.add_argument("--only", default="", help="Alias de --banks para un solo código")
     p.add_argument("--reports", default="", help="Reports separados por coma; vacío = todos")
     p.add_argument("--dry-run", action="store_true", help="No escribe a la base")
+    p.add_argument("--pause", type=float, default=0.3,
+                   help="Segundos de espera entre llamadas al API (throttle)")
     return p
 
 
@@ -90,7 +92,7 @@ def main(argv: list[str] | None = None) -> int:
         print("Falta CMF_API_KEY en .env", file=sys.stderr)
         return 2
 
-    client = CMFApiClient(apikey, pause=0.2)
+    client = CMFApiClient(apikey, pause=args.pause)
 
     if args.dry_run:
         print(f"[dry-run] meses={len(meses)} reports={reports} bancos={codes or 'todos'}")
