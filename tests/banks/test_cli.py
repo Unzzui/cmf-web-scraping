@@ -1,6 +1,6 @@
 import pytest
 
-from scripts.ingest_banks import iter_months, parse_period
+from scripts.ingest_banks import iter_months, main, parse_period
 
 
 def test_parse_period_ok():
@@ -23,3 +23,11 @@ def test_iter_months_inclusivo_y_cruza_anho():
 
 def test_iter_months_un_solo_mes():
     assert iter_months((2025, 5), (2025, 5)) == [(2025, 5)]
+
+
+def test_main_rango_vacio_retorna_error():
+    assert main(["--from", "05/2025", "--to", "01/2025"]) == 2
+
+
+def test_main_periodo_malo_retorna_error():
+    assert main(["--from", "xx", "--to", "01/2025"]) == 2

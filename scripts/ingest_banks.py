@@ -67,9 +67,19 @@ def build_arg_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
     args = build_arg_parser().parse_args(argv)
-    desde = parse_period(args.desde)
-    hasta = parse_period(args.hasta)
+    try:
+        desde = parse_period(args.desde)
+        hasta = parse_period(args.hasta)
+    except ValueError as exc:
+        print(f"Periodo invalido: {exc}", file=sys.stderr)
+        return 2
     meses = iter_months(desde, hasta)
+    if not meses:
+        print(
+            f"Rango vacio: --from {args.desde} es posterior a --to {args.hasta}",
+            file=sys.stderr,
+        )
+        return 2
     reports = tuple(r.strip() for r in args.reports.split(",") if r.strip()) \
         or runner.REPORTS_DEFAULT
     codes = [c.strip() for c in (args.banks or args.only).split(",") if c.strip()]
@@ -87,6 +97,11 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     import psycopg2
+
+    missing = [k for k in ("PGHOST", "PGDATABASE", "PGUSER", "PGPASSWORD") if not env.get(k)]
+    if missing:
+        print(f"Faltan credenciales PG en .env: {', '.join(missing)}", file=sys.stderr)
+        return 2
 
     conn = psycopg2.connect(
         host=env["PGHOST"], port=env.get("PGPORT", "5432"), dbname=env["PGDATABASE"],
