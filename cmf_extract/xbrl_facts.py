@@ -317,7 +317,7 @@ _DEFARC_RE = re.compile(
 # y los ingresos daban 421 mil millones donde hay 210.
 #
 # La raíz no la declara la empresa: la declara la TAXONOMÍA de la CMF, que sí tenemos
-# (docs/CMF_CLCI_2026). Antes esto era una lista escrita a mano por mí; ahora sale del
+# (docs/taxonomias_cmf/). Antes esto era una lista escrita a mano por mí; ahora sale del
 # paquete oficial, arco por arco — y si la CMF agrega un eje, funciona sin tocar nada.
 #
 # Fallback: si el paquete no está en disco, quedan sólo los padres del archivo local. Es

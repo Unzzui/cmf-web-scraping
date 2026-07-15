@@ -14,11 +14,14 @@ El `.gitignore` además escondía una colisión: había **dos migraciones numera
 renumeraron a **030/031/032**, y `schema_migrations` se actualizó en la base para que las
 dos fuentes digan lo mismo.
 
-**La taxonomía de la CMF ya está versionada.** `docs/CMF_CLCI_2026` no es documentación: es
-una dependencia de `cmf_taxonomia.py`. Sin ella el módulo se degrada **en silencio** a una
+**La taxonomía de la CMF ya está versionada.** `docs/taxonomias_cmf/` no es documentación: es
+una dependencia de `cmf_taxonomia.py` (la leen `xbrl_facts.py` y `presentation_order.py`).
+Trae un módulo por tipo de emisor —`cl-ci` comercial/industrial, `cl-hb` holding bancario,
+`cl-bs`, `cl-cc`, `cl-hs`, `cl-ei`— y dentro de cada uno una versión por año
+(`cl-ci/CMF_CLCI_2014 … CMF_CLCI_2026`). Sin ella el módulo se degrada **en silencio** a una
 lista escrita a mano, y los segmentos vuelven a sumar mal. Ahora hay un test que falla si
-el paquete no está — un aviso en el log no sirve, porque nadie lo mira y el dato equivocado
-ya viajó.
+el paquete no está (`test_xbrl_facts.py::test_la_taxonomia_de_la_cmf_esta_en_el_repo`) — un
+aviso en el log no sirve, porque nadie lo mira y el dato equivocado ya viajó.
 
 ---
 
