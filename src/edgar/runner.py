@@ -87,6 +87,8 @@ def ingest_company(
         tags = primary_tag_by_concept(values)
         ids_by_order = loader.upsert_line_items(company_id, values, tags)
         cells = loader.upsert_financial_data(company_id, values, ids_by_order)
+        # La moneda va en `companies`, no sólo en la celda: es lo que rotula la ficha web.
+        loader.set_statements_currency(company_id)
 
         years = sorted({v.year for v in values})
         loader.log_import(company_id, f"edgar:{cik}", len(values), cells, "completed")

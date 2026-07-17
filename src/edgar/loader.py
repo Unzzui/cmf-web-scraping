@@ -160,6 +160,24 @@ class EdgarLoader:
             )
         return len(records)
 
+    def set_statements_currency(self, company_id: int) -> None:
+        """Marca la moneda de reporte de la empresa en USD, en `companies`.
+
+        La ficha web y el Excel leen `companies.financial_statements_currency`, NO
+        `financial_data.currency`. Sin esto los estados de EEUU salen rotulados "Miles de
+        CLP" aunque cada celda esté en USD: la columna arrastra el DEFAULT 'CLP' que le
+        quedó al sembrarse la empresa. Es el equivalente gringo de lo que hace la ingesta
+        chilena en `supabase_uploader.set_currency_from_xbrl`. Idempotente por el guard.
+        """
+        if self.dry_run:
+            return
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "UPDATE companies SET financial_statements_currency = %s "
+                "WHERE id = %s AND financial_statements_currency IS DISTINCT FROM %s",
+                (CURRENCY_US, company_id, CURRENCY_US),
+            )
+
     def rollback(self) -> None:
         """Deja la transacción usable de nuevo tras un error.
 

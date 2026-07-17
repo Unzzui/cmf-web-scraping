@@ -44,6 +44,9 @@ class _FakeLoader:
     def upsert_financial_data(self, company_id, values, ids):
         return len(values)
 
+    def set_statements_currency(self, company_id):
+        self.currency_set = company_id
+
 
 def test_no_data_no_revienta_el_lote():
     """El caso XOM: companyfacts responde 200 pero sin us-gaap (sólo `ffd`)."""
