@@ -65,6 +65,26 @@ def _rows(recent: dict) -> list[dict]:
     return [dict(zip(keys, vals)) for vals in zip(*cols)]
 
 
+def fiscal_year_end_month(submissions: dict) -> int | None:
+    """El mes (1-12) en que cierra el año fiscal, o None.
+
+    Es la moda del mes del `reportDate` de los 10-K: Apple cierra en septiembre, Nike en
+    mayo, Nvidia en enero. Con este único número el front deriva el mes real de cualquier
+    trimestre fiscal y deja de mostrar el ambiguo "2025Q4".
+    """
+    recent = (submissions.get("filings", {}) or {}).get("recent", {}) or {}
+    months: list[int] = []
+    for r in _rows(recent):
+        if r.get("form") != "10-K":
+            continue
+        rd = _parse_date(r.get("reportDate"))
+        if rd is not None:
+            months.append(rd.month)
+    if not months:
+        return None
+    return Counter(months).most_common(1)[0][0]
+
+
 def _assign_periods(financials: list[dict]) -> dict[str, tuple[int | None, int | None]]:
     """{accession: (año_fiscal, quarter)}.
 
