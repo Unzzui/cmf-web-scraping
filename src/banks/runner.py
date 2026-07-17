@@ -2,12 +2,18 @@
 
 from src.banks import endpoints, ingest
 from src.banks.api_client import NoDataError
-from src.banks.taxonomy import classify_epoch, classify_unit
+from src.banks.taxonomy import adecuacion_disponible, classify_epoch, classify_unit
 
 REPORTS_DEFAULT = ("balance", "resultado", "adecuacion", "perfil", "accionistas",
                    "integrantes")
 
-_AGGREGATE_CODES = {"999"}
+# El catálogo de la CMF mezcla bancos con subtotales, todos con nombre vacío:
+#   999 = sistema bancario (verificado: iguala exacto la suma de los bancos reales)
+#   900 = bancos establecidos en Chile (= 970 + 980)
+#   970, 980 = subtotales de 900
+# Sin marcarlos, se cuelan como bancos y el exportador les arma un Excel de producto sin
+# nombre ni RUT.
+_AGGREGATE_CODES = {"900", "970", "980", "999"}
 
 
 def sync_institutions(client, loader, year: int, month: int) -> list[str]:
@@ -36,6 +42,10 @@ def _ingest_accounts(client, loader, cod, year, month, statement, path) -> str:
 
 
 def _ingest_adecuacion(client, loader, cod, year, month) -> str:
+    if not adecuacion_disponible(year, month):
+        # Sin esto son ~1.188 llamadas condenadas al 500 (x3 reintentos) en el backfill,
+        # y otras tantas filas 'failed' que aparentan un problema nuestro.
+        raise NoDataError(f"adecuación no publicada desde 2020-12 ({year}-{month:02d})")
     payload = client.get(endpoints.adecuacion_componentes_path(year, month, cod))
     ca = ingest.parse_adecuacion_componentes(payload)
     for attr, indicador in (("indice_irs", "irs"), ("indice_ire", "ire")):
