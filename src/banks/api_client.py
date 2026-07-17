@@ -22,6 +22,7 @@ class CMFApiClient:
         base_url: str = BASE_URL,
         max_retries: int = 3,
         pause: float = 0.0,
+        backoff: float = 1.0,
     ):
         if session is None:
             import requests
@@ -33,6 +34,7 @@ class CMFApiClient:
         self.base_url = base_url
         self.max_retries = max_retries
         self.pause = pause
+        self.backoff = backoff
 
     def _build_url(self, path: str) -> str:
         query = urlencode({"apikey": self.apikey, "formato": "json"})
@@ -55,8 +57,11 @@ class CMFApiClient:
             except Exception as exc:  # noqa: BLE001 - se reintenta cualquier fallo de transporte
                 last_exc = exc
                 if attempt < self.max_retries:
-                    if self.pause:
-                        time.sleep(self.pause * attempt)
+                    # Backoff exponencial y no lineal sobre self.pause: la CMF frena por
+                    # ráfagas devolviendo 500 o cortando la conexión, y con los 0.3s/0.6s
+                    # de antes los 3 intentos caían dentro de la misma ventana de bloqueo
+                    # y el dato se marcaba 'failed' aunque existiera.
+                    time.sleep(self.backoff * (2 ** (attempt - 1)))
                     continue
                 raise ApiError(f"GET {path} falló tras {self.max_retries} intentos: {exc}")
             if isinstance(data, dict) and data.get("CodigoError") == 80:

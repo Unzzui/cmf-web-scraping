@@ -25,13 +25,11 @@ def _ingest_accounts(client, loader, cod, year, month, statement, path) -> str:
     rows = ingest.parse_accounts(payload, statement)
     epoch = classify_epoch(year, month)
     unit = classify_unit(year, month)
-    ok = 0
-    for row in rows:
-        account_id = loader.upsert_account(
-            statement, row.codigo_cuenta, row.descripcion_cuenta, epoch
-        )
-        loader.upsert_financial_row(cod, account_id, year, month, row, epoch, unit)
-        ok += 1
+    # En bulk y no fila-a-fila: un balance trae ~700 cuentas y cada statement suelto
+    # es un round-trip a Supabase (~53 ms), lo que hacía inviable el backfill.
+    ids_por_codigo = loader.upsert_accounts_bulk(statement, rows, epoch)
+    pares = [(ids_por_codigo[r.codigo_cuenta], r) for r in rows]
+    ok = loader.upsert_financial_rows_bulk(cod, year, month, pares, epoch, unit)
     loader.log_import(cod, statement, year, month, "completed", rows_total=len(rows),
                       rows_ok=ok)
     return "completed"

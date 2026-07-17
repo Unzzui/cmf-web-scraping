@@ -82,6 +82,94 @@ class BankLoader:
                  epoch, unit),
             )
 
+    def upsert_accounts_bulk(
+        self, statement: str, rows: list[AccountRow], epoch: str
+    ) -> dict[str, int]:
+        """Upsert de todas las cuentas de un statement en un solo round-trip.
+
+        Devuelve {codigo_cuenta: account_id}. Deduplica por codigo_cuenta: Postgres
+        aborta un ON CONFLICT DO UPDATE que toque la misma fila dos veces en el mismo
+        statement, y el API a veces repite un codigo dentro del mismo payload.
+        """
+        if not rows:
+            return {}
+        from psycopg2.extras import execute_values
+
+        dedup: dict[str, AccountRow] = {}
+        for row in rows:
+            dedup[row.codigo_cuenta] = row
+        # Ordenado por la clave de conflicto a propósito: el catálogo de cuentas es
+        # compartido por todos los bancos, así que con --workers varios procesos hacen
+        # ON CONFLICT sobre las mismas filas. Si cada uno las tomara en el orden en que
+        # vienen del payload, dos podrían lockearlas en orden distinto y deadlockear.
+        values = sorted(
+            (statement, r.codigo_cuenta, r.descripcion_cuenta, epoch)
+            for r in dedup.values()
+        )
+        with self.conn.cursor() as cur:
+            result = execute_values(
+                cur,
+                """
+                INSERT INTO bank_accounts
+                    (statement, codigo_cuenta, descripcion_cuenta, taxonomy_epoch)
+                VALUES %s
+                ON CONFLICT (statement, codigo_cuenta, taxonomy_epoch) DO UPDATE SET
+                    descripcion_cuenta = EXCLUDED.descripcion_cuenta,
+                    updated_at = now()
+                RETURNING codigo_cuenta, id
+                """,
+                values,
+                fetch=True,
+            )
+            return {codigo: account_id for codigo, account_id in result}
+
+    def upsert_financial_rows_bulk(
+        self, cod: str, year: int, month: int,
+        rows: list[tuple[int, AccountRow]], epoch: str, unit: str,
+    ) -> int:
+        """Upsert de las filas financieras de un banco/período en un round-trip.
+
+        ``rows`` son pares (account_id, AccountRow). Deduplica por account_id por la
+        misma razón que upsert_accounts_bulk.
+        """
+        if not rows:
+            return 0
+        from psycopg2.extras import execute_values
+
+        dedup: dict[int, AccountRow] = {}
+        for account_id, row in rows:
+            dedup[account_id] = row
+        values = [
+            (cod, account_id, year, month, r.moneda_no_reajustable,
+             r.moneda_reajustable_ipc, r.moneda_reajustable_tc, r.moneda_extranjera,
+             r.moneda_total, epoch, unit)
+            for account_id, r in dedup.items()
+        ]
+        with self.conn.cursor() as cur:
+            execute_values(
+                cur,
+                """
+                INSERT INTO bank_financial_data
+                    (codigo_institucion, account_id, period_year, period_month,
+                     moneda_no_reajustable, moneda_reajustable_ipc,
+                     moneda_reajustable_tc, moneda_extranjera, moneda_total,
+                     taxonomy_epoch, unit)
+                VALUES %s
+                ON CONFLICT (codigo_institucion, account_id, period_year, period_month)
+                DO UPDATE SET
+                    moneda_no_reajustable = EXCLUDED.moneda_no_reajustable,
+                    moneda_reajustable_ipc = EXCLUDED.moneda_reajustable_ipc,
+                    moneda_reajustable_tc = EXCLUDED.moneda_reajustable_tc,
+                    moneda_extranjera = EXCLUDED.moneda_extranjera,
+                    moneda_total = EXCLUDED.moneda_total,
+                    taxonomy_epoch = EXCLUDED.taxonomy_epoch,
+                    unit = EXCLUDED.unit,
+                    updated_at = now()
+                """,
+                values,
+            )
+        return len(values)
+
     def upsert_capital_adequacy(
         self, cod: str, year: int, month: int, ca: CapitalAdequacy
     ) -> None:
