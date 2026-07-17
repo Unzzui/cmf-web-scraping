@@ -124,6 +124,29 @@ financial_data (
 propio set con su propio `display_order`. Es así porque la presentación de la CMF
 varía por empresa; para EEUU aplica igual (cada emisor usa su subconjunto de us-gaap).
 
+### La escala: `financial_data` guarda la plata EN MILES
+
+No está declarado en el esquema y no lo dice ninguna columna, pero es la convención real
+y hay que respetarla: **EDGAR publica en unidades y esta tabla guarda en miles.**
+
+| Evidencia | Guardado | Real |
+|---|---|---|
+| Falabella, ingresos 2024 | `10.322.104.478` | ~10,3 **billones** de pesos |
+| Enel Américas (chilena en USD), activos 2024 | `31.484.337` | ~US$31,5 **mil millones** |
+| Cencosud, acciones emitidas | `2.805.870.127` | 2.805.870.127 (unidades reales) |
+
+La tercera fila importa: **las acciones NO van en miles**. Y el motor de ratios lo
+confirma en su propia fórmula — calcula el EPS como `(Neta * 1000) / TotalAcciones`, o
+sea que asume plata en miles y acciones en unidades. Esa fórmula es el contrato.
+
+**Cuidado con este error porque no lo agarra ninguna validación de §8.** Un ratio es plata
+sobre plata, así que el factor 1000 se cancela: la cuadratura contable y la acumulación
+pasan igual de verdes. Aparece sólo en el EPS (daba 6.200 en vez de 6,11) y en la UI,
+mostrando US$365 billones de activos para Apple.
+
+Implementado en `loader.escalar_para_guardar()`, que se apoya en `Concept.unit`
+(`USD` -> /1000, `shares` -> tal cual, `USD/shares` -> tal cual).
+
 ### `currency`: poner `'USD'` explícito
 
 El default de la columna es `'CLP'` por herencia. **Hay que pasar `'USD'` siempre**, o
