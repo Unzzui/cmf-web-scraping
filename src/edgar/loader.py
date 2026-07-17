@@ -22,6 +22,31 @@ from src.edgar.models import LineValue
 # en el catálogo (`Concept.unit`), no en esta columna.
 CURRENCY_US = "USD"
 
+# ---------------------------------------------------------------------------
+# ESCALA: `financial_data` guarda la plata EN MILES, y EDGAR la publica en unidades.
+#
+# No está declarado en ninguna parte del esquema, pero es la convención real y hay tres
+# evidencias independientes:
+#   * Falabella, ingresos 2024: 10.322.104.478 — factura ~10,3 BILLONES de pesos.
+#   * Enel Américas (chilena que reporta en USD), activos 2024: 31.484.337 — tiene ~US$31,5
+#     MIL MILLONES. O sea que el "en miles" no es del peso, es de la tabla.
+#   * `ratio_calculator_postgresql.py` calcula el EPS como `(Neta * 1000) / TotalAcciones`:
+#     el consumidor codifica en su fórmula que la plata viene en miles y las acciones en
+#     unidades. Esa es la fuente de verdad del contrato.
+#
+# Sin esto Apple entra 1000x grande. Los ratios igual salen bien —el factor se cancela en
+# una división de plata sobre plata— así que el error NO aparece en la validación: aparece
+# en la UI, mostrando US$365 billones de activos, y en cualquier comparación CL vs US.
+#
+# Las acciones NO se dividen (Cencosud guarda 2.805.870.127 acciones, que son las reales) y
+# el EPS tampoco: ya es plata por acción, no plata en miles.
+_DIVISOR_POR_UNIDAD = {"USD": 1000.0, "shares": 1.0, "USD/shares": 1.0}
+
+
+def escalar_para_guardar(value: float, unit: str) -> float:
+    """Convierte el valor de EDGAR (unidades) a la escala de `financial_data` (miles)."""
+    return value / _DIVISOR_POR_UNIDAD[unit]
+
 
 class EdgarLoader:
     def __init__(self, conn, dry_run: bool = True):
@@ -106,7 +131,7 @@ class EdgarLoader:
                 ids_by_order[v.display_order],
                 v.year,
                 v.quarter,
-                v.value,
+                escalar_para_guardar(v.value, v.unit),
                 CURRENCY_US,
             )
             for v in values
@@ -135,6 +160,28 @@ class EdgarLoader:
             )
         return len(records)
 
+    def rollback(self) -> None:
+        """Deja la transacción usable de nuevo tras un error.
+
+        Postgres aborta la transacción entera ante cualquier fallo y rechaza todo lo que
+        siga con `InFailedSqlTransaction`. Sin este rollback, el `log_import` que intenta
+        registrar el error muere él mismo y **su** excepción tapa la original.
+        """
+        if not self.dry_run:
+            self.conn.rollback()
+
+    # `financial_data_imports.import_status` tiene un CHECK que sólo admite estos cuatro
+    # valores. El vocabulario del runner es más fino (`no_data` no es un fallo nuestro:
+    # es que la SEC no publica nada para ese CIK), así que se mapea al escribir y el
+    # motivo real viaja en `error_log`. Se mapea en vez de ampliar el CHECK porque la
+    # tabla es compartida con la ingesta chilena.
+    _IMPORT_STATUS = {
+        "completed": "completed",
+        "no_data": "failed",
+        "failed": "failed",
+        "skipped": "failed",
+    }
+
     def log_import(
         self, company_id: int, source: str, total: int, ok: int, status: str,
         error: str | None = None,
@@ -149,7 +196,9 @@ class EdgarLoader:
                      failed_records, import_status, error_log, imported_by, completed_at)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, now())
                 """,
-                (company_id, source, total, ok, total - ok, status, error, "ingest_edgar"),
+                (company_id, source, total, ok, total - ok,
+                 self._IMPORT_STATUS.get(status, "failed"),
+                 error, "ingest_edgar"),
             )
 
     def has_source_columns(self) -> bool:

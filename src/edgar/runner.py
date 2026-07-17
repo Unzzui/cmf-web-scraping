@@ -31,6 +31,24 @@ class CompanyResult:
     message: str | None = None
 
 
+def _log(loader, company_id, cik, ticker, status, message) -> CompanyResult:
+    """Registra el desenlace de una empresa sin que el registro pueda romper el lote.
+
+    El rollback va primero porque si lo que falló dejó la transacción abortada, Postgres
+    rechaza todo lo que siga: el propio INSERT del log muere y **su** excepción tapa la
+    original, que es justo la que uno quiere leer. Pasó de verdad con XOM.
+
+    Y el log va envuelto en su try porque no poder registrar un fallo no puede convertirse
+    en un fallo peor que el que se estaba registrando.
+    """
+    loader.rollback()
+    try:
+        loader.log_import(company_id, f"edgar:{cik}", 0, 0, status, message)
+    except Exception:  # noqa: BLE001
+        loader.rollback()
+    return CompanyResult(cik, ticker, status, message=message)
+
+
 def ingest_company(
     client, loader, cik: str, min_year: int = DEFAULT_MIN_YEAR
 ) -> CompanyResult:
@@ -44,11 +62,9 @@ def ingest_company(
     try:
         payload = client.get_companyfacts(cik)
     except NoDataError as exc:
-        loader.log_import(company_id, f"edgar:{cik}", 0, 0, "no_data", str(exc))
-        return CompanyResult(cik, ticker, "no_data", message=str(exc))
+        return _log(loader, company_id, cik, ticker, "no_data", str(exc))
     except Exception as exc:  # noqa: BLE001 - una empresa que falla no aborta el lote
-        loader.log_import(company_id, f"edgar:{cik}", 0, 0, "failed", str(exc))
-        return CompanyResult(cik, ticker, "failed", message=str(exc))
+        return _log(loader, company_id, cik, ticker, "failed", str(exc))
 
     try:
         values = build_line_values(payload, min_year=min_year)
@@ -62,8 +78,7 @@ def ingest_company(
             taxonomias = sorted((payload.get("facts") or {}).keys())
             detalle = f"companyfacts sin conceptos us-gaap; taxonomías presentes: " \
                       f"{', '.join(taxonomias) or 'ninguna'}"
-            loader.log_import(company_id, f"edgar:{cik}", 0, 0, "no_data", detalle)
-            return CompanyResult(cik, ticker, "no_data", message=detalle)
+            return _log(loader, company_id, cik, ticker, "no_data", detalle)
 
         identity = check_accounting_identity(payload, min_year=min_year)
         accumulation = check_accumulation(values)
@@ -84,5 +99,4 @@ def ingest_company(
             drift_warnings=len(drift),
         )
     except Exception as exc:  # noqa: BLE001
-        loader.log_import(company_id, f"edgar:{cik}", 0, 0, "failed", str(exc))
-        return CompanyResult(cik, ticker, "failed", message=str(exc))
+        return _log(loader, company_id, cik, ticker, "failed", str(exc))
