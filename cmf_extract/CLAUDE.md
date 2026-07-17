@@ -2,6 +2,26 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Mandatory FinData North Star
+
+FinData exists to make professional financial intelligence understandable and
+accessible to anyone, not only institutions. We turn difficult public data into clear,
+traceable knowledge so each person can form their own judgment. The brand is **rebelde
+con rigor**: it removes barriers of cost, complexity, and access without compromising
+precision. **Datos públicos. Decisiones propias.**
+
+For CMF Extract this is an engineering constraint, not marketing copy:
+
+- Preserve source, period, unit, taxonomy, and auditability through every transform.
+- Never fabricate values, hide failures, or use silent fallbacks that can mislead users.
+- Automate repetitive work, not financial judgment.
+- Make workbook labels, warnings, CLI/GUI messages, and outputs understandable to people
+  who do not know the pipeline internals.
+- Prefer progressive explanation over removing financially relevant depth.
+
+Canonical context: `../CLAUDE.md`, `~/Proyectos/FinDataChile/docs/BRAND-MANIFESTO.md`,
+and `~/Proyectos/FinDataChile/docs/DESIGN.md`.
+
 ## Project Overview
 
 **CMF Extract** is a comprehensive Python system for extracting, processing, and analyzing Chilean financial data from the CMF (Comisión para el Mercado Financiero). The project handles XBRL files from Chilean companies and converts them into Excel reports with advanced financial analysis capabilities.

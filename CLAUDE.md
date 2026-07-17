@@ -3,6 +3,23 @@
 Pipeline de datos de **FindataChile**. El repo hermano `~/Proyectos/FinDataChile` es la
 web + BD (Next.js + Supabase); los dos se tocan.
 
+> **NORTH STAR OBLIGATORIO — LEER ANTES DE MODIFICAR EL PIPELINE:** FinData existe
+> para hacer que la inteligencia financiera profesional deje de ser un privilegio.
+> Convertimos datos públicos difíciles de usar en conocimiento claro, trazable y
+> accesible para que cualquier persona pueda formar su propio criterio. Somos rebeldes
+> con rigor: eliminamos barreras de costo, complejidad y acceso sin sacrificar precisión.
+> **Datos públicos. Decisiones propias.**
+>
+> En este repositorio el propósito se traduce en datos que pueden defenderse. Toda
+> extracción, normalización, ratio y Excel debe conservar fuente, período, unidad,
+> contexto y posibilidad de auditoría. Automatizamos fricción, no pensamiento: nunca
+> inventar valores, ocultar fallos, aplicar fallbacks silenciosos ni simplificar una
+> salida a costa de perder trazabilidad. Los nombres, mensajes, CLI, GUI y archivos
+> finales deben ser comprensibles para una persona, no sólo para quien conoce el código.
+>
+> El manifiesto canónico vive en `~/Proyectos/FinDataChile/docs/BRAND-MANIFESTO.md` y
+> las reglas visuales en `~/Proyectos/FinDataChile/docs/DESIGN.md`.
+
 ## Antes de trabajar: leé el ADR
 
 Este proyecto tiene un **Architecture Decision Record** en el grafo de codebase-memory con

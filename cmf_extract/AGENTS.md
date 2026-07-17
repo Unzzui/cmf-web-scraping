@@ -1,5 +1,17 @@
 # Repository Guidelines
 
+## Mandatory Product Purpose
+
+FinData democratizes professional financial intelligence by turning difficult public
+data into clear, traceable, accessible knowledge. Every agent must preserve the brand's
+**rebelde con rigor** principle: reduce cost, complexity, and access barriers without
+reducing precision. **Datos públicos. Decisiones propias.**
+
+For extraction and Excel work, preserve source, period, unit, context, and auditability;
+never fabricate data or hide failures behind silent fallbacks. Outputs, warnings, CLI,
+and GUI copy must be understandable without knowing the implementation. Read
+`../CLAUDE.md` before changing behavior or output design.
+
 ## Project Structure & Module Organization
 - `analisis_excel/`: core Python package for Excel generation, formulas, and utilities.
 - `data/XBRL/{Anual,Trimestral,Total}`: input datasets (per company); outputs also stored under each company folder.
