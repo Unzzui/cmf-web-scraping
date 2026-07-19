@@ -116,21 +116,27 @@ class DCFBuilder:
             return None
         
         try:
-            # Normalizar el concepto de búsqueda
-            concept_lower = concept_name.strip().lower()
-            
+            # Normalizar el concepto de búsqueda. Se quitan las COMAS: el catálogo EDGAR
+            # (EEUU) rotula "Pasivos por arrendamientos, corrientes" (con coma) donde el
+            # chileno usa "Pasivos por arrendamientos corrientes" (sin). Sin normalizar, el
+            # DCF de una empresa US no encontraba sus arriendos y la deuda neta salía sin los
+            # leases (Amazon: $20B en vez de ~$110B).
+            def _norm(s: str) -> str:
+                return s.strip().lower().replace(",", "")
+            concept_lower = _norm(concept_name)
+
             # Buscar fila que contenga el concepto
             for r in range(hdr + 1, sheet.max_row + 1):
                 cell_value = sheet.cell(row=r, column=1).value
                 if not isinstance(cell_value, str):
                     continue
-                
-                cell_lower = cell_value.strip().lower()
-                
+
+                cell_lower = _norm(cell_value)
+
                 # Evitar filas abstractas/resumen
                 if any(word in cell_lower for word in ["abstract", "resumen", "sinopsis"]):
                     continue
-                
+
                 # Buscar coincidencia exacta o inclusión
                 if cell_lower == concept_lower or concept_lower in cell_lower:
                     return r
@@ -327,6 +333,33 @@ class DCFBuilder:
         return (f"DECLARADO por la empresa: promedio de {n} crédito(s) de la nota de "
                 f"préstamos, ponderado por monto. Monedas: {monedas}")
 
+    def _beta_yahoo(self) -> Optional[float]:
+        """El beta de Yahoo de la empresa, acotado a [0.5, 2.0], o None si no hay.
+
+        Se inyecta desde la BD (companies.yahoo_beta) vía formula_processor. Sólo ~42
+        empresas cotizan y tienen beta de Yahoo. ``None`` es una respuesta válida: el
+        que arma la hoja cae a Hamada (ver create_wacc_terminal_block), no a un número
+        inventado. El MISMO beta que usa el motor de la BD, para que el WACC cuadre.
+        """
+        b = self.financial_data.get("yahoo_beta")
+        try:
+            b = float(b)
+        except (TypeError, ValueError):
+            return None
+        return max(0.5, min(2.0, b))
+
+    def _beta_fuente(self) -> str:
+        """De dónde salió el beta. Un supuesto que no se nombra es un supuesto que se cree.
+
+        Si la empresa cotiza y tiene beta de Yahoo, se usa ése. Si no, el beta se
+        re-apalanca con Hamada (beta desapalancada 0,8 × (1+(1−t)·D/E)): así toda
+        empresa tiene un beta sensible a SU apalancamiento, no un valor neutral parejo.
+        """
+        if self._beta_yahoo() is not None:
+            return "Yahoo Finance (acotado a [0,5, 2,0]); editable"
+        return ("HAMADA: beta desapalancada 0,8 re-apalancada con D/E y la tasa "
+                "efectiva de la empresa (sin beta de Yahoo)")
+
     def _tipo_de_cambio_actual(self) -> float:
         """El dólar observado más reciente del Banco Central.
 
@@ -405,73 +438,126 @@ class DCFBuilder:
                 return f"=IFERROR({ref},\"N/D\")"
         
         return "=\"N/D\""
+    def _avg_ratio_over_annual(self, num_specs: list, den_sheet, den_row,
+                               default: float, lo: float, hi: float,
+                               abs_num: bool = False) -> Optional[str]:
+        """Promedio histórico anual de (Σ numeradores)/denominador, acotado a [lo, hi].
+
+        Réplica EXACTA de la media que hace el motor de la BD
+        (``excel_aligned.compute_excel_drivers`` + ``_safe_avg``): para cada año
+        Q4 con denominador > 0, se calcula el ratio; el resultado es el PROMEDIO
+        SIMPLE de esos ratios año a año (no Σnum/Σden), acotado a [lo, hi] y con
+        fallback a ``default`` si no hay ningún año utilizable.
+
+        Antes estos drivers tomaban un ÚNICO año base, mientras la BD promediaba
+        el histórico: dos números distintos para la misma empresa. Ahora ambos
+        promedian.
+
+        ``num_specs``: lista de ``(sheet, row)`` que se SUMAN en el numerador
+        (p. ej. CapEx PP&E + CapEx intangibles). El denominador se exige > 0 (en
+        estos drivers es Ventas, siempre positivo; la condición mantiene la
+        simetría con ``_ratio_series`` de la BD).
+        """
+        if den_sheet is None or not den_row:
+            return None
+        # Misma ventana que la BD (excel_aligned._annual_series usa years_back=5,
+        # o sea ~6 cierres anuales): tomar los 6 más recientes. Sin esto, el Excel
+        # promediaría TODA la serie y el promedio no cuadraría con la BD.
+        anuales = self._iter_annual_periods()
+
+        def _yr(p: str) -> int:
+            m = re.match(r"^(\d{4})", str(p))
+            return int(m.group(1)) if m else 0
+
+        anuales = sorted(anuales, key=_yr, reverse=True)[:6]
+        nums, dens = [], []
+        any_num_data = False
+        for p in anuales:
+            rd = self.create_cell_reference_by_label(den_sheet, den_row, p)
+            if not rd:
+                continue
+            parts = []
+            for (s, r) in num_specs:
+                if s is None or not r:
+                    continue
+                col = self._get_col_letter_by_label(s, p)
+                if col is None:
+                    continue
+                # Sólo se suma la celda si TIENE dato (no vacía). Una fila entera vacía
+                # —p. ej. la D&A de SMU, que el pipeline no captura— NO debe contar como
+                # "D&A = 0": eso hunde el FCFF. La BD hace lo mismo (``_annual_series``
+                # descarta los NULL); si no queda ningún año con dato, se cae al default.
+                cellval = s.cell(row=r, column=column_index_from_string(col)).value
+                if cellval is None or isinstance(cellval, str):
+                    continue
+                any_num_data = True
+                rn = f"'{s.title}'!{col}{r}"
+                parts.append(f"ABS({rn})" if abs_num else rn)
+            if not parts:
+                continue
+            num_expr = f"({'+'.join(parts)})"
+            nums.append(f"IF({rd}>0,{num_expr}/{rd},0)")
+            dens.append(f"IF({rd}>0,1,0)")
+        if not nums or not any_num_data:
+            return None
+        suma = "+".join(nums)
+        cuenta = "+".join(dens)
+        return f"=IFERROR(MAX(MIN(({suma})/({cuenta}),{hi}),{lo}),{default})"
+
     def _get_margen_ebit_formula(self) -> str:
+        """Margen EBIT de proyección = PROMEDIO histórico anual de EBIT/Ventas.
+
+        Media multi-año acotada a [1%, 50%], idéntica a la BD
+        (``_safe_avg(margen_series, default=0.10, lo=0.01, hi=0.5)``).
         """
-        Genera fórmula dinámica para margen EBIT usando sistema de referencias como formula_builder.py
-        """
-        # Primero intentar desde RATIOS & KPIs  
-        if self.sh_ratios and "MargenEBIT" in self.rows_ratios and self.rows_ratios["MargenEBIT"]:
-            ref = self.create_cell_reference_by_label(self.sh_ratios, self.rows_ratios["MargenEBIT"], self._find_base_annual_period())
-            if ref:
-                return f"=IFERROR({ref},0.10)"
-        
-        # Fallback: calcular desde Estado de Resultados
-        if (self.sh_pl and "EBIT" in self.rows_pl and self.rows_pl["EBIT"] and 
-            "Ventas" in self.rows_pl and self.rows_pl["Ventas"]):
-            ebit_ref = self.create_cell_reference_by_label(self.sh_pl, self.rows_pl["EBIT"], self._find_base_annual_period())
-            ventas_ref = self.create_cell_reference_by_label(self.sh_pl, self.rows_pl["Ventas"], self._find_base_annual_period())
-            if ebit_ref and ventas_ref:
-                return f"=IFERROR({ebit_ref}/{ventas_ref},0.10)"
-        
+        if (self.sh_pl and self.rows_pl.get("EBIT") and self.rows_pl.get("Ventas")):
+            f = self._avg_ratio_over_annual(
+                [(self.sh_pl, self.rows_pl["EBIT"])],
+                self.sh_pl, self.rows_pl["Ventas"],
+                default=0.10, lo=0.01, hi=0.5)
+            if f:
+                return f
         return "0.10"
 
-
     def _get_da_ventas_formula(self) -> str:
+        """D&A/Ventas de proyección = PROMEDIO histórico anual de |D&A|/Ventas.
+
+        Media multi-año acotada a [0%, 30%], idéntica a la BD
+        (``_safe_avg(da_series, default=0.03, lo=0.0, hi=0.30)``). La D&A se toma
+        en valor absoluto (igual que la BD).
         """
-        Genera fórmula dinámica para D&A/Ventas usando sistema de referencias como formula_builder.py
-        """
-        # Estrategia: DepAmort de RATIOS & KPIs, Ventas de Estado de Resultados
-        if (self.sh_ratios and "DepAmort" in self.rows_ratios and self.rows_ratios["DepAmort"] and
-            self.sh_pl and "Ventas" in self.rows_pl and self.rows_pl["Ventas"]):
-            da_ref = self.create_cell_reference_by_label(self.sh_ratios, self.rows_ratios["DepAmort"], self._find_base_annual_period())
-            ventas_ref = self.create_cell_reference_by_label(self.sh_pl, self.rows_pl["Ventas"], self._find_base_annual_period())
-            if da_ref and ventas_ref:
-                return f"=IFERROR({da_ref}/{ventas_ref},0.03)"
-        
-        # Fallback: solo Estado de Resultados si DepAmort existe ahí
-        if (self.sh_pl and "DepAmort" in self.rows_pl and self.rows_pl["DepAmort"] and
-            "Ventas" in self.rows_pl and self.rows_pl["Ventas"]):
-            da_ref = self.create_cell_reference_by_label(self.sh_pl, self.rows_pl["DepAmort"], self._find_base_annual_period())
-            ventas_ref = self.create_cell_reference_by_label(self.sh_pl, self.rows_pl["Ventas"], self._find_base_annual_period())
-            if da_ref and ventas_ref:
-                return f"=IFERROR({da_ref}/{ventas_ref},0.03)"
-        
+        da_sheet, da_row = None, None
+        if self.sh_ratios and self.rows_ratios.get("DepAmort"):
+            da_sheet, da_row = self.sh_ratios, self.rows_ratios["DepAmort"]
+        elif self.sh_pl and self.rows_pl.get("DepAmort"):
+            da_sheet, da_row = self.sh_pl, self.rows_pl["DepAmort"]
+        if da_sheet and self.sh_pl and self.rows_pl.get("Ventas"):
+            f = self._avg_ratio_over_annual(
+                [(da_sheet, da_row)],
+                self.sh_pl, self.rows_pl["Ventas"],
+                default=0.03, lo=0.0, hi=0.30, abs_num=True)
+            if f:
+                return f
         return "0.03"
 
     def _get_capex_ventas_formula(self) -> str:
+        """CapEx/Ventas de proyección = PROMEDIO histórico anual de |CapEx|/Ventas.
+
+        CapEx = compras de PP&E + compras de intangibles (ambas del flujo de
+        efectivo), en valor absoluto. Media multi-año acotada a [0%, 30%],
+        idéntica a la BD (``_safe_avg(capex_series, default=0.04, lo=0.0, hi=0.30)``).
         """
-        Genera fórmula dinámica para CapEx/Ventas usando sistema de referencias como formula_builder.py
-        """
-        parts = []
-        
-        # CapEx desde flujo de efectivo
-        if self.sh_cfs and "CapEx" in self.rows_cfs and self.rows_cfs["CapEx"]:
-            capex_ref = self.create_cell_reference_by_label(self.sh_cfs, self.rows_cfs["CapEx"], self._find_base_annual_period())
-            if capex_ref:
-                parts.append(f"ABS({capex_ref})")
-        
-        # CapEx intangibles desde flujo de efectivo
-        if self.sh_cfs and "CapExIntang" in self.rows_cfs and self.rows_cfs["CapExIntang"]:
-            capex_intang_ref = self.create_cell_reference_by_label(self.sh_cfs, self.rows_cfs["CapExIntang"], self._find_base_annual_period())
-            if capex_intang_ref:
-                parts.append(f"ABS({capex_intang_ref})")
-        
-        # Ventas desde estado de resultados
-        if self.sh_pl and "Ventas" in self.rows_pl and self.rows_pl["Ventas"] and parts:
-            ventas_ref = self.create_cell_reference_by_label(self.sh_pl, self.rows_pl["Ventas"], self._find_base_annual_period())
-            if ventas_ref:
-                return f"=IFERROR(({'+'.join(parts)})/{ventas_ref},0.04)"
-        
+        specs = []
+        if self.sh_cfs and self.rows_cfs.get("CapEx"):
+            specs.append((self.sh_cfs, self.rows_cfs["CapEx"]))
+        if self.sh_cfs and self.rows_cfs.get("CapExIntang"):
+            specs.append((self.sh_cfs, self.rows_cfs["CapExIntang"]))
+        if specs and self.sh_pl and self.rows_pl.get("Ventas"):
+            f = self._avg_ratio_over_annual(
+                specs, self.sh_pl, self.rows_pl["Ventas"],
+                default=0.04, lo=0.0, hi=0.30, abs_num=True)
+            if f:
+                return f
         return "0.04"
 
     def _get_deuda_neta_formula(self, period: str = None) -> str:
@@ -553,6 +639,14 @@ class DCFBuilder:
         if not anuales:
             return "0.27"
 
+        # Misma ventana de 6 cierres anuales que la BD (excel_aligned usa years_back=5),
+        # para que el promedio de la tasa efectiva cuadre entre ambos motores.
+        def _yr_imp(p: str) -> int:
+            m = re.match(r"^(\d{4})", str(p))
+            return int(m.group(1)) if m else 0
+
+        anuales = sorted(anuales, key=_yr_imp, reverse=True)[:6]
+
         numerador, denominador = [], []
         for periodo in anuales:
             ref_imp = self.create_cell_reference_by_label(self.sh_pl, fila_imp, periodo)
@@ -582,6 +676,21 @@ class DCFBuilder:
                 anuales.append(periodo)
         return anuales
     
+    def _acciones_fallback(self) -> Optional[float]:
+        """Acciones inyectadas desde la BD (companies.shares_outstanding, UNIDADES), o None.
+
+        La misma fuente de verdad que usa el motor de la BD. Sirve de respaldo cuando la
+        hoja RATIOS no trae el número de acciones: para AGUAS, por ejemplo, la fila "Total
+        número de acciones emitidas" viene vacía, y sin este respaldo el "Valor por Acción"
+        del DCF quedaba en blanco (y no cuadraba con el precio objetivo de la web).
+        """
+        s = self.financial_data.get("shares_outstanding")
+        try:
+            s = float(s)
+        except (TypeError, ValueError):
+            return None
+        return s if s > 0 else None
+
     def _get_acciones_formula(self) -> str:
         """
         Genera fórmula dinámica para acciones en circulación.
@@ -591,7 +700,13 @@ class DCFBuilder:
         venir sólo en algunos períodos (anuales) y el período más reciente
         puede estar vacío. LOOKUP(2,1/(rango<>""),rango) devuelve el último no
         vacío, que en esta hoja (columnas de viejo a nuevo) es el más reciente.
+
+        Si RATIOS no trae acciones, cae a las inyectadas desde la BD
+        (companies.shares_outstanding) — la misma cifra que usa el motor de la web,
+        para que el precio objetivo cuadre — en vez de dejar la celda vacía.
         """
+        fb = self._acciones_fallback()
+        fb_expr = f"{fb:.0f}" if fb is not None else '""'
         row = self.rows_ratios.get("Acciones") if self.rows_ratios else None
         if self.sh_ratios and row:
             # Última columna de período (encabezado tipo YYYY o YYYYQn)
@@ -605,8 +720,11 @@ class DCFBuilder:
                 from openpyxl.utils import get_column_letter
                 title = self.sh_ratios.title
                 rng = f"'{title}'!B{row}:{get_column_letter(last_col)}{row}"
-                return f'=IFERROR(LOOKUP(2,1/({rng}<>""),{rng}),"")'
-        return '""'
+                # LOOKUP devuelve "" (no error) si el rango está vacío; por eso el fallback
+                # va con un IF explícito, no sólo con IFERROR.
+                lookup = f'IFERROR(LOOKUP(2,1/({rng}<>""),{rng}),"")'
+                return f'=IFERROR(IF({lookup}="",{fb_expr},{lookup}),{fb_expr})'
+        return f"={fb_expr}" if fb is not None else '""'
     
     def _get_cagr_formula(self, years_back: int = 5) -> str:
         """
@@ -2088,53 +2206,67 @@ class DCFBuilder:
 
         debt_c = _bal_ref("Otros pasivos financieros corrientes")
         debt_nc = _bal_ref("Otros pasivos financieros no corrientes")
+        # Bajo IFRS 16 un arriendo ES deuda: entra en el peso de deuda del WACC igual
+        # que en la deuda neta. Sin esto, el peso D del WACC y la deuda neta usarían
+        # definiciones distintas de "deuda", y además no cuadraría con la BD (que sí
+        # los incluye vía _deuda_total).
+        lease_c = _bal_ref("Pasivos por arrendamientos corrientes")
+        lease_nc = _bal_ref("Pasivos por arrendamientos no corrientes")
         equity_ref = (_bal_ref("Patrimonio total")
                       or _bal_ref("Patrimonio atribuible a los propietarios de la controladora"))
         fc_r = self._find_row_in_sheet(self.sh_pl, "Costos financieros")
         fincost_ref = self.create_cell_reference_by_label(self.sh_pl, fc_r, base_p) if fc_r else None
 
-        d_expr = " + ".join(f"IFERROR({x},0)" for x in (debt_c, debt_nc) if x) or "0"
+        d_expr = " + ".join(f"IFERROR({x},0)"
+                            for x in (debt_c, debt_nc, lease_c, lease_nc) if x) or "0"
         e_expr = f"IFERROR({equity_ref},0)" if equity_ref else "0"
         fc_expr = f"IFERROR({fincost_ref},0)" if fincost_ref else "0"
 
         money = '_($* #,##0_);_($* (#,##0);_($* "-"_);_(@_)'
         wacc_hdr = self._create_professional_section(
             ws, start_row, "WACC (CAPM + COSTO DE DEUDA REAL)", "", 6, "inputs")
-        # EL BETA SE RE-APALANCA CON LA ESTRUCTURA DE CAPITAL REAL DE LA EMPRESA (Hamada):
+        # EL BETA: el de YAHOO FINANCE si la empresa cotiza (inyectado desde la BD,
+        # companies.yahoo_beta, acotado a [0,5, 2,0]); HAMADA si no. Es el MISMO criterio
+        # que el motor de la BD (scripts/dcf/excel_aligned.calculate_wacc_excel), para que
+        # el WACC del Excel y el que ve la web CUADREN empresa por empresa.
         #
-        #     Beta_apalancada = Beta_desapalancada x (1 + (1 - t) x D/E)
+        # Sólo ~42 empresas cotizan y tienen beta de Yahoo. Para el resto NO se usa un
+        # valor parejo (antes fue un 1,0 escondido que volvía el CAPM una identidad):
+        # se re-apalanca una beta desapalancada 0,8 con el D/E contable (con arriendos) y
+        # la tasa efectiva REAL de la empresa (Hamada), acotada a [0,5, 2,0]. Así una
+        # eléctrica muy apalancada y una empresa sin deuda NO salen con el mismo Ke.
         #
-        # Antes el beta era la constante 1,0 para TODAS las empresas. Con Rf y ERP tambien
-        # fijos, eso volvia el CAPM una identidad: Ke = 5,5% + 1 x 5,5% = 11% para todos, y
-        # el unico ingrediente del WACC que variaba era el costo de la deuda. Una electrica
-        # muy apalancada y una empresa sin deuda salian con el mismo costo de patrimonio.
-        #
-        # Con Hamada, el beta -- y por lo tanto el WACC -- pasa a depender del apalancamiento
-        # y de la tasa efectiva de impuestos REALES de cada empresa, que si estan en los
-        # estados. El beta desapalancado queda como input editable.
-        #
-        # LO QUE ESTO NO ES: un beta de regresion. Para eso hace falta la serie de precios de
-        # la accion y del IPSA, que este repo no ingesta (el precio de mercado del modelo es
-        # literalmente una celda vacia que el analista rellena). Mientras no exista esa serie,
-        # el beta desapalancado es un supuesto -- pero uno explicito y editable, no un 1,0
-        # escondido que hacia parecer que el CAPM estaba calculando algo.
+        # Cuando viene de Yahoo, el beta es una celda EDITABLE; cuando es Hamada, es una
+        # fórmula viva que se recalcula si el analista corrige la deuda o el patrimonio.
         w0 = wacc_hdr + 1
         r_rf, r_erp = w0, w0 + 1
         r_d, r_e, r_de, r_t = w0 + 2, w0 + 3, w0 + 4, w0 + 5
-        r_bu, r_bl, r_ke = w0 + 6, w0 + 7, w0 + 8
+        r_beta, r_beta_src, r_ke = w0 + 6, w0 + 7, w0 + 8
         r_fc, r_kd, r_fuente, r_wacc = w0 + 9, w0 + 10, w0 + 11, w0 + 12
+
+        # El beta: el de Yahoo si la empresa cotiza (input editable), Hamada si no.
+        # Hamada re-apalanca una beta desapalancada 0,8 con el D/E contable (con
+        # arriendos) y la tasa efectiva, acotada a [0,5, 2,0] — así TODA empresa tiene
+        # un beta propio, sensible a su apalancamiento, no un valor parejo. Es el mismo
+        # criterio que la BD (excel_aligned.calculate_wacc_excel).
+        _yahoo_beta = self._beta_yahoo()
+        if _yahoo_beta is not None:
+            beta_label, beta_value, beta_kind = "Beta (Yahoo)", _yahoo_beta, "in"
+        else:
+            beta_label = "Beta (Hamada, s/ beta de Yahoo)"
+            beta_value = f"=IFERROR(MAX(MIN(0.8*(1+(1-B{r_t})*B{r_de}),2),0.5),0.8)"
+            beta_kind = "calc"
 
         wacc_rows = [
             ("Rf - Tasa libre de riesgo (%)", 0.055, "in", '0.00%'),
             ("ERP - Prima de riesgo de mercado (%)", 0.055, "in", '0.00%'),
-            ("D - Deuda financiera (M$)", f"={d_expr}", "calc", money),
+            ("D - Deuda financiera + arriendos (M$)", f"={d_expr}", "calc", money),
             ("E - Patrimonio (M$)", f"={e_expr}", "calc", money),
             ("D/E - Apalancamiento", f'=IFERROR(B{r_d}/B{r_e},0)', "calc", '0.00'),
             ("t - Tasa de impuesto (%)", f"=$B${tasa_imp_row}", "calc", '0.00%'),
-            ("Beta desapalancada (activos)", 0.8, "in", '0.00'),
-            ("Beta apalancada (Hamada)", f"=IFERROR(B{r_bu}*(1+(1-B{r_t})*B{r_de}),B{r_bu})",
-             "calc", '0.00'),
-            ("Ke - Costo de patrimonio (CAPM, %)", f"=B{r_rf}+B{r_bl}*B{r_erp}", "calc", '0.00%'),
+            (beta_label, beta_value, beta_kind, '0.00'),
+            ("Fuente del beta", self._beta_fuente(), "calc", '@'),
+            ("Ke - Costo de patrimonio (CAPM, %)", f"=B{r_rf}+B{r_beta}*B{r_erp}", "calc", '0.00%'),
             ("Costos financieros (anual, M$)", f"={fc_expr}", "calc", money),
             # EL Kd SALE DE LAS TASAS QUE LA EMPRESA DECLARÓ, NO DE UN COCIENTE.
             #
@@ -2157,8 +2289,9 @@ class DCFBuilder:
             # resto cae a la estimación, y la celda de al lado dice cuál se usó.
             ("Kd - Costo de la deuda (%)", self._kd_valor(r_fc, r_d), "calc", '0.00%'),
             ("Fuente del Kd", self._kd_fuente(), "calc", '@'),
+            # Acotado a [8%, 15%] (mismo clamp que la BD: min_wacc/max_wacc).
             ("WACC (%)",
-             f"=IFERROR(B{r_e}/(B{r_d}+B{r_e})*B{r_ke}+B{r_d}/(B{r_d}+B{r_e})*B{r_kd}*(1-B{r_t}),0.10)",
+             f"=IFERROR(MAX(MIN(B{r_e}/(B{r_d}+B{r_e})*B{r_ke}+B{r_d}/(B{r_d}+B{r_e})*B{r_kd}*(1-B{r_t}),0.15),0.08),0.10)",
              "result", '0.00%'),
         ]
         wacc_result_row = w0 + len(wacc_rows) - 1

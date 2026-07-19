@@ -35,15 +35,29 @@ def test_el_tipo_de_cambio_no_es_una_constante():
 
 
 def test_el_beta_no_es_uno_para_todos():
-    """Un beta fijo en 1,0 volvía el CAPM una identidad.
+    """El beta del CAPM: Yahoo si la empresa cotiza, Hamada si no. Nunca 1,0 parejo.
 
-    Con Rf y ERP también fijos, Ke = 5,5% + 1 x 5,5% = 11% para las 232 empresas: una
-    eléctrica muy apalancada y una empresa sin deuda salían con el mismo costo de
-    patrimonio. Ahora se relevera con Hamada usando la deuda, el patrimonio y la tasa
-    efectiva REALES de cada empresa.
+    Un beta fijo en 1,0 volvía el CAPM una identidad (Ke = 5,5% + 1×5,5% = 11% para
+    todas). Ahora TODA empresa tiene un beta propio: el de Yahoo (inyectado desde
+    companies.yahoo_beta, ~42 empresas) para las que cotizan, y Hamada — beta
+    desapalancada 0,8 re-apalancada con el D/E y la tasa efectiva REALES — para el
+    resto. Es el MISMO criterio que el motor de la BD, para que el WACC cuadre.
+
+    Protege: (1) el beta de Yahoo sale de un dato inyectado, no de una constante en
+    la fila; (2) existe el fallback Hamada re-apalancado; (3) el origen se NOMBRA.
     """
-    assert "Beta apalancada (Hamada)" in FUENTE, "se perdió el beta relevereado"
-    assert '("Beta (apalancada)", 1.0' not in FUENTE, "volvió el beta fijo en 1,0"
+    assert "self._beta_yahoo()" in FUENTE, (
+        "el beta de Yahoo tiene que salir de `_beta_yahoo()` (companies.yahoo_beta "
+        "inyectado), no de una constante escrita a mano"
+    )
+    assert "0.8*(1+(1-B{r_t})*B{r_de})" in FUENTE, (
+        "se perdió el fallback Hamada re-apalancado para las empresas sin beta de "
+        "Yahoo; sin él caerían a un beta parejo"
+    )
+    assert '("Fuente del beta"' in FUENTE, (
+        "el origen del beta (Yahoo o Hamada) tiene que quedar visible en la hoja: "
+        "un supuesto que no se nombra es un supuesto que se cree"
+    )
 
 
 def test_los_escenarios_usan_el_wacc_real():

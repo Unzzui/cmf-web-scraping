@@ -537,6 +537,57 @@ class FormulaProcessorMixin:
             financial_data['deuda'] = self._deuda_declarada(file_path)
         except Exception:
             financial_data['deuda'] = None
+
+        # El beta de Yahoo para el WACC del DCF (companies.yahoo_beta en la BD de
+        # FinDataChile). Lo usa DCFBuilder._beta_valor; el mismo beta que el motor de la
+        # web, para que el WACC del Excel y el que se muestra CUADREN. Degradación
+        # elegante: si no hay BD o la empresa no cotiza, queda None y el DCF usa 1.0
+        # neutral con aviso VISIBLE en la celda "Fuente del beta".
+        try:
+            from cmf_extract import market_data as _market_data
+        except ImportError:  # ejecutado desde dentro de cmf_extract/
+            try:
+                import market_data as _market_data  # type: ignore
+            except ImportError:
+                _market_data = None
+        try:
+            financial_data['yahoo_beta'] = (
+                _market_data.get_yahoo_beta(file_path) if _market_data else None)
+        except Exception:
+            financial_data['yahoo_beta'] = None
+
+        # Acciones en circulación (UNIDADES) desde companies.shares_outstanding: fuente de
+        # verdad del XBRL que cubre las 218 empresas. Fallback del valor por acción del DCF
+        # cuando la hoja RATIOS no trae el número (ver DCFBuilder._get_acciones_formula).
+        try:
+            financial_data['shares_outstanding'] = (
+                _market_data.get_shares_outstanding(file_path) if _market_data else None)
+        except Exception:
+            financial_data['shares_outstanding'] = None
+
+        # Moneda de reporte para EEUU: sus estados vienen de la BD (EDGAR), no del XBRL de
+        # la CMF, así que el detector por facts no la encontró y `reporting_currency` quedó
+        # sin setear (→ el DCF asumiría CLP). Se toma de companies.financial_statements_currency.
+        # Para las chilenas ya viene de los facts; sólo se completa si faltaba.
+        if not financial_data.get('reporting_currency'):
+            try:
+                _ccy = _market_data.get_currency(file_path) if _market_data else None
+            except Exception:
+                _ccy = None
+            if _ccy:
+                financial_data['reporting_currency'] = _ccy
+
+        # Deuda declarada de EEUU: si el deuda.json chileno no aplicó (empresa US), se toma
+        # el detalle del 10-K (tabla us_costo_deuda o parseo en vivo). Da la hoja DEUDA
+        # FINANCIERA y el Kd declarado, igual que las chilenas con deuda declarada.
+        if not financial_data.get('deuda'):
+            try:
+                _du = _market_data.get_deuda_detalle(file_path) if _market_data else None
+            except Exception:
+                _du = None
+            if _du:
+                financial_data['deuda'] = _du
+
         header_row = self.formatter.setup_worksheet_structure(ws, period_vector, sheet_name, lang=lang, unit_text=unit_text)
 
         # Nota metodológica compacta (siempre en combinado)
