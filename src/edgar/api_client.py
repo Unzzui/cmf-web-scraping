@@ -111,6 +111,37 @@ class EdgarClient:
                 raise ApiError(f"GET {url} falló tras {self.max_retries} intentos: {exc}")
         raise ApiError(f"GET {url} falló: {last_exc}")
 
+    def get_text(self, url: str) -> str:
+        """GET que devuelve texto (para la instancia iXBRL del filing, no JSON).
+
+        Mismo throttle, reintentos y política de 403/404 que ``get_json``.
+        """
+        last_exc: Exception | None = None
+        for attempt in range(1, self.max_retries + 1):
+            self.limiter.acquire()
+            try:
+                response = self.session.get(url, timeout=self.timeout)
+                if response.status_code == 404:
+                    raise NoDataError(f"404 sin datos: {url}")
+                if response.status_code == 403:
+                    raise ApiError(
+                        f"403 de la SEC en {url}. Revisar el User-Agent y no pasar de "
+                        "10 req/s."
+                    )
+                if response.status_code == 429:
+                    raise ApiError(f"429: excedido el límite de 10 req/s en {url}")
+                response.raise_for_status()
+                return response.text
+            except (NoDataError, ApiError):
+                raise
+            except Exception as exc:  # noqa: BLE001 - se reintenta cualquier fallo de red
+                last_exc = exc
+                if attempt < self.max_retries:
+                    time.sleep(self.backoff * (2 ** (attempt - 1)))
+                    continue
+                raise ApiError(f"GET {url} falló tras {self.max_retries} intentos: {exc}")
+        raise ApiError(f"GET {url} falló: {last_exc}")
+
     def get_companyfacts(self, cik: str | int) -> dict:
         return self.get_json(companyfacts_url(cik))
 
