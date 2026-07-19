@@ -1,0 +1,35 @@
+# findata-updater — corre el orquestador en loop, se reinicia solo, persiste los datos.
+#
+# En el server:
+#   1. Cloná los dos repos (cmf-web-scraping y FinDataChile) y dejá sus .env con las
+#      credenciales (PG*, EDGAR_USER_AGENT, CMF_API_KEY, ADMIN_USERNAME/PASSWORD, FDC_URL…).
+#   2. Ajustá las rutas de abajo (CMF_REPO / FDC_REPO) a dónde clonaste.
+#   3. docker compose -f deploy/docker/docker-compose.yml up -d --build
+#   4. Logs:  docker compose -f deploy/docker/docker-compose.yml logs -f
+#
+# "no tener que hacer nada": queda corriendo, hace un ciclo por día. Las noches sin
+# publicaciones nuevas terminan en segundos (el gate de calendario no selecciona nada).
+
+services:
+  findata-updater:
+    build:
+      context: ../..
+      dockerfile: deploy/docker/Dockerfile
+    image: findata-updater
+    container_name: findata-updater
+    restart: unless-stopped
+    environment:
+      # El orquestador lee los .env de los repos montados; estas sólo overridean si hace falta.
+      FINDATACHILE_REPO: /app/fdc
+      FDC_URL: ${FDC_URL:-https://www.findatachile.com}
+      TZ: America/Santiago
+    volumes:
+      # Los dos repos (código + datos + .env). Ajustá las rutas de la izquierda a tu server.
+      - ${CMF_REPO:-../..}:/app/cmf
+      - ${FDC_REPO:-../../../FinDataChile}:/app/fdc
+      # Perfil de rclone para el backup a Google Drive (si lo usás).
+      - ${RCLONE_CONFIG_DIR:-~/.config/rclone}:/root/.config/rclone:ro
+    working_dir: /app/cmf
+    # Un ciclo diario, live, con refresco de calendarios. Para probar sin publicar:
+    #   command: ["python", "/app/cmf/scripts/auto_update.py"]        # dry-run, una vez
+    command: ["python", "/app/cmf/scripts/auto_update.py", "--live", "--refresh-calendars", "--loop", "24"]
