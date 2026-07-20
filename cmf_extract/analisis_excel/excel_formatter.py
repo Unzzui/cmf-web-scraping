@@ -17,6 +17,11 @@ try:
 except ImportError:  # ejecutado desde dentro de cmf_extract/
     import excel_style as est
 
+try:
+    from cmf_extract.report_context import es_us as _es_us
+except ImportError:  # ejecutado desde dentro de cmf_extract/
+    from report_context import es_us as _es_us
+
 
 class _RellenoUnico(dict):
     """Un dict que devuelve SIEMPRE el mismo relleno, mire quien mire.
@@ -132,8 +137,9 @@ class ExcelFormatter:
             periods_text = f"{first_period} - {last_period}"
         else:
             periods_text = "-"
-        # Unidad configurable; por defecto miles CLP / Thousands CLP
-        unit_note = unit_text if unit_text else ("Miles CLP" if lang == "es" else "Thousands CLP")
+        # Unidad configurable; el fallback depende del mercado (EEUU=USD, Chile=CLP).
+        _fallback_cur = "USD" if _es_us() else "CLP"
+        unit_note = unit_text if unit_text else (f"Miles {_fallback_cur}" if lang == "es" else f"Thousands {_fallback_cur}")
         subtitle_text = (
             f"Unidad: {unit_note}    •    Períodos: {periods_text}" if lang == "es" else
             f"Unit: {unit_note}    •    Periods: {periods_text}"

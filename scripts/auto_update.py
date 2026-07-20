@@ -268,8 +268,12 @@ def ciclo_us(pend: list[tuple[int, str]], conn, sub_env: dict, live: bool,
     # (toma el user-agent por --arg), así que el análisis lee la deuda declarada de la BD, sin
     # parsear el 10-K en vivo. Con EDGAR_UA seteado, get_deuda_detalle live-parsea el 10-K de
     # cada empresa sin deuda declarada (NVDA) y se cuelga por rate-limit de la SEC.
+    # Mercado del reporte para las hojas del Excel (portada/NOTAS/Ficha/RATIOS/DCF): EEUU.
+    # run_products_analysis también lo infiere de la ruta Product_v1_US, pero lo fijamos
+    # explícito por si las rutas cambiaran (evita un CLP/CMF fantasma en un Excel de EEUU).
+    us_env = {**sub_env, "CMF_REPORT_MARKET": "US"}
     for cmd, cwd, paso in pasos:
-        ok = run(cmd, cwd, sub_env, paso, timeout=1800)
+        ok = run(cmd, cwd, us_env, paso, timeout=1800)
         if not ok and paso in ("estados US", "análisis US"):
             log(f"  ⚠ paso crítico '{paso}' falló; se corta el ciclo US.")
             return

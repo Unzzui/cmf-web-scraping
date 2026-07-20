@@ -793,6 +793,15 @@ def main() -> int:
                         help="Idiomas a procesar (coma): es,en | es | en")
     args = parser.parse_args()
 
+    # Mercado del reporte: si las rutas apuntan al pipeline de EEUU (Product_v1_US), fijamos
+    # CMF_REPORT_MARKET=US para que la portada, NOTAS, Ficha Técnica, RATIOS y DCF rotulen
+    # SEC/EDGAR · US GAAP · USD en vez de CMF · IFRS · CLP. Ver cmf_extract/report_context.py.
+    if os.environ.get("CMF_REPORT_MARKET", "").strip().upper() != "US":
+        _rutas = f"{args.input_dir}|{args.output_dir}".lower()
+        if "product_v1_us" in _rutas or "_us/" in _rutas or "_us" in Path(args.output_dir).name.lower():
+            os.environ["CMF_REPORT_MARKET"] = "US"
+            print("[report-context] Mercado detectado: EEUU (SEC/EDGAR · US GAAP · USD)")
+
     effective_out = args.output_dir / args.frequency
     effective_out.mkdir(parents=True, exist_ok=True)
 

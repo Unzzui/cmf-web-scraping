@@ -27,6 +27,11 @@ try:
 except ImportError:  # ejecutado desde dentro de cmf_extract/
     import excel_style as est
 
+try:
+    from cmf_extract.report_context import es_us as _es_us
+except ImportError:  # ejecutado desde dentro de cmf_extract/
+    from report_context import es_us as _es_us
+
 
 try:
     from openpyxl.worksheet.data_validation import DataValidation
@@ -53,7 +58,16 @@ class DCFBuilder:
         # Sin esto, el DCF calcula un valor intrínseco en dólares y lo compara contra un
         # precio en pesos: la "Prima/(Descuento)" y la "Recomendación" salen desviadas
         # ~900x, y siempre dicen "extremadamente sobrevalorada".
-        self.reporting_currency = str(financial_data.get("reporting_currency") or "CLP").upper()
+        self._es_us = _es_us()
+        self.reporting_currency = str(
+            financial_data.get("reporting_currency") or ("USD" if self._es_us else "CLP")
+        ).upper()
+
+        # Moneda contra la que se compara el precio de bolsa. En Chile la acción cotiza en
+        # PESOS, así que el valor por acción del DCF se convierte a CLP antes de comparar.
+        # Para una empresa de EEUU la acción cotiza en su moneda de reporte (USD): NO se
+        # convierte a pesos — mostrar la valuación de NVIDIA en CLP sería un dato falso.
+        self.moneda_precio = self.reporting_currency if self._es_us else "CLP"
 
         # Estilos
         self._setup_styles()
@@ -1280,12 +1294,12 @@ class DCFBuilder:
         # empresa que reporta en CLP la fila decia "Tipo de cambio (CLP por 1 CLP) = 1":
         # una conversion que no convierte nada, y que ademas rompia el valor por accion
         # (ver el bloque de VALUACION).
-        if self.reporting_currency != "CLP":
+        if self.reporting_currency != self.moneda_precio:
             inputs.append(
-                # Editable: es lo que convierte el valor por accion a pesos para poder
-                # compararlo con el precio de bolsa. El analista puede ajustarlo al tipo de
-                # cambio que quiera usar -- pero NUNCA se compara sin convertir.
-                ("Tipo de cambio (CLP por 1 %s)" % self.reporting_currency,
+                # Editable: es lo que convierte el valor por accion a la moneda del precio de
+                # bolsa para poder compararlo. El analista puede ajustarlo al tipo de cambio
+                # que quiera usar -- pero NUNCA se compara sin convertir.
+                ("Tipo de cambio (%s por 1 %s)" % (self.moneda_precio, self.reporting_currency),
                  self._tipo_de_cambio_actual(), "input")
             )
 
@@ -1410,8 +1424,10 @@ class DCFBuilder:
         g_row = P["g - Tasa de crecimiento terminal (%)"]
         deuda_row = P["Deuda neta (M$)"]
         acciones_row = P["Acciones en circulación (M)"]
-        # Solo existe cuando los estados no estan en pesos (ver el bloque de PARAMETROS).
-        fx_row = P.get(f"Tipo de cambio (CLP por 1 {self.reporting_currency})")
+        # `mp` = moneda contra la que se compara el precio de bolsa (CLP en Chile, USD en EEUU).
+        mp = self.moneda_precio
+        # Solo existe cuando la moneda de reporte != la del precio (ver el bloque de PARAMETROS).
+        fx_row = P.get(f"Tipo de cambio ({mp} por 1 {self.reporting_currency})")
 
         # Bloques de valuación. Las filas se resuelven POR ETIQUETA, igual que los
         # parámetros: los offsets numéricos (valuation_row + 8, + 10, + 11…) se desplazan
@@ -1426,7 +1442,7 @@ class DCFBuilder:
         # misma. Excel la resolvia como vacio y la celda mostraba "$ -", junto a una fila
         # duplicada con el mismo titulo. Ademas el "tipo de cambio" era "CLP por 1 CLP = 1",
         # una conversion que no convierte nada.
-        convierte = self.reporting_currency != "CLP"
+        convierte = self.reporting_currency != mp
 
         V = {}
         _labels = [
@@ -1435,18 +1451,18 @@ class DCFBuilder:
             f"Valor por Acción (DCF, {self.reporting_currency})",
         ]
         if convierte:
-            _labels.append("Valor por Acción (DCF, CLP)")
+            _labels.append(f"Valor por Acción (DCF, {mp})")
         _labels += [
-            "", "Precio Actual Mercado (CLP)", "Prima/(Descuento) %", "Recomendación",
+            "", f"Precio Actual Mercado ({mp})", "Prima/(Descuento) %", "Recomendación",
         ]
         for i, lbl in enumerate(_labels):
             V[lbl] = valuation_row + 1 + i
 
         r_dcf_moneda = V[f"Valor por Acción (DCF, {self.reporting_currency})"]
-        # Contra qué se compara el precio de bolsa: siempre pesos. Si los estados ya están
-        # en pesos, es la misma fila; si no, la convertida.
-        r_dcf_clp = V["Valor por Acción (DCF, CLP)"] if convierte else r_dcf_moneda
-        r_precio = V["Precio Actual Mercado (CLP)"]
+        # Contra qué se compara el precio de bolsa: la moneda del precio (mp). Si los estados
+        # ya están en esa moneda, es la misma fila; si no, la convertida.
+        r_dcf_clp = V[f"Valor por Acción (DCF, {mp})"] if convierte else r_dcf_moneda
+        r_precio = V[f"Precio Actual Mercado ({mp})"]
         r_prima = V["Prima/(Descuento) %"]
 
         blocks = [
@@ -1472,13 +1488,13 @@ class DCFBuilder:
         # "VENTA FUERTE". Un analista que le creyera vendía justo lo que debía comprar.
         if convierte:
             blocks.append(
-                ("Valor por Acción (DCF, CLP)", f"=IFERROR(B{r_dcf_moneda}*$B${fx_row},\"\")")
+                (f"Valor por Acción (DCF, {mp})", f"=IFERROR(B{r_dcf_moneda}*$B${fx_row},\"\")")
             )
 
         blocks += [
             ("", ""),
-            ("Precio Actual Mercado (CLP)", "INPUT_REQUIRED"),
-            # La prima compara PESOS CONTRA PESOS.
+            (f"Precio Actual Mercado ({mp})", "INPUT_REQUIRED"),
+            # La prima compara la MISMA moneda contra la misma moneda.
             ("Prima/(Descuento) %",
              f"=IF(NOT(ISNUMBER(B{r_precio})),\"SIN PRECIO MERCADO\","
              f"IF(NOT(ISNUMBER(B{r_dcf_clp})),\"SIN VALOR DCF\","

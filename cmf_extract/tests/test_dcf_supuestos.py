@@ -92,10 +92,11 @@ def test_el_valor_por_accion_no_se_referencia_a_si_mismo():
     con la última y la fórmula se apuntaba a sí misma. Excel la resolvía como vacío: la
     celda mostraba "$ -" junto a una fila duplicada con el mismo título.
 
-    Ahora la fila de conversión sólo existe si los estados NO están en pesos.
+    Ahora la fila de conversión sólo existe si la moneda de reporte != la del precio de bolsa
+    (`mp`: CLP en Chile, USD en EEUU), y el valor por acción se rotula en esa moneda.
     """
-    assert "convierte = self.reporting_currency != \"CLP\"" in FUENTE
-    assert 'r_dcf_clp = V["Valor por Acción (DCF, CLP)"] if convierte else r_dcf_moneda' in FUENTE
+    assert "convierte = self.reporting_currency != mp" in FUENTE
+    assert 'r_dcf_clp = V[f"Valor por Acción (DCF, {mp})"] if convierte else r_dcf_moneda' in FUENTE
 
 
 def test_el_rotulo_del_ano_base_no_se_sobrescribe_con_un_trimestre():

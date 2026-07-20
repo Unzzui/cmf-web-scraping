@@ -16,6 +16,11 @@ try:
 except ImportError:  # ejecutado desde dentro de cmf_extract/
     import excel_style as est
 
+try:
+    from cmf_extract.report_context import contexto as _ctx_reporte
+except ImportError:  # ejecutado desde dentro de cmf_extract/
+    from report_context import contexto as _ctx_reporte
+
 def extract_company_info(filename):
     """Extrae información de la empresa del nombre del archivo y formatea el RUT (76.129.263-3)."""
     try:
@@ -198,11 +203,16 @@ def create_professional_dashboard(workbook, company_name, rut, period, currency=
     # Eléctrica Pehuenche). Para todas ellas, la portada del Excel que el cliente PAGA
     # afirmaba algo falso — y no es un detalle de formato: es un error de un factor de
     # 900 que el analista sólo descubre después de haber tomado una decisión.
+    # Contexto de mercado (Chile/EEUU): decide fuente, estándar, país y la moneda por defecto.
+    ctx = _ctx_reporte(moneda=currency)
+    # En EEUU la moneda es USD aunque el detector de moneda del XBRL chileno no la encuentre.
+    if not currency and ctx["market"] == "US":
+        currency = ctx["moneda"]
     moneda_txt = f"Moneda: {currency}" if currency else "Moneda: (no determinada)"
     info_content = [
         f"Empresa: {company_name}",
-        f"RUT: {rut}",
-        "Mercado: Chile",
+        f"RUT: {rut}" if ctx["market"] != "US" else f"CIK: {rut}",
+        f"Mercado: {ctx['pais']}",
         moneda_txt,
     ]
     # Si la empresa CAMBIÓ de moneda a mitad de la serie, hay que decirlo: los años no
@@ -213,8 +223,8 @@ def create_professional_dashboard(workbook, company_name, rut, period, currency=
     period_content = [
         f"Período: {period}",
         "Frecuencia: Trimestral",
-        "Fuente: CMF Chile",
-        "Estándar: IFRS"
+        f"Fuente: {ctx['fuente']}",
+        f"Estándar: {ctx['estandar']}"
     ]
     
     tech_content = [
@@ -313,8 +323,8 @@ def create_professional_dashboard(workbook, company_name, rut, period, currency=
     row += 1
     
     description = (
-        "Este archivo contiene estados financieros oficiales bajo estándar IFRS reportados por la empresa "
-        "a la CMF (Comisión para el Mercado Financiero de Chile). Los datos han sido procesados y "
+        f"Este archivo contiene estados financieros oficiales {ctx['resumen_fuente']}. "
+        "Los datos han sido procesados y "
         "complementados con análisis financiero avanzado que incluye más de 30 ratios financieros."
         "\n\nNOTAS TÉCNICAS IMPORTANTES:\n"
         "• Separadores decimales: Si las fórmulas no funcionan correctamente, configure Excel con separador "
@@ -329,7 +339,7 @@ def create_professional_dashboard(workbook, company_name, rut, period, currency=
     
     # === FOOTER PROFESIONAL ===
     set_cell_with_merge(start_sheet, f'B{row}', f'M{row}',
-                       "Datos oficiales IFRS de CMF Chile. Solo fines educativos/profesionales. No constituye asesoría de inversión.",
+                       ctx["disclaimer_footer"],
                        est.NOTA, center)
     
     row += 1

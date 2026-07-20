@@ -41,6 +41,11 @@ try:
 except ImportError:  # ejecutado desde dentro de cmf_extract/
     import excel_style as est
 
+try:
+    from cmf_extract.report_context import contexto as _ctx_reporte
+except ImportError:  # ejecutado desde dentro de cmf_extract/
+    from report_context import contexto as _ctx_reporte
+
 # ---------------------------------------------------------------------------
 # Colour palette (shared with ExcelFormatter brand colours)
 # ---------------------------------------------------------------------------
@@ -150,25 +155,35 @@ def create_metadata_sheet(
         if is_es
         else "Generated file summary"
     )
-    disclaimer = (
-        "Datos extraídos de reportes XBRL publicados por la Comisión para el "
-        "Mercado Financiero (CMF) de Chile."
-        if is_es
-        else "Data extracted from XBRL reports published by Chile's Financial "
-        "Market Commission (CMF)."
-    )
+    # Fuente/estándar según el mercado (Chile CMF·IFRS vs EEUU SEC/EDGAR·US GAAP).
+    _ctx = _ctx_reporte()
+    if _ctx["market"] == "US":
+        disclaimer = (
+            _ctx["notas_fuente"]
+            if is_es
+            else "Data extracted from XBRL reports (10-K/10-Q) published by the U.S. Securities "
+            "and Exchange Commission (SEC) via EDGAR."
+        )
+    else:
+        disclaimer = (
+            "Datos extraídos de reportes XBRL publicados por la Comisión para el "
+            "Mercado Financiero (CMF) de Chile."
+            if is_es
+            else "Data extracted from XBRL reports published by Chile's Financial "
+            "Market Commission (CMF)."
+        )
 
     # Field labels
     labels: list[tuple[str, str]] = [
         ("Empresa" if is_es else "Company", company_name),
-        ("RUT", rut),
+        ("CIK" if _ctx["market"] == "US" else "RUT", rut),
         (
             "Generado" if is_es else "Generated",
             datetime.now().strftime("%Y-%m-%d %H:%M"),
         ),
         (
             "Fuente" if is_es else "Source",
-            "CMF Chile - XBRL IFRS",
+            _ctx["fuente_ficha"],
         ),
         (
             "Períodos" if is_es else "Periods",

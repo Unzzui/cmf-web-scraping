@@ -26,6 +26,11 @@ try:
 except ImportError:  # ejecutado desde dentro de cmf_extract/
     import excel_style as est
 
+try:
+    from cmf_extract.report_context import es_us as _es_us, contexto as _ctx_reporte
+except ImportError:  # ejecutado desde dentro de cmf_extract/
+    from report_context import es_us as _es_us, contexto as _ctx_reporte
+
 
 
 def _xbrl_search_root() -> Path:
@@ -511,7 +516,9 @@ class FormulaProcessorMixin:
         # —que reportan en dólares y siempre lo han hecho— llevaban "Miles CLP" en el
         # encabezado de todas sus hojas. Para el analista que compra ese Excel, eso es un
         # error de un factor de 900 anunciado como si fuera un dato.
-        moneda_actual = 'CLP'
+        # El default depende del mercado: en EEUU (US GAAP) es USD, no CLP. Si el XBRL trae la
+        # moneda por año (cmap_facts), esa manda igual.
+        moneda_actual = 'USD' if _es_us() else 'CLP'
         if cmap_facts:
             moneda_actual = str(cmap_facts[max(cmap_facts.keys())]).upper()
         base_unit = (f"Thousands {moneda_actual}" if lang == 'en' else f"Miles {moneda_actual}")
@@ -2075,12 +2082,20 @@ class FormulaProcessorMixin:
                 )
                 notes_row += 1  # spacer
 
-            # --- Disclaimer ---
-            disclaimer = (
-                "Data extracted from XBRL reports published by Chile's Financial Market Commission (CMF). findatachile.com"
-                if lang == 'en' else
-                "Datos extraídos de reportes XBRL publicados por la Comisión para el Mercado Financiero (CMF) de Chile. findatachile.com"
-            )
+            # --- Disclaimer --- (fuente según mercado: CMF Chile vs SEC/EDGAR)
+            if _es_us():
+                disclaimer = (
+                    "Data extracted from XBRL reports (10-K/10-Q) published by the U.S. Securities and "
+                    "Exchange Commission (SEC) via EDGAR. findatachile.com"
+                    if lang == 'en' else
+                    _ctx_reporte()["notas_fuente"] + " findatachile.com"
+                )
+            else:
+                disclaimer = (
+                    "Data extracted from XBRL reports published by Chile's Financial Market Commission (CMF). findatachile.com"
+                    if lang == 'en' else
+                    "Datos extraídos de reportes XBRL publicados por la Comisión para el Mercado Financiero (CMF) de Chile. findatachile.com"
+                )
             ws_notes.merge_cells(start_row=notes_row, start_column=1, end_row=notes_row, end_column=3)
             disc_cell = ws_notes.cell(row=notes_row, column=1, value=disclaimer)
             disc_cell.font = est.fuente(9, color=est.MUTED, italic=True)
