@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -82,12 +83,22 @@ def etiqueta_periodo(y: int, q: int) -> str:
     return f"{y}Q{q}" if q else str(y)
 
 
+def _limpiar_nombre(nombre: str) -> str:
+    """Saca el estado de incorporación con BARRAS que la SEC agrega al razon_social
+    ("BANK OF AMERICA CORP /DE/", "QUALCOMM INC/DE", "COSTCO WHOLESALE CORP /NEW"). Las
+    barras son inválidas en un nombre de archivo y hacían fallar el renombrado del análisis.
+    """
+    nombre = re.sub(r"\s*/[A-Za-z]+/?\s*$", "", nombre)  # sufijo /DE/, /NEW, /DE
+    return nombre.replace("/", " ").strip()
+
+
 def empresa(conn, company_id: int) -> tuple[str, str]:
     with conn.cursor() as cur:
         cur.execute("SELECT razon_social, COALESCE(financial_statements_currency,'USD') "
                     "FROM companies WHERE id = %s", [company_id])
         r = cur.fetchone()
-    return (r[0] if r else f"US-{company_id}", r[1] if r else "USD")
+    nombre = _limpiar_nombre(r[0]) if r and r[0] else f"US-{company_id}"
+    return (nombre, r[1] if r else "USD")
 
 
 def construir(conn, company_id: int, cik: str, out_dir: Path) -> Path | None:

@@ -41,3 +41,8 @@ __pycache__/
 *.log
 cmf_scraper_log_*.txt
 .tmp_*
+
+# Artefactos de generación US (Excel, estados)
+Product_v1_US/
+Products_US/
+cmf_extract/Products_US/
