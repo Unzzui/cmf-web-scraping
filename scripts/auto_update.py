@@ -162,8 +162,11 @@ def run(cmd: list[str], cwd: Path, env: dict, paso: str, timeout: int = 3600) ->
 def refrescar_calendarios(sub_env: dict, live: bool) -> None:
     log("Refrescando calendarios (CMF + EDGAR)…")
     anio = datetime.now().year
+    # --env-file explícito: el default de scrape_report_dates apunta a la ruta del repo FDC en
+    # el host, que no existe en el contenedor. El .env de cmf tiene las mismas credenciales PG.
     run([PY, str(CMF / "scripts" / "scrape_report_dates.py"),
-         "--years", f"{anio-1},{anio}", "--refresh-filing-year", str(anio)],
+         "--years", f"{anio-1},{anio}", "--refresh-filing-year", str(anio),
+         "--env-file", str(CMF / ".env")],
         CMF, sub_env, "calendario CMF", timeout=900)
     cmd = [PY, str(CMF / "scripts" / "ingest_us_calendar.py")]
     if live:
@@ -283,6 +286,10 @@ def main() -> int:
 
     env = load_env(CMF / ".env") or load_env(FDC / ".env")
     sub_env = {**os.environ, **env}
+    # Los sub-scripts US (enrich/kd/estados/upload) leen el repo FinDataChile de FDC_DIR, con
+    # default a la ruta del host. En el contenedor está montado en otra ruta (FINDATACHILE_REPO
+    # = /app/fdc), así que se lo propagamos para que no apunten a un path inexistente.
+    sub_env.setdefault("FDC_DIR", str(FDC))
 
     while True:
         t0 = time.perf_counter()

@@ -20,7 +20,11 @@ from pathlib import Path
 
 import psycopg2
 
-FDC = Path("/home/unzzui/Proyectos/FinDataChile")
+# La ruta del repo FinDataChile es distinta en el host (~/Proyectos/FinDataChile) y en el
+# contenedor (montado en /app/fdc). Se toma de FDC_DIR/FINDATACHILE_REPO; el default sólo
+# aplica en la máquina de desarrollo.
+FDC = Path(os.environ.get("FDC_DIR") or os.environ.get("FINDATACHILE_REPO")
+           or "/home/unzzui/Proyectos/FinDataChile")
 SCRIPTS = FDC / "scripts"
 
 
