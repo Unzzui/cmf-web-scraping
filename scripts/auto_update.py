@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -186,13 +187,14 @@ def ciclo_cl(ruts: list[str], sub_env: dict, live: bool) -> None:
     run(cmd, CMF, sub_env, "pipeline CL", timeout=7200)
 
 
-def ciclo_us(pend: list[tuple[int, str]], conn, sub_env: dict, live: bool) -> None:
+def ciclo_us(pend: list[tuple[int, str]], conn, sub_env: dict, live: bool,
+             forzar: bool = False, no_publish: bool = False) -> None:
     if not pend:
         log("US: 0 empresas con filings nuevos. Nada que hacer.")
         return
     ids = [i for i, _ in pend]
     tickers = us_tickers(conn, ids)
-    log(f"US: {len(pend)} con el calendario adelantado → {tickers[:10]}…")
+    log(f"US: {len(pend)} {'FORZADAS' if forzar else 'con el calendario adelantado'} → {tickers[:10]}…")
     if not live:
         log("  (dry-run: no se corre la secuencia US. Con --live se ejecuta.)")
         return
@@ -203,33 +205,61 @@ def ciclo_us(pend: list[tuple[int, str]], conn, sub_env: dict, live: bool) -> No
     if not run([PY, str(CMF / "scripts" / "ingest_edgar.py"), "--tickers", ",".join(tickers),
                 "--supabase-live"], CMF, {**sub_env, "EDGAR_USER_AGENT": EDGAR_UA}, "ingesta EDGAR"):
         return
-    # PASO 2: solo se regenera Excel/publica para las que REALMENTE avanzaron de período.
-    # Si companyfacts todavía no reflejó el filing, no avanzó nada y no se re-genera nada caro.
-    avanzaron = [cid for cid, _ in pend if _max_periodo(conn, cid) > antes[cid]]
+    # PASO 2: solo se regenera Excel/publica para las que REALMENTE avanzaron de período
+    # (con --force-us se saltea este guard). Si companyfacts todavía no reflejó el filing, no
+    # avanzó nada y no se re-genera nada caro.
+    if forzar:
+        avanzaron = [cid for cid, _ in pend]
+    else:
+        avanzaron = [cid for cid, _ in pend if _max_periodo(conn, cid) > antes[cid]]
     ciks_av = [k for cid, k in pend if cid in avanzaron]
     if not avanzaron:
         log("  US: la ingesta corrió pero ningún dato avanzó (companyfacts aún no refleja el "
             "filing). No se regenera Excel ni se publica.")
         return
-    log(f"  US: {len(avanzaron)} avanzaron de período → se regeneran y publican.")
+    log(f"  US: {len(avanzaron)} a regenerar" + (" (subida en DRY-RUN, --no-publish)" if no_publish else " y publicar"))
     ids = avanzaron
     ids_csv = ",".join(str(i) for i in ids)
     inp = str(PRODUCTS_US / "estados")
     out = str(PRODUCTS_US / "analisis")
+    # AISLAR la corrida: limpiar los dirs para regenerar/analizar SOLO estas empresas. Sin
+    # esto, run_products_analysis reprocesa todos los estados acumulados de corridas previas.
+    shutil.rmtree(inp, ignore_errors=True)
+    shutil.rmtree(out, ignore_errors=True)
+    subir = [PY, str(CMF / "scripts" / "upload_us_products.py"), "--dir", out, "--url", FDC_URL,
+             "--user", sub_env.get("FDC_ADMIN_USER", ""), "--password", sub_env.get("FDC_ADMIN_PASS", "")]
+    if not no_publish:
+        subir.append("--live")
     pasos = [
         ([PY, str(CMF / "scripts" / "enrich_us_market_data.py"), "--apply", "--only", ids_csv], CMF, "market data"),
         ([PY, str(CMF / "scripts" / "refresh_us_kd.py"), "--save", "--user-agent", EDGAR_UA, "--only", ",".join(ciks_av)], CMF, "Kd declarado"),
         ([PY, str(CMF / "scripts" / "build_us_estados.py"), "--only", ids_csv, "--out-dir", inp + "/Total"], CMF, "estados US"),
-        ([PY, str(CMF / "cmf_extract" / "run_products_analysis.py"), "--input-dir", inp, "--output-dir", out, "--frequency", "Total", "--langs", "es", "--workers", "2"], CMF, "análisis US"),
-        ([PY, str(CMF / "scripts" / "upload_us_products.py"), "--dir", out, "--live", "--url", FDC_URL,
-          "--user", sub_env.get("FDC_ADMIN_USER", ""), "--password", sub_env.get("FDC_ADMIN_PASS", "")], CMF, "publicar US"),
+        # cwd = cmf_extract A PROPÓSITO: desde la raíz del repo, run_products_analysis ve
+        # data/XBRL/Total (los XBRL chilenos) y su paso "ensure-combined" intenta procesar
+        # TODA la data CL → se cuelga. Desde cmf_extract ese path no existe y no se dispara.
+        ([PY, str(CMF / "cmf_extract" / "run_products_analysis.py"), "--input-dir", inp, "--output-dir", out, "--frequency", "Total", "--langs", "es", "--workers", "2"], CMF / "cmf_extract", "análisis US"),
+        (subir, CMF, "publicar US" + (" (dry-run)" if no_publish else "")),
         ([PY, str(CMF / "scripts" / "refresh_ratios_dcf.py"), "--only", ids_csv], CMF / "scripts", "ratios+DCF"),
     ]
+    # OJO: los pasos corren SIN EDGAR_UA en el entorno. refresh_us_kd ya pobló us_costo_deuda
+    # (toma el user-agent por --arg), así que el análisis lee la deuda declarada de la BD, sin
+    # parsear el 10-K en vivo. Con EDGAR_UA seteado, get_deuda_detalle live-parsea el 10-K de
+    # cada empresa sin deuda declarada (NVDA) y se cuelga por rate-limit de la SEC.
     for cmd, cwd, paso in pasos:
-        ok = run(cmd, cwd, {**sub_env, "EDGAR_UA": EDGAR_UA}, paso, timeout=3600)
-        if not ok and paso in ("ingesta EDGAR", "estados US", "análisis US"):
-            log(f"  ⚠ paso crítico '{paso}' falló; se corta el ciclo US para no publicar a medias.")
+        ok = run(cmd, cwd, sub_env, paso, timeout=1800)
+        if not ok and paso in ("estados US", "análisis US"):
+            log(f"  ⚠ paso crítico '{paso}' falló; se corta el ciclo US.")
             return
+
+
+def us_forzadas(conn, spec: str) -> list[tuple[int, str]]:
+    toks = [t.strip() for t in spec.split(",") if t.strip()]
+    ids = [int(t) for t in toks if t.isdigit()]
+    tks = [t.upper() for t in toks if not t.isdigit()]
+    with conn.cursor() as cur:
+        cur.execute("SELECT id, cik FROM companies WHERE market='US' AND cik IS NOT NULL "
+                    "AND (id = ANY(%s) OR UPPER(ticker) = ANY(%s))", [ids, tks])
+        return [(int(i), str(k)) for i, k in cur.fetchall()]
 
 
 def backup(sub_env: dict, live: bool) -> None:
@@ -244,6 +274,10 @@ def main() -> int:
     ap.add_argument("--refresh-calendars", action="store_true", help="Refrescar calendarios primero")
     ap.add_argument("--only-cl", action="store_true")
     ap.add_argument("--only-us", action="store_true")
+    ap.add_argument("--no-publish", action="store_true",
+                    help="No publica a FinData (subida en dry-run). Para probar el pipeline sin tocar el catálogo.")
+    ap.add_argument("--force-us", default="",
+                    help="Tickers/IDs US a forzar por el pipeline completo, salteando el gate (para probar).")
     ap.add_argument("--loop", type=int, default=0, help="Si >0, repite cada N horas (para el container)")
     args = ap.parse_args()
 
@@ -261,10 +295,12 @@ def main() -> int:
 
         conn = connect(env)
         try:
-            if not args.only_us:
+            if not args.only_us and not args.force_us:
                 ciclo_cl(cl_pendientes(conn), sub_env, args.live)
             if not args.only_cl:
-                ciclo_us(us_pendientes(conn), conn, sub_env, args.live)
+                pend = us_forzadas(conn, args.force_us) if args.force_us else us_pendientes(conn)
+                ciclo_us(pend, conn, sub_env, args.live,
+                         forzar=bool(args.force_us), no_publish=args.no_publish)
         finally:
             conn.close()
 
