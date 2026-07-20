@@ -151,15 +151,22 @@ def _max_periodo(conn, cid: int) -> int:
 # Ejecución de pasos
 # ---------------------------------------------------------------------------
 
-def run(cmd: list[str], cwd: Path, env: dict, paso: str, timeout: int = 3600) -> bool:
+def run(cmd: list[str], cwd: Path, env: dict, paso: str, timeout: int = 3600,
+        codigos_ok: tuple[int, ...] = (0,)) -> bool:
+    """Corre un sub-paso. Devuelve True si el returncode está en `codigos_ok`.
+    Por defecto sólo 0 es éxito; algunos pasos (p.ej. la ingesta EDGAR, que devuelve 1 cuando
+    alguna empresa tiene flags de validación pero SÍ ingirió los datos) aceptan más códigos."""
     log(f"  → {paso}: {' '.join(cmd[:6])}…")
     try:
         p = subprocess.run(cmd, cwd=str(cwd), env=env, timeout=timeout,
                            capture_output=True, text=True)
-        if p.returncode != 0:
+        if p.returncode not in codigos_ok:
             log(f"    ✗ {paso} rc={p.returncode}: {(p.stderr or p.stdout)[-300:]}")
             return False
-        log(f"    ✓ {paso}")
+        if p.returncode != 0:
+            log(f"    ✓ {paso} (rc={p.returncode}: hubo avisos de validación, pero los datos se ingirieron)")
+        else:
+            log(f"    ✓ {paso}")
         return True
     except subprocess.TimeoutExpired:
         log(f"    ✗ {paso}: TIMEOUT ({timeout}s)")
@@ -215,8 +222,11 @@ def ciclo_us(pend: list[tuple[int, str]], conn, sub_env: dict, live: bool,
     # PASO 1: ingesta EDGAR de todas las candidatas (barato: 1 req/empresa). Captura lo que
     # companyfacts tenga AHORA — que puede ir detrás del calendario de submissions.
     antes = {cid: _max_periodo(conn, cid) for cid, _ in pend}
+    # rc=1 en ingest_edgar = alguna empresa con flags de cuadratura/acumulación, PERO los datos
+    # se ingirieron igual: no debe abortar el ciclo. rc=2 sí es error duro (falta migración, etc.).
     if not run([PY, str(CMF / "scripts" / "ingest_edgar.py"), "--tickers", ",".join(tickers),
-                "--supabase-live"], CMF, {**sub_env, "EDGAR_USER_AGENT": EDGAR_UA}, "ingesta EDGAR"):
+                "--supabase-live"], CMF, {**sub_env, "EDGAR_USER_AGENT": EDGAR_UA}, "ingesta EDGAR",
+               codigos_ok=(0, 1)):
         return
     # PASO 2: solo se regenera Excel/publica para las que REALMENTE avanzaron de período
     # (con --force-us se saltea este guard). Si companyfacts todavía no reflejó el filing, no
