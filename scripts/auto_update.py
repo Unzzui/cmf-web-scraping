@@ -28,10 +28,13 @@ from __future__ import annotations
 import argparse
 import os
 import shutil
+import smtplib
+import ssl
 import subprocess
 import sys
 import time
 from datetime import datetime, timezone
+from email.message import EmailMessage
 from pathlib import Path
 
 import psycopg2
@@ -44,8 +47,15 @@ EDGAR_UA = os.environ.get("EDGAR_USER_AGENT", "FindataChile contacto@findatachil
 PRODUCTS_US = CMF / "Product_v1_US"
 
 
+# Buffer del ciclo en curso: cada línea de log se guarda para poder mandarla por correo al
+# final. Se limpia al empezar cada ciclo (ver el loop de main).
+_BUF: list[str] = []
+
+
 def log(msg: str) -> None:
-    print(f"[{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}Z] {msg}", flush=True)
+    line = f"[{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}Z] {msg}"
+    print(line, flush=True)
+    _BUF.append(line)
 
 
 def load_env(path: Path) -> dict[str, str]:
@@ -271,6 +281,99 @@ def backup(sub_env: dict, live: bool) -> None:
         run(["bash", str(script)], CMF, sub_env, "backup a Drive", timeout=1800)
 
 
+# ---------------------------------------------------------------------------
+# Alertas por correo
+# ---------------------------------------------------------------------------
+
+def _smtp_conf() -> dict[str, str]:
+    """Configuración SMTP: vive en el .env de FinDataChile (SMTP_HOST/PORT/USER/PASS/SECURE).
+    El destinatario sale de ALERT_EMAIL, o de ADMIN_EMAILS/PURCHASE_NOTIFY_EMAIL del mismo .env.
+    """
+    e = load_env(FDC / ".env")
+    e.update(load_env(CMF / ".env"))  # por si alguna override vive en el .env de cmf
+    return e
+
+
+def enviar_correo(asunto: str, cuerpo: str) -> bool:
+    """Manda un correo de texto plano por el SMTP de FinData. Devuelve True si salió."""
+    e = _smtp_conf()
+    host = e.get("SMTP_HOST")
+    user = e.get("SMTP_USER")
+    pw = e.get("SMTP_PASS")
+    port = int(e.get("SMTP_PORT") or 465)
+    destino = (os.environ.get("ALERT_EMAIL") or e.get("ALERT_EMAIL")
+               or e.get("ADMIN_EMAILS") or e.get("PURCHASE_NOTIFY_EMAIL") or user or "")
+    if not (host and user and pw and destino):
+        log("  ✗ alerta NO enviada: falta configuración SMTP (SMTP_HOST/USER/PASS) o destinatario")
+        return False
+    to_list = [t.strip() for t in destino.split(",") if t.strip()]
+    msg = EmailMessage()
+    msg["From"] = f"FinData Updater <{user}>"
+    msg["To"] = ", ".join(to_list)
+    msg["Subject"] = asunto
+    msg.set_content(cuerpo)
+    seguro = str(e.get("SMTP_SECURE", "true")).lower() in ("true", "1", "yes")
+    try:
+        ctx = ssl.create_default_context()
+        if seguro or port == 465:
+            with smtplib.SMTP_SSL(host, port, context=ctx, timeout=60) as s:
+                s.login(user, pw)
+                s.send_message(msg)
+        else:
+            with smtplib.SMTP(host, port, timeout=60) as s:
+                s.starttls(context=ctx)
+                s.login(user, pw)
+                s.send_message(msg)
+        log(f"  ✉ alerta enviada a {', '.join(to_list)}")
+        return True
+    except Exception as exc:  # noqa: BLE001
+        log(f"  ✗ no se pudo enviar la alerta: {exc}")
+        return False
+
+
+def alertar_ciclo(dur_min: float, live: bool) -> None:
+    """Al terminar un ciclo, manda un correo simple con lo que pasó. Por defecto SÓLO cuando
+    hubo novedad (algo publicado o algún fallo real), para no llenar la casilla en las noches
+    tranquilas. Con ALERT_ALWAYS=1 manda siempre (heartbeat)."""
+    lineas = list(_BUF)
+    us_pub = sum(1 for l in lineas if "✓ publicar US" in l)
+    cl_ok = sum(1 for l in lineas if "✓ pipeline CL" in l)
+    # Fallos reales: cualquier "✗" que no sea el backup a Drive (best-effort) ni la propia alerta.
+    fallos = [l for l in lineas if "✗" in l
+              and "backup a Drive" not in l and "alerta" not in l]
+    # Resumen de los gates (líneas "CL: …" / "US: …").
+    gates = [l.split("] ", 1)[-1] for l in lineas
+             if "] CL:" in l or "] US:" in l]
+    hubo_novedad = us_pub or cl_ok or fallos
+    siempre = str(os.environ.get("ALERT_ALWAYS", "")).lower() in ("1", "true", "yes")
+    if not live or (not hubo_novedad and not siempre):
+        return
+
+    estado = "⚠ con fallos" if fallos else "✓ OK"
+    ahora = datetime.now().strftime("%Y-%m-%d %H:%M")
+    asunto = (f"FinData {estado} — {us_pub} US publicadas"
+              + (f", {len(fallos)} fallos" if fallos else "")
+              + f" ({ahora})")
+
+    cuerpo = [
+        f"Ciclo de actualización FinData — {ahora} (local server)",
+        f"Duración: {dur_min:.1f} min",
+        "",
+        "RESUMEN",
+        f"  • US publicadas/actualizadas : {us_pub}",
+        f"  • CL pipeline OK             : {cl_ok}",
+        f"  • Fallos (excl. backup)      : {len(fallos)}",
+        "",
+        "GATES",
+    ]
+    cuerpo += [f"  • {g}" for g in gates] or ["  • (sin líneas de gate)"]
+    if fallos:
+        cuerpo += ["", "FALLOS"]
+        cuerpo += [f"  {l.split('] ', 1)[-1]}" for l in fallos]
+    cuerpo += ["", "LOG COMPLETO DEL CICLO", *lineas]
+    enviar_correo(asunto, "\n".join(cuerpo))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--live", action="store_true", help="Correr y PUBLICAR (default: dry-run)")
@@ -282,7 +385,18 @@ def main() -> int:
     ap.add_argument("--force-us", default="",
                     help="Tickers/IDs US a forzar por el pipeline completo, salteando el gate (para probar).")
     ap.add_argument("--loop", type=int, default=0, help="Si >0, repite cada N horas (para el container)")
+    ap.add_argument("--no-alert", action="store_true",
+                    help="No manda el correo de alerta al terminar el ciclo.")
+    ap.add_argument("--test-alert", action="store_true",
+                    help="Manda un correo de prueba por el SMTP configurado y sale (verifica las credenciales).")
     args = ap.parse_args()
+
+    if args.test_alert:
+        ok = enviar_correo(
+            "FinData Updater — correo de prueba ✓",
+            "Si estás leyendo esto, el sistema de alertas por correo del orquestador funciona.\n"
+            "Las alertas reales llegan al terminar cada ciclo con novedad (US/CL publicadas o fallos).")
+        return 0 if ok else 1
 
     env = load_env(CMF / ".env") or load_env(FDC / ".env")
     sub_env = {**os.environ, **env}
@@ -293,6 +407,7 @@ def main() -> int:
 
     while True:
         t0 = time.perf_counter()
+        _BUF.clear()  # arranca el buffer del ciclo (para la alerta por correo del final)
         log("=" * 60)
         log(f"CICLO {'LIVE' if args.live else 'DRY-RUN'} — {'refresh cal, ' if args.refresh_calendars else ''}"
             f"{'solo CL' if args.only_cl else 'solo US' if args.only_us else 'CL+US'}")
@@ -314,7 +429,10 @@ def main() -> int:
         if args.live:
             backup(sub_env, args.live)
 
-        log(f"CICLO terminado en {(time.perf_counter()-t0)/60:.1f} min")
+        dur_min = (time.perf_counter() - t0) / 60
+        log(f"CICLO terminado en {dur_min:.1f} min")
+        if not args.no_alert:
+            alertar_ciclo(dur_min, args.live)
         if args.loop <= 0:
             break
         log(f"Durmiendo {args.loop}h hasta el próximo ciclo…")
