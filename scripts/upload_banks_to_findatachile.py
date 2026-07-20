@@ -18,6 +18,7 @@ Ejemplos:
 """
 
 import argparse
+import os
 import re
 import sys
 from pathlib import Path
@@ -70,6 +71,14 @@ def main(argv: list[str] | None = None) -> int:
     settings = PipelineSettings.load()
     if args.precio:
         settings.fdc_price = args.precio
+
+    # Fallback a variables de entorno: en el contenedor no existe config/pipeline_settings.json
+    # (gitignoreado). Usa las MISMAS creds que el uploader de EEUU (FDC_URL/FDC_ADMIN_USER/PASS),
+    # que el orquestador ya inyecta desde el .env.
+    if os.environ.get("FDC_URL"):
+        settings.fdc_base_url = os.environ["FDC_URL"]
+    settings.fdc_username = settings.fdc_username or os.environ.get("FDC_ADMIN_USER", "")
+    settings.fdc_password = settings.fdc_password or os.environ.get("FDC_ADMIN_PASS", "")
 
     faltan = [k for k in ("fdc_base_url", "fdc_username", "fdc_password")
               if not getattr(settings, k, "")]

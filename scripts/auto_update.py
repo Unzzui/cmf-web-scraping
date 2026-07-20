@@ -147,6 +147,51 @@ def _max_periodo(conn, cid: int) -> int:
         return int(cur.fetchone()[0])
 
 
+def bancos_pendientes(conn, lag_meses: int = 2, tope: int = 6) -> list[tuple[int, int]]:
+    """Meses (year, month) de bancos que la CMF ya publicó pero que aún no ingerimos.
+
+    Los bancos reportan MENSUAL a la CMF, que publica con ~1-2 meses de rezago. El objetivo es
+    'hoy − lag_meses' (así no pedimos un mes que todavía no salió). Devolvemos los meses que
+    faltan desde el último ingerido (`bank_financial_data`) hasta ese objetivo. Con la tabla
+    vacía, sólo el mes objetivo (el backfill histórico se hace a mano, no en el ciclo). Se
+    limita a `tope` meses para no disparar un run gigante desatendido (si hay más, se avisa).
+    """
+    conn.rollback()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT COALESCE(MAX(period_year*100+period_month),0) FROM bank_financial_data")
+            maxp = int(cur.fetchone()[0])
+    except Exception as exc:  # noqa: BLE001 — tabla ausente u otro problema: no bloquea el ciclo
+        conn.rollback()
+        log(f"Bancos: no pude leer bank_financial_data ({str(exc)[:80]}); se omite.")
+        return []
+    hoy = datetime.now()
+    ty, tm = hoy.year, hoy.month - lag_meses
+    while tm <= 0:
+        tm += 12
+        ty -= 1
+    target = ty * 100 + tm
+    if maxp == 0:
+        return [(ty, tm)]
+    if target <= maxp:
+        return []
+    faltan: list[tuple[int, int]] = []
+    py, pm = maxp // 100, maxp % 100
+    while True:
+        pm += 1
+        if pm > 12:
+            pm = 1
+            py += 1
+        if py * 100 + pm > target:
+            break
+        faltan.append((py, pm))
+    if len(faltan) > tope:
+        log(f"Bancos: {len(faltan)} meses atrasados; el ciclo toma los últimos {tope} "
+            f"(el resto es backfill manual con ingest_banks --from/--to).")
+        faltan = faltan[-tope:]
+    return faltan
+
+
 # ---------------------------------------------------------------------------
 # Ejecución de pasos
 # ---------------------------------------------------------------------------
@@ -289,6 +334,36 @@ def us_forzadas(conn, spec: str) -> list[tuple[int, str]]:
         return [(int(i), str(k)) for i, k in cur.fetchall()]
 
 
+def ciclo_bancos(periodos: list[tuple[int, int]], sub_env: dict, live: bool) -> None:
+    """Pipeline de bancos (API REST CMF, aparte del XBRL IFRS): ingesta los meses nuevos →
+    regenera los Excel de todos los bancos (son multi-período, como el consolidado chileno) →
+    publica. En dry-run la ingesta corre con --dry-run y no se exporta ni publica."""
+    if not periodos:
+        log("Bancos: 0 meses nuevos. Nada que hacer.")
+        return
+    etiquetas = [f"{m:02d}/{y}" for y, m in periodos]
+    log(f"Bancos: {len(periodos)} mes(es) nuevo(s) → {etiquetas}")
+    # PASO 1: ingesta de cada mes desde la API CMF (ingest_banks ESCRIBE por defecto; en
+    # dry-run se le pasa --dry-run explícito).
+    for y, m in periodos:
+        cmd = [PY, str(CMF / "scripts" / "ingest_banks.py"), "--from", f"{m:02d}/{y}", "--to", f"{m:02d}/{y}"]
+        if not live:
+            cmd.append("--dry-run")
+        if not run(cmd, CMF, sub_env, f"ingesta bancos {m:02d}/{y}", timeout=3600):
+            log(f"  ⚠ ingesta bancos {m:02d}/{y} falló; se corta el ciclo de bancos.")
+            return
+    if not live:
+        log("  (dry-run: no se exportan ni publican los Excel de bancos)")
+        return
+    # PASO 2: regenerar los Excel de bancos desde las tablas bank_* y publicarlos.
+    out = str(CMF / "Products" / "Bancos")
+    if not run([PY, str(CMF / "scripts" / "export_banks_excel.py"), "--out", out],
+               CMF, sub_env, "export bancos Excel", timeout=1800):
+        return
+    run([PY, str(CMF / "scripts" / "upload_banks_to_findatachile.py"), "--dir", out, "--live"],
+        CMF, sub_env, "publicar bancos", timeout=1800)
+
+
 def backup(sub_env: dict, live: bool) -> None:
     script = CMF / "scripts" / "backup_to_drive.sh"
     if live and script.exists():
@@ -352,13 +427,14 @@ def alertar_ciclo(dur_min: float, live: bool) -> None:
     lineas = list(_BUF)
     us_pub = sum(1 for l in lineas if "✓ publicar US" in l)
     cl_ok = sum(1 for l in lineas if "✓ pipeline CL" in l)
+    bancos_ok = sum(1 for l in lineas if "✓ publicar bancos" in l)
     # Fallos reales: cualquier "✗" que no sea el backup a Drive (best-effort) ni la propia alerta.
     fallos = [l for l in lineas if "✗" in l
               and "backup a Drive" not in l and "alerta" not in l]
-    # Resumen de los gates (líneas "CL: …" / "US: …").
+    # Resumen de los gates (líneas "CL: …" / "US: …" / "Bancos: …").
     gates = [l.split("] ", 1)[-1] for l in lineas
-             if "] CL:" in l or "] US:" in l]
-    hubo_novedad = us_pub or cl_ok or fallos
+             if "] CL:" in l or "] US:" in l or "] Bancos:" in l]
+    hubo_novedad = us_pub or cl_ok or bancos_ok or fallos
     siempre = str(os.environ.get("ALERT_ALWAYS", "")).lower() in ("1", "true", "yes")
     if not live or (not hubo_novedad and not siempre):
         return
@@ -376,6 +452,7 @@ def alertar_ciclo(dur_min: float, live: bool) -> None:
         "RESUMEN",
         f"  • US publicadas/actualizadas : {us_pub}",
         f"  • CL pipeline OK             : {cl_ok}",
+        f"  • Bancos publicados          : {bancos_ok}",
         f"  • Fallos (excl. backup)      : {len(fallos)}",
         "",
         "GATES",
@@ -394,6 +471,7 @@ def main() -> int:
     ap.add_argument("--refresh-calendars", action="store_true", help="Refrescar calendarios primero")
     ap.add_argument("--only-cl", action="store_true")
     ap.add_argument("--only-us", action="store_true")
+    ap.add_argument("--only-banks", action="store_true", help="Sólo el pipeline de bancos (API CMF)")
     ap.add_argument("--no-publish", action="store_true",
                     help="No publica a FinData (subida en dry-run). Para probar el pipeline sin tocar el catálogo.")
     ap.add_argument("--force-us", default="",
@@ -423,20 +501,23 @@ def main() -> int:
         t0 = time.perf_counter()
         _BUF.clear()  # arranca el buffer del ciclo (para la alerta por correo del final)
         log("=" * 60)
-        log(f"CICLO {'LIVE' if args.live else 'DRY-RUN'} — {'refresh cal, ' if args.refresh_calendars else ''}"
-            f"{'solo CL' if args.only_cl else 'solo US' if args.only_us else 'CL+US'}")
+        _alcance = ('solo CL' if args.only_cl else 'solo US' if args.only_us
+                    else 'solo bancos' if args.only_banks else 'CL+US+bancos')
+        log(f"CICLO {'LIVE' if args.live else 'DRY-RUN'} — {'refresh cal, ' if args.refresh_calendars else ''}{_alcance}")
 
         if args.refresh_calendars:
             refrescar_calendarios(sub_env, args.live)
 
         conn = connect(env)
         try:
-            if not args.only_us and not args.force_us:
+            if not args.only_us and not args.force_us and not args.only_banks:
                 ciclo_cl(cl_pendientes(conn), sub_env, args.live)
-            if not args.only_cl:
+            if not args.only_cl and not args.only_banks:
                 pend = us_forzadas(conn, args.force_us) if args.force_us else us_pendientes(conn)
                 ciclo_us(pend, conn, sub_env, args.live,
                          forzar=bool(args.force_us), no_publish=args.no_publish)
+            if not args.only_cl and not args.only_us and not args.force_us:
+                ciclo_bancos(bancos_pendientes(conn), sub_env, args.live)
         finally:
             conn.close()
 
