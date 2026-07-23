@@ -31,7 +31,7 @@ ENV TZ=America/Santiago
 # Dependencias Python del pipeline (baked en la imagen; el CÓDIGO se monta en runtime).
 # arelle-release = el motor XBRL, puro Python. El resto son las deps de pyproject.toml.
 RUN pip install \
-        pandas numpy openpyxl requests psycopg2-binary rich \
+        pandas numpy openpyxl xlsxwriter requests psycopg2-binary rich \
         beautifulsoup4 lxml selenium webdriver-manager \
         arelle-release
 

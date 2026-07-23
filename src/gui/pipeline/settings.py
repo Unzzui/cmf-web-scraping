@@ -9,8 +9,10 @@ con valores por defecto auto-detectados y una verificación explícita.
 from __future__ import annotations
 
 import json
+import importlib.util
 import os
 import shutil
+import sys
 from dataclasses import dataclass, asdict, field
 from pathlib import Path
 from typing import Any, Optional
@@ -64,13 +66,20 @@ def _python_candidates(repo: Path) -> list[str]:
     for venv in (repo / ".venv" / "bin" / "python", repo / "venv" / "bin" / "python"):
         if venv.exists():
             add(str(venv))
-    # 2. Python del sistema (lo que usa pyenv 'system')
+    # 2. Intérprete del proceso actual. En Docker es /usr/local/bin/python y contiene
+    # todas las dependencias baked en la imagen; el filtro de add() sigue excluyendo el
+    # venv de la GUI en escritorio.
+    add(sys.executable)
+    # 3. Python del sistema (lo que usa pyenv 'system')
     for p in ("/usr/bin/python3", "/usr/bin/python"):
         if Path(p).exists():
             add(p)
-    # 3. shims de pyenv
-    add(str(Path.home() / ".pyenv" / "shims" / "python3"))
-    # 4. PATH (último recurso; ya excluimos el venv de la GUI)
+    # 4. shims de pyenv, sólo si existen. Antes se agregaba una ruta fantasma dentro
+    # del contenedor y el preflight la aceptaba porque sólo comprobaba el string.
+    pyenv_python = Path.home() / ".pyenv" / "shims" / "python3"
+    if pyenv_python.exists():
+        add(str(pyenv_python))
+    # 5. PATH (último recurso; ya excluimos el venv de la GUI)
     add(shutil.which("python3"))
     add(shutil.which("python"))
     return cands or ["python3"]
@@ -105,7 +114,7 @@ def probe_cmf_extract_python(repo: Path) -> tuple[str, str]:
 
 
 def _detect_arelle_dir(scraping_root: Path) -> str:
-    """Ubicar Arelle. Prioriza la copia in-repo (tools/Arelle) para portabilidad."""
+    """Ubicar Arelle: copia portable o paquete ``arelle-release`` instalado."""
     env = os.getenv("CMF_ARELLE_DIR")
     if env:
         return env
@@ -117,6 +126,9 @@ def _detect_arelle_dir(scraping_root: Path) -> str:
     ):
         if (c / "arelleCmdLine.py").exists():
             return str(c)
+    spec = importlib.util.find_spec("arelle")
+    if spec and spec.submodule_search_locations:
+        return str(Path(next(iter(spec.submodule_search_locations))))
     return str(scraping_root / "tools" / "Arelle")
 
 
@@ -356,10 +368,31 @@ class PipelineSettings:
             except Exception as e:  # pragma: no cover
                 add("Import cmf.pipeline", False, str(e))
 
+            # 2b. xlsxwriter: motor obligatorio de los Excel de estados financieros.
+            #     Sin él la consolidación corre entera (Arelle incluido, minutos por
+            #     empresa) y recién revienta al escribir el libro. Pasó el 22-jul-2026:
+            #     la imagen Docker no lo traía y las tres empresas de la noche murieron
+            #     con un "At least one sheet must be visible" que no decía nada.
+            try:
+                res = subprocess.run(
+                    [py, "-c", "import xlsxwriter; print(xlsxwriter.__version__)"],
+                    cwd=str(cmf), capture_output=True, text=True, timeout=30,
+                    env={**os.environ, "PYTHONPATH": str(cmf)},
+                )
+                ok = res.returncode == 0
+                add("xlsxwriter disponible", ok,
+                    res.stdout.strip() if ok else
+                    "Falta xlsxwriter en el intérprete del pipeline: no se puede "
+                    "generar ningún Excel de estados financieros (pip install xlsxwriter)")
+            except Exception as e:  # pragma: no cover
+                add("xlsxwriter disponible", False, str(e))
+
         # 3. Arelle
         ar = Path(self.arelle_dir)
         has_arelle = ar.is_dir() and (
-            (ar / "arelleCmdLine.py").exists() or (ar / "arelle").is_dir()
+            (ar / "arelleCmdLine.py").exists()
+            or (ar / "CntlrCmdLine.py").exists()
+            or (ar / "arelle").is_dir()
         )
         add("Directorio Arelle", has_arelle,
             str(ar) if has_arelle else f"No encontrado (consolidación fallará): {ar}")

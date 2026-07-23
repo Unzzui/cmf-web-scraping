@@ -3741,13 +3741,18 @@ def main():
         pass
 
     out_xlsx = out_dir / f"estados_{stem}{suffix}.xlsx"
-    # Fallback a openpyxl si xlsxwriter no está disponible
+    # Sin fallback a openpyxl: el formateo de abajo usa API exclusiva de xlsxwriter
+    # (add_worksheet, add_format, set_row(..., level=)). Con openpyxl el libro salia
+    # vacio y el error real quedaba oculto tras un "At least one sheet must be visible".
     try:
         excel_writer = pd.ExcelWriter(out_xlsx, engine="xlsxwriter")
-    except ImportError:
-        print("      ║ xlsxwriter no disponible, utilizando openpyxl...")
-        excel_writer = pd.ExcelWriter(out_xlsx, engine="openpyxl")
-    
+    except ImportError as exc:
+        raise RuntimeError(
+            "Falta la dependencia 'xlsxwriter', obligatoria para generar los Excel de "
+            "estados financieros. Instalala con 'pip install xlsxwriter' (o reconstrui "
+            f"la imagen Docker del pipeline). Detalle: {exc}"
+        ) from exc
+
     with excel_writer as writer:
         workbook = writer.book
 

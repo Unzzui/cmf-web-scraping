@@ -1755,13 +1755,20 @@ def generate_excel_from_primary_csv(company_dir: Path, lang: str = 'es',
             
         output_xlsx = company_dir / f"estados_{rut_prefix}_{date_range}_{lang}_from_primary.xlsx"
     
-    # 6. Crear Excel con xlsxwriter
+    # 6. Crear Excel con xlsxwriter.
+    # No hay fallback a openpyxl: todo el formateo de abajo (add_worksheet, add_format,
+    # set_row(..., level=), autofiltros) es API exclusiva de xlsxwriter. Con openpyxl el
+    # libro se cerraba VACIO y openpyxl reventaba con un
+    # "IndexError: At least one sheet must be visible" que ocultaba la causa real.
     try:
         excel_writer = pd.ExcelWriter(output_xlsx, engine="xlsxwriter")
-    except ImportError:
-        # xlsxwriter no disponible, utilizando openpyxl
-        excel_writer = pd.ExcelWriter(output_xlsx, engine="openpyxl")
-    
+    except ImportError as exc:
+        raise RuntimeError(
+            "Falta la dependencia 'xlsxwriter', obligatoria para generar los Excel de "
+            "estados financieros. Instalala con 'pip install xlsxwriter' (o reconstrui "
+            f"la imagen Docker del pipeline). Detalle: {exc}"
+        ) from exc
+
     entity_name = extract_company_name(company_dir)
     
     # Nombres de las hojas (compatibles con analisis_excel)

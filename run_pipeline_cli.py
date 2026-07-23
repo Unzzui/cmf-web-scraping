@@ -142,7 +142,8 @@ def preflight(settings: PipelineSettings, stages: list[Stage]) -> list[str]:
     except Exception as exc:
         return [f"settings.verify() falló: {exc}"]
     if Stage.CONSOLIDATE in stages:
-        for key in ("Repo CMF_EXTRACT", "Import cmf.pipeline", "Directorio Arelle"):
+        for key in ("Repo CMF_EXTRACT", "Import cmf.pipeline", "Directorio Arelle",
+                    "xlsxwriter disponible"):
             c = checks.get(key)
             if c and not c["ok"]:
                 problems.append(f"{key}: {c['detail']}")
