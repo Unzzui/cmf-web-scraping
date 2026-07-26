@@ -19,7 +19,7 @@ Acá viven las tres reglas que deciden si los números salen bien o salen mal en
 
 import math
 from collections import defaultdict
-from datetime import date
+from datetime import date, timedelta
 
 from src.edgar.models import Fact, FiscalPeriod, LineValue
 from src.edgar.taxonomy import CONCEPTS, resolve_tag
@@ -40,6 +40,11 @@ _SPAN_TO_QUARTER = (
 # YTD se parte en dos. 5 días es holgado para el borde y sigue siendo ínfimo frente a los
 # ~90 que separan un trimestre suelto del inicio del año, que es lo que hay que excluir.
 _START_TOLERANCE_DAYS = 5
+
+# Techo de días de un ejercicio. Sólo se usa para acotar la ventana PROVISORIA del año
+# fiscal en curso (ver `build_fiscal_calendar`), que por definición todavía no tiene un
+# cierre real que la delimite. Es el extremo alto de _SPAN_TO_QUARTER.
+_FY_MAX_DAYS = 380
 
 
 def coerce_value(raw) -> float | None:
@@ -137,6 +142,14 @@ def build_fiscal_calendar(facts: list[Fact]) -> dict[tuple[int, int], FiscalPeri
     `period_year` es el **año fiscal**, tomado como el año calendario del cierre (spec
     §6.3). Ojo con lo que eso implica: el Q1 del FY2024 de Apple termina en diciembre de
     2023 y aun así va con `period_year=2024`, porque pertenece a ese ejercicio.
+
+    **El ejercicio EN CURSO no tiene duración anual todavía**, y anclar sólo en ventanas
+    completas dejaba sus trimestres fuera del calendario, es decir descartados en silencio.
+    No es teórico: tuvo a ~95 empresas de EEUU congeladas en 2025Q4 mientras el orquestador
+    corría la ingesta todos los días sin avanzar nunca (AAPL con los 10-Q de enero y mayo de
+    2026 presentados salía `años=2011-2025`). Las únicas que avanzaban eran las de ejercicio
+    desfasado, que ya habían cerrado. Por eso se extiende una ventana provisoria un año
+    hacia adelante desde el último cierre conocido.
     """
     fy_windows: dict[int, tuple[date, date]] = {}
     for fact in facts:
@@ -153,18 +166,46 @@ def build_fiscal_calendar(facts: list[Fact]) -> dict[tuple[int, int], FiscalPeri
 
     calendar: dict[tuple[int, int], FiscalPeriod] = {}
     for year, (fy_start, fy_end) in fy_windows.items():
-        for fact in facts:
-            if fact.start is None or fact.end > fy_end:
-                continue
-            if abs((fact.start - fy_start).days) > _START_TOLERANCE_DAYS:
-                continue
-            quarter = _quarter_from_span(fact.start, fact.end)
-            if quarter is None:
-                continue
-            known = calendar.get((year, quarter))
-            if known is None or fact.end > known.end:
-                calendar[(year, quarter)] = FiscalPeriod(year, quarter, fy_start, fact.end)
+        _map_quarters(facts, calendar, year, fy_start, fy_end)
+
+    # Ejercicio en curso: arranca el día siguiente al último cierre conocido y se le pone un
+    # techo de ~un año (no hay cierre real que lo delimite). Se etiqueta como el año fiscal
+    # siguiente al último, no por el año calendario del cierre proyectado: el rótulo avanza
+    # de a uno por ejercicio, así que cuando llegue el 10-K y fije la ventana definitiva va a
+    # caer sobre la misma clave y no va a duplicar el período.
+    # Si la empresa dejó de reportar, no hay hechos que arranquen en esa fecha y esto no
+    # agrega nada: no inventa un año vacío.
+    if fy_windows:
+        last_year = max(fy_windows)
+        in_progress_start = fy_windows[last_year][1] + timedelta(days=1)
+        _map_quarters(facts, calendar, last_year + 1, in_progress_start,
+                      in_progress_start + timedelta(days=_FY_MAX_DAYS))
     return calendar
+
+
+def _map_quarters(
+    facts: list[Fact],
+    calendar: dict[tuple[int, int], FiscalPeriod],
+    year: int,
+    fy_start: date,
+    fy_end: date,
+) -> None:
+    """Ubica en `calendar` los cierres de trimestre de un ejercicio ya acotado.
+
+    Sólo entran las duraciones que ARRANCAN con el ejercicio (la serie acumulada §5): el
+    trimestre suelto de un 10-Q empieza ~90 días después y queda fuera de la tolerancia.
+    """
+    for fact in facts:
+        if fact.start is None or fact.end > fy_end:
+            continue
+        if abs((fact.start - fy_start).days) > _START_TOLERANCE_DAYS:
+            continue
+        quarter = _quarter_from_span(fact.start, fact.end)
+        if quarter is None:
+            continue
+        known = calendar.get((year, quarter))
+        if known is None or fact.end > known.end:
+            calendar[(year, quarter)] = FiscalPeriod(year, quarter, fy_start, fact.end)
 
 
 def select_period_values(

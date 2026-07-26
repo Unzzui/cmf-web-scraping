@@ -91,6 +91,45 @@ def test_el_q1_del_fy2024_cae_en_2024_aunque_termine_en_diciembre_de_2023(
     assert cal[(2024, 1)].end.year == 2023
 
 
+def test_el_ejercicio_en_curso_entra_aunque_no_tenga_duracion_anual(
+    apple_revenue_ejercicio_en_curso_payload,
+):
+    """EL test del atraso. El ejercicio en curso no tiene duración de 12 meses hasta que
+    llega el 10-K; anclar sólo en ventanas completas descartaba sus trimestres en silencio y
+    dejó ~95 empresas de EEUU congeladas en 2025Q4 con la ingesta corriendo a diario."""
+    facts = parse_facts(apple_revenue_ejercicio_en_curso_payload,
+                        "RevenueFromContractWithCustomerExcludingAssessedTax")
+    cal = build_fiscal_calendar(facts)
+    assert cal[(2025, 1)].end == date(2024, 12, 28)
+    assert cal[(2025, 2)].end == date(2025, 3, 29)
+    # El ejercicio no cerró: no puede aparecer un Q4 inventado.
+    assert (2025, 4) not in cal
+    assert (2025, 3) not in cal
+
+
+def test_el_ejercicio_en_curso_sigue_tomando_el_acumulado_y_no_el_suelto(
+    apple_revenue_ejercicio_en_curso_payload,
+):
+    """La regla §5 no se afloja por ser un año provisorio: si se colara el trimestre suelto,
+    el Q2 daría 95.359 en vez de 219.659 y nadie se enteraría."""
+    facts = parse_facts(apple_revenue_ejercicio_en_curso_payload,
+                        "RevenueFromContractWithCustomerExcludingAssessedTax")
+    values = select_period_values(facts, build_fiscal_calendar(facts))
+    assert values[(2025, 1)] == 124_300_000_000
+    assert values[(2025, 2)] == 219_659_000_000
+
+
+def test_la_ventana_provisoria_no_inventa_periodos_si_la_empresa_dejo_de_reportar(
+    apple_revenue_payload,
+):
+    """Extender un año hacia adelante no debe fabricar un ejercicio vacío: sin hechos que
+    arranquen en esa fecha, el calendario queda igual que antes."""
+    facts = parse_facts(apple_revenue_payload,
+                        "RevenueFromContractWithCustomerExcludingAssessedTax")
+    cal = build_fiscal_calendar(facts)
+    assert {year for year, _ in cal} == {2024}
+
+
 # --------------------------------------------------------------- acumulación YTD §5
 def test_toma_la_duracion_acumulada_y_no_el_trimestre_suelto(apple_revenue_payload):
     """EL test. La fixture trae ambas duraciones, como viene de verdad. Si se colara la de
