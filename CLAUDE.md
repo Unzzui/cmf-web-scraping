@@ -3,6 +3,13 @@
 Pipeline de datos de **FindataChile**. El repo hermano `~/Proyectos/FinDataChile` es la
 web + BD (Next.js + Supabase); los dos se tocan.
 
+## Entorno de ejecución
+
+La extracción XBRL, la generación de Excel y los scripts financieros masivos se
+ejecutan en el servidor Fedora, no en esta estación de trabajo. Antes de sincronizar o
+ejecutar, revisar ambos worktrees remotos y preservar siempre sus cambios sin commit.
+Los datos de acceso se mantienen fuera del repositorio.
+
 > **NORTH STAR OBLIGATORIO — LEER ANTES DE MODIFICAR EL PIPELINE:** FinData existe
 > para hacer que la inteligencia financiera profesional deje de ser un privilegio.
 > Convertimos datos públicos difíciles de usar en conocimiento claro, trazable y
