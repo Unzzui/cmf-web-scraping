@@ -228,7 +228,20 @@ def run_arelle(arelle_python: Path, arelle_dir: Path, args: list[str]) -> None:
             _worker_pool_broken = True
             print(f"[arelle] pool de workers falló ({exc}); "
                   f"usando subprocess clásico", file=sys.stderr)
-    run_cmd([str(arelle_python), 'arelleCmdLine.py', *args], cwd=arelle_dir)
+    cli = arelle_dir / "arelleCmdLine.py"
+    if cli.exists():
+        run_cmd([str(arelle_python), str(cli), *args], cwd=arelle_dir)
+    else:
+        # La imagen Docker instala ``arelle-release`` desde pip. Esa distribución no
+        # trae el wrapper arelleCmdLine.py en un directorio portable, pero sí expone el
+        # mismo CLI como módulo y como ejecutable. Invocarlo con el intérprete conserva
+        # exactamente el entorno del pipeline y funciona en amd64/arm64.
+        # No usar el directorio del paquete como cwd: contiene ``typing.py`` y Python
+        # lo confunde con el módulo stdlib ``typing``, causando un import circular.
+        run_cmd(
+            [str(arelle_python), "-m", "arelle.CntlrCmdLine", *args],
+            cwd=arelle_dir.parent,
+        )
 
 
 def run_arelle_exports(arelle_dir: Path, xbrl_file: Path, out_dir: Path, stem: str, langs: Sequence[str], facts_strategy: str = "es_only", force: bool = False) -> None:
