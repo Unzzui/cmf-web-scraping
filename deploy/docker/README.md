@@ -12,8 +12,9 @@ Excel → publicar en FinData → backup.
 1. **Refresca calendarios** — `scrape_report_dates.py` (fechas CMF) + `ingest_us_calendar.py`
    (10-K/10-Q de EDGAR).
 2. **Gate incremental** (la pieza nueva — los calendarios ya existían pero nadie los leía):
-   - **CL**: empresas con publicación reciente (últimos 120 días, fecha ≤ hoy) cuyo período
-     todavía NO está en `financial_data`, y que ya procesamos.
+   - **CL**: empresas cuya fecha de publicación ya llegó y cuyo período es posterior al
+     último disponible en `financial_data`. La pendiente no caduca: si ese día todavía no
+     existe XBRL, se vuelve a intentar diariamente hasta que la BD avance.
    - **US**: empresas cuyo calendario tiene un filing de período MÁS NUEVO que el último dato
      ingerido. Tras la ingesta EDGAR, sólo se regenera Excel/publica para las que REALMENTE
      avanzaron de período (si companyfacts aún no reflejó el filing, no se re-genera nada caro).
@@ -80,5 +81,6 @@ el host (montados), así el XBRL descargado y el cache persisten entre actualiza
 - **Cadencia**: `--loop 24` (un ciclo/día). Cambiá el número de horas en el `command` del
   compose, o corré `--loop 0` (una sola vez) desde un cron/systemd del host.
 - **Solo un mercado**: `--only-cl` / `--only-us`.
-- **Ventana del gate**: los gates miran los últimos 120 días; se ajusta en `auto_update.py`.
+- **Reintentos CL**: no tienen vencimiento. El calendario incorpora la empresa desde su
+  fecha de publicación y el avance real de `financial_data` la retira de la cola.
 - **Publicación US**: necesita `FDC_ADMIN_USER`/`FDC_ADMIN_PASS` para el `upload_us_products`.

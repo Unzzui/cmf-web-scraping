@@ -9,8 +9,8 @@ En días sin publicaciones nuevas, los gates devuelven cero y el ciclo termina e
 Gates incrementales (la pieza que faltaba: los calendarios ya se pueblan pero nadie los
 leía para decidir qué actualizar):
 
-  - CHILE:  report_publication_dates con fecha ≤ hoy cuyo (año, trimestre) todavía NO está
-            en financial_data → esas empresas tienen resultados nuevos por bajar.
+  - CHILE:  report_publication_dates con fecha ≤ hoy cuyo período es MÁS NUEVO que el
+            último financial_data → queda pendiente hasta que la BD avance, sin caducar.
   - EEUU:   earnings_calendar (event_type='financials', un 10-K/10-Q) cuyo período todavía
             NO está en financial_data → ingesta EDGAR nueva.
 
@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 import shutil
 import smtplib
 import ssl
@@ -75,33 +76,52 @@ def connect(env: dict[str, str]):
         user=env["PGUSER"], password=env["PGPASSWORD"], sslmode="require")
 
 
+def rut_cuerpo(rut: str) -> str:
+    """Convierte el RUT canónico de BD al identificador que espera el CSV del pipeline."""
+    return "".join(ch for ch in rut.strip().split("-", 1)[0] if ch.isdigit())
+
+
 # ---------------------------------------------------------------------------
 # Gates incrementales
 # ---------------------------------------------------------------------------
 
-def cl_pendientes(conn, dias: int = 120) -> list[str]:
-    """RUTs chilenos con un período RECIÉN publicado (últimos `dias`, fecha ≤ hoy) que aún
-    no está en la BD. Sólo empresas que YA procesamos (tienen algún financial_data): el
-    calendario de la CMF trae ~940 emisores, muchos sin XBRL o fuera de nuestro universo;
-    sin este filtro se seleccionarían 277 que el pipeline igual rechaza.
+def cl_pendientes(conn) -> list[str]:
+    """RUTs cuyo calendario ya venció y anuncia un período posterior al último cargado.
+
+    No hay ventana temporal: si la CMF anuncia una fecha pero el XBRL aparece días o meses
+    después, la empresa sigue entrando en cada ciclo hasta que ``financial_data`` avance.
+    Comparar sólo contra el máximo cargado evita reactivar huecos históricos antiguos.
+
+    Se limita a empresas ya procesadas porque el calendario incluye cientos de emisores
+    fuera del universo XBRL de Findata. El alta inicial sigue siendo una decisión explícita;
+    después de esa primera carga, las actualizaciones quedan completamente automáticas.
     """
     with conn.cursor() as cur:
         cur.execute(
             """
-            SELECT DISTINCT c.rut
-            FROM report_publication_dates rpd
-            JOIN companies c ON c.id = rpd.company_id
-            WHERE rpd.publication_date IS NOT NULL
-              AND rpd.publication_date <= CURRENT_DATE
-              AND rpd.publication_date >= CURRENT_DATE - (%s || ' days')::interval
-              AND COALESCE(c.market, 'CL') = 'CL'
+            SELECT c.rut
+            FROM companies c
+            WHERE COALESCE(c.market, 'CL') = 'CL'
+              AND c.rut IS NOT NULL
               AND EXISTS (SELECT 1 FROM financial_data f2 WHERE f2.company_id = c.id)
-              AND NOT EXISTS (
-                    SELECT 1 FROM financial_data fd
-                    WHERE fd.company_id = c.id
-                      AND fd.period_year = rpd.period_year
-                      AND fd.period_quarter = rpd.period_quarter)
-            """, [dias])
+              AND EXISTS (
+                    SELECT 1
+                    FROM report_publication_dates rpd
+                    WHERE rpd.company_id = c.id
+                      AND rpd.publication_date IS NOT NULL
+                      AND rpd.publication_date <= CURRENT_DATE
+                      -- Una publicación no puede ocurrir antes de que cierre el período.
+                      -- El scraper puede recibir calendarios incompletos y una fecha mal
+                      -- asociada no debe adelantar un Q3 en enero, por ejemplo.
+                      AND rpd.publication_date >=
+                          (make_date(rpd.period_year, rpd.period_quarter * 3, 1)
+                           + interval '1 month - 1 day')::date
+                      AND (rpd.period_year * 10 + rpd.period_quarter) > (
+                            SELECT MAX(fd.period_year * 10 + fd.period_quarter)
+                            FROM financial_data fd
+                            WHERE fd.company_id = c.id))
+            ORDER BY c.rut
+            """)
         return [r[0] for r in cur.fetchall() if r[0]]
 
 
@@ -236,14 +256,65 @@ def refrescar_calendarios(sub_env: dict, live: bool) -> None:
     run(cmd, CMF, sub_env, "calendario EDGAR", timeout=1200)
 
 
-def ciclo_cl(ruts: list[str], sub_env: dict, live: bool) -> None:
+def xbrl_max_periodo(rut: str) -> int:
+    """Último YYYYQ disponible localmente para un RUT, o cero si no hay XBRL."""
+    base = CMF / "data" / "XBRL" / "Total"
+    periods: list[int] = []
+    for company_dir in base.glob(f"{rut}_*"):
+        for extracted in company_dir.glob("Estados_financieros_(XBRL)*_*_extracted"):
+            match = re.search(r"_(\d{6})_extracted$", extracted.name)
+            if not match:
+                continue
+            yyyymm = int(match.group(1))
+            month = yyyymm % 100
+            if month in (3, 6, 9, 12):
+                periods.append((yyyymm // 100) * 10 + month // 3)
+    return max(periods, default=0)
+
+
+def _max_periodos_cl(conn, ruts: list[str]) -> dict[str, int]:
+    if not ruts:
+        return {}
+    conn.rollback()
+    with conn.cursor() as cur:
+        cur.execute(
+            """SELECT c.rut, MAX(fd.period_year * 10 + fd.period_quarter)::int
+               FROM companies c
+               JOIN financial_data fd ON fd.company_id = c.id
+               WHERE c.rut = ANY(%s)
+               GROUP BY c.rut""",
+            [ruts],
+        )
+        return {str(rut): int(period) for rut, period in cur.fetchall()}
+
+
+def ciclo_cl(ruts: list[str], conn, sub_env: dict, live: bool) -> None:
     if not ruts:
         log("CL: 0 empresas con resultados nuevos. Nada que hacer.")
         return
     log(f"CL: {len(ruts)} empresas con resultados nuevos → {sorted(ruts)[:10]}…")
+    # La BD guarda RUT completo (90299000-3), mientras que run_pipeline_cli filtra por
+    # RUT_Sin_Guión del CSV, que en realidad es el cuerpo SIN dígito verificador (90299000).
+    # Pasar el RUT canónico seleccionaba cero empresas y el ciclo terminaba sin descargar.
+    ruts_pipeline = [rut_cuerpo(rut) for rut in ruts]
+    before = _max_periodos_cl(conn, ruts)
+    download = [PY, str(CMF / "run_pipeline_cli.py"),
+           "--stages", "download",
+           "--companies", ",".join(ruts_pipeline),
+           ]
+    if not run(download, CMF, sub_env, "descarga CL", timeout=3600):
+        return
+
+    avanzaron = [rut for rut in ruts if xbrl_max_periodo(rut) > before.get(rut, 0)]
+    if not avanzaron:
+        log("  CL: la descarga corrió pero ningún XBRL avanzó de período. "
+            "Se mantiene la cola para el próximo ciclo; no se consolida un Excel viejo.")
+        return
+
+    log(f"  CL: {len(avanzaron)} empresa(s) con XBRL nuevo → consolidar y publicar")
     cmd = [PY, str(CMF / "run_pipeline_cli.py"),
-           "--stages", "download,consolidate,upload",
-           "--companies", ",".join(ruts),
+           "--stages", "consolidate,upload",
+           "--companies", ",".join(rut_cuerpo(rut) for rut in avanzaron),
            "--fdc", "--fdc-url", FDC_URL, "--supabase"]
     if live:
         cmd.append("--supabase-live")
@@ -420,10 +491,37 @@ def enviar_correo(asunto: str, cuerpo: str) -> bool:
         return False
 
 
+RACHA_BACKUP = CMF / "logs" / ".backup_fallos_seguidos"
+
+# Ciclos seguidos de backup fallado a partir de los cuales sí se avisa por correo.
+UMBRAL_RACHA_BACKUP = 2
+
+
+def _registrar_racha_backup(fallo: bool) -> int:
+    """Cuántos ciclos SEGUIDOS viene fallando el backup a Drive (0 si el último salió bien).
+
+    El backup es best-effort y un 403 aislado de Google no merece un correo, pero sin memoria
+    entre ciclos "best-effort" terminó siendo "nadie se entera nunca": falló dos días seguidos
+    (24 y 25 de julio de 2026) y no salió una sola alerta. El contador va a un archivo y no a
+    una variable porque el contenedor se reinicia y la racha tiene que sobrevivir.
+    """
+    try:
+        previa = int(RACHA_BACKUP.read_text().strip() or 0)
+    except (OSError, ValueError):
+        previa = 0
+    racha = previa + 1 if fallo else 0
+    try:
+        RACHA_BACKUP.parent.mkdir(parents=True, exist_ok=True)
+        RACHA_BACKUP.write_text(str(racha))
+    except OSError:
+        pass  # sin persistencia el aviso puede tardar un ciclo más; no vale abortar por esto
+    return racha
+
+
 def alertar_ciclo(dur_min: float, live: bool) -> None:
     """Al terminar un ciclo, manda un correo simple con lo que pasó. Por defecto SÓLO cuando
-    hubo novedad (algo publicado o algún fallo real), para no llenar la casilla en las noches
-    tranquilas. Con ALERT_ALWAYS=1 manda siempre (heartbeat)."""
+    hubo novedad (algo publicado, algún fallo real, o el backup fallando de forma sostenida),
+    para no llenar la casilla en las noches tranquilas. Con ALERT_ALWAYS=1 manda siempre."""
     lineas = list(_BUF)
     us_pub = sum(1 for l in lineas if "✓ publicar US" in l)
     cl_ok = sum(1 for l in lineas if "✓ pipeline CL" in l)
@@ -431,18 +529,24 @@ def alertar_ciclo(dur_min: float, live: bool) -> None:
     # Fallos reales: cualquier "✗" que no sea el backup a Drive (best-effort) ni la propia alerta.
     fallos = [l for l in lineas if "✗" in l
               and "backup a Drive" not in l and "alerta" not in l]
+    # El backup va aparte: un fallo suelto se tolera en silencio, pero si se repite deja de ser
+    # un hipo de Google y pasa a ser el respaldo caído, que sí hay que avisar.
+    backup_fallo = any("✗" in l and "backup a Drive" in l for l in lineas)
+    racha_backup = _registrar_racha_backup(backup_fallo) if live else 0
+    backup_caido = racha_backup >= UMBRAL_RACHA_BACKUP
     # Resumen de los gates (líneas "CL: …" / "US: …" / "Bancos: …").
     gates = [l.split("] ", 1)[-1] for l in lineas
              if "] CL:" in l or "] US:" in l or "] Bancos:" in l]
-    hubo_novedad = us_pub or cl_ok or bancos_ok or fallos
+    hubo_novedad = us_pub or cl_ok or bancos_ok or fallos or backup_caido
     siempre = str(os.environ.get("ALERT_ALWAYS", "")).lower() in ("1", "true", "yes")
     if not live or (not hubo_novedad and not siempre):
         return
 
-    estado = "⚠ con fallos" if fallos else "✓ OK"
+    estado = "⚠ con fallos" if fallos else ("⚠ backup caído" if backup_caido else "✓ OK")
     ahora = datetime.now().strftime("%Y-%m-%d %H:%M")
     asunto = (f"FinData {estado} — {us_pub} US publicadas"
               + (f", {len(fallos)} fallos" if fallos else "")
+              + (f", backup falla hace {racha_backup} ciclos" if backup_caido else "")
               + f" ({ahora})")
 
     cuerpo = [
@@ -454,6 +558,9 @@ def alertar_ciclo(dur_min: float, live: bool) -> None:
         f"  • CL pipeline OK             : {cl_ok}",
         f"  • Bancos publicados          : {bancos_ok}",
         f"  • Fallos (excl. backup)      : {len(fallos)}",
+        f"  • Backup a Drive             : "
+        + (f"FALLANDO hace {racha_backup} ciclos seguidos" if racha_backup
+           else "OK"),
         "",
         "GATES",
     ]
@@ -511,7 +618,7 @@ def main() -> int:
         conn = connect(env)
         try:
             if not args.only_us and not args.force_us and not args.only_banks:
-                ciclo_cl(cl_pendientes(conn), sub_env, args.live)
+                ciclo_cl(cl_pendientes(conn), conn, sub_env, args.live)
             if not args.only_cl and not args.only_banks:
                 pend = us_forzadas(conn, args.force_us) if args.force_us else us_pendientes(conn)
                 ciclo_us(pend, conn, sub_env, args.live,
