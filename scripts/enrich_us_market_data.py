@@ -93,15 +93,29 @@ def beta(cur, company_id: int, bench_m: dict) -> float | None:
 
 
 def shares(cur, company_id: int) -> float | None:
+    """Acciones en circulación, en UNIDADES. Prefiere el conteo a fecha.
+
+    `CommonStockSharesOutstanding` es un saldo a una fecha y es el dato correcto, pero no
+    es universal: medido el 2026-07-26 sobre 12 emisores, AAPL/NVDA/BAC/MSFT lo publican y
+    ACN/MA/META/NKE/UPS/V no publican ni ése, ni `CommonStockSharesIssued`, ni el
+    `dei:EntityCommonStockSharesOutstanding` de la portada. Sólo el promedio ponderado
+    diluido del BPA.
+
+    Por eso el respaldo, y por eso va SEGUNDO: un promedio del período no es un conteo a
+    fecha. El `CASE` del ORDER BY impide que gane sólo por ser de un trimestre más nuevo.
+    """
     cur.execute(
         """
-        SELECT fd.value FROM financial_data fd
+        SELECT fd.value, fli.source_tag FROM financial_data fd
         JOIN financial_line_items fli ON fd.line_item_id = fli.id
         WHERE fli.company_id = %s
           AND (LOWER(TRIM(fli.label)) = 'total número de acciones emitidas'
-               OR fli.source_tag IN ('CommonStockSharesOutstanding','CommonStockSharesIssued'))
+               OR fli.source_tag IN ('CommonStockSharesOutstanding','CommonStockSharesIssued',
+                                     'WeightedAverageNumberOfDilutedSharesOutstanding'))
           AND fd.value IS NOT NULL AND fd.value > 0
-        ORDER BY fd.period_year DESC, fd.period_quarter DESC
+        ORDER BY CASE WHEN fli.source_tag = 'WeightedAverageNumberOfDilutedSharesOutstanding'
+                      THEN 1 ELSE 0 END,
+                 fd.period_year DESC, fd.period_quarter DESC
         LIMIT 1
         """,
         [company_id])

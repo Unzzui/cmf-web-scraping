@@ -251,6 +251,47 @@ CONCEPTS: tuple[Concept, ...] = (
             "Ganancias por acción diluida", "Earnings per share, diluted",
             ROLE_INCOME, "Por acción", 430, unit="USD/shares"),
 
+    # Los DENOMINADORES del BPA. Se agregan porque sin ellos hay empresas que quedan sin
+    # ninguna cuenta de acciones: `CommonStockSharesOutstanding` (el tag del concepto
+    # "Acciones", en el balance) NO es universal. Medido el 2026-07-26 sobre 12 emisores:
+    # AAPL, NVDA, BAC y MSFT lo publican; ACN, MA, META, NKE, UPS y V no publican ese ni
+    # `CommonStockSharesIssued` ni el `dei:EntityCommonStockSharesOutstanding` de la
+    # portada — sólo estos promedios ponderados.
+    #
+    # Y sin acciones se cae toda la cadena por acción: el pipeline no puede dividir el
+    # equity value, `dcf_analysis.base_price` queda NULL y la web no publica valor justo
+    # (hacen falta ≥2 métodos y se pierde el DCF). Eso es exactamente lo que dejaba a
+    # META y otras cinco con «—» en el portafolio.
+    #
+    # Van en resultados y NO en el balance, con su propio label: son un promedio DEL
+    # PERÍODO, no un saldo a una fecha. Meterlos en el concepto "Acciones" los rotularía
+    # «Total número de acciones emitidas», que es otra cosa y mentiría en el balance.
+    Concept("AccBasicas", ("WeightedAverageNumberOfSharesOutstandingBasic",
+                           "WeightedAverageNumberOfSharesOutstanding"),
+            "Número de acciones básico (promedio del período)",
+            "Weighted average shares outstanding, basic",
+            ROLE_INCOME, "Por acción", 440, unit="shares"),
+    Concept("AccDiluidas", ("WeightedAverageNumberOfDilutedSharesOutstanding",),
+            "Número de acciones diluido (promedio del período)",
+            "Weighted average shares outstanding, diluted",
+            ROLE_INCOME, "Por acción", 450, unit="shares"),
+
+    # Dividendo por acción DECLARADO. Lo publican 8 de 10 emisores y no lo teníamos: el
+    # eje Dividendo y el DDM tenían que deducirlo del flujo de caja (`PaymentsOfDividends`
+    # ÷ acciones), que mezcla el momento del pago con el de la declaración.
+    Concept("DPA", ("CommonStockDividendsPerShareDeclared",
+                    "CommonStockDividendsPerShareCashPaid"),
+            "Dividendos por acción declarados", "Dividends declared per share",
+            ROLE_INCOME, "Por acción", 460, unit="USD/shares"),
+
+    # Resultado integral: la utilidad más lo que pasó por patrimonio sin tocar resultados
+    # (traducción de moneda, coberturas). Cierra contra el AOCI del balance, que sí
+    # teníamos, y hasta ahora no tenía contraparte en el estado de resultados.
+    Concept("RIntegral", ("ComprehensiveIncomeNetOfTax",
+                          "ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest"),
+            "Resultado integral total", "Comprehensive income, net of tax",
+            ROLE_INCOME, None, 470),
+
     # ------------------------------------------------------------ FLUJO DE EFECTIVO
     Concept("CFO", ("NetCashProvidedByUsedInOperatingActivities",
                     "NetCashProvidedByUsedInOperatingActivitiesContinuingOperations"),
@@ -318,6 +359,33 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("IntPaid", ("InterestPaidNet", "InterestPaid"),
             "Intereses pagados", "Interest paid",
             ROLE_CASHFLOW, "Información complementaria", 592),
+
+    # Las líneas "otros" de inversión y financiación. Las reportan 10 de 10 emisores y
+    # sin ellas el estado NO CUADRA: los subtotales CFI y CFF que sí guardábamos incluyen
+    # estos montos, así que al desglosar faltaba plata sin explicación visible. Un lector
+    # que suma las líneas y no llega al subtotal asume que el dato está mal.
+    Concept("OtrosCFI", ("PaymentsForProceedsFromOtherInvestingActivities",),
+            "Otros flujos de efectivo de inversión", "Other investing activities, net",
+            ROLE_CASHFLOW, "Inversión", 576),
+    Concept("OtrosCFF", ("ProceedsFromPaymentsForOtherFinancingActivities",),
+            "Otros flujos de efectivo de financiación", "Other financing activities, net",
+            ROLE_CASHFLOW, "Financiación", 578),
+    Concept("AjusteNoCaja", ("OtherNoncashIncomeExpense",),
+            "Otros ajustes no monetarios", "Other non-cash income (expense)",
+            ROLE_CASHFLOW, "Operación", 582),
+
+    # El puente entre el saldo inicial y el final. `NetCashChg` (580) da la variación,
+    # pero sin el efecto cambiario y el saldo final la conciliación queda a medias — y en
+    # una empresa con caja en varias monedas el descuadre puede ser de miles de millones.
+    Concept("FXEfectivo", ("EffectOfExchangeRateOnCashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",
+                           "EffectOfExchangeRateOnCashAndCashEquivalents"),
+            "Efectos de la variación en la tasa de cambio sobre el efectivo",
+            "Effect of exchange rate on cash",
+            ROLE_CASHFLOW, "Información complementaria", 585),
+    Concept("EfectivoFinal", ("CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",),
+            "Efectivo y equivalentes al final del período",
+            "Cash, cash equivalents and restricted cash, end of period",
+            ROLE_CASHFLOW, "Información complementaria", 594),
 )
 
 CONCEPTS_BY_KEY = {c.key: c for c in CONCEPTS}

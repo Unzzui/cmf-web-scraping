@@ -112,6 +112,17 @@ def _lookup(file_path) -> Dict[str, Optional[float]]:
                 # puebla ahí). Las acciones están en financial_data como "Total número de
                 # acciones emitidas" (CommonStockSharesOutstanding), en UNIDADES. Se toma el
                 # período más reciente. Para Chile no se ejecuta: shares_outstanding ya vino.
+                #
+                # DOS NIVELES, y el orden importa. `CommonStockSharesOutstanding` es un
+                # saldo a una fecha y es el dato correcto, pero NO es universal: medido el
+                # 2026-07-26, ACN, MA, META, NKE, UPS y V no lo publican (ni el `Issued`,
+                # ni el de portada), sólo el promedio ponderado diluido del BPA. Sin ese
+                # respaldo esas empresas quedaban sin acciones, y sin acciones no hay
+                # precio por acción del DCF ni valor justo publicable.
+                #
+                # El promedio diluido es de segunda porque es un PROMEDIO DEL PERÍODO y no
+                # un conteo a fecha; por eso sólo entra cuando el bueno no existe, nunca
+                # compitiendo con él por ser de un período más nuevo.
                 if result["shares"] is None:
                     cur.execute(
                         """
@@ -121,9 +132,13 @@ def _lookup(file_path) -> Dict[str, Optional[float]]:
                         WHERE fli.company_id = %s
                           AND (LOWER(TRIM(fli.label)) = 'total número de acciones emitidas'
                                OR fli.source_tag IN ('CommonStockSharesOutstanding',
-                                                     'CommonStockSharesIssued'))
+                                                     'CommonStockSharesIssued',
+                                                     'WeightedAverageNumberOfDilutedSharesOutstanding'))
                           AND fd.value IS NOT NULL AND fd.value > 0
-                        ORDER BY fd.period_year DESC, fd.period_quarter DESC
+                        ORDER BY CASE WHEN fli.source_tag
+                                        = 'WeightedAverageNumberOfDilutedSharesOutstanding'
+                                      THEN 1 ELSE 0 END,
+                                 fd.period_year DESC, fd.period_quarter DESC
                         LIMIT 1
                         """,
                         [company_id],
