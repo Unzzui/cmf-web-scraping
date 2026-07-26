@@ -41,6 +41,12 @@ __pycache__/
 *.log
 cmf_scraper_log_*.txt
 .tmp_*
+# Logs del orquestador + su estado entre ciclos (racha de fallos del backup).
+logs/
+
+# Rutas de los repos en CADA server: las del miniserver no son las del Fedora, así que
+# versionar un compose.env concreto rompería el otro worktree. Va el ejemplo.
+deploy/docker/compose.env
 
 # Artefactos de generación US (Excel, estados)
 Product_v1_US/

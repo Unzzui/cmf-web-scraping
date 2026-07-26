@@ -52,9 +52,23 @@ BACKUP_DIRS=(
     "data/RUT_Chilean_Companies:RUT_Chilean_Companies"
 )
 
+# Los límites de abajo existen por un fallo real: los respaldos del 24 y 25 de julio de 2026
+# murieron con `Error 403: Quota exceeded for quota metric 'Queries' and limit 'Queries per
+# minute'` al listar data/XBRL, que son miles de archivos. Con --checkers 16 sin techo de
+# requests, el listado dispara más llamadas por minuto de las que Drive acepta. --tpslimit es
+# el freno directo; el pacer le agrega espera entre reintentos.
+#
+# OJO: la cuota que se agotó es la del *project* de OAuth, y por defecto rclone usa un client
+# ID COMPARTIDO por todos sus usuarios en el mundo. Si esto vuelve a pasar aun con el freno,
+# la solución de fondo no es bajar más los números sino crear un client_id propio en Google
+# Cloud y ponerlo en el remote (rclone config → client_id/client_secret).
 COMMON_FLAGS=(
-    --transfers 8
-    --checkers 16
+    --transfers 4
+    --checkers 8
+    --tpslimit 8
+    --tpslimit-burst 16
+    --drive-pacer-min-sleep 100ms
+    --drive-pacer-burst 200
     --drive-chunk-size 64M
     --fast-list
     --exclude "out_*/**"

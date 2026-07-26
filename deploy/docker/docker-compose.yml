@@ -27,8 +27,12 @@ services:
       # Los dos repos (código + datos + .env). Ajustá las rutas de la izquierda a tu server.
       - ${CMF_REPO:-../..}:/app/cmf
       - ${FDC_REPO:-../../../FinDataChile}:/app/fdc
-      # Perfil de rclone para el backup a Google Drive (si lo usás).
-      - ${RCLONE_CONFIG_DIR:-~/.config/rclone}:/root/.config/rclone:ro
+      # Perfil de rclone para el backup a Google Drive (si lo usás). Va de LECTURA/ESCRITURA
+      # a propósito: rclone reescribe rclone.conf cada vez que refresca el token de OAuth. Con
+      # el mount :ro fallaba con "Failed to save config after 10 tries: read-only file system"
+      # y sobrevivía sólo porque refresca en memoria en cada corrida — el día que Google rote
+      # el refresh token, el backup queda muerto sin aviso.
+      - ${RCLONE_CONFIG_DIR:-~/.config/rclone}:/root/.config/rclone
     working_dir: /app/cmf
     # Un ciclo diario, live, con refresco de calendarios. Para probar sin publicar:
     #   command: ["python", "/app/cmf/scripts/auto_update.py"]        # dry-run, una vez
