@@ -295,6 +295,14 @@ class CostoDeuda:
     n_creditos: int
     por_moneda: dict[str, float]    # moneda → monto. La exposición cambiaria de la deuda.
 
+    # El MISMO Kd pero con las tasas en UF llevadas a nominal. La UF se reajusta por el
+    # IPC, así que una tasa en UF es REAL: se paga ADEMÁS de la inflación. `kd` mezcla
+    # esas tasas reales con las nominales en pesos y dólares, y el promedio resultante
+    # no es ni una cosa ni la otra. Como el costo de patrimonio se construye sobre una
+    # tasa libre de riesgo NOMINAL, el WACC necesita este campo y no `kd`.
+    # Aguas Andinas: 3,53% declarado → 6,11% nominal. En el catálogo, +126bp de media.
+    kd_nominal: float = 0.0
+
     # Cuánto hay que refinanciar dentro de los próximos doce meses. Es la diferencia entre
     # una empresa cómoda y una apretada, y no se ve en el Kd.
     corriente: float = 0.0
@@ -308,6 +316,21 @@ class CostoDeuda:
     # Por instrumento: cuánto es préstamo bancario, cuánto bono y cuánto arriendo. Bajo
     # IFRS 16 un arriendo es deuda, y en SMU son el 58,6% del total.
     por_instrumento: dict[str, float] = field(default_factory=dict)
+
+
+# Meta de inflación del Banco Central de Chile. Es la referencia oficial y citable
+# para convertir una tasa en UF (real) a su equivalente nominal; no un supuesto propio.
+INFLACION_ANUAL = 0.03
+
+# Códigos de moneda INDEXADOS A INFLACIÓN chilena. La CMF codifica la UF como 'CLF'.
+_MONEDAS_REALES = {"CLF", "UF"}
+
+
+def _a_nominal(tasa: float, moneda: str | None) -> float:
+    """Lleva una tasa a términos nominales. Sólo las indexadas a IPC se convierten."""
+    if moneda and moneda.strip().upper() in _MONEDAS_REALES:
+        return (1 + tasa) * (1 + INFLACION_ANUAL) - 1
+    return tasa
 
 
 def costo_de_deuda(xbrl_path: Path | str, fecha: str | None = None) -> CostoDeuda | None:
@@ -325,6 +348,10 @@ def costo_de_deuda(xbrl_path: Path | str, fecha: str | None = None) -> CostoDeud
         return None
 
     kd = sum(c.tasa_efectiva * c.monto_contable for c in utiles) / total
+    # Kd nominal: sólo las CLF (UF) se convierten; CLP y las monedas extranjeras ya
+    # vienen en términos nominales de su propia moneda.
+    kd_nominal = sum(_a_nominal(c.tasa_efectiva, c.moneda) * c.monto_contable
+                     for c in utiles) / total
 
     por_moneda: dict[str, float] = collections.defaultdict(float)
     por_instrumento: dict[str, float] = collections.defaultdict(float)
@@ -346,6 +373,7 @@ def costo_de_deuda(xbrl_path: Path | str, fecha: str | None = None) -> CostoDeud
 
     return CostoDeuda(
         kd=kd,
+        kd_nominal=kd_nominal,
         deuda_cubierta=total,
         n_creditos=len(utiles),
         por_moneda=dict(por_moneda),

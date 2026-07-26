@@ -363,6 +363,8 @@ def _deuda(ruta: Path, doc: xf.Documento, fecha_fin: str) -> tuple[list[dict], d
 
     resumen = {
         "kd": cd.kd,
+        "kd_nominal": cd.kd_nominal,
+        "inflacion_anual": xd.INFLACION_ANUAL,
         "deuda_cubierta": cd.deuda_cubierta / ESCALA,
         "n_creditos": cd.n_creditos,
         "cobertura": (cd.deuda_cubierta / balance) if balance > 0 else None,
@@ -538,12 +540,15 @@ def main() -> None:
                 if args.apply:
                     cur.execute(
                         """INSERT INTO xbrl_costo_deuda
-                             (company_id, period_year, period_quarter, kd, deuda_cubierta,
-                              n_creditos, cobertura)
-                           VALUES (%(cid)s, %(y)s, %(q)s, %(kd)s, %(deuda_cubierta)s,
+                             (company_id, period_year, period_quarter, kd, kd_nominal,
+                              inflacion_anual, deuda_cubierta, n_creditos, cobertura)
+                           VALUES (%(cid)s, %(y)s, %(q)s, %(kd)s, %(kd_nominal)s,
+                                   %(inflacion_anual)s, %(deuda_cubierta)s,
                                    %(n_creditos)s, %(cobertura)s)
                            ON CONFLICT (company_id, period_year, period_quarter)
                            DO UPDATE SET kd = EXCLUDED.kd,
+                                         kd_nominal = EXCLUDED.kd_nominal,
+                                         inflacion_anual = EXCLUDED.inflacion_anual,
                                          deuda_cubierta = EXCLUDED.deuda_cubierta,
                                          n_creditos = EXCLUDED.n_creditos,
                                          cobertura = EXCLUDED.cobertura""",
