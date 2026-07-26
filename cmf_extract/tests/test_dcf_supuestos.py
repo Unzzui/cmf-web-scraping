@@ -110,3 +110,19 @@ def test_el_rotulo_del_ano_base_no_se_sobrescribe_con_un_trimestre():
     assert 'cell_value and isinstance(cell_value, str) and "Año base" in cell_value' not in FUENTE, (
         "volvió el bloque que sobrescribe el rótulo del año base con un trimestre"
     )
+
+
+def test_cagr_historico_y_crecimiento_proyectado_no_se_mezclan():
+    """El dato observado queda crudo; sólo el supuesto Y+1 recibe piso o techo."""
+    assert '("CAGR histórico ventas (%)", self._get_cagr_formula(5), "formula")' in FUENTE
+    assert "MAX(MIN(POWER(" not in FUENTE
+    assert '0.03,MAX(MIN({historical_cagr_ref},0.20),0.02)' in FUENTE
+    assert '("Criterio de crecimiento"' in FUENTE
+
+
+def test_crecimiento_base_y_escenarios_convergen_a_terminal_en_y5():
+    """Y5 debe ser g, sin el salto oculto que antes quedaba al entrar a perpetuidad."""
+    assert '("Crecimiento Ventas Y+5 (%)", f"={terminal_growth_ref}", "formula")' in FUENTE
+    assert 'f"={base_crec_y5}",' in FUENTE
+    assert "base_crec_y1}*0.8" not in FUENTE
+    assert "base_crec_y1}*1.2" not in FUENTE

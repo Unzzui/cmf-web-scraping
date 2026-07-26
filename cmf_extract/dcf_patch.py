@@ -256,8 +256,12 @@ class DCFBuilder:
             "CFF": "Flujos de efectivo netos procedentes de (utilizados en) actividades de financiación",
             "CapEx": "Compras de propiedades, planta y equipo",
             "CapExIntang": "Compras de activos intangibles",
+            # Stock-based compensation: gasto NO CAJA que el CFO trae de vuelta.
+            # Se usa para el margen EBIT DE CAJA (ver _get_margen_ebit_formula). Sólo
+            # aparece en los estados US (EDGAR); en Chile la línea no existe → no suma.
+            "SBC": "Gasto por compensación basada en acciones",
         }
-        
+
         return {key: self._find_row_in_sheet(self.sh_cfs, concept)
                 for key, concept in concepts.items()}
 
@@ -348,7 +352,7 @@ class DCFBuilder:
                 f"préstamos, ponderado por monto. Monedas: {monedas}")
 
     def _beta_yahoo(self) -> Optional[float]:
-        """El beta de Yahoo de la empresa, acotado a [0.5, 2.0], o None si no hay.
+        """El beta de Yahoo de la empresa, acotado a [0.8, 2.0], o None si no hay.
 
         Se inyecta desde la BD (companies.yahoo_beta) vía formula_processor. Sólo ~42
         empresas cotizan y tienen beta de Yahoo. ``None`` es una respuesta válida: el
@@ -360,7 +364,12 @@ class DCFBuilder:
             b = float(b)
         except (TypeError, ValueError):
             return None
-        return max(0.5, min(2.0, b))
+        # Piso 0,8: el estandar de la industria. Antes era 0,5, que dejaba pasar
+        # betas de regresion rotas (Colbun llego a -0,094) y producia un costo de
+        # capital que ningun analista usaria. MISMO valor que scripts/dcf/config.py
+        # (motor de la BD) y que lib/valuation-consensus.ts (web): si los tres no
+        # coinciden, el WACC del Excel no cuadra con el que muestra la ficha.
+        return max(0.8, min(2.0, b))
 
     def _beta_fuente(self) -> str:
         """De dónde salió el beta. Un supuesto que no se nombra es un supuesto que se cree.
@@ -519,14 +528,25 @@ class DCFBuilder:
         return f"=IFERROR(MAX(MIN(({suma})/({cuenta}),{hi}),{lo}),{default})"
 
     def _get_margen_ebit_formula(self) -> str:
-        """Margen EBIT de proyección = PROMEDIO histórico anual de EBIT/Ventas.
+        """Margen EBIT de proyección = PROMEDIO histórico anual de (EBIT+SBC)/Ventas.
 
-        Media multi-año acotada a [1%, 50%], idéntica a la BD
-        (``_safe_avg(margen_series, default=0.10, lo=0.01, hi=0.5)``).
+        Sobre EBIT DE CAJA: se suma de vuelta la Stock-Based Compensation (gasto no
+        caja restado del EBIT GAAP), igual que la BD
+        (``compute_excel_drivers``: ``ebit_cash = ebit + sbc``). Sin este addback,
+        el software US con mucho SBC (Palo Alto, Salesforce, Adobe) muestra un margen
+        muy por debajo de su generación de caja real y el FCFF —y el precio objetivo—
+        colapsa. En Chile la línea SBC no existe → el numerador queda sólo EBIT y el
+        resultado es idéntico al anterior (sin regresión). Media acotada a [1%, 50%].
         """
         if (self.sh_pl and self.rows_pl.get("EBIT") and self.rows_pl.get("Ventas")):
+            # EBIT (Estado de Resultados) + SBC (Flujo de Efectivo), sumados por año.
+            # _avg_ratio_over_annual admite numeradores de hojas distintas y omite las
+            # celdas vacías, así que si no hay SBC (Chile) el numerador es sólo EBIT.
+            num_specs = [(self.sh_pl, self.rows_pl["EBIT"])]
+            if self.sh_cfs and self.rows_cfs.get("SBC"):
+                num_specs.append((self.sh_cfs, self.rows_cfs["SBC"]))
             f = self._avg_ratio_over_annual(
-                [(self.sh_pl, self.rows_pl["EBIT"])],
+                num_specs,
                 self.sh_pl, self.rows_pl["Ventas"],
                 default=0.10, lo=0.01, hi=0.5)
             if f:
@@ -742,19 +762,22 @@ class DCFBuilder:
     
     def _get_cagr_formula(self, years_back: int = 5) -> str:
         """
-        Calcula CAGR automático de ventas basado en períodos históricos disponibles.
-        Maneja correctamente el orden de columnas desde más reciente a más antiguo.
+        Calcula el CAGR histórico observado, sin pisos ni techos.
+
+        La normalización pertenece al supuesto Y+1, no a este dato histórico. Si no
+        hay extremos positivos suficientes devuelve una celda vacía para que el modelo
+        pueda mostrar que aplicó el fallback explícito de 3%.
         
         Args:
             years_back: Número de años hacia atrás para calcular CAGR
         """
         if not (self.sh_pl and "Ventas" in self.rows_pl and self.rows_pl["Ventas"]):
-            return "0.05"  # Default 5%
+            return '=""'
             
         # Obtener períodos disponibles en el orden que aparecen
         periods = self._iter_periods_from_sheet(self.sh_pl)
         if not periods or len(periods) < 2:
-            return "0.05"
+            return '=""'
             
         # Cierres ANUALES.
         #
@@ -765,7 +788,7 @@ class DCFBuilder:
         # Pero TODOS los encabezados del Excel son "2026Q1", "2025Q4", "2024Q4"…
         # Ninguno pasaba jamás, así que `annual_periods` quedaba vacío y la función
         # retornaba "0.05" SIEMPRE. Verificado en 7 Excel de producción: la celda
-        # "Crecimiento Ventas Y+1" contiene el literal 0.05, no una fórmula.
+        # "Crecimiento Ventas Y+1" contenía el literal 0.05, no una fórmula.
         #
         # O sea que TODOS los Excel vendidos proyectaban un 5% de crecimiento, igual
         # para Falabella que para SQM. Y como Y+2 a Y+5 se derivan de esa celda
@@ -785,7 +808,7 @@ class DCFBuilder:
                 annual_periods.append((period_str[:4], period_str))
 
         if len(annual_periods) < 2:
-            return "0.05"
+            return '=""'
         
         # Los períodos están en orden: más reciente primero
         # annual_periods = [(2024, "2024"), (2023, "2023"), (2022, "2022"), ...]
@@ -819,12 +842,7 @@ class DCFBuilder:
             end_ref = self.create_cell_reference_by_label(self.sh_pl, self.rows_pl["Ventas"], most_recent_label)
             start_ref = self.create_cell_reference_by_label(self.sh_pl, self.rows_pl["Ventas"], best_start_label)
             
-            # CAGR calculado
-            # Referencias CAGR identificadas
-            # Tope 15% y piso 2%: los mismos que aplica el DCF que se guarda en la BD
-            # (scripts/dcf/excel_aligned.py). Sin ellos, una empresa que dobló ventas en
-            # un año proyectaría 100% anual durante cinco años.
-            return f"=IFERROR(MAX(MIN(POWER({end_ref}/{start_ref},1/{best_years_diff})-1,0.15),0.02),0.05)"
+            return f'=IFERROR(POWER({end_ref}/{start_ref},1/{best_years_diff})-1,"")'
         
         # Fallback: usar los dos períodos más recientes si están disponibles
         if len(annual_periods) >= 2:
@@ -837,10 +855,9 @@ class DCFBuilder:
             if end_ref and start_ref:
                 years_diff = float(recent_year) - float(prev_year)
                 if years_diff > 0:
-                    # CAGR fallback calculado
-                    return f"=IFERROR(MAX(MIN(POWER({end_ref}/{start_ref},1/{years_diff})-1,0.15),0.02),0.05)"
+                    return f'=IFERROR(POWER({end_ref}/{start_ref},1/{years_diff})-1,"")'
         
-        return "0.05"  # Fallback final
+        return '=""'
 
     # ----------------------------
     # Estilos
@@ -1268,14 +1285,27 @@ class DCFBuilder:
         # año real, y ahora el Excel también.
         periodo_base_anual = self._find_base_annual_period()
 
+        historical_cagr_row = inputs_row + 2
+        forecast_growth_row = inputs_row + 3
+        terminal_growth_row = inputs_row + 14
+        historical_cagr_ref = f"$B${historical_cagr_row}"
+        forecast_growth_ref = f"$B${forecast_growth_row}"
+        terminal_growth_ref = f"$B${terminal_growth_row}"
+
         inputs = [
             ("Año base", periodo_base_anual, "input"),
             ("Ventas año base (M$)", self._get_ventas_base_formula(periodo_base_anual), "formula"),
-            ("Crecimiento Ventas Y+1 (%)", self._get_cagr_formula(5), "formula"),
-            ("Crecimiento Ventas Y+2 (%)", f"=MAX(B{inputs_row + 2}*0.9,0.02)", "formula"),  # Referencia correcta al Y+1
-            ("Crecimiento Ventas Y+3 (%)", f"=MAX(B{inputs_row + 3}*0.9,0.02)", "formula"),  # Referencia correcta al Y+2
-            ("Crecimiento Ventas Y+4 (%)", f"=MAX(B{inputs_row + 4}*0.85,0.015)", "formula"), # Referencia correcta al Y+3
-            ("Crecimiento Ventas Y+5 (%)", f"=MAX(B{inputs_row + 5}*0.8,0.015)", "formula"),  # Referencia correcta al Y+4
+            ("CAGR histórico ventas (%)", self._get_cagr_formula(5), "formula"),
+            ("Crecimiento Ventas Y+1 (%)",
+             f'=IF({historical_cagr_ref}="",0.03,MAX(MIN({historical_cagr_ref},0.20),0.02))',
+             "formula"),
+            ("Crecimiento Ventas Y+2 (%)",
+             f"={forecast_growth_ref}+({terminal_growth_ref}-{forecast_growth_ref})*1/4", "formula"),
+            ("Crecimiento Ventas Y+3 (%)",
+             f"={forecast_growth_ref}+({terminal_growth_ref}-{forecast_growth_ref})*2/4", "formula"),
+            ("Crecimiento Ventas Y+4 (%)",
+             f"={forecast_growth_ref}+({terminal_growth_ref}-{forecast_growth_ref})*3/4", "formula"),
+            ("Crecimiento Ventas Y+5 (%)", f"={terminal_growth_ref}", "formula"),
             ("Margen EBIT (%)", self._get_margen_ebit_formula(), "formula"),
             ("Tasa efectiva de impuestos (%)", self._get_tasa_impuestos_formula(), "formula"),
             ("D&A / Ventas (%)", self._get_da_ventas_formula(), "formula"),
@@ -1286,6 +1316,11 @@ class DCFBuilder:
             # pero dejaba la impresion de ser una constante editable.
             ("WACC (%)", "0.10", "input"),
             ("g - Tasa de crecimiento terminal (%)", "0.02", "fixed"),  # Fijo en 2%
+            ("Criterio de crecimiento",
+             f'=IF({historical_cagr_ref}="","Fallback 3,0%: historial insuficiente",'
+             f'IF({historical_cagr_ref}>0.20,"Techo 20,0% aplicado",'
+             f'IF({historical_cagr_ref}<0.02,"Piso 2,0% aplicado",'
+             '"CAGR histórico aplicado sin ajuste")))', "formula"),
             # La moneda viaja PEGADA al modelo, no en una nota al pie.
             ("Moneda de los estados", self.reporting_currency, "input"),
         ]
@@ -1803,16 +1838,18 @@ class DCFBuilder:
         base_da_ventas = find_dcf_param_row("D&A / Ventas") or f"'{dcf_base_sheet}'!B18"
         base_capex_ventas = find_dcf_param_row("CapEx / Ventas") or f"'{dcf_base_sheet}'!B19"
         base_nwc_ventas = find_dcf_param_row("ΔNWC / ΔVentas") or f"'{dcf_base_sheet}'!B20"
+        conservador_row = params_row + 1
+        agresivo_row = params_row + 3
         
         # Escenarios dinámicos basados en el escenario Base
         scenarios = [
-            # Conservador: 20% menos optimista que Base
+            # Conservador: -0,5 pp en Y+1 y convergencia al g terminal en Y+5.
             ["Conservador", 
-             f"=MAX({base_crec_y1}*0.8,0.015)",    # Y+1: 80% del base
-             f"=MAX({base_crec_y2}*0.8,0.015)",    # Y+2: 80% del base 
-             f"=MAX({base_crec_y3}*0.8,0.015)",    # Y+3: 80% del base
-             f"=MAX({base_crec_y4}*0.8,0.01)",     # Y+4: 80% del base
-             f"=MAX({base_crec_y5}*0.8,0.01)",     # Y+5: 80% del base
+             f"=MAX({base_crec_y1}-0.005,0.02)",
+             f"=$B${conservador_row}+({base_crec_y5}-$B${conservador_row})*1/4",
+             f"=$B${conservador_row}+({base_crec_y5}-$B${conservador_row})*2/4",
+             f"=$B${conservador_row}+({base_crec_y5}-$B${conservador_row})*3/4",
+             f"={base_crec_y5}",
              f"=MIN({base_margen}*0.9,0.06)",      # Margen: 90% del base (conservador usa MIN para piso)
              "0.27",    # Impuestos: Fijo en 27%
              f"={base_da_ventas}*1.05",            # D&A: 105% del base
@@ -1832,13 +1869,13 @@ class DCFBuilder:
              f"={base_capex_ventas}", # Referencia directa CapEx
              f"={base_nwc_ventas}"    # Referencia directa NWC
             ],
-            # Agresivo: 20% más optimista que Base
+            # Agresivo: +0,5 pp en Y+1, techo 20%, y convergencia a g en Y+5.
             ["Agresivo",    
-             f"={base_crec_y1}*1.2",               # Y+1: 120% del base
-             f"={base_crec_y2}*1.2",               # Y+2: 120% del base
-             f"={base_crec_y3}*1.2",               # Y+3: 120% del base 
-             f"={base_crec_y4}*1.2",               # Y+4: 120% del base
-             f"={base_crec_y5}*1.2",               # Y+5: 120% del base
+             f"=MIN({base_crec_y1}+0.005,0.20)",
+             f"=$B${agresivo_row}+({base_crec_y5}-$B${agresivo_row})*1/4",
+             f"=$B${agresivo_row}+({base_crec_y5}-$B${agresivo_row})*2/4",
+             f"=$B${agresivo_row}+({base_crec_y5}-$B${agresivo_row})*3/4",
+             f"={base_crec_y5}",
              f"=MAX({base_margen}*1.15,0.18)",     # Margen: 115% del base (agresivo usa MAX para piso alto)
              "0.27",    # Impuestos: Fijo en 27%
              f"={base_da_ventas}*1.05",            # D&A: 105% del base (más depreciación es bueno para FCFF)
@@ -2753,4 +2790,3 @@ def add_multi_period_dcf_functionality(workbook: Workbook, financial_data: Dict[
 
     # Reorganizar hojas en orden profesional
     dcf._organize_worksheets()
-
