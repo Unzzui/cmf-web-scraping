@@ -54,6 +54,32 @@ _ROLE_RE = re.compile(r"^\[(\d{6})\]")
 # "presentation_91705000-7_201403-202603_es.csv" / "presentation_91705000_202512_es.csv"
 _PERIODO_RE = re.compile(r"_(\d{6})_[a-z]{2}\.csv$")
 
+# Un QName de la taxonomia: "ifrs-full:Revenue", "cl-ci:OtrosIngresos". Prefijo en
+# minusculas, dos puntos, concepto en PascalCase. Ninguna etiqueta de verdad -- que son
+# frases en español con espacios -- se parece a esto.
+_QNAME_RE = re.compile(r"^[a-z][a-z0-9_.-]*:[A-Za-z]")
+
+
+def es_qname_sin_resolver(valor: str) -> bool:
+    """¿Arelle dejo el QName crudo en vez de la etiqueta de la cuenta?
+
+    Pasa cuando el XBRL de ese periodo no trae (o Arelle no resuelve) el linkbase de
+    etiquetas: el arbol de presentacion sale con "ifrs-full:Revenue" donde deberia decir
+    "Ingresos de actividades ordinarias".
+
+    Eso NO es una cuenta distinta, es la MISMA cuenta sin nombre. Si se deja pasar,
+    `_fusionar` la mete en el orden maestro como una cuenta mas y el estado entero
+    aparece DUPLICADO: una vez en jerga inglesa y otra en español. Verificado en
+    REDMEGACENTRO (76377075-3): su presentacion de 2024-12 trae 110 filas todas en
+    QName, mientras la de 2025-06 trae 3.762 con las etiquetas resueltas, y el
+    resultado eran 38 cuentas fantasma en la ficha y en el Excel que se vende.
+
+    Se descarta el valor, no el periodo: los datos de ese periodo siguen entrando por
+    las cuentas que SI tienen nombre en los demas periodos. Preferimos perder el orden
+    que aporta un periodo mudo a inventar cuentas que no existen.
+    """
+    return bool(_QNAME_RE.match(valor.strip()))
+
 
 def _ancho_arbol(cabeceras: list[str]) -> int:
     """Cuantas columnas forman el arbol indentado.
@@ -123,7 +149,10 @@ def leer_presentacion_con_nivel(ruta: Path) -> dict[str, list[tuple[int, str]]]:
         for nivel in range(1, min(ancho, len(fila))):
             valor = fila[nivel].strip()
             if valor:
-                fuera[rol_actual].append((nivel, valor))
+                # Etiqueta sin resolver: la cuenta existe, pero este periodo no sabe
+                # como se llama. Se ignora en vez de sumarla como cuenta nueva.
+                if not es_qname_sin_resolver(valor):
+                    fuera[rol_actual].append((nivel, valor))
                 break
 
     return fuera

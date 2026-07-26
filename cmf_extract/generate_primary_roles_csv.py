@@ -660,6 +660,13 @@ def _build_primary_roles_csv(company_dir: Path, lang: str = 'es') -> Path | None
             return False
         if re.match(r'^\s*\[(\d{6})\]', s):
             return False
+        # QName sin resolver ("ifrs-full:Revenue"): la cuenta sin su nombre. Ya se
+        # descarta en presentation_order, pero este CSV es el que alimenta la BD y
+        # el Excel que se vende, así que la etiqueta cruda se corta también acá:
+        # llegar a producción con jerga de taxonomía no es un defecto cosmético,
+        # duplica el estado financiero completo (ver es_qname_sin_resolver).
+        if po.es_qname_sin_resolver(s):
+            return False
         # NO filtrar [sinopsis] - las necesitamos según el JSON
         return True
 
