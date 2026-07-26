@@ -181,19 +181,46 @@ def _schema_ref_faltante(extract_dir: Path) -> Optional[str]:
     return None if existe else nombre
 
 
+# Aviso literal de la CMF cuando la entidad publicó el período pero sin XBRL. Es la
+# forma más confiable de distinguir "todavía no lo mandaron" de "no pudimos averiguarlo".
+_AVISO_SIN_XBRL = re.compile(r"no\s+registra\s+env[íi]o\s+de\s+archivo\s+XBRL", re.IGNORECASE)
+
+
+def _declara_sin_xbrl(html: str) -> bool:
+    """La CMF dice con todas las letras que la entidad no envió XBRL para el período.
+
+    Se busca sobre el texto DECODIFICADO, no sobre el HTML crudo: la página escribe
+    `env&iacute;o`, así que un regex contra el crudo no matchea nunca. Y no matchear acá
+    no rompe nada visible — simplemente no se emite el aviso —, que es justo el modo de
+    falla que un detector de ausencias no puede permitirse.
+    """
+    texto = BeautifulSoup(html, "html.parser").get_text(" ")
+    return bool(_AVISO_SIN_XBRL.search(texto))
+
+
 def _find_xbrl_link(html: str) -> Optional[str]:
+    """href de descarga del XBRL, o None si la página no ofrece XBRL.
+
+    El enlace real apunta a `safec_ifrs_verarchivo.php` y su TEXTO dice "Estados
+    financieros (XBRL)". El href es un blob opaco (`auth=…&send=…`) idéntico en forma
+    para todos los documentos, así que el texto del anchor es el único discriminante.
+
+    **No hay fallback por href suelto**, y no es un descuido. La misma página lista
+    "Estados financieros (PDF)", "Declaración de responsabilidad", "Hechos Relevantes" y
+    "Análisis Razonado" con hrefs indistinguibles. El fallback que aceptaba cualquier
+    `verarchivo…ifrs` se quedaba con el PDF —es el primero de la lista— y eso pasaba de
+    verdad: en SONDA 2026-06 bajábamos 2,7 MB de PDF en cada ciclo para descartarlos
+    después por no ser ZIP, y encima el período quedaba marcado como inconcluyente en vez
+    de como lo que era. Si ningún anchor dice XBRL, no hay XBRL: la CMF lo declara
+    explícitamente ("La entidad no registra envío de archivo XBRL para el periodo …").
+    """
     soup = BeautifulSoup(html, "html.parser")
-    # El enlace real de descarga apunta a `safec_ifrs_verarchivo.php`. Buscamos
-    # por href para evitar confundirlo con enlaces informativos del sitio (p.ej.
-    # "XBRL Mercado de Valores") que también contienen el texto "XBRL".
+    # Se exige el href además del texto para no confundirlo con enlaces informativos del
+    # sitio (p.ej. "XBRL Mercado de Valores"), que también contienen la palabra XBRL.
     for a in soup.find_all("a"):
         href = a.get("href") or ""
         text = (a.get_text() or "").strip()
-        if "verarchivo" in href.lower() and "ifrs" in href.lower() and "XBRL" in text:
-            return href
-    for a in soup.find_all("a"):
-        href = a.get("href") or ""
-        if "verarchivo" in href.lower() and "ifrs" in href.lower():
+        if "verarchivo" in href.lower() and "ifrs" in href.lower() and "XBRL" in text.upper():
             return href
     return None
 
@@ -503,7 +530,7 @@ def download_cmf_xbrl_http(
     start_ts = time.time()
     lock_done = __import__("threading").Lock()
 
-    def _fetch(year: int, month: int) -> tuple[Optional[str], bool]:
+    def _fetch(year: int, month: int, *, avisar_ausencia: bool = False) -> tuple[Optional[str], bool]:
         """Devuelve ``(path|None, definitive)``.
 
         - ``(path, True)``  → descargado OK.
@@ -531,7 +558,15 @@ def download_cmf_xbrl_http(
                 continue
             href = _find_xbrl_link(resp.text)
             if not href:
-                continue  # HTTP 200 limpio sin enlace = ausencia para este tipo
+                # HTTP 200 limpio sin enlace = ausencia para este tipo. Cuando la CMF lo
+                # declara explícitamente vale decirlo: es la diferencia entre "la empresa
+                # todavía no mandó el XBRL" y "algo falló", y ahorra tener que ir a mirar
+                # el sitio a mano para entender por qué un período no aparece.
+                if avisar_ausencia and _declara_sin_xbrl(resp.text):
+                    logger.info("[http] %s %s (tipo %s): la CMF declara que la entidad no "
+                                "registra envío de archivo XBRL para ese período",
+                                rut, yyyymm, tipo)
+                continue
             dl = urljoin(base, href)
             try:
                 rr = _polite_request(session, "GET", dl,
@@ -639,12 +674,24 @@ def download_cmf_xbrl_http(
         # Borde reciente: secuencial y ascendente, con corto-circuito en el
         # primer faltante (los períodos posteriores se dan por no publicados).
         for i, (year, month) in enumerate(leading):
-            res, _def = _fetch(year, month)
+            res, definitivo = _fetch(year, month, avisar_ausencia=True)
             _emit_progress(year, month, res)
             if res:
                 downloaded.append(res)
                 continue
-            # Primer faltante del borde → omitir el resto del borde.
+            if not definitivo:
+                # El corto-circuito se apoya en "este período NO existe, así que los
+                # posteriores tampoco". Esa premisa no vale cuando no pudimos comprobarlo
+                # (excepción, bloqueo, respuesta inesperada): dar por no publicado lo que
+                # no pudimos verificar esconde datos que sí están, y encima lo rotula como
+                # "aún no publicado", que es una afirmación que no nos consta. Se sigue con
+                # el resto del borde y se reintenta el período en el próximo ciclo.
+                logger.warning(
+                    "[http] %s %s-%02d INCONCLUYENTE (error, bloqueo o respuesta "
+                    "inesperada): no se concluye que falte; se sigue con el resto del "
+                    "borde reciente", rut, year, month)
+                continue
+            # Primer faltante CONCLUYENTE del borde → omitir el resto del borde.
             rest = leading[i + 1:]
             logger.info(
                 "[http] %s %s-%02d sin XBRL en el borde reciente → se omiten %d "

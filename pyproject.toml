@@ -43,7 +43,9 @@ packages = []
 testpaths = ["tests", "cmf_extract/tests"]
 # La raiz del repo en el path: los tests importan `src.scrapers...`, y sin esto solo
 # funcionaban corriendo pytest desde la raiz con los tests sueltos en la raiz.
-pythonpath = ["."]
+# `src` va tambien porque los modulos de src/xbrl se importan entre si como `xbrl.*`
+# (asi los carga el pipeline en runtime); sin esto no son importables desde un test.
+pythonpath = [".", "src"]
 markers = [
     "validation: valida archivos Excel ya generados; requiere una corrida previa del pipeline",
 ]
