@@ -84,6 +84,17 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("PPE", ("PropertyPlantAndEquipmentNet",),
             "Propiedades, planta y equipo", "Property, plant and equipment, net",
             ROLE_BALANCE, "Activos no corrientes", 60),
+    # Bruto y depreciación acumulada. Con los tres el lector ve la EDAD del activo fijo
+    # —cuánto de la planta ya se depreció—, que el neto solo esconde: dos empresas con el
+    # mismo PPE neto pueden tener una la planta recién estrenada y la otra casi agotada.
+    # El display_order los deja después del neto y no antes porque estos números son
+    # nuevos y renumerar el 60 reescribiría filas ya cargadas (la unique con company_id).
+    Concept("PPEBruto", ("PropertyPlantAndEquipmentGross",),
+            "Propiedades, planta y equipo, bruto", "Property, plant and equipment, gross",
+            ROLE_BALANCE, "Activos no corrientes", 61),
+    Concept("DepAcum", ("AccumulatedDepreciationDepletionAndAmortizationPropertyPlantAndEquipment",),
+            "Depreciación acumulada", "Accumulated depreciation",
+            ROLE_BALANCE, "Activos no corrientes", 63),
     # Activo por derecho de uso: universal desde 2019 (ASC 842). Antes de esa norma la
     # línea no existe y queda hueca, que es lo correcto —no es un dato faltante, es que la
     # cuenta no existía—.
@@ -121,6 +132,21 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("LeaseCP", ("OperatingLeaseLiabilityCurrent",),
             "Pasivos por arrendamientos, corrientes",
             "Operating lease liabilities, current", ROLE_BALANCE, "Pasivos corrientes", 124),
+    # Arrendamiento FINANCIERO: es deuda y va aparte del operativo (124/142). Sin estas
+    # líneas el apalancamiento de una empresa con flota o locales propios se subestima.
+    Concept("LeaseFinCP", ("FinanceLeaseLiabilityCurrent",),
+            "Pasivos por arrendamientos financieros, corrientes",
+            "Finance lease liabilities, current", ROLE_BALANCE, "Pasivos corrientes", 125),
+    # Papel comercial: deuda de cortísimo plazo que 18 de 36 emisores presentan separada.
+    Concept("PapelCom", ("CommercialPaper",),
+            "Papel comercial", "Commercial paper",
+            ROLE_BALANCE, "Pasivos corrientes", 121),
+    Concept("RemunPorPagar", ("EmployeeRelatedLiabilitiesCurrent",),
+            "Cuentas por pagar al personal", "Employee-related liabilities, current",
+            ROLE_BALANCE, "Pasivos corrientes", 123),
+    Concept("ImpPorPagar", ("AccruedIncomeTaxesCurrent",),
+            "Pasivos por impuestos corrientes", "Accrued income taxes, current",
+            ROLE_BALANCE, "Pasivos corrientes", 127),
     Concept("OtrPasCP", ("OtherLiabilitiesCurrent",),
             "Otros pasivos corrientes", "Other current liabilities",
             ROLE_BALANCE, "Pasivos corrientes", 126),
@@ -133,6 +159,15 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("LeaseLP", ("OperatingLeaseLiabilityNoncurrent",),
             "Pasivos por arrendamientos, no corrientes",
             "Operating lease liabilities, non-current", ROLE_BALANCE, "Pasivos no corrientes", 142),
+    Concept("LeaseTotal", ("OperatingLeaseLiability",),
+            "Pasivos por arrendamientos, total", "Operating lease liability, total",
+            ROLE_BALANCE, "Pasivos no corrientes", 141),
+    Concept("LeaseFinLP", ("FinanceLeaseLiabilityNoncurrent",),
+            "Pasivos por arrendamientos financieros, no corrientes",
+            "Finance lease liabilities, non-current", ROLE_BALANCE, "Pasivos no corrientes", 143),
+    Concept("ImpPorPagarLP", ("AccruedIncomeTaxesNoncurrent",),
+            "Pasivos por impuestos no corrientes", "Accrued income taxes, non-current",
+            ROLE_BALANCE, "Pasivos no corrientes", 145),
     Concept("DTL", ("DeferredTaxLiabilitiesNoncurrent", "DeferredIncomeTaxLiabilitiesNet"),
             "Pasivos por impuestos diferidos", "Deferred tax liabilities",
             ROLE_BALANCE, "Pasivos no corrientes", 144),
@@ -156,6 +191,9 @@ CONCEPTS: tuple[Concept, ...] = (
             ROLE_BALANCE, "Patrimonio", 170),
     Concept("CapEmit", ("CommonStockValue",),
             "Capital emitido", "Common stock", ROLE_BALANCE, "Patrimonio", 172),
+    Concept("AccPref", ("PreferredStockValue",),
+            "Acciones preferentes", "Preferred stock, value",
+            ROLE_BALANCE, "Patrimonio", 173),
     Concept("Primas", ("AdditionalPaidInCapital",),
             "Primas de emisión", "Additional paid-in capital",
             ROLE_BALANCE, "Patrimonio", 174),
@@ -167,6 +205,9 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("Treasury", ("TreasuryStockValue", "TreasuryStockCommonValue"),
             "Acciones propias en cartera", "Treasury stock",
             ROLE_BALANCE, "Patrimonio", 178),
+    Concept("TreasuryAcc", ("TreasuryStockCommonShares",),
+            "Número de acciones propias en cartera", "Treasury stock, shares",
+            ROLE_BALANCE, "Patrimonio", 179, unit="shares"),
     Concept("Minor", ("MinorityInterest",),
             "Participaciones no controladoras", "Noncontrolling interest",
             ROLE_BALANCE, "Patrimonio", 180),
@@ -226,8 +267,16 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("IngFin", ("InvestmentIncomeInterest", "InterestAndDividendIncomeOperating"),
             "Ingresos financieros", "Interest and investment income",
             ROLE_INCOME, None, 370),
+    # `InterestExpenseNonoperating` va al final de la cadena y no es un detalle: emisores
+    # que antes publicaban `InterestExpense` DEJARON DE HACERLO. Apple lo taggeó hasta
+    # FY2023 y desde FY2024 no, así que su línea de costos financieros aparecía vacía en
+    # los dos últimos ejercicios — no por un fallo nuestro, sino porque el tag que
+    # buscábamos ya no está en el filing. Lo reportan 18 de 36 emisores medidos.
+    #
+    # Al FINAL, nunca al principio: la cadena resuelve por prioridad, así que agregar
+    # atrás sólo puede rellenar huecos y jamás cambia un valor ya cargado.
     Concept("CostFin", ("InterestExpense", "InterestExpenseDebt",
-                        "InterestIncomeExpenseNet"),
+                        "InterestIncomeExpenseNet", "InterestExpenseNonoperating"),
             "Costos financieros", "Interest expense", ROLE_INCOME, None, 380),
     # Neto de partidas no operacionales (resultado por inversiones, tipo de cambio, otros).
     # Label neutro a propósito para NO chocar con "Otras ganancias (pérdidas)", que el motor
@@ -250,6 +299,36 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("EPSDil", ("EarningsPerShareDiluted",),
             "Ganancias por acción diluida", "Earnings per share, diluted",
             ROLE_INCOME, "Por acción", 430, unit="USD/shares"),
+
+    # Resultado ANTES de repartir con los minoritarios, y la parte que se van ellos.
+    # `NetIncomeLoss` (410) es lo atribuible al controlador, que es lo que el accionista
+    # cobra; pero para medir el negocio COMPLETO hace falta el total, y sin él una filial
+    # consolidada al 60% parece rendir menos de lo que rinde.
+    Concept("ResultadoTotal", ("ProfitLoss",),
+            "Ganancia (pérdida), incluyendo participaciones no controladoras",
+            "Net income (loss), including noncontrolling interest",
+            ROLE_INCOME, None, 405),
+    Concept("ResultadoMinor", ("NetIncomeLossAttributableToNoncontrollingInterest",),
+            "Ganancia (pérdida) atribuible a participaciones no controladoras",
+            "Net income (loss) attributable to noncontrolling interest",
+            ROLE_INCOME, None, 408),
+    # Impuesto CORRIENTE: lo que de verdad se paga este año, contra el gasto contable de
+    # 400 que incluye diferidos. La brecha entre ambos es una señal de calidad de utilidad.
+    Concept("ImpCorriente", ("CurrentIncomeTaxExpenseBenefit",),
+            "Gasto por impuestos corrientes", "Current income tax expense (benefit)",
+            ROLE_INCOME, None, 402),
+    Concept("DeterioroPlus", ("GoodwillImpairmentLoss",),
+            "Pérdidas por deterioro de plusvalía", "Goodwill impairment loss",
+            ROLE_INCOME, None, 367),
+    Concept("Publicidad", ("AdvertisingExpense",),
+            "Gastos de publicidad", "Advertising expense",
+            ROLE_INCOME, None, 343),
+    Concept("Deterioro", ("AssetImpairmentCharges",),
+            "Pérdidas por deterioro de valor", "Asset impairment charges",
+            ROLE_INCOME, None, 365),
+    Concept("AmortIntang", ("AmortizationOfIntangibleAssets",),
+            "Amortización de intangibles", "Amortization of intangible assets",
+            ROLE_INCOME, None, 345),
 
     # Los DENOMINADORES del BPA. Se agregan porque sin ellos hay empresas que quedan sin
     # ninguna cuenta de acciones: `CommonStockSharesOutstanding` (el tag del concepto
@@ -291,6 +370,11 @@ CONCEPTS: tuple[Concept, ...] = (
                           "ComprehensiveIncomeNetOfTaxIncludingPortionAttributableToNoncontrollingInterest"),
             "Resultado integral total", "Comprehensive income, net of tax",
             ROLE_INCOME, None, 470),
+    Concept("OCI", ("OtherComprehensiveIncomeLossNetOfTaxPortionAttributableToParent",
+                    "OtherComprehensiveIncomeLossNetOfTax"),
+            "Otro resultado integral del período",
+            "Other comprehensive income (loss), net of tax",
+            ROLE_INCOME, None, 465),
 
     # ------------------------------------------------------------ FLUJO DE EFECTIVO
     Concept("CFO", ("NetCashProvidedByUsedInOperatingActivities",
@@ -353,7 +437,7 @@ CONCEPTS: tuple[Concept, ...] = (
                            "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalentsPeriodIncreaseDecreaseIncludingExchangeRateEffect"),
             "Incremento (disminución) neto de efectivo y equivalentes",
             "Net change in cash and cash equivalents", ROLE_CASHFLOW, None, 580),
-    Concept("TaxPaid", ("IncomeTaxesPaidNet",),
+    Concept("TaxPaid", ("IncomeTaxesPaidNet", "IncomeTaxesPaid"),
             "Impuestos a las ganancias pagados (reembolsados)", "Income taxes paid, net",
             ROLE_CASHFLOW, "Información complementaria", 590),
     Concept("IntPaid", ("InterestPaidNet", "InterestPaid"),
@@ -364,6 +448,16 @@ CONCEPTS: tuple[Concept, ...] = (
     # sin ellas el estado NO CUADRA: los subtotales CFI y CFF que sí guardábamos incluyen
     # estos montos, así que al desglosar faltaba plata sin explicación visible. Un lector
     # que suma las líneas y no llega al subtotal asume que el dato está mal.
+    # Adquisiciones: la vía de crecimiento que NO se ve en el capex. Sin esta línea una
+    # empresa que compra crecimiento parece no estar invirtiendo.
+    Concept("Adquisiciones", ("PaymentsToAcquireBusinessesNetOfCashAcquired",),
+            "Compras de negocios, netas del efectivo adquirido",
+            "Payments to acquire businesses, net of cash acquired",
+            ROLE_CASHFLOW, "Inversión", 545),
+    Concept("dOtrosAct", ("IncreaseDecreaseInOtherOperatingAssets",),
+            "Cambios en otros activos de operación",
+            "Increase (decrease) in other operating assets",
+            ROLE_CASHFLOW, "Operación", 569),
     Concept("OtrosCFI", ("PaymentsForProceedsFromOtherInvestingActivities",),
             "Otros flujos de efectivo de inversión", "Other investing activities, net",
             ROLE_CASHFLOW, "Inversión", 576),
