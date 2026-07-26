@@ -15,8 +15,12 @@ def test_keys_unicas():
     assert len(keys) == len(set(keys))
 
 
-def test_categorias_son_las_cuatro_que_ramifica_la_web():
-    validas = {"balance_sheet", "income_statement", "cash_flow", "miscellaneous"}
+def test_categorias_son_las_que_ramifica_la_web():
+    """`notes` se sumó a propósito: guarda revelaciones que NO van en la cara de ningún
+    estado (tasa efectiva, vencimientos de deuda, componentes del OCI). Ninguna
+    superficie la muestra hoy —la web pide por categoría explícita y el export filtra las
+    tres— y esa invisibilidad es la intención: primero guardar, mostrar después."""
+    validas = {"balance_sheet", "income_statement", "cash_flow", "miscellaneous", "notes"}
     assert {c.category for c in CONCEPTS} <= validas
 
 

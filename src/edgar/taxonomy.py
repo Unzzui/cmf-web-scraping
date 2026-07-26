@@ -30,11 +30,26 @@ from dataclasses import dataclass
 ROLE_BALANCE = "US-BS"
 ROLE_INCOME = "US-IS"
 ROLE_CASHFLOW = "US-CF"
+# NOTAS AL PIE. No es un cuarto estado: es lo que el emisor revela en las notas y que no
+# aparece en la cara de ninguno de los tres (tasa efectiva de impuesto, desglose de
+# arrendamientos, vencimientos de deuda, componentes del OCI…).
+#
+# Va aparte y no repartido entre los otros roles POR UNA RAZÓN CONCRETA: si estas líneas
+# entraran al balance o a resultados, quien sume las cuentas dejaría de llegar al
+# subtotal y leería un descuadre donde no lo hay. Una nota no es una cuenta del estado.
+#
+# Nada de lo que hoy lee la BD las va a mostrar por accidente: la web pide siempre por
+# categoría explícita (`?category=income_statement`…), el export filtra
+# `category IN ('income_statement','balance_sheet','cash_flow')` y `build_us_estados.py`
+# mapea categorías fijas a hojas. La categoría 'notes' queda guardada e invisible hasta
+# que exista una superficie que la muestre — que es exactamente la intención.
+ROLE_NOTES = "US-NOTE"
 
 CATEGORY_BY_ROLE = {
     ROLE_BALANCE: "balance_sheet",
     ROLE_INCOME: "income_statement",
     ROLE_CASHFLOW: "cash_flow",
+    ROLE_NOTES: "notes",
 }
 
 
@@ -305,11 +320,11 @@ CONCEPTS: tuple[Concept, ...] = (
     # cobra; pero para medir el negocio COMPLETO hace falta el total, y sin él una filial
     # consolidada al 60% parece rendir menos de lo que rinde.
     Concept("ResultadoTotal", ("ProfitLoss",),
-            "Ganancia (pérdida), incluyendo participaciones no controladoras",
+            "Resultado del período, incluyendo participaciones no controladoras",
             "Net income (loss), including noncontrolling interest",
             ROLE_INCOME, None, 405),
     Concept("ResultadoMinor", ("NetIncomeLossAttributableToNoncontrollingInterest",),
-            "Ganancia (pérdida) atribuible a participaciones no controladoras",
+            "Resultado atribuible a participaciones no controladoras",
             "Net income (loss) attributable to noncontrolling interest",
             ROLE_INCOME, None, 408),
     # Impuesto CORRIENTE: lo que de verdad se paga este año, contra el gasto contable de
@@ -326,9 +341,6 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("Deterioro", ("AssetImpairmentCharges",),
             "Pérdidas por deterioro de valor", "Asset impairment charges",
             ROLE_INCOME, None, 365),
-    Concept("AmortIntang", ("AmortizationOfIntangibleAssets",),
-            "Amortización de intangibles", "Amortization of intangible assets",
-            ROLE_INCOME, None, 345),
 
     # Los DENOMINADORES del BPA. Se agregan porque sin ellos hay empresas que quedan sin
     # ninguna cuenta de acciones: `CommonStockSharesOutstanding` (el tag del concepto
@@ -398,6 +410,15 @@ CONCEPTS: tuple[Concept, ...] = (
                    "Depreciation"),
             "Depreciación y amortización", "Depreciation and amortization",
             ROLE_CASHFLOW, None, 530),
+    # En FLUJO y no en resultados, por dos razones. Es donde vive el D&A (530) en este
+    # catálogo, y sobre todo: el motor de ratios busca "Amortización" por SUBCADENA en la
+    # hoja de resultados y sólo cae al `contains` si no hay fila exacta. Una línea de
+    # resultados llamada "Amortización de intangibles" pasaría a alimentar el EBITDA de
+    # empresas donde antes ese casillero quedaba vacío — un cambio silencioso en un número
+    # ya publicado. Acá no toca nada.
+    Concept("AmortIntang", ("AmortizationOfIntangibleAssets",),
+            "Amortización de intangibles", "Amortization of intangible assets",
+            ROLE_CASHFLOW, "Operación", 532),
     Concept("Capex", ("PaymentsToAcquirePropertyPlantAndEquipment",
                       "PaymentsToAcquireProductiveAssets"),
             "Compras de propiedades, planta y equipo",
@@ -480,6 +501,143 @@ CONCEPTS: tuple[Concept, ...] = (
             "Efectivo y equivalentes al final del período",
             "Cash, cash equivalents and restricted cash, end of period",
             ROLE_CASHFLOW, "Información complementaria", 594),
+
+    # -------------------------------------------------------------------- NOTAS
+    # Prevalencia medida el 2026-07-26 sobre 36 emisores de todos los sectores. El
+    # display_order arranca en 700 para no chocar nunca con los tres estados (máx. 594).
+
+    # --- Impuestos ---
+    Concept("TasaEfectiva", ("EffectiveIncomeTaxRateContinuingOperations",),
+            "Tasa efectiva de impuesto", "Effective income tax rate",
+            ROLE_NOTES, "Impuestos", 700, unit="pure"),  # 36/36
+    Concept("EBTNacional", ("IncomeLossFromContinuingOperationsBeforeIncomeTaxesDomestic",),
+            "Resultado antes de impuestos, nacional",
+            "Income before taxes, domestic", ROLE_NOTES, "Impuestos", 702),  # 33/36
+    Concept("EBTExtranjero", ("IncomeLossFromContinuingOperationsBeforeIncomeTaxesForeign",),
+            "Resultado antes de impuestos, extranjero",
+            "Income before taxes, foreign", ROLE_NOTES, "Impuestos", 704),  # 34/36
+    Concept("DTLBruto", ("DeferredIncomeTaxLiabilities",),
+            "Pasivos por impuestos diferidos, bruto",
+            "Deferred tax liabilities, gross", ROLE_NOTES, "Impuestos", 706),  # 29/36
+    Concept("DTABruto", ("DeferredTaxAssetsGross",),
+            "Activos por impuestos diferidos, bruto",
+            "Deferred tax assets, gross", ROLE_NOTES, "Impuestos", 708),
+    Concept("DTAProvision", ("DeferredTaxAssetsValuationAllowance",),
+            "Provisión de valuación sobre impuestos diferidos",
+            "Deferred tax assets, valuation allowance", ROLE_NOTES, "Impuestos", 710),
+    Concept("ImpIncierto", ("UnrecognizedTaxBenefits",),
+            "Beneficios tributarios no reconocidos",
+            "Unrecognized tax benefits", ROLE_NOTES, "Impuestos", 712),
+    # ASU 2023-09 desagregó los impuestos pagados por jurisdicción. Los nuevos tags ya
+    # aparecen en 28 y 24 de 36 emisores, así que conviene capturarlos antes de que el
+    # `IncomeTaxesPaidNet` agregado (que alimenta a TaxPaid, 590) empiece a desaparecer.
+    Concept("ImpPagFederal", ("IncomeTaxPaidFederalAfterRefundReceived",),
+            "Impuestos pagados, federal (neto de devoluciones)",
+            "Income taxes paid, federal, net of refunds", ROLE_NOTES, "Impuestos", 714),
+    Concept("ImpPagEstatal", ("IncomeTaxPaidStateAndLocalAfterRefundReceived",),
+            "Impuestos pagados, estatal y local (neto de devoluciones)",
+            "Income taxes paid, state and local, net of refunds", ROLE_NOTES, "Impuestos", 716),
+    Concept("UtilNoRemesada", ("UndistributedEarningsOfForeignSubsidiaries",),
+            "Utilidades no remesadas de filiales extranjeras",
+            "Undistributed earnings of foreign subsidiaries", ROLE_NOTES, "Impuestos", 718),
+
+    # --- Arrendamientos (ASC 842) ---
+    Concept("LeaseCosto", ("OperatingLeaseCost",),
+            "Costo de arrendamientos operativos", "Operating lease cost",
+            ROLE_NOTES, "Arrendamientos", 730),  # 32/36
+    Concept("LeasePagos", ("OperatingLeasePayments",),
+            "Pagos por arrendamientos operativos", "Operating lease payments",
+            ROLE_NOTES, "Arrendamientos", 732),  # 30/36
+    Concept("LeaseROUNuevo", ("RightOfUseAssetObtainedInExchangeForOperatingLeaseLiability",),
+            "Activos por derecho de uso incorporados en el período",
+            "Right-of-use assets obtained in exchange for lease liabilities",
+            ROLE_NOTES, "Arrendamientos", 734),  # 30/36
+    Concept("LeaseVariable", ("VariableLeaseCost",),
+            "Costo variable de arrendamientos", "Variable lease cost",
+            ROLE_NOTES, "Arrendamientos", 736),
+    Concept("LeaseCostoTotal", ("LeaseCost",),
+            "Costo total de arrendamientos", "Total lease cost",
+            ROLE_NOTES, "Arrendamientos", 738),
+    Concept("LeaseTasa", ("OperatingLeaseWeightedAverageDiscountRatePercent",),
+            "Tasa de descuento de arrendamientos operativos",
+            "Operating lease weighted average discount rate",
+            ROLE_NOTES, "Arrendamientos", 740, unit="pure"),
+    Concept("LeaseFinTotal", ("FinanceLeaseLiability",),
+            "Pasivo por arrendamientos financieros, total",
+            "Finance lease liability, total", ROLE_NOTES, "Arrendamientos", 742),
+
+    # --- Vencimientos de deuda: el perfil de amortización, que decide si un
+    #     apalancamiento alto es manejable o es un muro a doce meses. ---
+    Concept("DeudaVence1", ("LongTermDebtMaturitiesRepaymentsOfPrincipalInNextTwelveMonths",),
+            "Vencimientos de deuda, año 1", "Debt maturities, year 1",
+            ROLE_NOTES, "Vencimientos de deuda", 750),
+    Concept("DeudaVence2", ("LongTermDebtMaturitiesRepaymentsOfPrincipalInYearTwo",),
+            "Vencimientos de deuda, año 2", "Debt maturities, year 2",
+            ROLE_NOTES, "Vencimientos de deuda", 752),
+    Concept("DeudaVence3", ("LongTermDebtMaturitiesRepaymentsOfPrincipalInYearThree",),
+            "Vencimientos de deuda, año 3", "Debt maturities, year 3",
+            ROLE_NOTES, "Vencimientos de deuda", 754),
+    Concept("DeudaVence4", ("LongTermDebtMaturitiesRepaymentsOfPrincipalInYearFour",),
+            "Vencimientos de deuda, año 4", "Debt maturities, year 4",
+            ROLE_NOTES, "Vencimientos de deuda", 756),
+    Concept("DeudaVence5", ("LongTermDebtMaturitiesRepaymentsOfPrincipalInYearFive",),
+            "Vencimientos de deuda, año 5", "Debt maturities, year 5",
+            ROLE_NOTES, "Vencimientos de deuda", 758),
+
+    # --- Componentes del otro resultado integral ---
+    Concept("OCIMoneda", ("OtherComprehensiveIncomeLossForeignCurrencyTransactionAndTranslationAdjustmentNetOfTax",),
+            "Otro resultado integral: diferencias de cambio por conversión",
+            "OCI, foreign currency translation adjustment",
+            ROLE_NOTES, "Resultado integral", 770),  # 24/36
+    Concept("OCICobertura", ("OtherComprehensiveIncomeLossCashFlowHedgeGainLossAfterReclassificationAndTax",),
+            "Otro resultado integral: coberturas de flujo de caja",
+            "OCI, cash flow hedges", ROLE_NOTES, "Resultado integral", 772),  # 23/36
+    Concept("OCIPension", ("OtherComprehensiveIncomeLossPensionAndOtherPostretirementBenefitPlansAdjustmentNetOfTax",),
+            "Otro resultado integral: planes de beneficios post-empleo",
+            "OCI, pension and postretirement plans",
+            ROLE_NOTES, "Resultado integral", 774),
+    Concept("RIntegralMinor", ("ComprehensiveIncomeNetOfTaxAttributableToNoncontrollingInterest",),
+            "Resultado integral atribuible a participaciones no controladoras",
+            "Comprehensive income attributable to noncontrolling interest",
+            ROLE_NOTES, "Resultado integral", 776),
+
+    # --- Estructura accionaria: lo que hay declarado pero no emitido, que es el
+    #     espacio de dilución futura. ---
+    Concept("AccAutorizadas", ("CommonStockSharesAuthorized",),
+            "Acciones ordinarias autorizadas", "Common stock, shares authorized",
+            ROLE_NOTES, "Estructura accionaria", 790, unit="shares"),  # 30/36
+    Concept("AccValorPar", ("CommonStockParOrStatedValuePerShare",),
+            "Valor par por acción ordinaria", "Common stock, par value per share",
+            ROLE_NOTES, "Estructura accionaria", 792, unit="USD/shares"),  # 30/36
+    Concept("AccPrefAutorizadas", ("PreferredStockSharesAuthorized",),
+            "Acciones preferentes autorizadas", "Preferred stock, shares authorized",
+            ROLE_NOTES, "Estructura accionaria", 794, unit="shares"),
+    Concept("AccPrefEmitidas", ("PreferredStockSharesIssued",),
+            "Acciones preferentes emitidas", "Preferred stock, shares issued",
+            ROLE_NOTES, "Estructura accionaria", 796, unit="shares"),
+    Concept("AccDilucion", ("IncrementalCommonSharesAttributableToShareBasedPaymentArrangements",),
+            "Acciones incrementales por compensación en acciones",
+            "Incremental shares from share-based payment arrangements",
+            ROLE_NOTES, "Estructura accionaria", 798, unit="shares"),  # 23/36
+
+    # --- Otras revelaciones ---
+    Concept("IntangBruto", ("IntangibleAssetsGrossExcludingGoodwill",),
+            "Activos intangibles, bruto", "Intangible assets, gross",
+            ROLE_NOTES, "Otras revelaciones", 810),
+    Concept("PlusAdquirida", ("GoodwillAcquiredDuringPeriod",),
+            "Plusvalía incorporada en el período", "Goodwill acquired during period",
+            ROLE_NOTES, "Otras revelaciones", 812),  # 24/36
+    Concept("ProvIncobrables", ("AllowanceForDoubtfulAccountsReceivableCurrent",),
+            "Provisión por deudores incobrables",
+            "Allowance for doubtful accounts", ROLE_NOTES, "Otras revelaciones", 814),
+    Concept("IngresoDiferidoPend", ("RevenueRemainingPerformanceObligation",),
+            "Ingresos por obligaciones de desempeño pendientes",
+            "Revenue, remaining performance obligation",
+            ROLE_NOTES, "Otras revelaciones", 816),
+    Concept("CompromisosCompra", ("UnrecordedUnconditionalPurchaseObligationBalanceSheetAmount",),
+            "Compromisos de compra no registrados",
+            "Unrecorded unconditional purchase obligations",
+            ROLE_NOTES, "Otras revelaciones", 818),
 )
 
 CONCEPTS_BY_KEY = {c.key: c for c in CONCEPTS}

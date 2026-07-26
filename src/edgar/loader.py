@@ -40,7 +40,9 @@ CURRENCY_US = "USD"
 #
 # Las acciones NO se dividen (Cencosud guarda 2.805.870.127 acciones, que son las reales) y
 # el EPS tampoco: ya es plata por acción, no plata en miles.
-_DIVISOR_POR_UNIDAD = {"USD": 1000.0, "shares": 1.0, "USD/shares": 1.0}
+# "pure" son porcentajes y tasas (tasa efectiva de impuesto, tasa de descuento de
+# arrendamientos): divisor 1, porque escalarlas las convertiría en otra cosa.
+_DIVISOR_POR_UNIDAD = {"USD": 1000.0, "shares": 1.0, "USD/shares": 1.0, "pure": 1.0}
 
 
 def escalar_para_guardar(value: float, unit: str) -> float:
