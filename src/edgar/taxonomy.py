@@ -107,9 +107,6 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("PPEBruto", ("PropertyPlantAndEquipmentGross",),
             "Propiedades, planta y equipo, bruto", "Property, plant and equipment, gross",
             ROLE_BALANCE, "Activos no corrientes", 61),
-    Concept("DepAcum", ("AccumulatedDepreciationDepletionAndAmortizationPropertyPlantAndEquipment",),
-            "Depreciación acumulada", "Accumulated depreciation",
-            ROLE_BALANCE, "Activos no corrientes", 63),
     # Activo por derecho de uso: universal desde 2019 (ASC 842). Antes de esa norma la
     # línea no existe y queda hueca, que es lo correcto —no es un dato faltante, es que la
     # cuenta no existía—.
@@ -410,15 +407,6 @@ CONCEPTS: tuple[Concept, ...] = (
                    "Depreciation"),
             "Depreciación y amortización", "Depreciation and amortization",
             ROLE_CASHFLOW, None, 530),
-    # En FLUJO y no en resultados, por dos razones. Es donde vive el D&A (530) en este
-    # catálogo, y sobre todo: el motor de ratios busca "Amortización" por SUBCADENA en la
-    # hoja de resultados y sólo cae al `contains` si no hay fila exacta. Una línea de
-    # resultados llamada "Amortización de intangibles" pasaría a alimentar el EBITDA de
-    # empresas donde antes ese casillero quedaba vacío — un cambio silencioso en un número
-    # ya publicado. Acá no toca nada.
-    Concept("AmortIntang", ("AmortizationOfIntangibleAssets",),
-            "Amortización de intangibles", "Amortization of intangible assets",
-            ROLE_CASHFLOW, "Operación", 532),
     Concept("Capex", ("PaymentsToAcquirePropertyPlantAndEquipment",
                       "PaymentsToAcquireProductiveAssets"),
             "Compras de propiedades, planta y equipo",
@@ -472,7 +460,7 @@ CONCEPTS: tuple[Concept, ...] = (
     # Adquisiciones: la vía de crecimiento que NO se ve en el capex. Sin esta línea una
     # empresa que compra crecimiento parece no estar invirtiendo.
     Concept("Adquisiciones", ("PaymentsToAcquireBusinessesNetOfCashAcquired",),
-            "Compras de negocios, netas del efectivo adquirido",
+            "Compras de negocios, netas de la caja adquirida",
             "Payments to acquire businesses, net of cash acquired",
             ROLE_CASHFLOW, "Inversión", 545),
     Concept("dOtrosAct", ("IncreaseDecreaseInOtherOperatingAssets",),
@@ -480,10 +468,10 @@ CONCEPTS: tuple[Concept, ...] = (
             "Increase (decrease) in other operating assets",
             ROLE_CASHFLOW, "Operación", 569),
     Concept("OtrosCFI", ("PaymentsForProceedsFromOtherInvestingActivities",),
-            "Otros flujos de efectivo de inversión", "Other investing activities, net",
+            "Otros flujos de inversión", "Other investing activities, net",
             ROLE_CASHFLOW, "Inversión", 576),
     Concept("OtrosCFF", ("ProceedsFromPaymentsForOtherFinancingActivities",),
-            "Otros flujos de efectivo de financiación", "Other financing activities, net",
+            "Otros flujos de financiación", "Other financing activities, net",
             ROLE_CASHFLOW, "Financiación", 578),
     Concept("AjusteNoCaja", ("OtherNoncashIncomeExpense",),
             "Otros ajustes no monetarios", "Other non-cash income (expense)",
@@ -494,14 +482,29 @@ CONCEPTS: tuple[Concept, ...] = (
     # una empresa con caja en varias monedas el descuadre puede ser de miles de millones.
     Concept("FXEfectivo", ("EffectOfExchangeRateOnCashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",
                            "EffectOfExchangeRateOnCashAndCashEquivalents"),
-            "Efectos de la variación en la tasa de cambio sobre el efectivo",
+            "Efecto de la variación del tipo de cambio sobre la caja",
             "Effect of exchange rate on cash",
             ROLE_CASHFLOW, "Información complementaria", 585),
     Concept("EfectivoFinal", ("CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",),
-            "Efectivo y equivalentes al final del período",
+            "Saldo final de caja y equivalentes",
             "Cash, cash equivalents and restricted cash, end of period",
             ROLE_CASHFLOW, "Información complementaria", 594),
 
+    # OJO CON LAS ETIQUETAS QUE SE AGREGUEN ACÁ. El DCF de FinDataChile
+    # (`scripts/dcf/excel_aligned.py`) NO resuelve por tag ni por categoría: hace
+    # `LOWER(fli.label) LIKE '%término%'` y se queda con **MAX(value)** entre todas las
+    # líneas que matcheen. Una etiqueta nueva que contenga una palabra buscada entra a
+    # ese MAX y puede ganarle a la cuenta correcta.
+    #
+    # Ya pasó, el 2026-07-26: se agregó "Depreciación acumulada" al balance y el término
+    # "Depreciación" del concepto DA la tomó. Es un SALDO ACUMULADO de todos los años
+    # contra un flujo anual, así que el MAX la elegía siempre: el FCF de UPS saltó de
+    # 6,5 a 20,1 mil millones y su valor por acción a US$545 con la acción en US$115.
+    # Se quitaron esa cuenta y "Amortización de intangibles" por el mismo motivo, y los
+    # cinco flujos que decían "efectivo" se renombraron a "caja".
+    #
+    # Antes de agregar una etiqueta, cruzarla contra CONCEPT_MAPPINGS del DCF y contra
+    # los conceptos que busca `data_extractor.py` (ése sí prioriza el match exacto).
     # -------------------------------------------------------------------- NOTAS
     # Prevalencia medida el 2026-07-26 sobre 36 emisores de todos los sectores. El
     # display_order arranca en 700 para no chocar nunca con los tres estados (máx. 594).
