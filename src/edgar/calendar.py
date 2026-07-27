@@ -172,15 +172,63 @@ def build_events(submissions: dict) -> list[CalendarEvent]:
     return events
 
 
-def estimate_next(events: list[CalendarEvent], today: date) -> CalendarEvent | None:
-    """La próxima fecha de resultados, proyectada desde los earnings confirmados.
+# Cuánto puede desviarse de la fecha que proyecta la cadencia un anuncio de resultados
+# recién publicado para seguir contando como tal. Los emisores se corren unos días entre
+# trimestres; el 8-K de entregas de Tesla se adelanta ~20, que es lo que hay que dejar
+# afuera.
+_DIAS_DE_FASE = 15
 
-    Necesita al menos 3 earnings para medir la cadencia. Toma la mediana del intervalo
-    entre anuncios consecutivos (≈91 días) y avanza desde el último hasta pasar `today`.
-    Hereda el horario (bmo/amc) más frecuente. Sin earnings suficientes, no inventa.
+
+def _earnings_de_resultados(events: list[CalendarEvent]) -> list[CalendarEvent]:
+    """Los 8-K item 2.02 que son el anuncio de resultados, no otra cosa.
+
+    El item 2.02 cubre cualquier "results of operations": además del anuncio trimestral,
+    ahí entran las entregas de Tesla —tres semanas antes de los resultados— y las ventas
+    mensuales de varios emisores. Mezclados dan medianas de 20 días y la estimación se
+    descarta por no parecer trimestral.
+
+    El que manda es el 10-Q/10-K: el anuncio de resultados es el 2.02 MÁS CERCANO a cada
+    estado financiero. Cercano en términos relativos, no dentro de una ventana fija: la
+    separación entre press release y 10-Q es propia de cada emisor —Hilton los presenta el
+    mismo día, Walmart hasta tres semanas antes— y cualquier umbral absoluto parte en dos
+    a los que se demoran.
+
+    Si el anclaje deja menos de 3 se devuelven todos: en emisores enormes `filings.recent`
+    apenas cubre unos meses, y es preferible la cadencia ruidosa a no estimar nada.
     """
     earnings = sorted((e for e in events if e.event_type == "earnings"),
                       key=lambda e: e.event_date)
+    estados = sorted(e.event_date for e in events if e.event_type == "financials")
+    if not estados or len(earnings) < 3:
+        return earnings
+    anclados = {min(earnings, key=lambda e: abs((e.event_date - f).days)).accession
+                for f in estados}
+    elegidos = [e for e in earnings if e.accession in anclados]
+    return elegidos if len(elegidos) >= 3 else earnings
+
+
+def _anuncio_sin_estado_aun(events: list[CalendarEvent], ultimo: CalendarEvent,
+                            median_gap: int) -> CalendarEvent | None:
+    """El anuncio de resultados posterior al último 10-Q/10-K, si la cadencia lo esperaba.
+
+    Entre el press release y el 10-Q pasan días o semanas, así que el anuncio más reciente
+    de la temporada todavía no tiene estado financiero al cual anclarse y `_earnings_de_
+    resultados` no lo ve. Ignorarlo hacía retroceder un trimestre entero la estimación de
+    todo emisor que acabara de reportar. Se acepta el que caiga donde la cadencia lo
+    predice: así entra el press release recién salido y no el 8-K de entregas de Tesla,
+    que se adelanta demasiado.
+    """
+    esperado = ultimo.event_date + timedelta(days=median_gap)
+    posteriores = [e for e in events
+                   if e.event_type == "earnings" and e.event_date > ultimo.event_date
+                   and abs((e.event_date - esperado).days) <= _DIAS_DE_FASE]
+    return min(posteriores, key=lambda e: abs((e.event_date - esperado).days),
+               default=None)
+
+
+def _proyectar(earnings: list[CalendarEvent], events: list[CalendarEvent],
+               today: date) -> CalendarEvent | None:
+    """Proyecta la próxima fecha desde una serie de anuncios ya elegida."""
     if len(earnings) < 3:
         return None
     gaps = sorted((earnings[i + 1].event_date - earnings[i].event_date).days
@@ -189,7 +237,12 @@ def estimate_next(events: list[CalendarEvent], today: date) -> CalendarEvent | N
     if not 60 <= median_gap <= 120:   # una cadencia fuera de lo trimestral no es fiable
         return None
 
-    nxt = earnings[-1].event_date + timedelta(days=median_gap)
+    ultimo = earnings[-1]
+    reciente = _anuncio_sin_estado_aun(events, ultimo, median_gap)
+    if reciente is not None:
+        ultimo = reciente
+
+    nxt = ultimo.event_date + timedelta(days=median_gap)
     while nxt <= today:
         nxt += timedelta(days=median_gap)
 
@@ -197,3 +250,28 @@ def estimate_next(events: list[CalendarEvent], today: date) -> CalendarEvent | N
     return CalendarEvent(
         "estimated", nxt, None, timing[0][0] if timing else None,
         None, None, None, None, "estimated")
+
+
+def estimate_next(events: list[CalendarEvent], today: date) -> CalendarEvent | None:
+    """La próxima fecha de resultados, proyectada desde los earnings confirmados.
+
+    Necesita al menos 3 earnings para medir la cadencia. Toma la mediana del intervalo
+    entre anuncios consecutivos (≈91 días) y avanza desde el último hasta pasar `today`.
+    Hereda el horario (bmo/amc) más frecuente. Sin earnings suficientes, no inventa.
+
+    Si la cadencia cruda no da nada, se reintenta con los anuncios anclados al 10-Q/10-K
+    (ver `_earnings_de_resultados`). El orden importa y es deliberado: el anclaje se usa
+    de rescate y no de camino principal porque, medido contra los anuncios que de verdad
+    ocurrieron, rescata a los emisores que publican varios item 2.02 por trimestre —Tesla
+    y sus entregas— pero corre unos días la fase de emisores que ya venían estimando bien.
+    """
+    earnings = sorted((e for e in events if e.event_type == "earnings"),
+                      key=lambda e: e.event_date)
+    estimada = _proyectar(earnings, events, today)
+    if estimada is not None:
+        return estimada
+
+    de_resultados = _earnings_de_resultados(events)
+    if len(de_resultados) == len(earnings):
+        return None       # el anclaje no descartó nada: reintentar daría lo mismo
+    return _proyectar(de_resultados, events, today)

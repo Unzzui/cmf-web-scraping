@@ -74,6 +74,37 @@ def test_estimate_next_avanza_hasta_pasar_hoy():
     assert est.timing == "amc"
 
 
+def test_estimate_next_ignora_los_2_02_que_no_son_resultados():
+    # El caso Tesla: dos 8-K item 2.02 por trimestre — las entregas ~3 semanas antes y los
+    # resultados pegados al 10-Q. Mezclados dan una mediana de ~20 días y la estimación se
+    # descartaba por "cadencia no trimestral"; anclando al 10-Q la cadencia vuelve a ~91.
+    sub = _sub([
+        _earn("2025-10-02", "11:00:00", "entregas1"),
+        _earn("2025-10-22", "20:30:00", "result1"), _q("2025-10-23", "2025-09-30", "q1"),
+        _earn("2026-01-02", "11:00:00", "entregas2"),
+        _earn("2026-01-28", "20:30:00", "result2"), _q("2026-01-29", "2025-12-31", "k",
+                                                       form="10-K"),
+        _earn("2026-04-02", "11:00:00", "entregas3"),
+        _earn("2026-04-22", "20:30:00", "result3"), _q("2026-04-23", "2026-03-31", "q3"),
+    ])
+    est = estimate_next(build_events(sub), date(2026, 5, 1))
+    assert est is not None
+    # ~91 días tras el último anuncio de resultados (2026-04-22), no tras las entregas.
+    assert date(2026, 7, 15) <= est.event_date <= date(2026, 7, 31)
+    assert est.timing == "amc"       # el horario sale de los resultados, no de las entregas
+
+
+def test_estimate_next_sin_estados_usa_todos_los_earnings():
+    # Emisor cuyo `filings.recent` no alcanza a cubrir ningún 10-Q: sin ancla posible se
+    # cae a la cadencia cruda en vez de quedarse sin estimación.
+    sub = _sub([
+        _earn("2026-01-29", "20:30:00", "a1"),
+        _earn("2025-10-30", "20:30:00", "a2"),
+        _earn("2025-07-31", "20:30:00", "a3"),
+    ])
+    assert estimate_next(build_events(sub), date(2026, 3, 1)) is not None
+
+
 def test_estimate_next_sin_cadencia_no_inventa():
     # Menos de 3 earnings: no hay con qué medir la cadencia, no se estima.
     sub = _sub([_earn("2026-01-29", "20:30:00", "a1"), _earn("2025-10-30", "20:30:00", "a2")])
