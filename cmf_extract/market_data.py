@@ -92,12 +92,35 @@ def _lookup(file_path) -> Dict[str, Optional[float]]:
         # y cik (crudo o con ceros a 10 dígitos).
         cik_padded = rut_num.zfill(10)
         with conn.cursor() as cur:
+            # EL BETA SALE DE `dcf_analysis`, NO DE `companies.yahoo_beta`.
+            #
+            # El motor de la web dejó de usar la beta de regresión de la acción: ahora
+            # la estima bottom-up (mediana desapalancada de sus pares, ajuste de Blume,
+            # re-apalancada al D/E de la empresa — ver FinDataChile/scripts/dcf/beta.py)
+            # y guarda en `dcf_analysis.beta` la que efectivamente usó.
+            #
+            # Si el Excel siguiera leyendo `yahoo_beta`, el WACC de la hoja DCF y el de
+            # la ficha de la empresa serían distintos para la MISMA empresa: Microsoft
+            # 1,13 contra 1,18. Es el mismo número, con dos valores, en dos productos
+            # que el cliente compara lado a lado.
+            #
+            # `yahoo_beta` queda de respaldo para cuando no hay fila en `dcf_analysis`
+            # (empresa nueva, DCF no calculado todavía).
             cur.execute(
                 """
-                SELECT id, yahoo_beta, shares_outstanding, financial_statements_currency
-                FROM companies
-                WHERE rut = %s OR rut LIKE %s OR cik = %s OR cik = %s
-                ORDER BY (yahoo_beta IS NULL)
+                SELECT c.id,
+                       COALESCE(d.beta, c.yahoo_beta) AS beta,
+                       c.shares_outstanding,
+                       c.financial_statements_currency
+                FROM companies c
+                LEFT JOIN LATERAL (
+                    SELECT beta FROM dcf_analysis
+                     WHERE company_id = c.id AND beta IS NOT NULL
+                     ORDER BY period_year DESC, period_quarter DESC
+                     LIMIT 1
+                ) d ON true
+                WHERE c.rut = %s OR c.rut LIKE %s OR c.cik = %s OR c.cik = %s
+                ORDER BY (COALESCE(d.beta, c.yahoo_beta) IS NULL)
                 LIMIT 1
                 """,
                 [rut, f"{rut_num}-%", rut_num, cik_padded],

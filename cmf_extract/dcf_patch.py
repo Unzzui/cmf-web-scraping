@@ -39,6 +39,18 @@ except ImportError:
     DataValidation = None
 
 
+# HORIZONTE DE PROYECCIÓN — 10 AÑOS.
+#
+# Tiene que ser el MISMO que `PROJECTION_YEARS` de FinDataChile/scripts/dcf/config.py,
+# que es el motor que alimenta la ficha de la web. Si los dos no coinciden, la misma
+# empresa tiene dos precios objetivo: uno en el Excel que el cliente compró y otro en
+# la ficha que mira al lado. A cinco años el valor terminal se llevaba la mayor parte
+# del valor y el precio dependía más del supuesto de perpetuidad que de los flujos.
+#
+# El `g` terminal SÍ diverge a propósito y sigue divergiendo (2% acá, 3% en la web para
+# Chile): ver CLAUDE.md §4.1. El horizonte no: era una divergencia sin decisión detrás.
+PROJECTION_YEARS = 10
+
 class DCFBuilder:
     """
     Constructor de hojas DCF para análisis de valuación.
@@ -352,12 +364,20 @@ class DCFBuilder:
                 f"préstamos, ponderado por monto. Monedas: {monedas}")
 
     def _beta_yahoo(self) -> Optional[float]:
-        """El beta de Yahoo de la empresa, acotado a [0.8, 2.0], o None si no hay.
+        """El beta del MODELO, acotado a [0,8; 2,0], o None si no hay.
 
-        Se inyecta desde la BD (companies.yahoo_beta) vía formula_processor. Sólo ~42
-        empresas cotizan y tienen beta de Yahoo. ``None`` es una respuesta válida: el
-        que arma la hoja cae a Hamada (ver create_wacc_terminal_block), no a un número
-        inventado. El MISMO beta que usa el motor de la BD, para que el WACC cuadre.
+        Se inyecta desde la BD vía formula_processor (`market_data._lookup`), y desde
+        que el motor estima la beta BOTTOM-UP —mediana desapalancada de los pares,
+        ajuste de Blume, re-apalancada al D/E de la empresa— lo que llega es
+        `dcf_analysis.beta`: exactamente la que usó la ficha. `companies.yahoo_beta`
+        quedó de respaldo para las empresas sin DCF calculado.
+
+        El nombre del método quedó viejo y se conserva a propósito: lo llaman la hoja
+        de supuestos y sus pruebas, y renombrarlo en esta pasada mezclaría un cambio
+        cosmético con uno que altera el WACC de todos los Excel.
+
+        ``None`` es una respuesta válida: el que arma la hoja cae a Hamada (ver
+        create_wacc_terminal_block), no a un número inventado.
         """
         b = self.financial_data.get("yahoo_beta")
         try:
@@ -374,14 +394,16 @@ class DCFBuilder:
     def _beta_fuente(self) -> str:
         """De dónde salió el beta. Un supuesto que no se nombra es un supuesto que se cree.
 
-        Si la empresa cotiza y tiene beta de Yahoo, se usa ése. Si no, el beta se
-        re-apalanca con Hamada (beta desapalancada 0,8 × (1+(1−t)·D/E)): así toda
-        empresa tiene un beta sensible a SU apalancamiento, no un valor neutral parejo.
+        El que llega de la BD es el del modelo de valorización: mediana desapalancada
+        de los pares de su industria, ajustada por Blume y re-apalancada al D/E de la
+        empresa. Es el MISMO que muestra la ficha, para que los dos productos no
+        declaren dos costos de capital distintos para la misma empresa.
         """
         if self._beta_yahoo() is not None:
-            return "Yahoo Finance (acotado a [0,5, 2,0]); editable"
+            return ("Modelo FinData: mediana desapalancada de su industria, ajuste de "
+                    "Blume y re-apalancada a su D/E; acotada a [0,8; 2,0]; editable")
         return ("HAMADA: beta desapalancada 0,8 re-apalancada con D/E y la tasa "
-                "efectiva de la empresa (sin beta de Yahoo)")
+                "efectiva de la empresa (sin beta del modelo)")
 
     def _tipo_de_cambio_actual(self) -> float:
         """El dólar observado más reciente del Banco Central.
@@ -1299,13 +1321,16 @@ class DCFBuilder:
             ("Crecimiento Ventas Y+1 (%)",
              f'=IF({historical_cagr_ref}="",0.03,MAX(MIN({historical_cagr_ref},0.20),0.02))',
              "formula"),
-            ("Crecimiento Ventas Y+2 (%)",
-             f"={forecast_growth_ref}+({terminal_growth_ref}-{forecast_growth_ref})*1/4", "formula"),
-            ("Crecimiento Ventas Y+3 (%)",
-             f"={forecast_growth_ref}+({terminal_growth_ref}-{forecast_growth_ref})*2/4", "formula"),
-            ("Crecimiento Ventas Y+4 (%)",
-             f"={forecast_growth_ref}+({terminal_growth_ref}-{forecast_growth_ref})*3/4", "formula"),
-            ("Crecimiento Ventas Y+5 (%)", f"={terminal_growth_ref}", "formula"),
+            # Y+2..Y+N: convergencia lineal desde el supuesto de Y+1 hasta el terminal,
+            # repartida sobre TODO el horizonte. Con N=10 la caída del crecimiento es
+            # más gradual que con 5, que es justamente lo que un horizonte corto obliga
+            # a comprimir. La última siempre es el terminal exacto.
+            *[(f"Crecimiento Ventas Y+{k} (%)",
+               (f"={terminal_growth_ref}" if k == PROJECTION_YEARS else
+                f"={forecast_growth_ref}+({terminal_growth_ref}-{forecast_growth_ref})"
+                f"*{k - 1}/{PROJECTION_YEARS - 1}"),
+               "formula")
+              for k in range(2, PROJECTION_YEARS + 1)],
             ("Margen EBIT (%)", self._get_margen_ebit_formula(), "formula"),
             ("Tasa efectiva de impuestos (%)", self._get_tasa_impuestos_formula(), "formula"),
             ("D&A / Ventas (%)", self._get_da_ventas_formula(), "formula"),
@@ -1385,7 +1410,8 @@ class DCFBuilder:
 
         # PROYECCIÓN FCFF con diseño profesional
         projection_start_row = inputs_row + len(inputs) + 3
-        proj_header_row = self._create_professional_section(ws, projection_start_row, "PROYECCIÓN FCFF (5 AÑOS)", "", 10, "projection")
+        proj_header_row = self._create_professional_section(
+            ws, projection_start_row, f"PROYECCIÓN FCFF ({PROJECTION_YEARS} AÑOS)", "", 10, "projection")
         projection_start_row = proj_header_row - 1  # Ajustar para mantener compatibilidad
 
         # Encabezados sin iconos
@@ -1408,7 +1434,7 @@ class DCFBuilder:
         base_year = int(re.match(r"(\d{4})", _bp).group(1)) if re.match(r"(\d{4})", _bp) else 2025
         P = self._param_rows
         ventas_base_row = P["Ventas año base (M$)"]
-        crec_rows = [P[f"Crecimiento Ventas Y+{k} (%)"] for k in range(1, 6)]
+        crec_rows = [P[f"Crecimiento Ventas Y+{k} (%)"] for k in range(1, PROJECTION_YEARS + 1)]
         margen_ebit_row = P["Margen EBIT (%)"]
         tasa_imp_row = P["Tasa efectiva de impuestos (%)"]
         da_ventas_row = P["D&A / Ventas (%)"]
@@ -1416,7 +1442,7 @@ class DCFBuilder:
         nwc_ventas_row = P["ΔNWC / ΔVentas (%)"]
         wacc_row = P["WACC (%)"]
 
-        for k in range(1, 6):
+        for k in range(1, PROJECTION_YEARS + 1):
             r = projection_start_row + 1 + k
             ws.cell(row=r, column=1, value=base_year + k)  # Año
 
@@ -1450,12 +1476,19 @@ class DCFBuilder:
                 elif c == 9:  # Factor de descuento
                     cc.number_format = '0.0000'
 
-        # VALUACIÓN con diseño profesional
-        valuation_row = projection_start_row + 8
+        # VALUACIÓN con diseño profesional.
+        # Las dos filas se derivan del horizonte: con offsets fijos (+8, +6, pensados
+        # para cinco años) la valuación se habría metido ENCIMA de la proyección al
+        # alargarla, y el valor terminal habría colgado del año 6 en vez del último.
+        last_fcff_row = projection_start_row + 1 + PROJECTION_YEARS
+        valuation_row = last_fcff_row + 2
+        # El tornado necesita el FCFF del último año proyectado y no tiene forma de
+        # deducirlo desde su propia firma. Lo tenía escrito a mano ("H30", el año 5
+        # cuando la proyección arrancaba en la fila 26): una referencia que ya era
+        # frágil y que con diez años apunta a otra celda.
+        self._last_fcff_row = last_fcff_row
         val_header_row = self._create_professional_section(ws, valuation_row, "VALUACIÓN EMPRESARIAL", "", 10, "valuation")
         valuation_row = val_header_row - 1
-
-        last_fcff_row = projection_start_row + 6
         g_row = P["g - Tasa de crecimiento terminal (%)"]
         deuda_row = P["Deuda neta (M$)"]
         acciones_row = P["Acciones en circulación (M)"]
@@ -1801,8 +1834,13 @@ class DCFBuilder:
         # SECCIÓN 1: PARÁMETROS DE LOS ESCENARIOS
         params_row = self._create_professional_section(ws, 4, "PARÁMETROS POR ESCENARIO", "", 12, "inputs")
         
-        headers = ["Escenario", "Crec Y+1", "Crec Y+2", "Crec Y+3", "Crec Y+4", "Crec Y+5",
-                   "Margen EBIT", "Tasa Impuestos", "D&A/Ventas", "CapEx/Ventas", "ΔNWC/ΔVentas"]
+        # Las columnas de crecimiento son tantas como años proyecta el modelo. Escritas
+        # a mano (Y+1..Y+5) la tabla de escenarios contradecía a la hoja DCF en cuanto
+        # el horizonte cambió.
+        headers = (["Escenario"]
+                   + [f"Crec Y+{k}" for k in range(1, PROJECTION_YEARS + 1)]
+                   + ["Margen EBIT", "Tasa Impuestos", "D&A/Ventas", "CapEx/Ventas",
+                      "ΔNWC/ΔVentas"])
         for c, h in enumerate(headers, 1):
             cell = ws.cell(row=params_row, column=c, value=h)
             cell.font = self.key_metric_font
@@ -1828,11 +1866,14 @@ class DCFBuilder:
                 return None
         
         # Referencias dinámicas a parámetros base
-        base_crec_y1 = find_dcf_param_row("Crecimiento Ventas Y+1") or f"'{dcf_base_sheet}'!B11"
-        base_crec_y2 = find_dcf_param_row("Crecimiento Ventas Y+2") or f"'{dcf_base_sheet}'!B12" 
-        base_crec_y3 = find_dcf_param_row("Crecimiento Ventas Y+3") or f"'{dcf_base_sheet}'!B13"
-        base_crec_y4 = find_dcf_param_row("Crecimiento Ventas Y+4") or f"'{dcf_base_sheet}'!B14"
-        base_crec_y5 = find_dcf_param_row("Crecimiento Ventas Y+5") or f"'{dcf_base_sheet}'!B15"
+        # La etiqueta va COMPLETA, con el "(%)": `find_dcf_param_row` busca por subcadena
+        # y "Crecimiento Ventas Y+1" también está dentro de "Crecimiento Ventas Y+10".
+        base_crec = [
+            find_dcf_param_row(f"Crecimiento Ventas Y+{k} (%)") or f"'{dcf_base_sheet}'!B{10 + k}"
+            for k in range(1, PROJECTION_YEARS + 1)
+        ]
+        base_crec_y1 = base_crec[0]
+        base_crec_yN = base_crec[-1]  # el último año proyectado = crecimiento terminal
         base_margen = find_dcf_param_row("Margen EBIT") or f"'{dcf_base_sheet}'!B16"
         base_tasa_imp = find_dcf_param_row("Tasa efectiva de impuestos") or f"'{dcf_base_sheet}'!B17"
         base_da_ventas = find_dcf_param_row("D&A / Ventas") or f"'{dcf_base_sheet}'!B18"
@@ -1842,40 +1883,45 @@ class DCFBuilder:
         agresivo_row = params_row + 3
         
         # Escenarios dinámicos basados en el escenario Base
+        def _senda(primera_celda_ref: str) -> list:
+            """Y+2..Y+N: convergencia lineal desde el Y+1 del escenario hasta el terminal.
+
+            Misma forma que la hoja DCF, repartida sobre todo el horizonte: si acá se
+            dejaran los cuartos (1/4, 2/4, 3/4) de cuando eran cinco años, el escenario
+            llegaría al crecimiento terminal en el año 5 y se quedaría plano cinco años
+            mientras el caso base sigue convergiendo.
+            """
+            return [
+                (f"={base_crec_yN}" if k == PROJECTION_YEARS else
+                 f"={primera_celda_ref}+({base_crec_yN}-{primera_celda_ref})"
+                 f"*{k - 1}/{PROJECTION_YEARS - 1}")
+                for k in range(2, PROJECTION_YEARS + 1)
+            ]
+
         scenarios = [
-            # Conservador: -0,5 pp en Y+1 y convergencia al g terminal en Y+5.
-            ["Conservador", 
+            # Conservador: -0,5 pp en Y+1 y convergencia al g terminal en el último año.
+            ["Conservador",
              f"=MAX({base_crec_y1}-0.005,0.02)",
-             f"=$B${conservador_row}+({base_crec_y5}-$B${conservador_row})*1/4",
-             f"=$B${conservador_row}+({base_crec_y5}-$B${conservador_row})*2/4",
-             f"=$B${conservador_row}+({base_crec_y5}-$B${conservador_row})*3/4",
-             f"={base_crec_y5}",
+             *_senda(f"$B${conservador_row}"),
              f"=MIN({base_margen}*0.9,0.06)",      # Margen: 90% del base (conservador usa MIN para piso)
              "0.27",    # Impuestos: Fijo en 27%
              f"={base_da_ventas}*1.05",            # D&A: 105% del base
              f"={base_capex_ventas}*1.1",          # CapEx: 110% del base (más inversión)
              f"={base_nwc_ventas}*1.2"             # NWC: 120% del base (más capital trabajo)
             ],
-            # Base: Referencias directas a la hoja DCF
-            ["Base",        
-             f"={base_crec_y1}",  # Referencia directa Y+1
-             f"={base_crec_y2}",  # Referencia directa Y+2
-             f"={base_crec_y3}",  # Referencia directa Y+3
-             f"={base_crec_y4}",  # Referencia directa Y+4
-             f"={base_crec_y5}",  # Referencia directa Y+5
+            # Base: referencias directas a la hoja DCF, año por año
+            ["Base",
+             *[f"={ref}" for ref in base_crec],
              f"={base_margen}",   # Referencia directa Margen
              "0.27", # Tasa impuestos fija en 27%
              f"={base_da_ventas}",# Referencia directa D&A
              f"={base_capex_ventas}", # Referencia directa CapEx
              f"={base_nwc_ventas}"    # Referencia directa NWC
             ],
-            # Agresivo: +0,5 pp en Y+1, techo 20%, y convergencia a g en Y+5.
-            ["Agresivo",    
+            # Agresivo: +0,5 pp en Y+1, techo 20%, y convergencia a g en el último año.
+            ["Agresivo",
              f"=MIN({base_crec_y1}+0.005,0.20)",
-             f"=$B${agresivo_row}+({base_crec_y5}-$B${agresivo_row})*1/4",
-             f"=$B${agresivo_row}+({base_crec_y5}-$B${agresivo_row})*2/4",
-             f"=$B${agresivo_row}+({base_crec_y5}-$B${agresivo_row})*3/4",
-             f"={base_crec_y5}",
+             *_senda(f"$B${agresivo_row}"),
              f"=MAX({base_margen}*1.15,0.18)",     # Margen: 115% del base (agresivo usa MAX para piso alto)
              "0.27",    # Impuestos: Fijo en 27%
              f"={base_da_ventas}*1.05",            # D&A: 105% del base (más depreciación es bueno para FCFF)
@@ -1915,8 +1961,11 @@ class DCFBuilder:
                     
                 cell.border = self.border
                 
-                # Formateo específico por columna
-                if c >= 2 and c <= 11:  # Todos los parámetros numéricos
+                # Formateo específico por columna. El límite es el número de columnas
+                # de la tabla, no un 11 heredado de cuando eran cinco años: con diez, las
+                # cinco últimas (margen, impuestos, D&A, CapEx, NWC) se quedaban sin
+                # formato de porcentaje y salían como 0,27 en vez de 27%.
+                if 2 <= c <= len(headers):
                     cell.number_format = '0.00%'  # Formato porcentaje
 
         # SECCIÓN 2: CÁLCULOS DE VALUACIÓN AUTOMÁTICOS
@@ -2013,22 +2062,23 @@ class DCFBuilder:
             # Usar aproximación DCF más precisa que refleje la metodología real
             
             # Referencias a parámetros del escenario
+            # Las columnas se derivan del horizonte. Estaban escritas a mano (B..F para
+            # el crecimiento, G..K para el resto) y con diez años de proyección G ya no
+            # es el margen EBIT sino el crecimiento del año 6: la fórmula habría seguido
+            # calculando, con el número equivocado y sin avisar.
             ventas_base = f"B{r}"
-            crec_y1 = f"B{scenario_param_row}"
-            crec_y2 = f"C{scenario_param_row}"  
-            crec_y3 = f"D{scenario_param_row}"
-            crec_y4 = f"E{scenario_param_row}"
-            crec_y5 = f"F{scenario_param_row}"
-            margen_ebit = f"G{scenario_param_row}"
-            tasa_imp = f"H{scenario_param_row}"
-            da_ventas = f"I{scenario_param_row}"
-            capex_ventas = f"J{scenario_param_row}"
-            nwc_ventas = f"K{scenario_param_row}"
+            _col = lambda i: f"{get_column_letter(i)}{scenario_param_row}"
+            crec_cols = [_col(1 + k) for k in range(1, PROJECTION_YEARS + 1)]
+            margen_ebit = _col(2 + PROJECTION_YEARS)
+            tasa_imp = _col(3 + PROJECTION_YEARS)
+            da_ventas = _col(4 + PROJECTION_YEARS)
+            capex_ventas = _col(5 + PROJECTION_YEARS)
+            nwc_ventas = _col(6 + PROJECTION_YEARS)
             
             # Cálculo aproximado de FCFF promedio anual usando los parámetros del escenario
             # FCFF ≈ Ventas × Margen EBIT × (1-Tax) × [1 + D&A/Ventas - CapEx/Ventas - ΔNWC/ΔVentas]
             # Aplicar crecimiento promedio para obtener ventas promedio del período
-            crecimiento_promedio = f"(({crec_y1}+{crec_y2}+{crec_y3}+{crec_y4}+{crec_y5})/5)"
+            crecimiento_promedio = f"(({'+'.join(crec_cols)})/{PROJECTION_YEARS})"
             ventas_promedio = f"({ventas_base}*(1+{crecimiento_promedio}))"
             
             # Cálculo correcto del FCFF
@@ -2591,32 +2641,37 @@ class DCFBuilder:
         # valuation_row + 3: Suma FCFF PV
         # valuation_row + 4: Enterprise Value
         
+        # El valor terminal se descuenta desde el ÚLTIMO año proyectado, no desde un 5
+        # fijo: con diez años de proyección, descontarlo cinco años antes lo inflaba.
+        n = PROJECTION_YEARS
+
         if driver_name == "WACC":
             # EV = VT_Presente + Suma_FCFF_PV
-            # VT_Presente = VT / (1+WACC)^5
-            # Recalcular VT Presente con nuevo WACC (usar referencias correctas)
-            vt_base = f"B{valuation_row + 1}"  # Valor Terminal (fila 35)
-            suma_fcff = f"B{valuation_row + 3}"  # Suma FCFF PV (fila 37) 
+            # VT_Presente = VT / (1+WACC)^n
+            vt_base = f"B{valuation_row + 1}"    # Valor Terminal
+            suma_fcff = f"B{valuation_row + 3}"  # Suma FCFF PV
             new_wacc = f"B{driver_row}{multiplier}"
-            
-            # VT Presente recalculado = VT / (1+nuevo_WACC)^5
-            vt_presente_new = f"({vt_base}/POWER(1+{new_wacc},5))"
+
+            vt_presente_new = f"({vt_base}/POWER(1+{new_wacc},{n}))"
             return f"={vt_presente_new}+{suma_fcff}"
             
         elif driver_name == "g terminal":
             # EV = VT_Presente + Suma_FCFF_PV  
             # VT = FCFF_ultimo * (1+g) / (WACC-g)
             # Recalcular VT con nuevo g (usar referencias correctas según la estructura encontrada)
-            wacc_base = "B20"  # WACC está en fila 20 según el análisis
+            # Las dos referencias salen de las filas REALES de la hoja, que se guardaron
+            # al construirla. Estaban escritas a mano ("B20" el WACC, "H30" el FCFF del
+            # año 5) con el comentario "estimado" al lado: bastaba agregar un parámetro
+            # arriba para que el tornado midiera la sensibilidad de otra celda.
+            wacc_row = (getattr(self, "_param_rows", None) or {}).get("WACC (%)")
+            wacc_base = f"B{wacc_row}" if wacc_row else "B20"
             new_g = f"B{driver_row}{multiplier}"
-            
-            # FCFF del último año (año 5) - buscar en proyección
-            # Según estructura: PROYECCIÓN fila 26, así que año 5 sería aprox fila 30
-            fcff_ultimo = "H30"  # FCFF año 5 estimado
-            
+
+            fcff_ultimo = f"H{self._last_fcff_row}" if getattr(self, "_last_fcff_row", None) else "H30"
+
             # VT recalculado = FCFF_ultimo * (1+nuevo_g) / (WACC-nuevo_g)
             vt_new = f"({fcff_ultimo}*(1+{new_g})/({wacc_base}-{new_g}))"
-            vt_presente_new = f"({vt_new}/POWER(1+{wacc_base},5))"
+            vt_presente_new = f"({vt_new}/POWER(1+{wacc_base},{n}))"
             suma_fcff = f"B{valuation_row + 3}"  # Suma FCFF PV
             
             return f"={vt_presente_new}+{suma_fcff}"

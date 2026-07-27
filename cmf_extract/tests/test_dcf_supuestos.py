@@ -120,9 +120,32 @@ def test_cagr_historico_y_crecimiento_proyectado_no_se_mezclan():
     assert '("Criterio de crecimiento"' in FUENTE
 
 
-def test_crecimiento_base_y_escenarios_convergen_a_terminal_en_y5():
-    """Y5 debe ser g, sin el salto oculto que antes quedaba al entrar a perpetuidad."""
-    assert '("Crecimiento Ventas Y+5 (%)", f"={terminal_growth_ref}", "formula")' in FUENTE
-    assert 'f"={base_crec_y5}",' in FUENTE
+def test_crecimiento_base_y_escenarios_convergen_a_terminal_en_el_ultimo_ano():
+    """El último año proyectado debe ser g, sin el salto oculto al entrar a perpetuidad.
+
+    El horizonte dejó de ser cinco años (`PROJECTION_YEARS`, alineado con el motor de la
+    web), así que la senda se genera en un bucle en vez de estar escrita año por año.
+    Lo que se protege no es la fila Y+5 sino la propiedad: el último año vale
+    exactamente el crecimiento terminal, y los escenarios convergen al mismo destino.
+    """
+    assert 'f"={terminal_growth_ref}" if k == PROJECTION_YEARS else' in FUENTE
+    assert 'f"={base_crec_yN}" if k == PROJECTION_YEARS else' in FUENTE
     assert "base_crec_y1}*0.8" not in FUENTE
     assert "base_crec_y1}*1.2" not in FUENTE
+
+
+def test_horizonte_del_excel_coincide_con_el_del_motor():
+    """El Excel y la ficha tienen que proyectar los MISMOS años.
+
+    Si divergen, la misma empresa tiene dos precios objetivo: el del Excel que el
+    cliente compró y el de la ficha que mira al lado. El `g` sí diverge a propósito
+    (2% acá, 3% en la web para Chile) y eso está documentado en CLAUDE.md §4.1; el
+    horizonte no.
+    """
+    from cmf_extract.dcf_patch import PROJECTION_YEARS
+
+    assert PROJECTION_YEARS == 10
+    # Nada puede quedar colgando de un horizonte escrito a mano.
+    assert "range(1, 6)" not in FUENTE
+    assert '"PROYECCIÓN FCFF (5 AÑOS)"' not in FUENTE
+    assert 'fcff_ultimo = "H30"' not in FUENTE
