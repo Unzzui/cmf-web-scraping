@@ -103,6 +103,15 @@ def shares(cur, company_id: int) -> float | None:
 
     Por eso el respaldo, y por eso va SEGUNDO: un promedio del período no es un conteo a
     fecha. El `CASE` del ORDER BY impide que gane sólo por ser de un trimestre más nuevo.
+
+    El piso de 100.000 acciones NO es un número al azar: es el mismo de
+    `companies_shares_plausible`, el CHECK de la tabla. Sin él la consulta devuelve el
+    hecho más reciente que exista aunque sea inservible, y en el S&P 500 hay cuatro casos
+    así — BKR trae 100 acciones de 2016Q4 (la cáscara previa a la fusión con GE), SPG
+    8.000 de 2012Q4, PSKY 1.000 y ERIE 2.542. Son cifras REALES de un filing viejo, no
+    basura del ETL, pero describen otra empresa que la de hoy; multiplicadas por el precio
+    daban capitalizaciones de cinco dígitos. Antes de este filtro el CHECK las rechazaba y
+    el script MORÍA, dejando sin enriquecer a todas las que venían detrás.
     """
     cur.execute(
         """
@@ -112,7 +121,7 @@ def shares(cur, company_id: int) -> float | None:
           AND (LOWER(TRIM(fli.label)) = 'total número de acciones emitidas'
                OR fli.source_tag IN ('CommonStockSharesOutstanding','CommonStockSharesIssued',
                                      'WeightedAverageNumberOfDilutedSharesOutstanding'))
-          AND fd.value IS NOT NULL AND fd.value > 0
+          AND fd.value IS NOT NULL AND fd.value >= 100000
         ORDER BY CASE WHEN fli.source_tag = 'WeightedAverageNumberOfDilutedSharesOutstanding'
                       THEN 1 ELSE 0 END,
                  fd.period_year DESC, fd.period_quarter DESC
