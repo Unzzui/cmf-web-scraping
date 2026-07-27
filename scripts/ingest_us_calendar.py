@@ -10,7 +10,7 @@ Por defecto NO escribe: Supabase es producción. Para escribir, `--supabase-live
 
 Ejemplos:
     python scripts/ingest_us_calendar.py --tickers AAPL         # dry-run
-    python scripts/ingest_us_calendar.py                        # las 49, dry-run
+    python scripts/ingest_us_calendar.py                        # todo market='US', dry-run
     python scripts/ingest_us_calendar.py --supabase-live        # de verdad
 """
 
@@ -67,7 +67,7 @@ _UPSERT = """
     INSERT INTO earnings_calendar
         (company_id, event_type, event_date, event_time, timing,
          period_year, period_quarter, form, accession, status, source, updated_at)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'sec_edgar', now())
+    VALUES %s
     ON CONFLICT (company_id, event_type, event_date) DO UPDATE SET
         event_time = EXCLUDED.event_time,
         timing = EXCLUDED.timing,
@@ -79,8 +79,12 @@ _UPSERT = """
         updated_at = now()
 """
 
+_UPSERT_TEMPLATE = "(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'sec_edgar', now())"
+
 
 def write_events(cur, company_id: int, events, estimated) -> int:
+    from psycopg2.extras import execute_values  # lazy, como el resto de imports de psycopg2
+
     # La estimada es una sola por empresa y su fecha cambia entre corridas; se borra la
     # anterior antes de insertar para no dejar dos estimadas. Los confirmados los desempata
     # el UNIQUE (company_id, event_type, event_date).
@@ -88,20 +92,32 @@ def write_events(cur, company_id: int, events, estimated) -> int:
         "DELETE FROM earnings_calendar WHERE company_id = %s AND event_type = 'estimated'",
         (company_id,),
     )
-    written = 0
     to_write = list(events) + ([estimated] if estimated else [])
-    for e in to_write:
-        cur.execute(_UPSERT, (
-            company_id, e.event_type, e.event_date, e.event_time, e.timing,
-            e.period_year, e.period_quarter, e.form, e.accession, e.status,
-        ))
-        written += 1
-    return written
+
+    # Deduplicar por la clave del UNIQUE antes de mandar el lote: una empresa puede tener
+    # dos 8-K item 2.02 el mismo día (3M lo hizo el 2022-04-26) y Postgres rechaza el
+    # INSERT entero si un ON CONFLICT DO UPDATE toca la misma fila dos veces en un solo
+    # comando. Gana el último, que es lo que ya hacía el upsert de a uno.
+    por_clave = {(e.event_type, e.event_date): e for e in to_write}
+
+    filas = [
+        (company_id, e.event_type, e.event_date, e.event_time, e.timing,
+         e.period_year, e.period_quarter, e.form, e.accession, e.status)
+        for e in por_clave.values()
+    ]
+    if not filas:
+        return 0
+
+    # Un solo round-trip por empresa. De a una fila eran ~70 idas y vueltas a Supabase por
+    # empresa y el ciclo se comía el timeout antes de terminar las 499.
+    execute_values(cur, _UPSERT, filas, template=_UPSERT_TEMPLATE, page_size=len(filas))
+    return len(filas)
 
 
 def main(argv=None) -> int:
     p = argparse.ArgumentParser(description="Calendario de resultados US (SEC EDGAR)")
-    p.add_argument("--tickers", default="", help="Tickers separados por coma; vacío = las 49")
+    p.add_argument("--tickers", default="",
+                   help="Tickers separados por coma; vacío = todas las de market='US'")
     p.add_argument("--supabase-live", action="store_true", help="ESCRIBE en producción")
     p.add_argument("--rate", type=float, default=8.0)
     args = p.parse_args(argv)

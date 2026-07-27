@@ -253,7 +253,9 @@ def refrescar_calendarios(sub_env: dict, live: bool) -> None:
     cmd = [PY, str(CMF / "scripts" / "ingest_us_calendar.py")]
     if live:
         cmd.append("--supabase-live")
-    run(cmd, CMF, sub_env, "calendario EDGAR", timeout=1200)
+    # 499 empresas US a ~0.6 s cada una (HTTP + un upsert por lote) son ~5 min; el margen es
+    # para que el paso no muera a mitad si el universo sigue creciendo o la SEC va lenta.
+    run(cmd, CMF, sub_env, "calendario EDGAR", timeout=1800)
 
 
 def xbrl_max_periodo(rut: str) -> int:
