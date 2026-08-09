@@ -188,9 +188,10 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("ImpPorPagarLP", ("AccruedIncomeTaxesNoncurrent",),
             "Pasivos por impuestos no corrientes", "Accrued income taxes, non-current",
             ROLE_BALANCE, "Pasivos no corrientes", 145),
-    # Alias de presentación del mismo pasivo diferido (4/5 y 2/5 de la muestra).
+    # `DeferredTaxLiabilities` es el neto bajo otra presentación. NO se agrega
+    # `DeferredIncomeTaxLiabilities`: ése es el BRUTO y es el tag exclusivo de
+    # `DTLBruto`. Cargarlo acá haría aparecer el mismo hecho como neto y como bruto.
     Concept("DTL", ("DeferredTaxLiabilitiesNoncurrent", "DeferredIncomeTaxLiabilitiesNet",
-                    "DeferredIncomeTaxLiabilities",
                     "DeferredTaxLiabilities"),
             "Pasivos por impuestos diferidos", "Deferred tax liabilities",
             ROLE_BALANCE, "Pasivos no corrientes", 144),
