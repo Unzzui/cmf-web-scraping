@@ -1,10 +1,20 @@
 """Carga de data de bancos a Postgres (tablas bank_*)."""
 
 import json
+import re
 from pathlib import Path
 
 from src.banks.models import (
     AccountRow, CapitalAdequacy, Executive, Institution, Profile, Shareholder,
+)
+
+# Los objetos que declara sql/bank_schema.sql, leídos DEL PROPIO ARCHIVO en vez de una
+# lista escrita a mano acá. Una lista a mano se desincroniza el día que alguien agrega
+# una tabla al .sql y no la agrega acá: el chequeo la daría por completa y esa tabla no
+# se crearía nunca en una base nueva.
+_OBJETO_DECLARADO = re.compile(
+    r"CREATE\s+(?:TABLE|(?:UNIQUE\s+)?INDEX)\s+IF\s+NOT\s+EXISTS\s+([A-Za-z_][A-Za-z0-9_]*)",
+    re.IGNORECASE,
 )
 
 
@@ -12,10 +22,41 @@ class BankLoader:
     def __init__(self, conn):
         self.conn = conn
 
-    def apply_schema(self, sql_path: str = "sql/bank_schema.sql") -> None:
+    def apply_schema(self, sql_path: str = "sql/bank_schema.sql", forzar: bool = False) -> None:
+        """Crea el esquema de bancos si falta. Si ya está, no toca la base.
+
+        `ingest_banks.py` llama a esto en cada corrida, y el cron corre seguido: 347
+        ejecuciones acumuladas de cada sentencia en producción. Las nueve son
+        `CREATE ... IF NOT EXISTS`, o sea que no construyen nada — pero igual toman un
+        lock sobre su tabla antes de comprobar que no hay nada que hacer, y eso compite
+        justo con la ingesta que viene a continuación. Medido: 2,7 s de promedio y un
+        máximo de 85 s, que es espera de lock y no trabajo.
+
+        El chequeo previo es una sola consulta a `to_regclass`, que lee el catálogo y no
+        toma ningún lock. En una base nueva no encuentra los objetos y el DDL corre igual.
+
+        La comprobación va contra el ESTADO DE LA BASE y no contra un flag de proceso a
+        propósito: los tests llaman a `apply_schema` varias veces y un flag haría que la
+        segunda base que apareciera en el proceso se quedara sin crear.
+        """
         sql = Path(sql_path).read_text()
+        if not forzar and self._objetos_presentes(_OBJETO_DECLARADO.findall(sql)):
+            return
         with self.conn.cursor() as cur:
             cur.execute(sql)
+
+    def _objetos_presentes(self, objetos: list[str]) -> bool:
+        """¿Están TODOS? Con la lista vacía devuelve False: si el .sql no declara nada
+        reconocible, es preferible ejecutarlo y no saltárselo por un regex que falló."""
+        if not objetos:
+            return False
+        with self.conn.cursor() as cur:
+            cur.execute(
+                "SELECT count(*) FROM unnest(%s::text[]) AS o(nombre) "
+                "WHERE to_regclass(o.nombre) IS NOT NULL",
+                (objetos,),
+            )
+            return cur.fetchone()[0] == len(objetos)
 
     def upsert_institution(
         self, inst: Institution, rut: str | None = None, is_aggregate: bool = False
