@@ -121,9 +121,9 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("Intang", ("IntangibleAssetsNetExcludingGoodwill", "FiniteLivedIntangibleAssetsNet"),
             "Activos intangibles distintos de la plusvalía",
             "Intangible assets, net", ROLE_BALANCE, "Activos no corrientes", 80),
-    # Presentación corriente/no corriente previa a ASU 2015-17.
-    Concept("DTA", ("DeferredIncomeTaxAssetsNet", "DeferredTaxAssetsNet",
-                    "DeferredTaxAssetsNetCurrent"),
+    # DESCARTADO `DeferredTaxAssetsNetCurrent`: la razón contra el total tiene mediana
+    # 0,256 sobre 1.150 años-empresa. Es la porción CORRIENTE, no el total.
+    Concept("DTA", ("DeferredIncomeTaxAssetsNet", "DeferredTaxAssetsNet"),
             "Activos por impuestos diferidos", "Deferred tax assets",
             ROLE_BALANCE, "Activos no corrientes", 84),
     Concept("OANC", ("OtherAssetsNoncurrent",),
@@ -137,11 +137,9 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("CxP", ("AccountsPayableCurrent", "AccountsPayableAndAccruedLiabilitiesCurrent"),
             "Cuentas por pagar comerciales y otras cuentas por pagar",
             "Accounts payable", ROLE_BALANCE, "Pasivos corrientes", 110),
-    # Deuda corriente bajo otras presentaciones. La de arriendos de capital es la forma
-    # PRE-ASC 842 de presentar la porción corriente junto al leasing financiero.
-    Concept("DeudaCP", ("LongTermDebtCurrent", "DebtCurrent",
-                        "ShortTermBorrowings",
-                        "LongTermDebtAndCapitalLeaseObligationsCurrent"),
+    # DESCARTADOS `ShortTermBorrowings` (p90 de la razón: 33x) y
+    # `LongTermDebtAndCapitalLeaseObligationsCurrent` (p90 1,20). No son la misma cifra.
+    Concept("DeudaCP", ("LongTermDebtCurrent", "DebtCurrent"),
             "Otros pasivos financieros corrientes",
             "Short-term debt", ROLE_BALANCE, "Pasivos corrientes", 120),
     Concept("DefRevCP", ("ContractWithCustomerLiabilityCurrent", "DeferredRevenueCurrent"),
@@ -171,7 +169,9 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("PC", ("LiabilitiesCurrent",),
             "Pasivos corrientes totales", "Total current liabilities",
             ROLE_BALANCE, "Pasivos corrientes", 130),
-    # Idem, no corriente.
+    # `LongTermDebtAndCapitalLeaseObligations` es la presentación PRE-ASC 842 de la
+    # deuda larga con el leasing financiero incluido. Razón 1,000 (p10 1,00 · p90 1,07)
+    # sobre 499 años-empresa: es el mismo hecho.
     Concept("DeudaLP", ("LongTermDebtNoncurrent", "LongTermDebt",
                         "LongTermDebtAndCapitalLeaseObligations"),
             "Otros pasivos financieros no corrientes",
@@ -188,11 +188,9 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("ImpPorPagarLP", ("AccruedIncomeTaxesNoncurrent",),
             "Pasivos por impuestos no corrientes", "Accrued income taxes, non-current",
             ROLE_BALANCE, "Pasivos no corrientes", 145),
-    # `DeferredTaxLiabilities` es el neto bajo otra presentación. NO se agrega
-    # `DeferredIncomeTaxLiabilities`: ése es el BRUTO y es el tag exclusivo de
-    # `DTLBruto`. Cargarlo acá haría aparecer el mismo hecho como neto y como bruto.
-    Concept("DTL", ("DeferredTaxLiabilitiesNoncurrent", "DeferredIncomeTaxLiabilitiesNet",
-                    "DeferredTaxLiabilities"),
+    # DESCARTADOS los dos candidatos: `DeferredIncomeTaxLiabilities` es el BRUTO (tag
+    # exclusivo de `DTLBruto`) y `DeferredTaxLiabilities` da p90 5,42 contra el total.
+    Concept("DTL", ("DeferredTaxLiabilitiesNoncurrent", "DeferredIncomeTaxLiabilitiesNet"),
             "Pasivos por impuestos diferidos", "Deferred tax liabilities",
             ROLE_BALANCE, "Pasivos no corrientes", 144),
     Concept("OtrPasLP", ("OtherLiabilitiesNoncurrent",),
@@ -229,7 +227,10 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("Treasury", ("TreasuryStockValue", "TreasuryStockCommonValue"),
             "Acciones propias en cartera", "Treasury stock",
             ROLE_BALANCE, "Patrimonio", 178),
-    Concept("TreasuryAcc", ("TreasuryStockCommonShares",),
+    # `TreasuryStockShares` es el elemento genérico y más antiguo de la misma familia.
+    # Medido sobre las 497: coinciden en 237 de 243 emisores que publican los dos, y la
+    # razón entre ambos es 1,000 con p10 y p90 en 1,00 — es el mismo hecho.
+    Concept("TreasuryAcc", ("TreasuryStockCommonShares", "TreasuryStockShares"),
             "Número de acciones propias en cartera", "Treasury stock, shares",
             ROLE_BALANCE, "Patrimonio", 179, unit="shares"),
     Concept("Minor", ("MinorityInterest",),
@@ -260,9 +261,9 @@ CONCEPTS: tuple[Concept, ...] = (
     # tag contra tag en los 18 períodos donde JPM publica ambos y coinciden al peso en
     # todos (2018-2025).
     #
-    # `SalesRevenueNet` y sus dos variantes van AL FINAL y son el tag PRE-ASC 606: hasta
+    # `SalesRevenueNet` va AL FINAL y son el tag PRE-ASC 606: hasta
     # el ejercicio 2018 la mayoría de los emisores etiquetaba así sus ingresos, y desde
-    # 2019 migró a `RevenueFromContractWithCustomer*`. Sin ellos, la serie de ingresos
+    # 2019 migró a `RevenueFromContractWithCustomer*`. Sin él, la serie de ingresos
     # nacía recién cuando el 10-K de la transición reexpresaba sus comparativos, o sea
     # 2016-2018 según el emisor, y todo lo anterior quedaba vacío AUNQUE el resto del
     # estado (costo de ventas, ganancia bruta) sí se cargara — un estado de resultados
@@ -279,9 +280,7 @@ CONCEPTS: tuple[Concept, ...] = (
                        "Revenues",
                        "RevenueFromContractWithCustomerIncludingAssessedTax",
                        "RevenuesNetOfInterestExpense",
-                       "SalesRevenueNet",
-                       "SalesRevenueGoodsNet",
-                       "SalesRevenueServicesNet"),
+                       "SalesRevenueNet"),
             "Ingresos de actividades ordinarias", "Revenues",
             ROLE_INCOME, None, 300),
     Concept("COGS", ("CostOfRevenue", "CostOfGoodsAndServicesSold", "CostOfServices",
@@ -307,10 +306,8 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("OpInc", ("OperatingIncomeLoss",),
             "Ganancias (pérdidas) de actividades operacionales", "Operating income",
             ROLE_INCOME, None, 360),
-    # Intereses Y dividendos en una sola línea: es la misma línea del estado, sólo que
-    # el emisor no la desagrega. Al final, así que sólo entra donde no hay nada.
-    Concept("IngFin", ("InvestmentIncomeInterest", "InterestAndDividendIncomeOperating",
-                       "InvestmentIncomeInterestAndDividend"),
+    # DESCARTADO `InvestmentIncomeInterestAndDividend`: p90 2,19. Suma los dividendos.
+    Concept("IngFin", ("InvestmentIncomeInterest", "InterestAndDividendIncomeOperating"),
             "Ingresos financieros", "Interest and investment income",
             ROLE_INCOME, None, 370),
     # `InterestExpenseNonoperating` va al final de la cadena y no es un detalle: emisores
@@ -366,9 +363,9 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("DeterioroPlus", ("GoodwillImpairmentLoss",),
             "Pérdidas por deterioro de plusvalía", "Goodwill impairment loss",
             ROLE_INCOME, None, 367),
-    # Quien presenta marketing y publicidad en una sola línea.
-    Concept("Publicidad", ("AdvertisingExpense",
-                           "MarketingAndAdvertisingExpense"),
+    # DESCARTADO `MarketingAndAdvertisingExpense`: razón mediana 1,486. Es marketing
+    # MÁS publicidad, no publicidad.
+    Concept("Publicidad", ("AdvertisingExpense",),
             "Gastos de publicidad", "Advertising expense",
             ROLE_INCOME, None, 343),
     Concept("Deterioro", ("AssetImpairmentCharges",),
@@ -471,16 +468,13 @@ CONCEPTS: tuple[Concept, ...] = (
     Concept("Buyback", ("PaymentsForRepurchaseOfCommonStock",),
             "Recompra de acciones propias", "Repurchases of common stock",
             ROLE_CASHFLOW, "Financiamiento", 570),
-    # Genérico de emisión de DEUDA. NO se agrega `ProceedsFromIssuanceOfCommonStock`,
-    # que apareció como candidato en la sonda y es emisión de ACCIONES: cargarlo acá
-    # metería un aumento de capital dentro del financiamiento con deuda.
-    Concept("DeudaObt", ("ProceedsFromIssuanceOfLongTermDebt",
-                         "ProceedsFromIssuanceOfDebt"),
+    # DESCARTADO `ProceedsFromIssuanceOfDebt`: p10 0,12 y p90 4,85 contra el de largo
+    # plazo. Y jamás `ProceedsFromIssuanceOfCommonStock`, que es emisión de ACCIONES.
+    Concept("DeudaObt", ("ProceedsFromIssuanceOfLongTermDebt",),
             "Importes procedentes de préstamos de largo plazo",
             "Proceeds from issuance of long-term debt", ROLE_CASHFLOW, "Financiamiento", 572),
-    # Genérico de pago de deuda.
-    Concept("DeudaPago", ("RepaymentsOfLongTermDebt",
-                          "RepaymentsOfDebt"),
+    # DESCARTADO `RepaymentsOfDebt`: p10 0,22 y p90 4,20 contra el de largo plazo.
+    Concept("DeudaPago", ("RepaymentsOfLongTermDebt",),
             "Pagos de préstamos de largo plazo", "Repayments of long-term debt",
             ROLE_CASHFLOW, "Financiamiento", 574),
     # --- Variación neta de la caja y complementos ---
@@ -527,14 +521,11 @@ CONCEPTS: tuple[Concept, ...] = (
             "Efecto de la variación del tipo de cambio sobre la caja",
             "Effect of exchange rate on cash",
             ROLE_CASHFLOW, "Información complementaria", 585),
-    # `CashAndCashEquivalentsAtCarryingValue` es el tag PRE-ASU 2016-18: hasta el
-    # ejercicio 2018 el saldo de caja se etiquetaba así, y desde entonces con el tag
-    # que incluye efectivo restringido. Verificado en AAPL, NKE, LOW, MSFT y WMT: las
-    # cinco lo publican desde 2006 y sin él la serie de caja nacía ~5 años tarde en 435
-    # emisores. NO se agrega `CashCashEquivalentsAndShortTermInvestments`, que suma las
-    # inversiones de corto plazo: eso no es caja.
-    Concept("EfectivoFinal", ("CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",
-                              "CashAndCashEquivalentsAtCarryingValue"),
+    # DESCARTADO `CashAndCashEquivalentsAtCarryingValue` pese a llenar ~5 años en 435
+    # emisores: el tag moderno INCLUYE el efectivo restringido y el antiguo no, así que
+    # la razón cae a 0,65 en el p10 y la serie mezclaría dos definiciones en el corte de
+    # 2018. El dato no se pierde — el mismo tag ya alimenta `Efec`, en el balance.
+    Concept("EfectivoFinal", ("CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",),
             "Saldo final de caja y equivalentes",
             "Cash, cash equivalents and restricted cash, end of period",
             ROLE_CASHFLOW, "Información complementaria", 594),
